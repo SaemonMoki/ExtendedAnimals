@@ -36,7 +36,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 //    private boolean nesting = false;
 //    private float wingAngle = 0; //[between 0 - -1.5]
 
-    //the below is all chicken parts
     private WrappedModelPart theChicken;
 
     private WrappedModelPart theHead;
@@ -1431,7 +1430,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
             this.theFootLeft.setY((15.5F-chicken.height) + 10.0F);
             this.theFootRight.setY(this.theFootLeft.getY());
-
         } else {
             this.theChicken.setRotation(map.get("bChicken"));
             this.theChicken.setPos(map.get("bChickenPos"));
@@ -1472,15 +1470,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         layDownAnimation(9.0F + (15.5F-chicken.height),true);
                     } else {
                         layDownAnimation(9.0F + (15.5F-chicken.height),false);
-                        headLookingAnimation(netHeadYaw, headPitch);
+                        headLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle);
                     }
                 }
             } else {
                 if (data.sleepDelay != -1) {
                     data.sleepDelay = -1;
-                }
-                if (this.theBody.getY() != 2.0F) {
-                    standUpAnimation(chicken.bodyAngle);
                 }
 
                 boolean flag = true;
@@ -1494,11 +1489,15 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
 
                 if (flag) {
+                    if (this.theBody.getY() != 2.0F || this.theBody.getXRot() != chicken.bodyAngle) {
+                        standUpAnimation(chicken.bodyAngle);
+                    }
+
                     float h = this.head.getY();
                     if (h != -5.0F || (netHeadYaw == 0 && headPitch == 0)) {
-                        moveHeadAnimation(h);
+                        moveHeadAnimation(h, chicken.bodyAngle);
                     } else {
-                        headLookingAnimation(netHeadYaw, headPitch);
+                        headLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle);
                     }
                 }
 
@@ -1510,10 +1509,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             if (!entityIn.isOnGround()) {
-                animateFalling(chicken.silkie, ageInTicks, data.random);
+                animateFalling(ageInTicks);
             } else {
                 if (this.theWingLeft.getZRot() > 0.001F) {
-                    float flap = 1.2F * Mth.cos(ageInTicks + data.random);
+                    float flap = 1.2F * Mth.cos(ageInTicks);
                     this.theWingLeft.setZRot(-flap);
                     this.theWingRight.setZRot(flap);
                     if (this.theWingLeft.getXRot() < 0.0F) {
@@ -1533,43 +1532,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
             saveAnimationValues(data, chicken);
         }
-
-
-//        this.theRightLeg.modelPart.y = -5.0F;
-
-//        ChickenPhenotype chicken = (ChickenPhenotype) chickenModelData.phenotype;
-//
-//        if (chicken != null) {
-//            this.theComb.setZRot(chicken.butterCup ? -(float) Math.PI * 0.15F : 0F);
-//
-////        float bodyangle = 0.5F;
-////        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-//
-//            this.theHead.setY(-3.5F);
-//            this.theHead.setZ(-3.5F);
-//            this.theHead.setXRot(headPitch * 0.017453292F);
-//            this.theHead.setYRot(netHeadYaw * 0.017453292F);
-//
-////            this.earTuftL.xRot = 1.4F;
-////            this.earTuftL.zRot = -1.4F;
-////            this.earTuftR.xRot = 1.4F;
-////            this.earTuftR.zRot = 1.4F;
-//
-//            //leg stuff
-//            this.theRightLeg.setY(15F);
-//            this.theLeftLeg.setY(15F);
-
-//
-//            //body angle
-//
-//            //tail stuff
-//
-//            //wing stuff
-//
-////            int rand = (int)chickenModelData.random * 2000;
-////            this.theRightWing.setZRot(ageInTicks + rand);
-////            this.theLeftWing.setZRot(-(ageInTicks + rand));
-//        }
     }
 
     private void standingLegsAnimation() {
@@ -1582,19 +1544,19 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theLegLeft.setXRot(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount);
     }
 
-    private void headLookingAnimation(float netHeadYaw, float headPitch) {
-        this.theHead.setXRot(headPitch * 0.017453292F);
+    private void headLookingAnimation(float netHeadYaw, float headPitch, float bodyAngle) {
+        this.theHead.setXRot((headPitch * 0.017453292F) - bodyAngle);
         this.theHead.setYRot(netHeadYaw * 0.017453292F);
         this.theHead.setY(this.lerpTo(this.theHead.getY(), -5.0F));
         this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -2.75F));
     }
 
-    private void moveHeadAnimation(float h) {
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
+    private void moveHeadAnimation(float h, float bodyAngle) {
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -bodyAngle));
         if (h > -5.0F) {
             //corrects sleeping head pos/rot
             h = Math.abs(this.theHead.getXRot());
-            if (h < Mth.HALF_PI * 0.5F) {
+            if (h+bodyAngle < Mth.HALF_PI * 0.5F) {
                 this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
             }
             this.theHead.setY(this.lerpTo(this.theHead.getY(), -5.0F));
@@ -1623,8 +1585,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     this.theHead.setY(this.lerpTo(0.1F, this.theHead.getY(), 0.0F));
                 }
             }
-            return false;
-        }if (ticks < 100) {
+        } else if (ticks < 100) {
+            this.theBody.setXRot(this.lerpTo(this.theBody.getXRot(), 0.0F));
+            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
             float loop = (float) Math.cos(ticks*0.5F);
             if (loop > 0) {
                 if (this.theLegLeft.getXRot() <= 0.0F) {
@@ -1641,10 +1604,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     this.theLegRight.setXRot(this.lerpTo(0.1F,this.theLegRight.getXRot(), -0.314159F));
                 }
             }
-            return false;
         } else {
             return true;
         }
+        return false;
     }
 
     private void standUpAnimation(float bodyAngle) {
@@ -1674,8 +1637,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         standingLegsAnimation();
     }
 
-    public void animateFalling(boolean isSilkie, float ageInTicks, float random) {
-        float flap = isSilkie ? 1.2F * Mth.cos((ageInTicks + random) * 1.5F) : 1.2F * Mth.cos(ageInTicks + random);
+    public void animateFalling( float ageInTicks) {
+        float flap = 1.2F * Mth.cos(ageInTicks);
         if (this.theWingLeft.getXRot() > (Math.PI * -0.25F)) {
             this.theWingLeft.setXRot(-flap);
             this.theWingRight.setXRot(-flap);
@@ -1733,7 +1696,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         private int wingSize;
         private float wingPlacement = -5.5F;
         private float wingAngle = 0;
-        private float bodyAngle = 0;
+        private float bodyAngle;
         private float tailAngle = 0;
         private float height;
 
@@ -1914,16 +1877,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             } else if (gene[89] == 3) {
                 this.wingAngle = this.wingAngle + 0.15F;
             }
-//            if(gene[86] == 2){
-//                this.wingAngle = this.wingAngle + 0.1F;
-//            }else if(gene[86] == 3) {
-//                this.wingAngle = this.wingAngle + 0.15F;
-//            }
-//            if(gene[87] == 2){
-//                this.wingAngle = this.wingAngle + 0.1F;
-//            }else if(gene[87] == 3) {
-//                this.wingAngle = this.wingAngle + 0.15F;
-//            }
 
             if (gene[94] == 2 && gene[95] == 2) {
                 this.wingAngle = this.wingAngle * 1.2F;
@@ -1942,6 +1895,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             this.wingAngle = -this.wingAngle;
+
+            float bodyAngle = 0.0F;
+            for (int i = 186; i < 196; i+=2) {
+                if (gene[i] == 2 && gene[i+1] == 2) {
+                    bodyAngle -= 0.1F;
+                }
+            }
+            this.bodyAngle = bodyAngle;
 
             if (this.creeper) {
                 this.height = this.hasLongLegs() ? 18.5F : 19.5F;

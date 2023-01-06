@@ -48,66 +48,66 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     protected WrappedModelPart theLegBottomBackRight;
     protected WrappedModelPart theTail;
 
-    private WrappedModelPart headFemale;
-    private WrappedModelPart headMale;
-    private WrappedModelPart noseFemale;
-    private WrappedModelPart noseMale;
-    private WrappedModelPart jaw;
-    private WrappedModelPart headHair;
-    private WrappedModelPart headNubXSmall;
-    private WrappedModelPart headNubSmall;
-    private WrappedModelPart headNubMedium;
-    private WrappedModelPart headNubLarge;
-    private WrappedModelPart headNubXLarge;
+    private final WrappedModelPart headFemale;
+    private final WrappedModelPart headMale;
+    private final WrappedModelPart noseFemale;
+    private final WrappedModelPart noseMale;
+    private final WrappedModelPart jaw;
+    private final WrappedModelPart headHair;
+    private final WrappedModelPart headNubXSmall;
+    private final WrappedModelPart headNubSmall;
+    private final WrappedModelPart headNubMedium;
+    private final WrappedModelPart headNubLarge;
+    private final WrappedModelPart headNubXLarge;
 
-    private WrappedModelPart earXShortL;
-    private WrappedModelPart earShortL;
-    private WrappedModelPart earMediumL;
-    private WrappedModelPart earLongL;
-    private WrappedModelPart earXLongL;
-    private WrappedModelPart earXShortR;
-    private WrappedModelPart earShortR;
-    private WrappedModelPart earMediumR;
-    private WrappedModelPart earLongR;
-    private WrappedModelPart earXLongR;
+    private final WrappedModelPart earXShortL;
+    private final WrappedModelPart earShortL;
+    private final WrappedModelPart earMediumL;
+    private final WrappedModelPart earLongL;
+    private final WrappedModelPart earXLongL;
+    private final WrappedModelPart earXShortR;
+    private final WrappedModelPart earShortR;
+    private final WrappedModelPart earMediumR;
+    private final WrappedModelPart earLongR;
+    private final WrappedModelPart earXLongR;
 
-    private WrappedModelPart hornLeft[] = new WrappedModelPart[10];
-    private WrappedModelPart hornRight[] = new WrappedModelPart[10];
+    private final WrappedModelPart hornLeft[] = new WrappedModelPart[10];
+    private final WrappedModelPart hornRight[] = new WrappedModelPart[10];
 
-    private WrappedModelPart neckFemale;
-    private WrappedModelPart neckMale;
+    private final WrappedModelPart neckFemale;
+    private final WrappedModelPart neckMale;
 
-    private WrappedModelPart bodyNormal;
-    private WrappedModelPart bodyHairy;
+    private final WrappedModelPart bodyNormal;
+    private final WrappedModelPart bodyHairy;
 
-    private WrappedModelPart humpXXSmall;
-    private WrappedModelPart humpXSmall;
-    private WrappedModelPart humpSmall;
-    private WrappedModelPart humpMedium;
-    private WrappedModelPart humpLarge;
-    private WrappedModelPart humpXLarge;
-    private WrappedModelPart humpXXLarge;
+    private final WrappedModelPart humpXXSmall;
+    private final WrappedModelPart humpXSmall;
+    private final WrappedModelPart humpSmall;
+    private final WrappedModelPart humpMedium;
+    private final WrappedModelPart humpLarge;
+    private final WrappedModelPart humpXLarge;
+    private final WrappedModelPart humpXXLarge;
 
-    private WrappedModelPart udder;
-    private WrappedModelPart nipples;
+    private final WrappedModelPart udder;
+    private final WrappedModelPart nipples;
 
-    private WrappedModelPart legFrontLeft;
-    private WrappedModelPart legFrontRight;
-    private WrappedModelPart legBackLeft;
-    private WrappedModelPart legBackRight;
-    private WrappedModelPart legFrontLeftDwarf;
-    private WrappedModelPart legFrontRightDwarf;
-    private WrappedModelPart legBackLeftDwarf;
-    private WrappedModelPart legBackRightDwarf;
+    private final WrappedModelPart legFrontLeft;
+    private final WrappedModelPart legFrontRight;
+    private final WrappedModelPart legBackLeft;
+    private final WrappedModelPart legBackRight;
+    private final WrappedModelPart legFrontLeftDwarf;
+    private final WrappedModelPart legFrontRightDwarf;
+    private final WrappedModelPart legBackLeftDwarf;
+    private final WrappedModelPart legBackRightDwarf;
 
-    private WrappedModelPart legBottomFrontLeft;
-    private WrappedModelPart legBottomFrontRight;
-    private WrappedModelPart legBottomBackLeft;
-    private WrappedModelPart legBottomBackRight;
-    private WrappedModelPart legBottomFrontLeftDwarf;
-    private WrappedModelPart legBottomFrontRightDwarf;
-    private WrappedModelPart legBottomBackLeftDwarf;
-    private WrappedModelPart legBottomBackRightDwarf;
+    private final WrappedModelPart legBottomFrontLeft;
+    private final WrappedModelPart legBottomFrontRight;
+    private final WrappedModelPart legBottomBackLeft;
+    private final WrappedModelPart legBottomBackRight;
+    private final WrappedModelPart legBottomFrontLeftDwarf;
+    private final WrappedModelPart legBottomFrontRightDwarf;
+    private final WrappedModelPart legBottomBackLeftDwarf;
+    private final WrappedModelPart legBottomBackRightDwarf;
 
     private WrappedModelPart tailBase;
     private WrappedModelPart tailMiddle;
@@ -370,8 +370,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bLegFrontLeft.addOrReplaceChild("legBFLD", CubeListBuilder.create()
-                        .texOffs(0, 63)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 3, 3),
+                        .texOffs(0, 62)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 3),
                 PartPose.ZERO
         );
 
@@ -382,7 +382,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFRD", CubeListBuilder.create()
-                        .texOffs(12, 63)
+                        .texOffs(12, 59)
                         .addBox(-3.0F, 0.0F, 0.0F, 3, 4, 3),
                 PartPose.ZERO
         );
@@ -392,8 +392,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legBFRD", CubeListBuilder.create()
-                        .texOffs(12, 63)
-                        .addBox(-3.0F, 0.0F, 0.0F, 3, 3, 3),
+                        .texOffs(12, 62)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 4, 3),
                 PartPose.ZERO
         );
 
@@ -413,8 +413,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBBLD", CubeListBuilder.create()
-                        .texOffs(0, 76)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 3, 3),
+                        .texOffs(0, 75)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 3),
                 PartPose.ZERO
         );
 
@@ -434,8 +434,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBBRD", CubeListBuilder.create()
-                        .texOffs(12, 76)
-                        .addBox(-3.0F, 0.0F, 0.0F, 3, 3, 3),
+                        .texOffs(12, 75)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 4, 3),
                 PartPose.ZERO
         );
 
@@ -475,9 +475,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
         base.addOrReplaceChild("blanket", CubeListBuilder.create()
                         .texOffs(25, 61)
-                        .addBox(1.0F, 0.0F, -5.0F, 4, 9, 1)
+                        .addBox(1.0F, 0.0F, -5.0F, 4, 9, 1, new CubeDeformation(0.001F))
                         .texOffs(34, 61)
-                        .addBox(1.0F, 0.0F, 4.0F, 4, 9, 1),
+                        .addBox(1.0F, 0.0F, 4.0F, 4, 9, 1, new CubeDeformation(0.001F)),
                 PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
 
@@ -687,12 +687,12 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
 
         this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
-        this.legFrontLeftDwarf = new WrappedModelPart("legFLD", bLegFL);
         this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
-        this.legFrontRightDwarf = new WrappedModelPart("legFRD", bLegFR);
         this.legBackLeft = new WrappedModelPart("legBL", bLegBL);
-        this.legBackLeftDwarf = new WrappedModelPart("legBLD", bLegBL);
         this.legBackRight = new WrappedModelPart("legBR", bLegBR);
+        this.legFrontLeftDwarf = new WrappedModelPart("legFLD", bLegFL);
+        this.legFrontRightDwarf = new WrappedModelPart("legFRD", bLegFR);
+        this.legBackLeftDwarf = new WrappedModelPart("legBLD", bLegBL);
         this.legBackRightDwarf = new WrappedModelPart("legBRD", bLegBR);
 
         this.legBottomFrontLeft = new WrappedModelPart("legBFL", bLegFL);
@@ -1005,26 +1005,24 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             }
 
             if (cow.dwarf) {
-                if (this.legFrontLeft.boxIsRendered) {
-                    this.legFrontLeftDwarf.show();
-                    this.legFrontRightDwarf.show();
-                    this.legBackLeftDwarf.show();
-                    this.legBackRightDwarf.show();
-                    this.legBottomFrontLeftDwarf.show();
-                    this.legBottomFrontRightDwarf.show();
-                    this.legBottomBackLeftDwarf.show();
-                    this.legBottomBackRightDwarf.show();
+                this.legFrontLeftDwarf.show();
+                this.legFrontRightDwarf.show();
+                this.legBackLeftDwarf.show();
+                this.legBackRightDwarf.show();
+                this.legBottomFrontLeftDwarf.show();
+                this.legBottomFrontRightDwarf.show();
+                this.legBottomBackLeftDwarf.show();
+                this.legBottomBackRightDwarf.show();
 
-                    this.legFrontLeft.hide();
-                    this.legFrontRight.hide();
-                    this.legBackLeft.hide();
-                    this.legBackRight.hide();
-                    this.legBottomFrontLeft.hide();
-                    this.legBottomFrontRight.hide();
-                    this.legBottomBackLeft.hide();
-                    this.legBottomBackRight.hide();
-                }
-            } else if (this.legFrontLeftDwarf.boxIsRendered) {
+                this.legFrontLeft.hide();
+                this.legFrontRight.hide();
+                this.legBackLeft.hide();
+                this.legBackRight.hide();
+                this.legBottomFrontLeft.hide();
+                this.legBottomFrontRight.hide();
+                this.legBottomBackLeft.hide();
+                this.legBottomBackRight.hide();
+            } else {
                 this.legFrontLeft.show();
                 this.legFrontRight.show();
                 this.legBackLeft.show();
@@ -1107,7 +1105,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             float width = finalCowSize + (finalCowSize * cow.bodyWidth * cowModelData.growthAmount);
             float length = finalCowSize + (finalCowSize * cow.bodyLength * cowModelData.growthAmount);
             poseStack.scale(width, finalCowSize, length);
-            poseStack.translate(0.0F, (-1.45F + 1.45F / finalCowSize) - d, 0.0F);
+            poseStack.translate(0.0F, (-1.35F + (1.35F / finalCowSize)) - d, 0.0F);
 
             gaRender(this.theCow, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -1223,17 +1221,17 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.theLegFrontRight.setPosYAndRot(vector3f, vector3f);
             this.theLegBackLeft.setPosYAndRot(vector3f, vector3f);
             this.theLegBackRight.setPosYAndRot(vector3f, vector3f);
-            this.theLegBottomFrontLeft.setY(cow.dwarf ? 3.0F : 5.0F);
-            this.theLegBottomFrontRight.setY(cow.dwarf ? 3.0F : 5.0F);
-            this.theLegBottomBackLeft.setY(cow.dwarf ? 3.0F : 5.0F);
-            this.theLegBottomBackRight.setY(cow.dwarf ? 3.0F : 5.0F);
+            this.theLegBottomFrontLeft.setY(cow.dwarf ? 4.0F : 5.0F);
+            this.theLegBottomFrontRight.setY(cow.dwarf ? 4.0F : 5.0F);
+            this.theLegBottomBackLeft.setY(cow.dwarf ? 4.0F : 5.0F);
+            this.theLegBottomBackRight.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theTail.setRotation(vector3f);
             this.tailBase.setRotation(new Vector3f(0.4F, 0.0F,0.0F));
             this.tailMiddle.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
             this.tailEnd.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
             this.tailBrush.setRotation(vector3f);
 
-            Vector3f base = new Vector3f(0.0F, cow.hornType.placement, 0.0F);
+            Vector3f base = new Vector3f(0.0F, cow.hornType.placement, 0.01F);
             this.theHornNub.setPos(base);
             map.put("bHornNubPos", base);
 

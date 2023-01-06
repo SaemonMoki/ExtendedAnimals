@@ -544,20 +544,20 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 case 13, 14, 15 -> this.neckWool[6].show();
             }
 
-            if (data.coatLength > 2) {
-                this.headWool.show(sheep.faceWool >= 1);
+            if (data.coatLength > 2 && sheep.faceWool >= 1) {
+                this.headWool.show();
                 this.cheekWool.show(sheep.faceWool >= 2);
-                this.noseWool.show(sheep.faceWool >= 3);
-                if (this.headWool.boxIsRendered) {
-                    mapOfScale.put("bridle", ModelHelper.createScalings(1.2F, 1.2F, 1.5F, 0.0F, -0.05F, 0.14F));
-                    if (this.noseWool.boxIsRendered) {
-                        mapOfScale.put("bridleN", ModelHelper.createScalings(1.0F, 1.0F, 0.6F, 0.0F, -0.01F, -0.35F));
-                    }
+                mapOfScale.put("bridle", ModelHelper.createScalings(1.2F, 1.2F, 1.5F, 0.0F, -0.05F, 0.14F));
+                if (sheep.faceWool >= 3) {
+                    this.noseWool.show();
+                    mapOfScale.put("bridleN", ModelHelper.createScalings(1.0F, 1.0F, 0.6F, 0.0F, -0.01F, -0.35F));
+                } else {
+                    this.noseWool.hide();
                 }
             } else {
-                this.headWool.show(false);
-                this.cheekWool.show(false);
-                this.noseWool.show(false);
+                this.headWool.hide();
+                this.cheekWool.hide();
+                this.noseWool.hide();
             }
 
             /**
@@ -624,7 +624,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
             poseStack.pushPose();
             poseStack.scale(sheepSize, sheepSize, sheepSize);
-            poseStack.translate(0.0F, (-1.45F + 1.45F / (sheepSize))-d, 0.0F);
+            poseStack.translate(0.0F, (-1.5F + 1.5F / (sheepSize))-d, 0.0F);
 
             gaRender(this.theSheep, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 

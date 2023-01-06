@@ -431,18 +431,18 @@ public class ModItems {
     public static final RegistryObject<Item> UNBOUNDHAY_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new BlockItem(UNBOUNDHAY_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> SPARSEGRASS_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("sparsegrass_block", () -> new BlockItem(SPARSEGRASS_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> PATCHYMYCELIUM_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("patchymycelium_block", () -> new BlockItem(PATCHYMYCELIUM_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_ALLIUM_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_allium", () -> new BlockItem(GROWABLE_ALLIUM.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_AZURE_BLUET_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_azure_bluet", () -> new BlockItem(GROWABLE_AZURE_BLUET.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_BLUE_ORCHID_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_blue_orchid", () -> new BlockItem(GROWABLE_BLUE_ORCHID.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_CORNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_cornflower", () -> new BlockItem(GROWABLE_CORNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_DANDELION_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_dandelion", () -> new BlockItem(GROWABLE_DANDELION.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_OXEYE_DAISY_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_oxeye_daisy", () -> new BlockItem(GROWABLE_OXEYE_DAISY.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_grass", () -> new BlockItem(GROWABLE_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_fern", () -> new BlockItem(GROWABLE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_ROSE_BUSH_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_rose_bush", () -> new BlockItem(GROWABLE_ROSE_BUSH.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_SUNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_sunflower", () -> new BlockItem(GROWABLE_SUNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_TALL_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_tall_grass", () -> new BlockItem(GROWABLE_TALL_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-    public static final RegistryObject<Item> GROWABLE_LARGE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_large_fern", () -> new BlockItem(GROWABLE_LARGE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_ALLIUM_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_allium", () -> new BlockItem(GROWABLE_ALLIUM.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_AZURE_BLUET_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_azure_bluet", () -> new BlockItem(GROWABLE_AZURE_BLUET.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_BLUE_ORCHID_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_blue_orchid", () -> new BlockItem(GROWABLE_BLUE_ORCHID.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_CORNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_cornflower", () -> new BlockItem(GROWABLE_CORNFLOWER.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_DANDELION_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_dandelion", () -> new BlockItem(GROWABLE_DANDELION.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_OXEYE_DAISY_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_oxeye_daisy", () -> new BlockItem(GROWABLE_OXEYE_DAISY.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_grass", () -> new BlockItem(GROWABLE_GRASS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_fern", () -> new BlockItem(GROWABLE_FERN.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_ROSE_BUSH_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_rose_bush", () -> new BlockItem(GROWABLE_ROSE_BUSH.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_SUNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_sunflower", () -> new BlockItem(GROWABLE_SUNFLOWER.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_TALL_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_tall_grass", () -> new BlockItem(GROWABLE_TALL_GRASS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GROWABLE_LARGE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_large_fern", () -> new BlockItem(GROWABLE_LARGE_FERN.get(), new Item.Properties()));
 
     /*
     * Spawn Eggs

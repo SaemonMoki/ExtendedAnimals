@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
@@ -470,133 +471,12 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public java.util.List<ItemStack> onSheared(Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.level.isClientSide) {
-            int woolCount = 0;
-            if (this.currentCoatLength == 1) {
-                int i = this.random.nextInt(5);
-                if (i>3){
-                    woolCount++;
-                }
-            } else if (this.currentCoatLength == 2) {
-                int i = this.random.nextInt(5);
-                if (i>2){
-                    woolCount++;
-                }
-            } else if (this.currentCoatLength == 3) {
-                int i = this.random.nextInt(5);
-                if (i>1){
-                    woolCount++;
-                }
-            } else if (this.currentCoatLength == 4) {
-                int i = this.random.nextInt(5);
-                if (i>0) {
-                    woolCount++;
-                }
-            } else if (this.currentCoatLength >= 5) {
-                woolCount++;
+            int woolCount = (int)(this.currentCoatLength * 0.2F);
+            float bonusWoolChance = (this.currentCoatLength - woolCount) * 0.2F;
+            woolCount += bonusWoolChance >= this.random.nextFloat() ? 1 : 0;
 
-                if (this.currentCoatLength == 6) {
-                    int i = this.random.nextInt(5);
-                    if (i>3){
-                        woolCount++;
-                    }
-                } else if (this.currentCoatLength == 7) {
-                    int i = this.random.nextInt(5);
-                    if (i>2){
-                        woolCount++;
-                    }
-                } else if (this.currentCoatLength == 8) {
-                    int i = this.random.nextInt(5);
-                    if (i>1){
-                        woolCount++;
-                    }
-                } else if (this.currentCoatLength == 9) {
-                    int i = this.random.nextInt(5);
-                    if (i>0) {
-                        woolCount++;
-                    }
-                } else if (this.currentCoatLength >= 10) {
-                    woolCount++;
-                    if (this.currentCoatLength == 11) {
-                        int i = this.random.nextInt(5);
-                        if (i>3){
-                            woolCount++;
-                        }
-                    } else if (this.currentCoatLength == 12) {
-                        int i = this.random.nextInt(5);
-                        if (i>2){
-                            woolCount++;
-                        }
-                    } else if (this.currentCoatLength == 13) {
-                        int i = this.random.nextInt(5);
-                        if (i>1){
-                            woolCount++;
-                        }
-                    } else if (this.currentCoatLength == 14) {
-                        int i = this.random.nextInt(5);
-                        if (i>0) {
-                            woolCount++;
-                        }
-                    } else if (this.currentCoatLength >= 15) {
-                        woolCount++;
-                    }
-                }
-            }
-
-            for (int c = 0-woolCount; c < 0; c++){
-
-                DyeColor woolColour = getWoolColour();
-
-                switch (woolColour) {
-                    case WHITE:
-                    default:
-                        ret.add(new ItemStack(Blocks.WHITE_WOOL));
-                        break;
-                    case ORANGE:
-                        ret.add(new ItemStack(Blocks.ORANGE_WOOL));
-                        break;
-                    case MAGENTA:
-                        ret.add(new ItemStack(Blocks.MAGENTA_WOOL));
-                        break;
-                    case LIGHT_BLUE:
-                        ret.add(new ItemStack(Blocks.LIGHT_BLUE_WOOL));
-                        break;
-                    case YELLOW:
-                        ret.add(new ItemStack(Blocks.YELLOW_WOOL));
-                        break;
-                    case LIME:
-                        ret.add(new ItemStack(Blocks.LIME_WOOL));
-                        break;
-                    case PINK:
-                        ret.add(new ItemStack(Blocks.PINK_WOOL));
-                        break;
-                    case GRAY:
-                        ret.add(new ItemStack(Blocks.GRAY_WOOL));
-                        break;
-                    case LIGHT_GRAY:
-                        ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
-                        break;
-                    case CYAN:
-                        ret.add(new ItemStack(Blocks.CYAN_WOOL));
-                        break;
-                    case PURPLE:
-                        ret.add(new ItemStack(Blocks.PURPLE_WOOL));
-                        break;
-                    case BLUE:
-                        ret.add(new ItemStack(Blocks.BLUE_WOOL));
-                        break;
-                    case BROWN:
-                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
-                        break;
-                    case GREEN:
-                        ret.add(new ItemStack(Blocks.GREEN_WOOL));
-                        break;
-                    case RED:
-                        ret.add(new ItemStack(Blocks.RED_WOOL));
-                        break;
-                    case BLACK:
-                        ret.add(new ItemStack(Blocks.BLACK_WOOL));
-                        break;
-                }
+            for (int i = 0; i < woolCount; i++){
+                ret.add(new ItemStack(getWoolBlockFromColour(getWoolColour())));
             }
         }
         this.currentCoatLength = 0;
@@ -605,262 +485,280 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     private DyeColor getWoolColour() {
-        int[] gene = this.genetics.getAutosomalGenes();
-        int spots = 0;
-        DyeColor returnDye;
-
-        if (((gene[0] == 1 || gene[1] == 1) && !(gene[4] == 1 || gene[5] == 1)) || gene[68] == 2 || gene[69] == 2 || (gene[68] >= 3 && gene[68] == gene[69])) {
-            //sheep is white
-            spots = 2;
-        } else if (gene[8] == 2 && gene[9] == 2){
-            // 1 out of 3 chance to drop white wool instead
-            spots = this.random.nextInt(3) == 0 ? 1 : 0;
-            if (spots == 0 && (gene[68] == 3 || gene[69] == 3)) {
-                if (gene[68] == 4 || gene[69] == 4) {
-                    // 2 out of 3 chance to drop white wool
-                    spots = this.random.nextInt(3) == 0 ? 1 : 0;
-                } else if (gene[68] == 1 || gene[69] == 1) {
-                    // 1 out of 2 chance to drop white wool
-                    spots = this.random.nextInt(2);
-                }
-            }
-        } else if (gene[68] == 3 || gene[69] == 3) {
-            if (gene[68] == 4 || gene[69] == 4) {
-                // 2 out of 3 chance to drop white wool
-                spots = this.random.nextInt(3);
-            } else if (gene[68] == 1 || gene[69] == 1) {
-                // 1 out of 2 chance to drop white wool
-                spots = this.random.nextInt(2);
-            }
+        DyeColor geneticColor = getGeneticWoolColour();
+        if (geneticColor == DyeColor.BLACK) {
+            return DyeColor.BLACK;
+        } else if (geneticColor == DyeColor.WHITE) {
+            return getFleeceDyeColour();
         }
-
-        if (spots == 0) {
-            if (gene[4] == 1 || gene[5] == 1) {
-                //sheep is dominant black
-                if (gene[2] == 1 || gene[3] == 1){
-                    //is not chocolate
-                    returnDye = DyeColor.BLACK;
-                }else{
-                    //is chocolate
-                    returnDye = DyeColor.BROWN;
+        switch (getFleeceDyeColour()) {
+            case WHITE -> {return getGeneticWoolColour();}
+            case ORANGE -> {
+                switch (geneticColor) {
+                    case RED -> {return DyeColor.RED;}
+                    case BROWN, GRAY -> {return DyeColor.BROWN;}
                 }
-            } else if (gene[4] == 3 && gene[5] == 3) {
-                //red sheep
-                if (gene[0] == 2 || gene[1] == 2 || gene[0] == 3 || gene[1] == 3) {
-                    returnDye = DyeColor.WHITE;
-                } else {
-                    if ((gene[0] >= 5 && gene[1] >= 5) && (gene[0] == 5 || gene[1] == 5)) {
-                        returnDye = DyeColor.LIGHT_GRAY;
-                    } else {
-                        returnDye = DyeColor.BROWN;
-                    }
+                return DyeColor.ORANGE;
+            }
+            case MAGENTA -> {
+                switch (geneticColor) {
+                    case RED, ORANGE -> {return DyeColor.RED;}
+                    case BROWN, GRAY -> {return DyeColor.BROWN;}
                 }
-            } else if (gene[0] >= 3 && gene[1] >= 3){
-                if (gene[0] == 3 || gene[1] == 3) {
-                    //badgerface or badgerface mix brown sheep
-                    returnDye = DyeColor.BROWN;
-                } else if (gene[0] == 4 || gene[1] == 4) {
-                    //mouflon black or black mix with blue
-                    if (gene[2] == 1 || gene[3] == 1){
-                        //is not chocolate
-                        returnDye = DyeColor.BLACK;
-                    }else{
-                        //is chocolate
-                        returnDye = DyeColor.BROWN;
-                    }
-                } else if (gene[0] == 5 || gene[1] == 5) {
-                    //blue
-                    if (gene[2] == 1 || gene[3] == 1) {
-                        returnDye = DyeColor.GRAY;
-                    } else {
-                        returnDye = DyeColor.BROWN;
-                    }
-                } else {
-                    if (gene[2] == 1 || gene[3] == 1){
-                        //is not chocolate
-                        returnDye = DyeColor.BLACK;
-                    }else{
-                        //is chocolate
-                        returnDye = DyeColor.BROWN;
-                    }
+                return DyeColor.MAGENTA;
+            }
+            case LIGHT_BLUE -> {
+                switch (geneticColor) {
+                    case YELLOW -> {return DyeColor.CYAN;}
+                    case ORANGE -> {return DyeColor.LIGHT_GRAY;}
+                    case BROWN, GRAY, RED -> {return DyeColor.GRAY;}
                 }
-            }else if ((gene[0] == 2 || gene[1] == 2) && !(gene[0] == 3 || gene[1] == 3)) {
-                returnDye = DyeColor.LIGHT_GRAY;
-            } else {
-                returnDye = DyeColor.WHITE;
+                return DyeColor.LIGHT_BLUE;
             }
-        } else {
-            returnDye = DyeColor.WHITE;
-        }
-
-        if (returnDye == DyeColor.WHITE || returnDye == DyeColor.LIGHT_GRAY){
-            switch (this.getFleeceDyeColour()) {
-                case WHITE:
-                default:
-                    if (returnDye == DyeColor.LIGHT_GRAY) {
-                        returnDye = DyeColor.LIGHT_GRAY;
-                    }
-                    break;
-                case ORANGE:
-                    returnDye = DyeColor.ORANGE;
-                    break;
-                case MAGENTA:
-                    returnDye = DyeColor.MAGENTA;
-                    break;
-                case LIGHT_BLUE:
-                    returnDye = DyeColor.LIGHT_BLUE;
-                    break;
-                case YELLOW:
-                    returnDye = DyeColor.YELLOW;
-                    break;
-                case LIME:
-                    returnDye = DyeColor.LIME;
-                    break;
-                case PINK:
-                    returnDye = DyeColor.PINK;
-                    break;
-                case GRAY:
-                    returnDye = DyeColor.GRAY;
-                    break;
-                case LIGHT_GRAY:
-                    returnDye = DyeColor.LIGHT_GRAY;
-                    break;
-                case CYAN:
-                    returnDye = DyeColor.CYAN;
-                    break;
-                case PURPLE:
-                    returnDye = DyeColor.PURPLE;
-                    break;
-                case BLUE:
-                    returnDye = DyeColor.BLUE;
-                    break;
-                case BROWN:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case GREEN:
-                    returnDye = DyeColor.GREEN;
-                    break;
-                case RED:
-                    returnDye = DyeColor.RED;
-                    break;
-                case BLACK:
-                    returnDye = DyeColor.BLACK;
-                    break;
+            case YELLOW -> {
+                switch (geneticColor) {
+                    case ORANGE, RED -> {return DyeColor.ORANGE;}
+                    case BROWN, LIGHT_GRAY, GRAY -> {return DyeColor.BROWN;}
+                }
+                return DyeColor.YELLOW;
             }
-        } else if (returnDye == DyeColor.BROWN || returnDye == DyeColor.GRAY) {
-            switch (this.getFleeceDyeColour()) {
-                case ORANGE:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case MAGENTA:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case LIGHT_BLUE:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case YELLOW:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case LIME:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case PINK:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case GRAY:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case LIGHT_GRAY:
-                    returnDye = DyeColor.GRAY;
-                    break;
-                case CYAN:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case PURPLE:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case BLUE:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case BROWN:
-                    returnDye = DyeColor.BROWN;
-                    break;
-                case GREEN:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case RED:
-                    returnDye = DyeColor.BLACK;
-                    break;
-                case BLACK:
-                    returnDye = DyeColor.BLACK;
-                    break;
+            case LIME -> {
+                switch (geneticColor) {
+                    case ORANGE, RED -> {return DyeColor.ORANGE;}
+                    case BROWN, LIGHT_GRAY, GRAY -> {return DyeColor.BROWN;}
+                }
+                return DyeColor.LIME;
             }
+            case PINK -> {
+                switch (geneticColor) {
+                    case YELLOW -> {return DyeColor.ORANGE;}
+                    case ORANGE, RED -> {return DyeColor.RED;}
+                    case BROWN, LIGHT_GRAY, GRAY -> {return DyeColor.BROWN;}
+                }
+                return DyeColor.PINK;
+            }
+            case GRAY -> {
+                switch (geneticColor) {
+                    case YELLOW, ORANGE, RED, BROWN -> {return DyeColor.BROWN;}
+                    case GRAY -> {return DyeColor.BLACK;}
+                }
+                return DyeColor.GRAY;
+            }
+            case LIGHT_GRAY -> {
+                switch (geneticColor) {
+                    case YELLOW, ORANGE, RED, BROWN -> {return DyeColor.BROWN;}
+                    case GRAY -> {return DyeColor.GRAY;}
+                }
+                return DyeColor.LIGHT_GRAY;
+            }
+            case CYAN -> {
+                switch (geneticColor) {
+                    case YELLOW -> {return DyeColor.LIME;}
+                    case ORANGE, RED, BROWN -> {return DyeColor.BROWN;}
+                    case LIGHT_GRAY, GRAY -> {return DyeColor.BLUE;}
+                }
+                return DyeColor.CYAN;
+            }
+            case PURPLE -> {
+                switch (geneticColor) {
+                    case YELLOW -> {return DyeColor.GRAY;}
+                    case ORANGE, RED, LIGHT_GRAY -> {return DyeColor.BROWN;}
+                    case BROWN, GRAY -> {return DyeColor.BLACK;}
+                }
+                return DyeColor.PURPLE;
+            }
+            case BLUE -> {
+                switch (geneticColor) {
+                    case YELLOW, ORANGE, RED -> {return DyeColor.GRAY;}
+                    case BROWN, GRAY -> {return DyeColor.BLACK;}
+                }
+                return DyeColor.BLUE;
+            }
+            case BROWN -> {return DyeColor.BROWN;}
+            case GREEN -> {
+                switch (geneticColor) {
+                    case YELLOW -> {return DyeColor.CYAN;}
+                    case ORANGE, RED -> {return DyeColor.GRAY;}
+                    case BROWN, GRAY -> {return DyeColor.BLACK;}
+                }
+                return DyeColor.GREEN;
+            }
+            case RED -> {
+                switch (geneticColor) {
+                    case BROWN, GRAY -> {return DyeColor.BROWN;}
+                }
+                return DyeColor.RED;
+            }
+            case BLACK -> {return DyeColor.BLACK;}
         }
-
-        if(this.getFleeceDyeColour() == DyeColor.BLACK) {
-            returnDye = DyeColor.BLACK;
-        }
-
-        return returnDye;
+        return DyeColor.BLACK;
     }
 
-    private Block getWoolBlocks () {
-        DyeColor woolColour = getWoolColour();
-        Block returnBlocks;
+    private DyeColor getGeneticWoolColour() {
+        if (this.genetics==null) {
+            return DyeColor.RED;
+        }
+        int[] gene = this.genetics.getAutosomalGenes();
+        float spotChance = 0.0F;
 
-        switch (woolColour) {
-            case WHITE:
-            default:
-                returnBlocks = Blocks.WHITE_WOOL;
-                break;
-            case ORANGE:
-                returnBlocks = Blocks.ORANGE_WOOL;
-                break;
-            case MAGENTA:
-                returnBlocks = Blocks.MAGENTA_WOOL;
-                break;
-            case LIGHT_BLUE:
-                returnBlocks = Blocks.LIGHT_BLUE_WOOL;
-                break;
-            case YELLOW:
-                returnBlocks = Blocks.YELLOW_WOOL;
-                break;
-            case LIME:
-                returnBlocks = Blocks.LIME_WOOL;
-                break;
-            case PINK:
-                returnBlocks = Blocks.PINK_WOOL;
-                break;
-            case GRAY:
-                returnBlocks = Blocks.GRAY_WOOL;
-                break;
-            case LIGHT_GRAY:
-                returnBlocks = Blocks.LIGHT_GRAY_WOOL;
-                break;
-            case CYAN:
-                returnBlocks = Blocks.CYAN_WOOL;
-                break;
-            case PURPLE:
-                returnBlocks = Blocks.PURPLE_WOOL;
-                break;
-            case BLUE:
-                returnBlocks = Blocks.BLUE_WOOL;
-                break;
-            case BROWN:
-                returnBlocks = Blocks.BROWN_WOOL;
-                break;
-            case GREEN:
-                returnBlocks = Blocks.GREEN_WOOL;
-                break;
-            case RED:
-                returnBlocks = Blocks.RED_WOOL;
-                break;
-            case BLACK:
-                returnBlocks = Blocks.BLACK_WOOL;
-                break;
+        if (gene[68] != 1 || gene[69] != 1) {
+            if (gene[68] == 2 || gene[69] == 2) {
+                return DyeColor.WHITE;
+            }
+            if (gene[68] == 1 || gene[69] == 1) {
+                if (gene[68] == 3 || gene[69] == 3) {
+                    spotChance = 0.4F;
+                }
+            } else if (gene[68] == gene[69]) {
+                return DyeColor.WHITE;
+            }
         }
 
-        return returnBlocks;
+        if (gene[8] == 2 && gene[9] == 2) {
+            spotChance = spotChance + ((1.0F-spotChance) * 0.4F);
+        }
+
+        if (spotChance > this.random.nextFloat()) {
+            return DyeColor.WHITE;
+        }
+
+        boolean isSolidBlack = false;
+        boolean red = gene[4] == 3 && gene[5] == 3;
+        boolean roan = gene[100] == 2 || gene[101] == 2;
+        boolean chocolate = !(gene[2] == 1 || gene[3] == 1);
+        float agoutiShade = 0.0F;
+        if (gene[4] == 1 || gene[5] == 1) {
+            if (roan) {
+                return DyeColor.LIGHT_GRAY;
+            } else {
+                return chocolate ? DyeColor.BROWN : DyeColor.BLACK;
+            }
+        } else {
+            if (gene[0] == 6 && gene[1] == 6) {
+                isSolidBlack = true;
+            } else {
+                if (gene[0] == 1 || gene[1] == 1) {
+                    agoutiShade = 0.0F;
+                } else {
+                    if (gene[0] == 2 || gene[1] == 2) {
+                        return chocolate || red || roan ? DyeColor.WHITE : DyeColor.LIGHT_GRAY;
+                    }
+                    if (gene[0] != 6) {
+                        agoutiShade = gene[1] == 6 ? getAgoutiShade(gene[0]) : (getAgoutiShade(gene[0]) + getAgoutiShade(gene[1])) * 0.5F;
+                    } else {
+                        agoutiShade = getAgoutiShade(gene[1]);
+                    }
+
+                    if (agoutiShade == 1.0F) {
+                        isSolidBlack = true;
+                    }
+                }
+            }
+
+            if (!isSolidBlack) {
+                float[] redRGB = getBasePheomelanin(gene[72]);
+                float[] redRGBAddition = getBasePheomelanin(gene[73]);
+
+                redRGB[0] = (redRGB[0] + redRGBAddition[0])*0.5F;
+                redRGB[1] = (redRGB[1] + redRGBAddition[1])*0.5F;
+                redRGB[2] = (redRGB[2] + redRGBAddition[2])*0.5F;
+
+                int r = 0;
+                for (int i = 74; i < 90; i++) {
+                    if (gene[i] == 2) {
+                        r = i < 82 ? r-1 : r+1;
+                    }
+                }
+                if (r != 0) {
+                    if (r < 0) {
+                        redRGB[0] = (((redRGB[0] * (10+r))) + (0.025F * -r)) * 0.1F;
+                        if (redRGB[2] > 0.5F) {
+                            redRGB[0] = redRGB[0] + (0.035F * (1.0F - redRGB[2]));
+                        }
+                    } else {
+                        redRGB[0] = (((redRGB[0] * (10-r))) + (0.09F * r)) * 0.1F;
+                    }
+                }
+
+
+                float darkness = agoutiShade + ((1.0F-agoutiShade) * redRGB[2]);
+                if (darkness < 0.875F || redRGB[1] > 0.16F) {
+                    if (redRGB[1] < 0.1F) {
+                        if (darkness < 0.05F) {
+                            return DyeColor.WHITE;
+                        } else if (roan || darkness < 0.3F) {
+                            return DyeColor.LIGHT_GRAY;
+                        } else {
+                            return chocolate ? DyeColor.BROWN : DyeColor.GRAY;
+                        }
+                    } else if (redRGB[1] < 0.5F) {
+                        if (darkness < 0.05F) {
+                            return DyeColor.WHITE;
+                        } else if (roan || redRGB[1] < 0.2F) {
+                            return DyeColor.LIGHT_GRAY;
+                        } else {
+                            if (darkness < 0.3F) {
+                                return chocolate ? DyeColor.BROWN : DyeColor.LIGHT_GRAY;
+                            } else {
+                                return DyeColor.BROWN;
+                            }
+                        }
+                    } else {
+                        if (roan) {
+                            return DyeColor.LIGHT_GRAY;
+                        }
+                        if (darkness < 0.1F) {
+                            return DyeColor.ORANGE;
+                        } else {
+                            return DyeColor.BROWN;
+                        }
+                    }
+                } else {
+                    return DyeColor.WHITE;
+                }
+            }
+
+            if (roan) {
+                return DyeColor.LIGHT_GRAY;
+            } else if (gene[4] == 3 && gene[5] == 3) {
+                return chocolate ? DyeColor.ORANGE : DyeColor.BROWN;
+            } else {
+                return chocolate ? DyeColor.BROWN : DyeColor.BLACK;
+            }
+        }
+    }
+
+    private float getAgoutiShade(int gene) {
+        switch (gene) {
+            case 2 -> {return 0.25F;}
+            case 3,7,8,9,10,11 -> {return 0.0F;}
+            case 4,12,16 -> {return 1.0F;}
+            case 5,14 -> {return 0.75F;}
+            case 13,15 -> {return 0.5F;}
+        }
+        return -1.0F;
+    }
+
+    private Block getWoolBlockFromColour(DyeColor color) {
+        switch (color) {
+            case WHITE -> {return Blocks.WHITE_WOOL;}
+            case ORANGE -> {return Blocks.ORANGE_WOOL;}
+            case MAGENTA -> {return Blocks.MAGENTA_WOOL;}
+            case LIGHT_BLUE -> {return Blocks.LIGHT_BLUE_WOOL;}
+            case YELLOW -> {return Blocks.YELLOW_WOOL;}
+            case LIME -> {return Blocks.LIME_WOOL;}
+            case PINK -> {return Blocks.PINK_WOOL;}
+            case GRAY -> {return Blocks.GRAY_WOOL;}
+            case LIGHT_GRAY -> {return Blocks.LIGHT_GRAY_WOOL;}
+            case CYAN -> {return Blocks.CYAN_WOOL;}
+            case PURPLE -> {return Blocks.PURPLE_WOOL;}
+            case BLUE -> {return Blocks.BLUE_WOOL;}
+            case BROWN -> {return Blocks.BROWN_WOOL;}
+            case GREEN -> {return Blocks.GREEN_WOOL;}
+            case RED -> {return Blocks.RED_WOOL;}
+            case BLACK -> {return Blocks.BLACK_WOOL;}
+        }
+        return Blocks.WHITE_WOOL;
     }
 
     @Override
@@ -979,7 +877,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             ItemStack muttonStack = new ItemStack(Items.MUTTON, meatDrop);
             this.spawnAtLocation(muttonStack);
             if (woolDrop) {
-                ItemStack fleeceStack = new ItemStack(getWoolBlocks(), 1);
+                ItemStack fleeceStack = new ItemStack(getWoolBlockFromColour(getWoolColour()), 1);
                 this.spawnAtLocation(fleeceStack);
             } else if (leatherDrop) {
                 ItemStack leatherStack = new ItemStack(Items.LEATHER, 1);
@@ -1125,8 +1023,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
 
-            boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
-
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
             TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1139,13 +1035,16 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
             parentGroup.addGrouping(patternAverageGroup);
 
-            TextureGrouping whiteSpotGroup = new TextureGrouping(ticked?TexturingType.ALPHA_GROUP:TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked?1:0, l -> l != 0);
-            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
-            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
-            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
-            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
-            parentGroup.addGrouping(whiteSpotGroup);
+            if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0) {
+                boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
+                TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.ALPHA_GROUP : TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked ? 1 : 0, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
+                parentGroup.addGrouping(whiteSpotGroup);
+            }
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_GREY, grey, l -> l != 0);
@@ -1161,21 +1060,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-//        Genes genes = getSharedGenes();
-//        if (genes != null) {
-//            int[] gene = genes.getAutosomalGenes();
-//            if (gene != null) {
-//                if (!this.isBaby() && (gene[70] == 2 || gene[71] == 2)) {
-//                    this.enhancedAnimalAlphaTextures.add(SHEEP_TEXTURES_TICKED[1]);
-//                }
-//            }
-//        }
-    }
+    protected void setAlphaTexturePaths() {}
 
     @Override
     public Colouration getRgb() {
-        boolean flag = this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1;
+        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getSharedGenes()!=null;
         this.colouration = super.getRgb();
 
         if(this.colouration == null) {
@@ -1184,7 +1073,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         if (flag) {
             int[] gene = getSharedGenes().getAutosomalGenes();
-            float[] melanin = {0.0F, 0.05F, 0.05F};
+            float[] melanin = {0.02F, 0.5F, 0.02F};
             float[] pheomelanin = getBasePheomelanin(gene[72]);
             float[] f = getBasePheomelanin(gene[73]);
 
@@ -1214,7 +1103,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 melanin[0] = pheomelanin[0];
                 melanin[1] = pheomelanin[1];
                 melanin[2] = (pheomelanin[1] + melanin[2]) * 0.5F;
-            } else if (gene[2] == 2 && gene[3] == 2) {
+            }
+            if (gene[2] == 2 && gene[3] == 2) {
                 //chocolate variant
                 melanin[0] = Colouration.mixHueComponent(melanin[0], 0.1F, 0.3F);
                 melanin[1] = melanin[1] + ((1.0F - melanin[1]) * 0.45F);
@@ -1234,10 +1124,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                     pheomelanin[i] = 0.0F;
                 }
             }
-
-            melanin[0] = 0.02F;
-            melanin[1] = 0.5F;
-            melanin[2] = 0.02F;
 
             this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 0.5F));
             this.colouration.setPheomelaninColour(Colouration.HSBAtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2], 0.5F));
@@ -1444,6 +1330,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putByte("Colour", (byte)this.getFleeceDyeColour().getId());
+
         compound.putFloat("CoatLength", this.getCoatLength());
 
         compound.putInt("Lactation", this.lactationTimer);

@@ -108,7 +108,7 @@ public final class ChickenBreeds {
     public static final Breed SILVER_CHOCOLATE_LACED_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("SilverChocolateLacedOrpington", Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED,GeneSet.CHOCOLATE).get()));
 
-    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.WINDSWEPT_SAVANNA, Breed.Rarity.UNCOMMON)
+    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TUNDRA, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
 
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
@@ -180,7 +180,7 @@ public final class ChickenBreeds {
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
                     new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "1", "1").add(52, "2","1","1","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
-    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
+    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.TAIGA_MOUNTAINS, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
 
     public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", Biomes.SAVANNA, Breed.Rarity.EXOTIC)

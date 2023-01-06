@@ -109,7 +109,7 @@ public class SpawnRegistry {
 
         ArrayList<MobSpawnSettings.SpawnerData> addAxolotlSpawns = new ArrayList<>();
 
-        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS).iterator();
+        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.UNDERGROUND_WATER_CREATURE).iterator();
         while (currentAxolotlSpawns.hasNext()) {
             MobSpawnSettings.SpawnerData entry = currentAxolotlSpawns.next();
 
@@ -122,7 +122,7 @@ public class SpawnRegistry {
             }
         }
 
-        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
+        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.UNDERGROUND_WATER_CREATURE);
 
         if (!addAxolotlSpawns.isEmpty()) {
             axolotlSpawns.addAll(addAxolotlSpawns);
@@ -130,7 +130,7 @@ public class SpawnRegistry {
 
         //documentation says this miiiiight be null on super rare occurances
         if (event.getName() != null) {
-            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || event.getName().equals(Biomes.WINDSWEPT_HILLS.getRegistryName()))) {
+            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()))) {
                 spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT.get(), EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
             }
         }
@@ -210,7 +210,7 @@ public class SpawnRegistry {
 
         ArrayList<MobSpawnSettings.SpawnerData> removeAxolotlSpawns = new ArrayList<>();
 
-        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS).iterator();
+        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.UNDERGROUND_WATER_CREATURE).iterator();
         while (currentAxolotlSpawns.hasNext()) {
             MobSpawnSettings.SpawnerData entry = currentAxolotlSpawns.next();
 
@@ -222,7 +222,7 @@ public class SpawnRegistry {
             }
         }
 
-        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
+        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.UNDERGROUND_WATER_CREATURE);
         if (!removeAxolotlSpawns.isEmpty()) {
             axolotlSpawns.removeAll(removeAxolotlSpawns);
         }

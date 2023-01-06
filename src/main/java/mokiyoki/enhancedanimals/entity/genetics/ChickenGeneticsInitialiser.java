@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -79,8 +78,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
-        Biome biome = biomeHolder.value();
+    public Genes generateLocalWildGenetics(Biome biomeHolder, boolean isFlat) {
+        Biome biome = biomeHolder;
         int[] sexlinkedGenes = new int[Reference.CHICKEN_SEXLINKED_GENES_LENGTH];
         int[] autosomalGenes = new int[Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH];
 
@@ -590,7 +589,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS) {
                 autosomalGenes[20] = (2);
             } else {
                 autosomalGenes[20] = (1);
@@ -599,7 +598,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS) {
                 autosomalGenes[21] = (2);
             } else {
                 autosomalGenes[21] = (1);

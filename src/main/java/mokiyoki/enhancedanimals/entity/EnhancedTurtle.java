@@ -535,7 +535,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.moveRelative(0.1F, travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
-            if (this.getTarget() == null && (!this.isGoingHome() || !this.getHome().closerToCenterThan(this.position(), 20.0D))) {
+            if (this.getTarget() == null && (!this.isGoingHome() || !this.getHome().closerThan(this.position(), 20.0D))) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.005D, 0.0D));
             }
         } else {
@@ -571,7 +571,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             } else if (this.turtle.getRandom().nextInt(700) != 0) {
                 return false;
             } else {
-                return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 64.0D);
+                return !this.turtle.getHome().closerThan(this.turtle.position(), 64.0D);
             }
         }
 
@@ -595,7 +595,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 7.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
+            return !this.turtle.getHome().closerThan(this.turtle.position(), 7.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
         }
 
         /**
@@ -603,7 +603,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          */
         public void tick() {
             BlockPos blockpos = this.turtle.getHome();
-            boolean flag = blockpos.closerToCenterThan(this.turtle.position(), 16.0D);
+            boolean flag = blockpos.closerThan(this.turtle.position(), 16.0D);
             if (flag) {
                 ++this.closeToHomeTryTicks;
             }
@@ -683,7 +683,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return (this.turtle.hasEgg()) && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
+            return (this.turtle.hasEgg()) && this.turtle.getHome().closerThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
         }
 
         public boolean canContinueToUse() {
@@ -691,7 +691,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D);
+            return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerThan(this.turtle.position(), 9.0D);
         }
 
         public void tick() {
@@ -799,7 +799,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         private void updateSpeed() {
             if (this.turtle.isInWater()) {
                 this.turtle.setDeltaMovement(this.turtle.getDeltaMovement().add(0.0D, 0.005D, 0.0D));
-                if (!this.turtle.getHome().closerToCenterThan(this.turtle.position(), 16.0D)) {
+                if (!this.turtle.getHome().closerThan(this.turtle.position(), 16.0D)) {
                     this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 2.0F, 0.08F));
                 }
 
@@ -874,7 +874,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             if (this.mob.getLastHurtByMob() == null && !this.mob.isOnFire()) {
                 return false;
             } else {
-                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7);
+                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7, 4);
                 if (blockpos != null) {
                     this.posX = (double)blockpos.getX();
                     this.posY = (double)blockpos.getY();

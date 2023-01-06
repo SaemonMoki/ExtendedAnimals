@@ -95,9 +95,9 @@ public abstract class NestBlock extends Block {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        ItemStack itemStack = super.getCloneItemStack(state, target, world, pos, player);
-        EggHolder egg = itemStack.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).getEggInNest(pos);
+    public ItemStack getCloneItemStack(BlockGetter blockGetter, BlockPos blockPos, BlockState blockState) {
+        ItemStack itemStack = super.getCloneItemStack(blockGetter, blockPos, blockState);
+        EggHolder egg = itemStack.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).getEggInNest(blockPos);
         if (egg!=null) {
             itemStack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(egg);
             if (itemStack.getItem() instanceof EnhancedEgg) {

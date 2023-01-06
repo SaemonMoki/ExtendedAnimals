@@ -87,7 +87,7 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
      * Performs a random tick on a block.
      */
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-        if (random.nextFloat() < Math.max(level.getBiome(pos).value().getBaseTemperature(), 0.01F)) {
+        if (random.nextFloat() < 0.001F) {
             int i = state.getValue(HATCH);
             if (i < 2) {
                 level.playSound((Player)null, pos, SoundEvents.SLIME_SQUISH_SMALL, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);

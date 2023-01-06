@@ -43,8 +43,8 @@ public class StayShelteredGoal extends Goal {
     }
 
     private void getData(PathfinderMob animal) {
-        Biome biome = this.world.getBiome(animal.blockPosition()).value();
-        this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.Precipitation.RAIN && biome.warmEnoughToRain(animal.blockPosition());
+        Biome biome = this.world.getBiome(animal.blockPosition());
+        this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.Precipitation.RAIN && biome.getTemperature(animal.blockPosition()) >= 0.15F;
         if (this.world.isDay()) {
             this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 6000;
             // TODO 18: Biome.getTemperature() is now private and deprecated

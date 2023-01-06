@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -74,7 +73,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH];
 
         /**

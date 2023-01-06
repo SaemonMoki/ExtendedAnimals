@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -43,9 +42,9 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Biome biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.RABBIT_AUTOSOMAL_GENES_LENGTH];
-        Biome biome = biomeHolder.value();
+        Biome biome = biomeHolder;
 
         //[ 0=forest wildtype, 1=cold wildtype, 2=desert wildtype, 3=extreme cold ]
         int wildType = 0;

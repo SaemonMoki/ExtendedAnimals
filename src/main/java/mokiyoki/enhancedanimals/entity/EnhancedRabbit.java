@@ -277,7 +277,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     public static boolean checkRabbitSpawnRules(EntityType<EnhancedRabbit> p_29699_, LevelAccessor p_29700_, MobSpawnType p_29701_, BlockPos p_29702_, Random p_29703_) {
-        return p_29700_.getBlockState(p_29702_.below()).is(BlockTags.RABBITS_SPAWNABLE_ON) && isBrightEnoughToSpawn(p_29700_, p_29702_);
+        BlockState blockstate = p_29700_.getBlockState(p_29702_.below());
+        return (blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.SNOW) || blockstate.is(Blocks.SAND)) && p_29700_.getRawBrightness(p_29702_, 0) > 8;
     }
 
     protected float getJumpPower() {

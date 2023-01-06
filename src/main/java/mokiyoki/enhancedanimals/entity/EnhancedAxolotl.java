@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
@@ -79,7 +78,6 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 
@@ -97,7 +95,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> BUCKET_IMG = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.STRING);
 
-    private static final Logger LOGGER = LogUtils.getLogger();
     public static final int TOTAL_PLAYDEAD_TIME = 200;
     private static final int AXOLOTL_TOTAL_AIR_SUPPLY = 6000;
     public static final double PLAYER_REGEN_DETECTION_RANGE = 20.0D;
@@ -1008,9 +1005,9 @@ NBT read/write
         return false;
     }
 
-    public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, Random p_186254_) {
-        return p_186251_.getBlockState(p_186253_.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
-    }
+//    public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, Random p_186254_) {
+//        return p_186251_.getBlockState(p_186253_.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
+//    }
 
     public boolean checkSpawnObstruction(LevelReader levelReader) {
         return levelReader.isUnobstructed(this);

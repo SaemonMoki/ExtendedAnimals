@@ -281,9 +281,9 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
-        this.saveToNbt(compound);
+    public CompoundTag save(CompoundTag compound) {
+        super.save(compound);
+        return this.saveToNbt(compound);
     }
 
     public void loadFromNbt(CompoundTag compound) {

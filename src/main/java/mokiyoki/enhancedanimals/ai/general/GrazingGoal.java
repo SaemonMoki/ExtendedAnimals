@@ -278,7 +278,7 @@ public class GrazingGoal extends Goal {
         if (eatingSearch) {
             ++this.timeoutCounter;
             if(searchHay) {
-                if (!this.destinationBlock.closerToCenterThan(this.eanimal.position(), getHayBlockTargetDistanceSq())) {
+                if (!this.destinationBlock.closerThan(this.eanimal.position(), getHayBlockTargetDistanceSq())) {
                     if (this.shouldStillMove()) {
                         this.eanimal.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY()), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                     }
@@ -291,7 +291,7 @@ public class GrazingGoal extends Goal {
                     this.eanimal.level.broadcastEntityEvent(this.eanimal, (byte)10);
                     this.eanimal.getNavigation().stop();
                 }
-            } else if (!this.destinationBlock.above().closerToCenterThan(this.eanimal.position(), this.getGoundBlockTargetDistanceSq())) {
+            } else if (!this.destinationBlock.above().closerThan(this.eanimal.position(), this.getGoundBlockTargetDistanceSq())) {
                 if (this.shouldStillMove()) {
                     this.eanimal.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                 }

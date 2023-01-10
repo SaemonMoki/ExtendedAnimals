@@ -9,8 +9,10 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.MobType;
@@ -72,7 +74,7 @@ import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 
-public class EnhancedTurtle  extends EnhancedAnimalAbstract {
+public class EnhancedTurtle extends EnhancedAnimalAbstract {
 
     private static final EntityDataAccessor<BlockPos> HOME_POS = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BOOLEAN);
@@ -516,8 +518,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         this.setHasScute();
     }
 
-    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, LevelAccessor p_223322_1_, MobSpawnType reason, BlockPos p_223322_3_, Random p_223322_4_) {
-        return p_223322_3_.getY() < p_223322_1_.getSeaLevel() + 4 && EnhancedTurtleEggBlock.hasProperHabitat(p_223322_1_, p_223322_3_) && p_223322_1_.getRawBrightness(p_223322_3_, 0) > 8;
+    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> entityType, LevelAccessor level, MobSpawnType mobSpawnType, BlockPos blockPos, RandomSource random) {
+        return blockPos.getY() < level.getSeaLevel() + 4 && EnhancedTurtleEggBlock.hasProperHabitat(level, blockPos) && level.getRawBrightness(blockPos, 0) > 8;
     }
 
     @Override
@@ -781,7 +783,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
-            Random random = this.animal.getRandom();
+            RandomSource random = this.animal.getRandom();
             if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
@@ -976,7 +978,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         public void start() {
             int i = 512;
             int j = 4;
-            Random random = this.turtle.random;
+            RandomSource random = this.turtle.random;
             int k = random.nextInt(1025) - 512;
             int l = random.nextInt(9) - 4;
             int i1 = random.nextInt(1025) - 512;

@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "textures": {
     "0": "block/oak_planks",
     "particle": "block/oak_planks"

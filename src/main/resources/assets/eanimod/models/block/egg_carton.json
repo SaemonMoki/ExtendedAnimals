@@ -1,5 +1,6 @@
 {
   "parent": "block/cube_all",
+  "render_type": "cutout",
   "textures": {
     "texture": "eanimod:block/egg_carton",
     "particle": "eanimod:block/egg_carton"

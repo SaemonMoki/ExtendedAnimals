@@ -59,6 +59,8 @@ public class EnhancedAnimals {
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 
+        ModSpawns.register(FMLJavaModLoadingContext.get().getModEventBus());
+
         ModItems.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModBlocks.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -70,8 +72,10 @@ public class EnhancedAnimals {
 
     private void setup(final FMLCommonSetupEvent event) {
         int messageNumber = 0;
-        channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
-        channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
+        channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumerNetworkThread(EAEquipmentPacket::processPacket).add();
+        channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumerNetworkThread(AxolotlBucketTexturePacket::processPacket).add();
+
+        event.enqueueWork(ModItems::registerDispenserBehaviour);
     }
 
 }

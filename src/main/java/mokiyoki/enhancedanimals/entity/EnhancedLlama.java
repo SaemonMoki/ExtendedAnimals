@@ -20,6 +20,7 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -62,7 +63,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
@@ -75,6 +75,8 @@ import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
+
+import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements RangedAttackMob, net.minecraftforge.common.IForgeShearable {
 
@@ -540,7 +542,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected boolean shouldDropExperience() { return true; }
+    public boolean shouldDropExperience() { return true; }
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
@@ -588,7 +590,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.despawnDelay = delay;
         if (traderLlama) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(Component.literal("Trader's Blanket"));
             traderBlanket.getOrCreateTagElement("tradersblanket");
             this.animalInventory.setItem(4, traderBlanket);
         }

@@ -13,8 +13,10 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerBlock;
@@ -53,6 +55,8 @@ import java.util.UUID;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOSHROOM;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
     private static final EntityDataAccessor<String> MOOSHROOM_TYPE = SynchedEntityData.defineId(EnhancedMooshroom.class, EntityDataSerializers.STRING);
 
@@ -71,8 +75,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.mateMushroomType = Type.RED;
     }
 
-    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> entityType, LevelAccessor world, MobSpawnType reason, BlockPos blockPos, Random random) {
-        return world.getBlockState(blockPos.below()).is(Blocks.MYCELIUM) && world.getRawBrightness(blockPos, 0) > 8;
+    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> p_218105_, LevelAccessor p_218106_, MobSpawnType p_218107_, BlockPos p_218108_, RandomSource p_218109_) {
+        return p_218106_.getBlockState(p_218108_.below()).is(Blocks.MYCELIUM) && p_218106_.getRawBrightness(p_218108_, 0) > 8;
     }
 
     @Override

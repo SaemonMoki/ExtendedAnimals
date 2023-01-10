@@ -43,6 +43,8 @@ import javax.annotation.Nullable;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.horseFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_HORSE;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     private static final String[] HORSE_TEXTURES_TESTNUMBER = new String[] {

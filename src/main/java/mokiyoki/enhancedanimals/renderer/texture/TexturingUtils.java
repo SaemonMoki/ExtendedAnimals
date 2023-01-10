@@ -28,9 +28,9 @@ public class TexturingUtils {
 
     public static NativeImage loadNativeImage(String texture, ResourceManager manager, String modLocation) {
         try {
-            Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture));
-            return NativeImage.read(iresource.getInputStream());
-        } catch (IOException e) {
+            Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture)).get();
+            return NativeImage.read(iresource.open());
+        } catch (Exception e) {
             throw new IllegalStateException("Couldn't load layered image", e);
         }
     }

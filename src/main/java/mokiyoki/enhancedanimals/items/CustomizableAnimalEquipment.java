@@ -5,6 +5,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class CustomizableAnimalEquipment extends Item implements DyeableLeatherItem {
     private int defaultColour;
 

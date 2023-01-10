@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +49,11 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
     @Override
     public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.COW_AUTOSOMAL_GENES_LENGTH];
-        Biome biome = biomeHolder.value();
 
         int wildType = 2;
-        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
+        if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS)) {
             wildType = 3;
-        } else if (biome.getBaseTemperature() >= 0.9F){
+        } else if (biomeHolder.get().getBaseTemperature() >= 0.9F){
             wildType = 1;
         }
 

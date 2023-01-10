@@ -46,9 +46,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -235,7 +233,7 @@ public class EggCartonBlock extends BaseEntityBlock {
         CompoundTag compoundnbt = stack.getTagElement("BlockEntityTag");
         if (compoundnbt != null) {
             if (compoundnbt.contains("LootTable", 8)) {
-                tooltip.add(new TextComponent("???????"));
+                tooltip.add(Component.literal("???????"));
             }
 
             if (compoundnbt.contains("Items", 9)) {
@@ -257,7 +255,7 @@ public class EggCartonBlock extends BaseEntityBlock {
                 }
 
                 if (j - i > 0) {
-                    tooltip.add((new TranslatableComponent("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
+                    tooltip.add((Component.translatable("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
                 }
             }
         }

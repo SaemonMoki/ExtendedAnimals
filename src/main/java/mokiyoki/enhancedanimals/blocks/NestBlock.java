@@ -89,7 +89,7 @@ public abstract class NestBlock extends Block {
             getDrops(state, (ServerLevel)worldIn, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
                 spawnAsGeneticItemEntity(worldIn, pos, stackToSpawn);
             });
-            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack);
+            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack, true);
         }
         this.removeOneEgg(worldIn, pos, state, false);
     }

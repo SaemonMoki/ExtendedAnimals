@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.items;
 
-import mokiyoki.enhancedanimals.EnhancedAnimals;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.player.Player;
@@ -14,11 +14,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.util.StringUtil;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,7 +47,7 @@ public class GeneticsEncyclopedia extends Item {
             CompoundTag compoundnbt = stack.getTag();
             String s = compoundnbt.getString("title");
             if (!StringUtil.isNullOrEmpty(s)) {
-                return new TextComponent(s);
+                return Component.literal(s);
             }
         }
 
@@ -63,7 +60,7 @@ public class GeneticsEncyclopedia extends Item {
             CompoundTag compoundnbt = stack.getTag();
             String s = compoundnbt.getString("author");
             if (!StringUtil.isNullOrEmpty(s)) {
-                tooltip.add((new TranslatableComponent("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
             }
         }
 
@@ -100,7 +97,7 @@ public class GeneticsEncyclopedia extends Item {
                         itextcomponent = Component.Serializer.fromJsonLenient(s);
                         itextcomponent = ComponentUtils.updateForEntity(resolvingSource, itextcomponent, resolvingPlayer, 0);
                     } catch (Exception var9) {
-                        itextcomponent = new TextComponent(s);
+                        itextcomponent = Component.literal(s);
                     }
 
                     listnbt.set(i, (StringTag.valueOf(Component.Serializer.toJson(itextcomponent))));

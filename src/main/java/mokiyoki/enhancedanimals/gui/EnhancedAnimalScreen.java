@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -63,38 +62,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             if (EanimodCommonConfig.COMMON.omnigenders.get()) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
                     if (this.omniToggle) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                     }
                 } else {
                     if (this.omniToggle) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                     }
                 }
             } else if (this.enhancedAnimalInfo.isFemale) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                 }
             } else {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                 }
             }
         } else {
             this.omniToggle = !this.omniToggle;
         }
         if (this.isHovering(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.health"), mouseX, mouseY);
         }
         if (this.isHovering(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
     }
 
@@ -221,11 +220,11 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
             String age = enhancedAnimalInfo.agePrefix;
             if (age.equals("YOUNG")) {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.young").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.young").getString();
             } else if (age.equals("BABY")) {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.baby").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.baby").getString();
             } else {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.newborn").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.newborn").getString();
             }
             name = age+" "+name;
         }
@@ -418,38 +417,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
             String age = "";
             if (ageInt < 8) {
-                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.days").getString());
+                age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.days").getString());
             } else if (ageInt < 96) {
                 ageInt = ageInt/8;
-                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.months").getString());
+                age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.months").getString());
             } else if (ageInt < 959040) {
                 ageInt = ageInt/96;
-                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.years").getString());
+                age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.years").getString());
             } else {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.ancient").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.ancient").getString();
             }
-            this.font.draw(matrixStack, (new TranslatableComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
+            this.font.draw(matrixStack, (Component.translatable("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             int s = sireName.length();
             String damName = this.enhancedAnimalInfo.dam;
             int d = damName.length();
             if (s > 8) {
-                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
                 this.font.draw(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
                 if (d > 8) {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
+                    this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
                     this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                 } else {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
+                    this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
-                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
                 if (d > 8) {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
+                    this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
                     this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                 } else {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
+                    this.font.draw(matrixStack, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
                 }
             }
         }

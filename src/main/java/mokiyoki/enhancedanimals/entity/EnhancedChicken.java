@@ -71,6 +71,8 @@ import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 /**
  * Created by saemon and moki on 30/08/2018.
  */
@@ -2322,7 +2324,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         if (this.getEnhancedAnimalAge() > 10000) {
             return true;
         } else {

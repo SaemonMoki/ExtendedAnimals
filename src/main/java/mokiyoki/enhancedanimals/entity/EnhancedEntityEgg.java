@@ -33,6 +33,8 @@ import java.util.List;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EnhancedEntityEgg extends ThrowableItemProjectile {
 
     private static final EntityDataAccessor<String> GENES = SynchedEntityData.<String>defineId(EnhancedEntityEgg.class, EntityDataSerializers.STRING);

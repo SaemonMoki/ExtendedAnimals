@@ -78,10 +78,10 @@ public class TextureSet extends AbstractTexture {
         iterator = textureSet.getTextures().iterator();
         s = iterator.next();
 
-        try (
-                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
-        ) {
+        try {
+            Resource iresource = manager.getResourceOrThrow(new ResourceLocation(modLocation+s));
+            NativeImage nativeimage = NativeImage.read(iresource.open());
+
             switch (textureSet.blendType) {
                 case NORMAL -> {
 
@@ -97,8 +97,8 @@ public class TextureSet extends AbstractTexture {
             this.image = new NativeImage(nativeimage.format(), nativeimage.getWidth(), nativeimage.getHeight(), true);
             this.image.copyFrom(nativeimage);
             this.hasImage = true;
-        } catch (IOException ioexception) {
-            LOGGER.error("Couldn't load image in TextureSet", (Throwable)ioexception);
+        } catch (Exception exception) {
+            LOGGER.error("Couldn't load image in TextureSet", exception);
         }
     }
 

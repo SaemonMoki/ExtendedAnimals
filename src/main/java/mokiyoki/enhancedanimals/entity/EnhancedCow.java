@@ -64,6 +64,8 @@ import static mokiyoki.enhancedanimals.entity.textures.CowTextureHelper.calculat
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     ///avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
@@ -398,7 +400,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean shouldDropExperience() { return true; }
+    public boolean shouldDropExperience() { return true; }
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);

@@ -111,12 +111,11 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         Iterator<String> iterator = this.layeredTextureNames.iterator();
         String s = iterator.next();
 
-        try (
-                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+        try {
+            Resource iresource = manager.getResourceOrThrow(new ResourceLocation(modLocation+s));
+            NativeImage nativeimage = NativeImage.read(iresource.open());
 
-        ) {
-            if(s.startsWith("c_") && dyeRGB!=0) {
+            if (s.startsWith("c_") && dyeRGB!=0) {
                 for(int i = 0; i < nativeimage.getHeight(); ++i) {
                     for (int j = 0; j < nativeimage.getWidth(); ++j) {
                         blendDye(j, i, dyeRGB, nativeimage);
@@ -191,10 +190,9 @@ public class EnhancedLayeredTexture extends AbstractTexture {
                             combineAlphaGroup(maskingImage, nativeimage, iterator, manager);
                         }
                     } else {
-                        try (
-                                Resource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
-                                NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
-                        ) {
+                        try {
+                            Resource iresource1 = manager.getResourceOrThrow(new ResourceLocation(modLocation+s1));
+                            NativeImage nativeimage1 = NativeImage.read(iresource1.open());
 
                             if(s1.startsWith("c_") && dyeRGB!=0) {
                                 for(int i = 0; i < nativeimage1.getHeight(); ++i) {
@@ -263,6 +261,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
                                     blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                                 }
                             }
+                        } catch (IOException ioexception) {
+                            LOGGER.error("Couldn't load layered image", (Throwable)ioexception);
                         }
                     }
                 }
@@ -279,11 +279,10 @@ public class EnhancedLayeredTexture extends AbstractTexture {
     private void combineAlphaGroup(NativeImage maskingImage, NativeImage baseImage, Iterator<String> iterator, ResourceManager manager) {
         if (iterator.hasNext()) {
             String s = iterator.next();
-            try (
-                    Resource iresource = manager.getResource(new ResourceLocation(modLocation + s));
-                    NativeImage firstGroupImage = NativeImage.read(iresource.getInputStream());
+            try {
+                Resource iresource = manager.getResourceOrThrow(new ResourceLocation(modLocation + s));
+                NativeImage firstGroupImage = NativeImage.read(iresource.open());
 
-            ) {
                 if (s.startsWith("c_") && dyeRGB != 0) {
                     for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
                         for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
@@ -346,10 +345,9 @@ public class EnhancedLayeredTexture extends AbstractTexture {
 
 
                         if (s1 != null) {
-                            try (
-                                    Resource iresource1 = manager.getResource(new ResourceLocation(modLocation + s1));
-                                    NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
-                            ) {
+                            try {
+                                Resource iresource1 = manager.getResourceOrThrow(new ResourceLocation(modLocation + s1));
+                                NativeImage nativeimage1 = NativeImage.read(iresource1.open());
                                 if (s1.startsWith("c_") && dyeRGB != 0) {
                                     for (int i = 0; i < nativeimage1.getHeight(); ++i) {
                                         for (int j = 0; j < nativeimage1.getWidth(); ++j) {
@@ -388,6 +386,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
                                         blendPixel(firstGroupImage, j, i, nativeimage1.getPixelRGBA(j, i));
                                     }
                                 }
+                            } catch (IOException ioexception) {
+                                LOGGER.error("Couldn't load layered image", (Throwable) ioexception);
                             }
                         }
                     } else {
@@ -404,8 +404,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         Iterator<String> iterator = this.maskingTextureNames.iterator();
         String s = iterator.next();
 
-                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+                Resource iresource = manager.getResourceOrThrow(new ResourceLocation(modLocation+s));
+                NativeImage nativeimage = NativeImage.read(iresource.open());
 
             while(true) {
                 if (!iterator.hasNext()) {
@@ -415,15 +415,17 @@ public class EnhancedLayeredTexture extends AbstractTexture {
 
                 String s1 = iterator.next();
                 if (s1 != null) {
-                    try (
-                            Resource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
-                            NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
-                    ) {
+                    try {
+                        Resource iresource1 = manager.getResourceOrThrow(new ResourceLocation(modLocation+s1));
+                        NativeImage nativeimage1 = NativeImage.read(iresource1.open());
+
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                             for(int j = 0; j < nativeimage1.getWidth(); ++j) {
                                 blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                             }
                         }
+                    } catch (IOException ioexception) {
+                        LOGGER.error("Couldn't load layered image", (Throwable) ioexception);
                     }
                 }
             }

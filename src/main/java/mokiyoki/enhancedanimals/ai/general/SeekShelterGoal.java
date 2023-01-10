@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
@@ -70,7 +71,7 @@ public class SeekShelterGoal extends FleeSunGoal {
     @Override
     @Nullable
     protected Vec3 getHidePos() {
-        Random random = this.creature.getRandom();
+        RandomSource random = this.creature.getRandom();
         BlockPos blockpos = this.creature.blockPosition();
 
         for(int i = 0; i < 10; ++i) {

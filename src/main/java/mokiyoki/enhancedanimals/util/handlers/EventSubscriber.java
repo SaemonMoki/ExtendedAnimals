@@ -76,7 +76,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -113,7 +113,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void editMobs(EntityJoinWorldEvent event) {
+    public void editMobs(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
 
         if (entity instanceof Villager) {
@@ -177,7 +177,7 @@ public class EventSubscriber {
 
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onLivingUpdateEvent(LivingEvent.LivingUpdateEvent event) {
+    public void onLivingUpdateEvent(LivingEvent.LivingTickEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof Villager && entity.getTags().contains("eanimodTrader")) {
             VillagerProfession profession = ((Villager)entity).getVillagerData().getProfession();
@@ -595,7 +595,7 @@ public class EventSubscriber {
     public void onStartEntityTracking(PlayerEvent.StartTracking event) {
         Entity targetEntity = event.getTarget();
         if (targetEntity instanceof EnhancedAnimalAbstract) {
-            Player trackingPlayer = event.getPlayer();
+            Player trackingPlayer = event.getEntity();
 
             for(int invSlot = 0; invSlot < 7; invSlot++) {
                 ItemStack inventoryItemStack = ((EnhancedAnimalAbstract)targetEntity).getEnhancedInventory().getItem(invSlot);
@@ -609,7 +609,7 @@ public class EventSubscriber {
     public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTrader) {
-            LevelAccessor world = event.getWorld();
+            LevelAccessor world = event.getLevel();
             ((WanderingTrader)entity).setDespawnDelay(48000);
             if(world instanceof ServerLevel) {
                 if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
@@ -693,14 +693,14 @@ public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockInteractEvent(PlayerInteractEvent.RightClickBlock event) {
         Item item = event.getItemStack().getItem();
-        Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
+        Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
         if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
-            Direction.Axis axis = event.getWorld().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
-            event.getWorld().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
+            Direction.Axis axis = event.getLevel().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
+            event.getLevel().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
-            event.getWorld().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
+            event.getLevel().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {
-            event.getWorld().setBlock(event.getPos(), Blocks.DIRT_PATH.defaultBlockState(), 11);
+            event.getLevel().setBlock(event.getPos(), Blocks.DIRT_PATH.defaultBlockState(), 11);
         }
     }
 

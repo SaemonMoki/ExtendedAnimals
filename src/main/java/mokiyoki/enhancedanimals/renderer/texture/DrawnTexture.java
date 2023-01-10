@@ -32,10 +32,10 @@ public class DrawnTexture extends AbstractTexture {
 
     @Override
     public void load(ResourceManager manager) throws IOException {
-        try (
-                Resource iresource = manager.getResource(new ResourceLocation(this.resourceLocation));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
-        ) {
+        try {
+            Resource iresource = manager.getResourceOrThrow(new ResourceLocation(this.resourceLocation));
+            NativeImage nativeimage = NativeImage.read(iresource.open());
+
             if (imageArray!=null) {
                 int w = nativeimage.getWidth();
                 int h = nativeimage.getHeight();
@@ -69,8 +69,8 @@ public class DrawnTexture extends AbstractTexture {
             TextureUtil.prepareImage(this.getId(), nativeimage.getWidth(), nativeimage.getHeight());
             nativeimage.upload(0, 0, 0, true);
 
-        } catch (IOException ioexception) {
-            LOGGER.error("Couldn't load base image in DrawnTexture", (Throwable)ioexception);
+        } catch (Exception exception) {
+            LOGGER.error("Couldn't load base image in DrawnTexture", exception);
         }
 
     }

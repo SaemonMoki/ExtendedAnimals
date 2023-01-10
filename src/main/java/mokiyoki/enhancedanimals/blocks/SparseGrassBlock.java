@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
@@ -30,8 +31,8 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-        super.randomTick(state, level, pos, random);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource) {
+        super.randomTick(state, level, pos, randomSource);
         if (!level.isClientSide) {
             if (!level.isAreaLoaded(pos, 3))
                 return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading
@@ -40,7 +41,7 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
                     BlockState blockstate = this.defaultBlockState();
 
                     for (int i = 0; i < 4; ++i) {
-                        BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
+                        BlockPos blockpos = pos.offset(randomSource.nextInt(3) - 1, randomSource.nextInt(5) - 3, randomSource.nextInt(3) - 1);
                         if (level.getBlockState(blockpos).getBlock() == Blocks.DIRT) {
                             level.setBlockAndUpdate(blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).getBlock() == Blocks.SNOW)));
                         }

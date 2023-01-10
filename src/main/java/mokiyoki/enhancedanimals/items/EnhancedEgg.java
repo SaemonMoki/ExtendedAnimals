@@ -17,6 +17,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import net.minecraft.world.item.Item.Properties;
+
 /**
  * Created by moki on 24/08/2018.
  */

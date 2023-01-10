@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class FoodSerialiser extends SimpleJsonResourceReloadListener {
@@ -171,21 +172,21 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
         public boolean isFoodItem(Item item) {
             return foodMapList.stream()
-                    .anyMatch(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .anyMatch(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString())
                             || findTags(item, f.tag));
         }
 
         public boolean isBreedingItem(Item item) {
             return foodMapList.stream()
-                    .filter(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .filter(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString())
                             || findTags(item, f.tag))
                     .anyMatch(f -> f.isBreedingItem);
         }
 
         public int getHungerRestored(Item item) {
-            if (item.getRegistryName() != null) {
+            if (ForgeRegistries.ITEMS.getKey(item).toString() != null) {
                 FoodMap foodMap = foodMapList.stream()
-                        .filter(f -> f.registryName.equals(item.getRegistryName().toString()))
+                        .filter(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString()))
                         .findFirst().orElse(null);
                 if (foodMap != null) {
                     return foodMap.hungerRestored;
@@ -202,7 +203,8 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
         }
 
         private boolean findTags(Item item, String foodTag) {
-            return ForgeRegistries.ITEMS.tags().getReverseTag(item).map(IReverseTag::getTagKeys).orElseGet(Stream::of).anyMatch(tag -> tag.toString().equals(foodTag));
+            Optional<IReverseTag<Item>> reverseTags = ForgeRegistries.ITEMS.tags().getReverseTag(item);
+            return reverseTags.map(itemIReverseTag -> itemIReverseTag.getTagKeys().anyMatch(tag -> tag.location().toString().equals(foodTag))).orElse(false);
         }
     }
 }

@@ -26,6 +26,8 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOBLOOM;
 
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
     private static final EntityDataAccessor<String> MOOBLOOM_TYPE = SynchedEntityData.defineId(EnhancedMoobloom.class, EntityDataSerializers.STRING);
 

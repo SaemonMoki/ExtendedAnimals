@@ -34,6 +34,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -63,6 +64,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
@@ -89,7 +91,8 @@ import java.util.Random;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
-import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
+
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
     private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
@@ -97,15 +100,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> BUCKET_IMG = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.STRING);
 
-    private static final Logger LOGGER = LogUtils.getLogger();
-    public static final int TOTAL_PLAYDEAD_TIME = 200;
     private static final int AXOLOTL_TOTAL_AIR_SUPPLY = 6000;
-    public static final double PLAYER_REGEN_DETECTION_RANGE = 20.0D;
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedAxolotl>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, SensorType.AXOLOTL_ATTACKABLES, ModSensorTypes.AXOLOTL_FOOD_TEMPTATIONS.get());
     protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.HAS_EGG.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.PLAY_DEAD_TICKS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.HAS_HUNTING_COOLDOWN);
-    private static final int REHYDRATE_AIR_SUPPLY = 1800;
-    private static final int REGEN_BUFF_MAX_DURATION = 2400;
-    private static final int REGEN_BUFF_BASE_DURATION = 100;
     private boolean isTempted = false;
     private int eggLayingTimer = -1;
 
@@ -936,26 +933,22 @@ NBT read/write
         return !this.isPlayingDead() && super.canBeSeenAsEnemy();
     }
 
-    public static void onStopAttacking(EnhancedAxolotl p_149120_) {
-        Optional<LivingEntity> optional = p_149120_.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
-        if (optional.isPresent()) {
-            Level level = p_149120_.level;
-            LivingEntity livingentity = optional.get();
-            if (livingentity.isDeadOrDying()) {
-                DamageSource damagesource = livingentity.getLastDamageSource();
-                if (damagesource != null) {
-                    Entity entity = damagesource.getEntity();
-                    if (entity != null && entity.getType() == EntityType.PLAYER) {
-                        Player player = (Player)entity;
-                        List<Player> list = level.getEntitiesOfClass(Player.class, p_149120_.getBoundingBox().inflate(20.0D));
-                        if (list.contains(player)) {
-                            p_149120_.applySupportingEffects(player);
-                        }
+    public static void onStopAttacking(EnhancedAxolotl axolotl, LivingEntity livingEntity) {
+        Level level = axolotl.level;
+        if (livingEntity.isDeadOrDying()) {
+            DamageSource damagesource = livingEntity.getLastDamageSource();
+            if (damagesource != null) {
+                Entity entity = damagesource.getEntity();
+                if (entity != null && entity.getType() == EntityType.PLAYER) {
+                    Player player = (Player)entity;
+                    List<Player> list = level.getEntitiesOfClass(Player.class, axolotl.getBoundingBox().inflate(20.0D));
+                    if (list.contains(player)) {
+                        axolotl.applySupportingEffects(player);
                     }
                 }
             }
-
         }
+
     }
 
     public void applySupportingEffects(Player p_149174_) {
@@ -1004,8 +997,8 @@ NBT read/write
         return false;
     }
 
-    public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, Random p_186254_) {
-        return p_186251_.getBlockState(p_186253_.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
+    public static boolean checkAxolotlSpawnRules(EntityType<EnhancedAxolotl> entity, LevelAccessor level, MobSpawnType mobSpawnType, BlockPos blockPos, RandomSource random) {
+        return level.getBlockState(blockPos.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
     }
 
     public boolean checkSpawnObstruction(LevelReader levelReader) {
@@ -1181,7 +1174,7 @@ NBT read/write
                 CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.axolotl, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
-            Random random = this.animal.getRandom();
+            RandomSource random = this.animal.getRandom();
             if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }

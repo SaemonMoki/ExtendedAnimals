@@ -66,7 +66,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -74,7 +73,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -115,7 +114,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected Genes mateGenetics;
     protected Boolean mateGender;
     protected Genes genesSplitForClient;
-    protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+//    protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     public String breed = "";
     protected String mateName = "???";
     protected String sireName = "???";
@@ -1420,7 +1419,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (this.isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && itemHandler != null)
+        if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && itemHandler != null)
             return itemHandler.cast();
         return super.getCapability(capability, facing);
     }
@@ -1460,7 +1459,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
             if(playerEntity instanceof ServerPlayer) {
                 ServerPlayer entityPlayerMP = (ServerPlayer)playerEntity;
-                NetworkHooks.openGui(entityPlayerMP, new MenuProvider() {
+                NetworkHooks.openScreen(entityPlayerMP, new MenuProvider() {
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                         return new EnhancedAnimalContainer(windowId, inventory, enhancedAnimal, animalInfo);
@@ -1468,7 +1467,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
                     @Override
                     public Component getDisplayName() {
-                        return new TranslatableComponent("eanimod.animalinfocontainer");
+                        return Component.translatable("eanimod.animalinfocontainer");
                     }
                 }, buf -> {
                     buf.writeInt(enhancedAnimal.getId());
@@ -1485,7 +1484,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String getAnimalsName(String species) {
         String name = species;
         if (this.getCustomName() != null) {
-            name = this.getCustomName().getContents();
+            name = this.getCustomName().getContents().toString();
             if (name.equals("")) {
                 name = species;
             }

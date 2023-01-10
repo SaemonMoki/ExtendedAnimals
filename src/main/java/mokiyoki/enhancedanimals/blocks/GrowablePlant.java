@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -28,13 +29,13 @@ public class GrowablePlant extends CropBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource randomSource) {
         Block groundType = worldIn.getBlockState(pos.below()).getBlock();
         if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {
             if (!worldIn.isClientSide && this.isMaxAge(state)) {
                 worldIn.setBlockAndUpdate(pos, byItem(getBaseSeedId().asItem()).defaultBlockState());
             }
-            super.tick(state, worldIn, pos, rand);
+            super.tick(state, worldIn, pos, randomSource);
         }
     }
 

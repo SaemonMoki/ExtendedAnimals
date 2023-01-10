@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "textures": {
     "0": "block/spruce_planks",
     "particle": "block/spruce_planks"

@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +42,9 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
     @Override
     public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
-        Biome biome = biomeHolder.value();
 
         int wildType = 2;
-        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
+        if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS)) {
             wildType = 1;
         }
         if (isFlat) {

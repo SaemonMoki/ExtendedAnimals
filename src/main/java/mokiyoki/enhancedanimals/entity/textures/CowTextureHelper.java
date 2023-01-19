@@ -481,7 +481,7 @@ public class CowTextureHelper {
         }
     }
 
-    public static void calculateCowRGB(Colouration colouration, Genes genes, boolean isFemale, boolean isBaby, float growthAmount) {
+    public static void calculateCowRGB(Colouration colouration, Genes genes, boolean isFemale) {
         if (genes != null) {
             if (colouration.getPheomelaninColour() == -1 || colouration.getMelaninColour() == -1) {
                 int[] gene = genes.getAutosomalGenes();
@@ -687,8 +687,6 @@ public class CowTextureHelper {
                 colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
-            } else if (isBaby && !genes.has(0,0)) {
-                colouration.setBabyAlpha(growthAmount);
             }
         }
     }

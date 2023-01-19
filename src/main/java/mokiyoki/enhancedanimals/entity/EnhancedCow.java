@@ -547,8 +547,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.reload) {
-            this.reload = false;
+        } else if (this.getReloadTexture() ^ this.reload) {
+            this.reload = !this.reload;
             this.reloadTextures();
         }
 
@@ -580,7 +580,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         this.colouration = super.getRgb();
         Genes genes = getSharedGenes();
 
-        calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale(), this.isBaby(), this.growthAmount());
+        calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());
+
+        if (this.isBaby() && !genes.has(0,0) && this.updateColouration) {
+            colouration.setBabyAlpha(this.growthAmount());
+            this.updateColouration = false;
+        }
 
         return this.colouration;
     }

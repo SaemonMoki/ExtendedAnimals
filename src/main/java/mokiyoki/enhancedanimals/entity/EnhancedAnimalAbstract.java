@@ -174,6 +174,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //Size
     private int reloadSizeTime = 0;
 
+    public boolean updateColouration = true;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
@@ -1532,6 +1534,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
                 if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
                     eaa.refreshDimensions();
+                    eaa.updateColouration = true;
                 }
             }, (eaa) -> eaa.isGrowing()));
         }

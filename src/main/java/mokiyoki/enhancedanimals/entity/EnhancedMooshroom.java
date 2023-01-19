@@ -15,6 +15,7 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerBlock;
@@ -290,6 +291,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
         if (!this.level.isClientSide) {
+            Entity leashedEntity = null;
+            if (this.isLeashed()) {
+                leashedEntity = this.getLeashHolder();
+                this.dropLeash(false, false);
+            }
             this.remove(RemovalReason.DISCARDED);
             EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
             enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
@@ -309,6 +315,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 enhancedcow.setCustomName(this.getCustomName());
             }
             this.level.addFreshEntity(enhancedcow);
+            if (leashedEntity != null) {
+                enhancedcow.setLeashedTo(leashedEntity, true);
+            }
             if (this.getMooshroomType() == Type.RED) {
                 for(int i = 0; i < 5; ++i) {
                     ret.add(new ItemStack(Blocks.RED_MUSHROOM));

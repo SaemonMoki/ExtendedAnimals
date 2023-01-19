@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -136,6 +137,10 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemstack = entityPlayer.getItemInHand(hand);
+
+        if (itemstack.getItem() == ModItems.ENHANCED_MOOSHROOM_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
         if (itemstack.getItem() == Items.BOWL && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {

@@ -19,8 +19,11 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -564,6 +567,17 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
                 }
             }
         }
+    }
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_SHEEP_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(entityPlayer, hand);
     }
 
     @Override

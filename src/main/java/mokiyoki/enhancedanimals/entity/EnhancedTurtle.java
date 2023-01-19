@@ -6,9 +6,12 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -358,6 +361,18 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 //    public float getRenderScale() {
 //        return this.isChild() ? 0.3F : 1.0F;
 //    }
+
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_TURTLE_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(entityPlayer, hand);
+    }
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {

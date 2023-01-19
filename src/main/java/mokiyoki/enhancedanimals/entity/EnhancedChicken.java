@@ -368,6 +368,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
+        if (item == ModItems.ENHANCED_CHICKEN_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
         if (item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
             decreaseHunger(200);

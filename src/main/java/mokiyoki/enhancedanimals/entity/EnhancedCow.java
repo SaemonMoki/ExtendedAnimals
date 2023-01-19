@@ -680,6 +680,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             return InteractionResult.SUCCESS;
         }
 
+        if (item == ModItems.ENHANCED_COW_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
         /**
         if (item == Items.BUCKET || item instanceof MixableMilkBucket && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int currentMilk = getMilkAmount();

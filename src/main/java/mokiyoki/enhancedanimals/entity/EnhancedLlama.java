@@ -17,6 +17,7 @@ import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -314,6 +315,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_LLAMA_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
 
         if (this.isVehicle()) {
             return super.mobInteract(entityPlayer, hand);

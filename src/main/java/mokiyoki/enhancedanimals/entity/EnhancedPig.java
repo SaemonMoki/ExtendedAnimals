@@ -15,6 +15,7 @@ import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -290,6 +291,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_PIG_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
 
         if (item == Items.NAME_TAG) {
             itemStack.interactLivingEntity(entityPlayer, this, hand);

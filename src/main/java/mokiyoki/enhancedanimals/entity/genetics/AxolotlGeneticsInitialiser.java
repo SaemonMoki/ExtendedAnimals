@@ -62,6 +62,10 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(AxolotlBreeds.LAVENDER);
         this.breeds.add(AxolotlBreeds.WHITE);
         this.breeds.add(AxolotlBreeds.MICRO);
+        this.breeds.add(AxolotlBreeds.LUCYVARIENT);
+        this.breeds.add(AxolotlBreeds.WILDVARIENT);
+        this.breeds.add(AxolotlBreeds.GOLDVARIENT);
+        this.breeds.add(AxolotlBreeds.CYANVARIENT);
         this.breeds.add(AxolotlBreeds.RAREBLUEVARIENT);
     }
 

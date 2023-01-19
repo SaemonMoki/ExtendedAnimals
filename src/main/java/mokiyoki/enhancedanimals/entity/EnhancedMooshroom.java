@@ -292,6 +292,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (!this.level.isClientSide) {
             this.remove(RemovalReason.DISCARDED);
             EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+            enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
@@ -300,10 +301,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.initilizeAnimalSize();
-            enhancedcow.setAge(this.age);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
-            enhancedcow.setMooshroomUUID(this.getStringUUID());
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {

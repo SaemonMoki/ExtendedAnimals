@@ -378,6 +378,9 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             if (entityIn.isPlayingDead()) {
                 this.setupPlayDeadAnimation(ageInTicks);
             } else {
+                if (this.theAxolotl.getZRot()!=0.0F) {
+                    this.theAxolotl.setZRot(this.lerpTo(this.theAxolotl.getZRot(), 0.0F));
+                }
                 boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.getXRot() != entityIn.xRotO || entityIn.getYRot() != entityIn.yRotO || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
                 if (entityIn.isInWaterOrBubble()) {
                     if (isMoving) {
@@ -423,7 +426,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             this.theAxolotl.setRotation(headPitch * -Mth.DEG_TO_RAD, netHeadYaw * Mth.DEG_TO_RAD, 0.0F);
-            this.theAxolotl.setPos(0.0F, 20.0F, 0.0F);
+            this.theAxolotl.setPos(0.0F, 20.0F, 4.0F);
             this.theHead.setPos(0.0F, 0.0F, 0.0F);
             this.theTail.setRotation(0.0F, 0.0F, 0.0F);
             this.theLegBackLeft.setZ(axolotl.isLong ? 3.0F : -1.0F);

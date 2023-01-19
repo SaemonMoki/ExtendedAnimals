@@ -384,6 +384,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.entityData.get(BIRTH_TIME);
     }
 
+
+
 //    private void setParent(String motherUUID) {
 //        if (this.isChild()) {
 //            List<EnhancedAnimalAbstract> list = this.world.getEntitiesWithinAABB(this.getClass(), this.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
@@ -430,13 +432,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.entityData.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
-        if (this.isInWaterRainOrBubble()) {
-            return false;
-        } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
-            return false;
-        } else {
-            return this.entityData.get(SLEEPING);
+        if (this.level.dimensionType().bedWorks()) {
+            if (this.isInWaterRainOrBubble()) {
+                return false;
+            } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
+                return false;
+            } else {
+                return this.entityData.get(SLEEPING);
+            }
         }
+        return false;
     }
 
     public void awaken() {

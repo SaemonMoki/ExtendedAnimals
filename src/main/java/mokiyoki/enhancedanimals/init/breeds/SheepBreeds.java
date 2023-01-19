@@ -37,4 +37,7 @@ public class SheepBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(2, "2")));
     public static final Breed RED = new Breed(new Breed.Properties().setData("red", Biomes.PLAINS, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(4, "3")));
+
+    public static final Breed RANDOMRUFOUS = new Breed(new Breed.Properties().setData("randomrufous", Biomes.PLAINS, Breed.Rarity.RARE)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(74, "1|2,1|2","1|2,1|2","1|2,1|2","1|2,1|2","1|2,1|2","1|2,1|2","1|2,1|2","1|2,1|2")));
 }

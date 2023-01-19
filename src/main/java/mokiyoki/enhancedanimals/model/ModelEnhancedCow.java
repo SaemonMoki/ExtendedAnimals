@@ -456,7 +456,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
         bTail.addOrReplaceChild("tailB", CubeListBuilder.create()
                         .texOffs(14, 0)
-                        .addBox(-1.0F, 0.0F, -0.5F, 2, 3, 2),
+                        .addBox(-1.0F, 0.0F, -0.5F, 2, 4, 2),
                 PartPose.offset(0.0F, 3.0F, 0.0F)
         );
 
@@ -1209,33 +1209,28 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     private void readInitialAnimationValues(CowModelData data, CowPhenotype cow) {
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
-            Vector3f vector3f = new Vector3f(0.0F, 0.0F, 0.0F);
-            this.theCow.setPosYAndRot(new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F), vector3f);
-            this.theHump.setPosYAndRot(new Vector3f(0.0F, cow.humpPlacement, 3.0F), new Vector3f(-0.2F, 0.0F, 0.0F));
-            this.theHead.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
-            this.theNeck.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
-            this.jaw.setRotation(new Vector3f(-Mth.HALF_PI*0.2F, 0.0F, 0.0F));
-            this.theEarLeft.setRotation(new Vector3f(0.0F, 0.0F, cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
-            this.theEarRight.setRotation(new Vector3f(0.0F, 0.0F, -(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness)));
-            this.theLegFrontLeft.setPosYAndRot(vector3f, vector3f);
-            this.theLegFrontRight.setPosYAndRot(vector3f, vector3f);
-            this.theLegBackLeft.setPosYAndRot(vector3f, vector3f);
-            this.theLegBackRight.setPosYAndRot(vector3f, vector3f);
+            this.theCow.setY(data.sleeping ? 20.5F : (cow.dwarf ? 16.0F : 14.0F));
+            this.theHump.setPos(new Vector3f(0.0F, cow.humpPlacement, 3.0F));
+            this.theHump.setXRot(-0.2F);
+            this.theHead.setXRot(Mth.HALF_PI*0.2F);
+            this.theNeck.setXRot(Mth.HALF_PI*0.2F);
+            this.jaw.setXRot(-Mth.HALF_PI*0.2F);
+            this.theEarLeft.setZRot( cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness);
+            this.theEarRight.setZRot(-(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
             this.theLegBottomFrontLeft.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomFrontRight.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomBackLeft.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomBackRight.setY(cow.dwarf ? 4.0F : 5.0F);
-            this.theTail.setRotation(vector3f);
-            this.tailBase.setRotation(new Vector3f(0.4F, 0.0F,0.0F));
-            this.tailMiddle.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
-            this.tailEnd.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
-            this.tailBrush.setRotation(vector3f);
+            this.tailBase.setXRot(0.4F);
+            this.tailMiddle.setXRot(-0.2F);
+            this.tailEnd.setXRot(-0.2F);
 
             Vector3f base = new Vector3f(0.0F, cow.hornType.placement, 0.01F);
             this.theHornNub.setPos(base);
             map.put("bHornNubPos", base);
 
             if (cow.hornType != HornType.POLLED) {
+                Vector3f vector3f = new Vector3f(0.0F, 0.0F, 0.0F);
                 map.put("bHornL", vector3f);
                 map.put("bHornR", vector3f);
             }
@@ -1491,7 +1486,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                     this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
                 } else {
                     this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.5F));
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.1F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.5F));
                     this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.05F));
                 }
             }

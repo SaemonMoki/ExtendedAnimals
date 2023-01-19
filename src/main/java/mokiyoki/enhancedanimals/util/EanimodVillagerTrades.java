@@ -117,7 +117,7 @@ public final class EanimodVillagerTrades extends MerchantOffers {
         int numberOfTrades = selectedTradeType.size();
         if (numberOfTrades!=0) {
             Collections.shuffle(selectedTradeType);
-            for (int i = 0; i <= numberOfTrades; i++) {
+            for (int i = 0; i < numberOfTrades; i++) {
                 if (selectedTradeType.get(i).getLevel(level)) {
                     return selectedTradeType.get(i).getSale(level, prefferedPayment, false);
                 }

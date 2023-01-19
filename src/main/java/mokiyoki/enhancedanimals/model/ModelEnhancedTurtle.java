@@ -162,6 +162,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
         this.theHead.addChild(this.eyes);
 
         this.theBody.addChild(this.body);
+        this.theBody.addChild(this.pregnantBody);
 
         this.theLegFrontLeft.addChild(this.legFrontLeft);
 
@@ -194,9 +195,9 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
             float size = ((1.0F + (turtleModelData.growthAmount * 11.0F))/12.0F) * turtleModelData.size;
 
-            if (turtleModelData.growthAmount!= 1.0F) {
-                float bh = turtleModelData.growthAmount == 1.0F ? 1.0F : (1.0F + (size*10.0F))/11.0F;
-                List<Float> babyHead = ModelHelper.createScalings(bh,0.0F, -1.52F + 1.52F/(bh), -0.08F + 0.08F/(bh));
+            if (turtleModelData.growthAmount < 1.0F) {
+                float bh = (1.0F-turtleModelData.growthAmount)*0.5F;
+                List<Float> babyHead = ModelHelper.createScalings(1.5F-(turtleModelData.growthAmount*0.5F),0.0F, bh*-0.1F, bh*-0.08F);
                 mapOfScale.put("bHead", babyHead);
             }
 
@@ -277,6 +278,11 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
     @Override
     protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
+        ((TurtleModelData)animalModelData).hasEggs = enhancedAnimal.hasEgg();
+    }
+
+    @Override
+    protected void additionalUpdateModelDataInfo(EnhancedAnimalModel<T>.AnimalModelData animalModelData, T enhancedAnimal) {
         ((TurtleModelData)animalModelData).hasEggs = enhancedAnimal.hasEgg();
     }
 

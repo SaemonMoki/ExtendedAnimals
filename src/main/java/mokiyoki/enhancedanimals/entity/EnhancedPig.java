@@ -185,6 +185,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.targetSelector.addGoal(2, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(3, new EnhancedPig.TargetAggressorGoal(this));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
         this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));

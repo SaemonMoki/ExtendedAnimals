@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
@@ -190,6 +191,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
         this.goalSelector.addGoal(2, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(3, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(4, new RangedAttackGoal(this, 1.25D, 40, 20.0F));

@@ -22,6 +22,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.UUID;
+
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOBLOOM;
 
@@ -125,10 +127,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.initilizeAnimalSize();
-            enhancedcow.setAge(this.age);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
-            enhancedcow.setMooshroomUUID(this.getStringUUID());
+            enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {

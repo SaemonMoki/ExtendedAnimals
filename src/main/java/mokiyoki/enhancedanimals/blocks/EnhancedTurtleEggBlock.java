@@ -96,7 +96,6 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                     this.removeOneEgg(worldIn, pos, blockstate);
                 }
             }
-
         }
     }
 

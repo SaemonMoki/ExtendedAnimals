@@ -101,4 +101,12 @@ public class AxolotlBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(28, "5","10")));
     public static final Breed RAREBLUEVARIENT = new Breed(new Breed.Properties().setData("rarebluevarient", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(8,"2").add(10, "12%3","2").add(24, "127-169").add(38,"12%3","2","9").add(44, "2")));
+    public static final Breed LUCYVARIENT = new Breed(new Breed.Properties().setData("lucyvarient", Biomes.LUSH_CAVES, Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","2").add(8,"2")));
+    public static final Breed WILDVARIENT = new Breed(new Breed.Properties().setData("wildvarient", Biomes.LUSH_CAVES, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0,"1","1","_","_","1")));
+    public static final Breed GOLDVARIENT = new Breed(new Breed.Properties().setData("goldvarient", Biomes.LUSH_CAVES, Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0,"2","1").add(8, "1")));
+    public static final Breed CYANVARIENT = new Breed(new Breed.Properties().setData("cyanvarient", Biomes.LUSH_CAVES, Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0,"1","2").add(8, "2")));
 }

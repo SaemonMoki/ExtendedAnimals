@@ -967,7 +967,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             if (!data.sleeping && data.growthAmount != 1.0F) {
                 float babySize = (3.0F - data.growthAmount) * 0.5F;
                 d = 0.33333F * (1.0F - data.growthAmount);
-                mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bNose", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));

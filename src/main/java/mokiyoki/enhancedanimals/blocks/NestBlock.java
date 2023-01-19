@@ -111,7 +111,6 @@ public abstract class NestBlock extends Block {
 
     public static void spawnAsGeneticItemEntity(Level worldIn, BlockPos pos, ItemStack stack) {
         if (!worldIn.isClientSide && !stack.isEmpty() && worldIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !worldIn.restoringBlockSnapshots) {
-            float f = 0.5F;
             double d0 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d2 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;

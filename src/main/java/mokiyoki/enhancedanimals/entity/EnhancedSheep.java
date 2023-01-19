@@ -89,11 +89,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_GREY = new String[] {
-            "", "c_grey.png"
+            "", "grey_0.png", "grey_1.png", "grey_2.png", "grey_3.png", "grey_4.png"
     };
 
     private static final String[] SHEEP_TEXTURES_SPOTS = new String[] {
-            "", "c_pibald.png"
+            "", "spot_pied.png"
     };
 
     private static final String[] SHEEP_TEXTURES_BLAZE = new String[] {
@@ -936,50 +936,107 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             char[] uuidArry = getStringUUID().toCharArray();
 
-            if (gene[4] == 1 || gene[5] ==1){
+            if (gene[4] == 1 || gene[5] == 1){
                 //black sheep
                 pattern1 = 14;
-            }else if (gene[0] != 1 && gene[1] != 1) {
-                if (gene[0] == 2 || gene[1] == 2) {
-                    grey = 1;
-                    pattern1 = gene[0] == 2 ? 14 : 0;
-                    pattern2 = gene[1] == 2 ? 14 : 0;
-                }
-                if (pattern1 == 0 || pattern2 == 0) {
-                    if (pattern1 == 0) {
-                        pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
-                        if (pattern1 > 3) {
-                            pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
+            } else if (gene[0] != 1 && gene[1] != 1) {
+                if (gene[0] == 6 && gene[1] == 6) {
+                    pattern1 = 14;
+                } else {
+                    if (gene[0] == 2 || gene[1] == 2) {
+                        int maxCoatLength = 0;
+
+                        if (gene[20] == 2) {
+                            maxCoatLength = 1;
                         }
-                    }
-                    if (pattern2 == 0) {
-                        pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
-                        if (pattern2 > 3) {
-                            pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
+                        if (gene[21] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
                         }
-                    }
-                    if (pattern1 == 14 && pattern2 != 14) {
-                        pattern1 = pattern2;
-                        pattern2 = 0;
-                    } else if (pattern2 == 14 && pattern1!=14) {
-                        pattern2 = 0;
+                        if (gene[22] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[23] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[24] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[25] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[26] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[27] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[28] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[29] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[30] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[31] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[32] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[33] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[34] == 2 && gene[35] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+
+                        grey = 4;
+                        pattern1 = gene[0] == 2 ? 14 : 0;
+                        pattern2 = gene[1] == 2 ? 14 : 0;
                     }
 
-                    pattern2 = pattern1 == pattern2 ? 0 : pattern2;
+                    if (gene[0] == 6) {
+                        pattern1 = 14;
+                    } else if (gene[1] == 6) {
+                        pattern2 = 14;
+                    }
 
-                    if (gene[90] == 1 || gene[91] == 1) {
-                        mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                    if (pattern1 == 0 || pattern2 == 0) {
+                        if (pattern1 == 0) {
+                            pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
+                            if (pattern1 > 3) {
+                                pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
+                            }
+                        }
+                        if (pattern2 == 0) {
+                            pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
+                            if (pattern2 > 3) {
+                                pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
+                            }
+                        }
+
+                        if (gene[90] == 1 || gene[91] == 1) {
+                            mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                        }
+                    }
+
+                    if (gene[0] == 6) {
+                        pattern1 = 0;
+                    } else if (gene[1] == 6) {
+                        pattern2 = 0;
                     }
                 }
             }
 
             //basic spots
             if (gene[8] == 2 && gene[9] == 2){
-                if (Character.isDigit(uuidArry[1])){
-                    spots = 2;
-                }else {
+//                if (Character.isDigit(uuidArry[1])){
+//                    spots = 2;
+//                }else {
                     spots = 1;
-                }
+//                }
             }
 
             //pigmented head
@@ -1030,18 +1087,21 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
             parentGroup.addGrouping(foundationGroup);
 
-            TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
-            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
-            parentGroup.addGrouping(patternAverageGroup);
+            if (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) {
+                TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
+                addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
+                parentGroup.addGrouping(patternAverageGroup);
+            }
 
-            if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0) {
+            if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0 || spots!=0) {
                 boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
                 TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.ALPHA_GROUP : TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked ? 1 : 0, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
                 parentGroup.addGrouping(whiteSpotGroup);
             }

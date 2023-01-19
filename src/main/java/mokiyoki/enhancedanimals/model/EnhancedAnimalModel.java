@@ -111,41 +111,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         return value >= valueB ? Math.max(valueB, (Math.min(value, valueA))) : Math.max(valueA, (Math.min(value, valueB)));
     }
 
-    protected void animatePart(WrappedModelPart part,Map<String, Vector3f> rotationMap, float driver, Animation animation) {
-        animatePart(part, rotationMap.get(part.boxName), (driver%animation.length)*0.05F, animation.getFramesFor(part.boxName));
-    }
-
-    protected void animatePart(WrappedModelPart part,Vector3f baseRot, float driver, List<Frame> animation) {
-        if (animation!=null) {
-            boolean flag = true;
-            for (int i = 0, animationSize = animation.size(); i < animationSize; i++) {
-                if (animation.get(i).getRunning(driver)) {
-                    Frame frame = animation.get(i);
-                    Vector3f pRot = baseRot.copy();
-                    if (i != 0) {
-                        Frame pf = animation.get(i - 1);
-                        if (pf.x != null) pRot.setX(pf.x);
-                        if (pf.y != null) pRot.setY(pf.y);
-                        if (pf.z != null) pRot.setZ(pf.z);
-                    }
-                    float time = (driver - frame.getStart()) / frame.getLength();
-                    time = (float) Math.pow(time, 1.5D);
-                    part.setXRot((pRot.x()) + ((frame.xOrElse(baseRot.x()) - pRot.x()) * time));
-                    part.setYRot((pRot.y()) + ((frame.yOrElse(baseRot.y()) - pRot.y()) * time));
-                    part.setZRot((pRot.z()) + ((frame.zOrElse(baseRot.z()) - pRot.z()) * time));
-                    flag = false;
-                    break;
-                }
-            }
-
-            if (flag) {
-                part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
-            }
-        } else {
-            part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
-        }
-    }
-
     @Override
     public void renderToBuffer(PoseStack p_103111_, VertexConsumer p_103112_, int p_103113_, int p_103114_, float p_103115_, float p_103116_, float p_103117_, float p_103118_) {
         AnimalModelData animalModelData = getAnimalModelData();

@@ -20,6 +20,8 @@ import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -147,15 +149,13 @@ public class EventSubscriber {
         } else if (entity instanceof Zombie) {
             if (!(entity instanceof ZombifiedPiglin)) {
                 ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                if (entity instanceof Drowned) {
+                    ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), Axolotl.class, true, false));
+                }
             }
             ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
-
         } else if (entity instanceof AbstractSkeleton) {
             ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Guardian) {
-            ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
-                return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
-            }));
         } else if (entity instanceof Guardian) {
             ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
                 return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
@@ -559,10 +559,11 @@ public class EventSubscriber {
                             enhancedAxolotl.yBodyRot = ((Axolotl) entity).yBodyRot;
                             String breed = "";
                             switch (((Axolotl) entity).getVariant()) {
-                                case BLUE -> breed = ThreadLocalRandom.current().nextBoolean() ? "blue" : "azure";
-                                case CYAN -> breed = "leucistic";
-                                case LUCY -> breed = "albino";
-                                case GOLD -> breed = "golden";
+                                case BLUE -> breed = "rarebluevarient";
+                                case CYAN -> breed = "cyanvarient";
+                                case LUCY -> breed = "lucyvarient";
+                                case GOLD -> breed = "goldvarient";
+                                case WILD -> breed = "wildvarient";
                             }
                             Genes axolotlGenes = enhancedAxolotl.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), breed);
                             enhancedAxolotl.setGenes(axolotlGenes);

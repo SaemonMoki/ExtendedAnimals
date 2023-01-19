@@ -1,8 +1,6 @@
 package mokiyoki.enhancedanimals.config;
 
-import net.minecraftforge.common.ForgeConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 
@@ -117,6 +115,7 @@ public class EanimodCommonConfig {
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
         public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
+        public final ForgeConfigSpec.IntValue adultAgeAxolotl;
         public final ForgeConfigSpec.IntValue spawnWeightAxolotls;
         public final ForgeConfigSpec.IntValue minimumAxolotlGroup;
         public final ForgeConfigSpec.IntValue maximumAxolotlGroup;
@@ -223,28 +222,28 @@ public class EanimodCommonConfig {
 
             builder.push("mooshroom");
             gestationDaysMooshroom = builder
-                    .defineInRange("How many ticks it takes for a Cow to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Mooshroom to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
             adultAgeMooshroom = builder
-                    .defineInRange("How many ticks it takes for a mooshroom to become an adult, 24000 = 1 Minecraft Day:", 84000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Mooshroom to become an adult, 24000 = 1 Minecraft Day:", 84000, 1, Integer.MAX_VALUE);
             spawnVanillaMooshroom = builder
                     .define("Allow vanilla minecraft Mooshrooms to spawn/exist:", false);
             spawnGeneticMooshroom = builder
                     .define("Allow Genetic Mooshrooms to continue to spawn/exist:", true);
             spawnWeightMooshrooms = builder
-                    .defineInRange("How highly mooshroom spawning is weighted, larger numbers spawn more. Default is 8", 8, 1, 20);
+                    .defineInRange("How highly Mooshroom spawning is weighted, larger numbers spawn more. Default is 8", 8, 1, 20);
             minimumMooshroomGroup = builder
-                    .defineInRange("The minimum number of mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumMooshroomGroup = builder
-                    .defineInRange("The maximum number of mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
             builder.pop();
 
             builder.push("moobloom");
             spawnGeneticMoobloom = builder
                     .define("Allow Genetic Mooblooms to replace Mooblooms added by other mods", false);
             gestationDaysMoobloom = builder
-                    .defineInRange("How many ticks it takes for a Cow to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Mooblooms to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
             adultAgeMoobloom = builder
-                    .defineInRange("How many ticks it takes for a moobloom to become an adult, 24000 = 1 Minecraft Day:", 84000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Mooblooms to become an adult, 24000 = 1 Minecraft Day:", 84000, 1, Integer.MAX_VALUE);
             builder.pop();
 
             builder.push("llama");
@@ -268,17 +267,17 @@ public class EanimodCommonConfig {
             gestationDaysSheep = builder
                     .defineInRange("How many ticks it takes for a Sheep to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
             adultAgeSheep = builder
-                    .defineInRange("How many ticks it takes for a sheep to become an adult, 24000 = 1 Minecraft Day:", 72000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Sheep to become an adult, 24000 = 1 Minecraft Day:", 72000, 1, Integer.MAX_VALUE);
             spawnVanillaSheep = builder
                     .define("Allow vanilla minecraft Sheep to spawn/exist:", false);
             spawnGeneticSheep = builder
                     .define("Allow Genetic Sheep to continue to spawn/exist:", true);
             spawnWeightSheep = builder
-                    .defineInRange("How highly sheep spawning is weighted, larger numbers spawn more. Default is 12", 12, 1, 20);
+                    .defineInRange("How highly Sheep spawning is weighted, larger numbers spawn more. Default is 12", 12, 1, 20);
             minimumSheepGroup = builder
-                    .defineInRange("The minimum number of sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumSheepGroup = builder
-                    .defineInRange("The maximum number of sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
             builder.pop();
 
             builder.push("chicken");
@@ -287,32 +286,32 @@ public class EanimodCommonConfig {
             spawnGeneticChickens = builder
                     .define("Allow Genetic Chickens to continue to spawn/exist:", true);
             incubationDaysChicken = builder
-                    .defineInRange("How many ticks it takes for a chicken egg to hatch, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Chicken egg to hatch, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
             adultAgeChicken = builder
-                    .defineInRange("How many ticks it takes for a chicken to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Chicken to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
             spawnWeightChickens = builder
-                    .defineInRange("How highly chicken spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
+                    .defineInRange("How highly Chicken spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
             minimumChickenGroup = builder
-                    .defineInRange("The minimum number of chickens you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumChickenGroup = builder
-                    .defineInRange("The maximum number of chickens you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
             builder.pop();
 
             builder.push("rabbit");
             gestationDaysRabbit = builder
-                    .defineInRange("How many ticks it takes for a rabbit to give birth, 24000 = 1 Minecraft Day:", 24000, 5, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Rabbit to give birth, 24000 = 1 Minecraft Day:", 24000, 5, Integer.MAX_VALUE);
             adultAgeRabbit = builder
-                    .defineInRange("How many ticks it takes for a rabbit to become an adult, 24000 = 1 Minecraft Day:", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Rabbit to become an adult, 24000 = 1 Minecraft Day:", 48000, 1, Integer.MAX_VALUE);
             spawnVanillaRabbits = builder
                     .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
             spawnGeneticRabbits = builder
                     .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
             spawnWeightRabbits = builder
-                    .defineInRange("How highly rabbit spawning is weighted, larger numbers spawn more. Default is 4", 4, 1, 20);
+                    .defineInRange("How highly Rabbit spawning is weighted, larger numbers spawn more. Default is 4", 4, 1, 20);
             minimumRabbitGroup = builder
-                    .defineInRange("The minimum number of rabbits you want to find in a group at spawn. Default is 2", 2, 1, 60);
+                    .defineInRange("The minimum number of Rabbit you want to find in a group at spawn. Default is 2", 2, 1, 60);
             maximumRabbitGroup = builder
-                    .defineInRange("The maximum number of rabbits you want to find in a group at spawn. Default is 3", 3, 1, 60);
+                    .defineInRange("The maximum number of Rabbit you want to find in a group at spawn. Default is 3", 3, 1, 60);
             builder.pop();
 
             builder.push("turtle");
@@ -321,39 +320,41 @@ public class EanimodCommonConfig {
             spawnGeneticTurtles = builder
                     .define("Allow Genetic Turtles to continue to spawn/exist:", true);
             adultAgeTurtle = builder
-                    .defineInRange("How many ticks it takes for a turtle to become an adult, 24000 = 1 Minecraft Day:", 120000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Turtle to become an adult, 24000 = 1 Minecraft Day:", 120000, 1, Integer.MAX_VALUE);
             turtleScuteDropAge = builder
-                    .defineInRange("How many ticks it takes for a turtle to drop its scute, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Turtle to drop its scute, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
             spawnWeightTurtles = builder
-                    .defineInRange("How highly turtle spawning is weighted, larger numbers spawn more. Default is 6", 6, 1, 20);
+                    .defineInRange("How highly Turtle spawning is weighted, larger numbers spawn more. Default is 6", 6, 1, 20);
             minimumTurtleGroup = builder
-                    .defineInRange("The minimum number of turtles you want to find in a group at spawn. Default is 1", 1, 1, 60);
+                    .defineInRange("The minimum number of Turtle you want to find in a group at spawn. Default is 1", 1, 1, 60);
             maximumTurtleGroup = builder
-                    .defineInRange("The maximum number of turtle you want to find in a group at spawn. Default is 3", 5, 1, 60);
+                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn. Default is 5", 5, 1, 60);
             builder.pop();
 
             builder.push("horse");
             gestationDaysHorse = builder
-                    .defineInRange("How many ticks it takes for a horse to give birth, 24000 = 1 Minecraft Day:", 24000, 5, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Horse to give birth, 24000 = 1 Minecraft Day:", 24000, 5, Integer.MAX_VALUE);
             adultAgeHorse = builder
-                    .defineInRange("How many ticks it takes for a horse to become an adult, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Horse to become an adult, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
             spawnVanillaHorses = builder
                     .define("Allow vanilla minecraft Horses to spawn/exist:", false);
             spawnGeneticHorses = builder
-                    .define("Allow Genetic horses to continue to spawn/exist:", true);
+                    .define("Allow Genetic Horse to continue to spawn/exist:", true);
             builder.pop();
             
             builder.push("axolotl");
             spawnVanillaAxolotls = builder
-                    .define("Allow vanilla minecraft axolotls to spawn/exist:", false);
+                    .define("Allow vanilla minecraft Axolotls to spawn/exist:", false);
             spawnGeneticAxolotls = builder
-                    .define("Allow Genetic axolotls to continue to spawn/exist:", true);
+                    .define("Allow Genetic Axolotls to continue to spawn/exist:", true);
+            adultAgeAxolotl = builder
+                    .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more. Default is 10", 60000, 1, Integer.MAX_VALUE);
             spawnWeightAxolotls = builder
-                    .defineInRange("How highly axolotl spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
+                    .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
             minimumAxolotlGroup = builder
-                    .defineInRange("The minimum number of axolotls you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Axolotls you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
-                    .defineInRange("The maximum number of axolotl you want to find in a group at spawn. Default is 6", 6, 1, 60);
+                    .defineInRange("The maximum number of Axolotls you want to find in a group at spawn. Default is 6", 6, 1, 60);
             builder.pop();
         }
     }

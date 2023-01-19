@@ -7,6 +7,7 @@ import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
@@ -67,6 +68,8 @@ import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -354,7 +357,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() { return 24000;}
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeAxolotl.get();}
 
     @Override
     protected int gestationConfig() {
@@ -565,7 +568,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 }
             }
 
-            if (gene[38] != 1 || gene[39] != 1) {
+            if (gene[44] == 2 || gene[45] == 2) {
                 gillsColour = gene[40] - 1;
                 gillsColour2 = gene[41] - 1;
             }
@@ -584,10 +587,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
             parentGroup.addGrouping(bodyGroup);
 
-            TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
-            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
-            parentGroup.addGrouping(cheekGroup);
+            if (gene[44] == 2 || gene[45] == 2) {
+                TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
+                addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
+                parentGroup.addGrouping(cheekGroup);
+            }
 
             TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
@@ -619,7 +624,18 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 float eyeSaturation = 0.5F;
                 float eyeBrightness = 0.25F;
 
-                if (gene[20] != 1 && gene[21] != 1) {
+                if (gene[20] == 1 && gene[21] == 1) {
+                    if (gene[0] == 2 && gene[1] == 2) {
+                        if (gene[2] == 2 && gene[3] == 2) {
+                            eyeHue = 0.95F;
+                            eyeBrightness = 0.8F;
+                        } else {
+                            eyeHue = 0.09F;
+                            eyeSaturation = 0.75F;
+                            eyeBrightness = 0.8F;
+                        }
+                    }
+                } else {
                     if (gene[20] == 4 || gene[21] == 4) {
                         int genenum = gene[20] == 4 ? 21 : 20;
                         //light eyes
@@ -656,13 +672,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                                 eyeBrightness = 0.5F;
                             } else if (gene[21] == 5) {
                                 //dark-pastel eyes
-                                eyeSaturation = 0.5F;
                                 eyeBrightness = 0.4F;
                             } else {
                                 //dark-glow eyes
                                 //dark eyes
                                 eyeSaturation = 1.0F;
-                                eyeBrightness = 0.25F;
                             }
                         } else if (gene[20] == 3 || gene[20] == 6) {
                             //glow eyes
@@ -679,18 +693,13 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                             }
                         } else {
                             //pastel eyes
-                            eyeSaturation = 0.5F;
                             eyeBrightness = 0.75F;
                         }
                     }
-                } else if (gene[0] == 2 && gene[1] == 2) {
-                    eyeHue = 0.96F;
-                    eyeSaturation = 0.6F;
-                    eyeBrightness = 0.7F;
                 }
 
-                this.colouration.setLeftEyeColour(Colouration.HSBtoABGR(eyeHue, eyeSaturation, eyeBrightness));
-                this.colouration.setRightEyeColour(Colouration.HSBtoABGR(eyeHue, eyeSaturation, eyeBrightness));
+                this.colouration.setLeftEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
+                this.colouration.setRightEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
             }
         }
 
@@ -1103,7 +1112,7 @@ NBT read/write
                     Level world = this.axolotl.level;
                     world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
                     int numberOfEggs = this.axolotl.random.nextInt(4) + 1;
-                    BlockPos pos = this.blockPos.above();
+                    BlockPos pos = this.blockPos;
                     String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
                     String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
                     for (int i = 0; i < numberOfEggs;i++) {

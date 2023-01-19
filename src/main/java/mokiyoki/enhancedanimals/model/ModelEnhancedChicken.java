@@ -701,12 +701,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, -2.0F, 1.0F, 1, 1, 4)
                         .texOffs(30, 0)
                         .addBox(-0.5F, -1.0F, 0.0F, 1, 4, 5),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.01F, 0.0F)
         );
         bTail.addOrReplaceChild("tailMF", CubeListBuilder.create()
                         .texOffs(48, 50)
                         .addBox(0.0F, -6.0F, 0.0F, 0, 6, 8),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.01F, 0.0F)
         );
 
         bChicken.addOrReplaceChild("collar", CubeListBuilder.create()

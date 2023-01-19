@@ -135,7 +135,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemstack = entityPlayer.getItemInHand(hand);
-        if (itemstack.getItem() == Items.BOWL && !this.isBaby() && !entityPlayer.getAbilities().instabuild && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if (itemstack.getItem() == Items.BOWL && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 //TODO commented version might be better, pls test

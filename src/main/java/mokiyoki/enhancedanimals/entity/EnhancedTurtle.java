@@ -254,7 +254,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected void incrementHunger() {
-
+        if(this.sleeping) {
+            this.hunger = this.hunger + (0.5F*getHungerModifier());
+        } else {
+            this.hunger = this.hunger + (1.0F*getHungerModifier());
+        }
     }
 
     @Override

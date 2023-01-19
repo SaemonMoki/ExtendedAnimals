@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
-import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
 import mokiyoki.enhancedanimals.blocks.GrowablePlant;

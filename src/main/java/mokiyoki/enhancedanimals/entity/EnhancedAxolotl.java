@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
@@ -69,7 +68,6 @@ import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -82,7 +80,6 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 
@@ -99,16 +96,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final EntityDataAccessor<Boolean> DATA_PLAYING_DEAD = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> BUCKET_IMG = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.STRING);
-
-    private static final Logger LOGGER = LogUtils.getLogger();
-    public static final int TOTAL_PLAYDEAD_TIME = 200;
     private static final int AXOLOTL_TOTAL_AIR_SUPPLY = 6000;
-    public static final double PLAYER_REGEN_DETECTION_RANGE = 20.0D;
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedAxolotl>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, SensorType.AXOLOTL_ATTACKABLES, ModSensorTypes.AXOLOTL_FOOD_TEMPTATIONS.get());
     protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.HAS_EGG.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.PLAY_DEAD_TICKS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.HAS_HUNTING_COOLDOWN);
-    private static final int REHYDRATE_AIR_SUPPLY = 1800;
-    private static final int REGEN_BUFF_MAX_DURATION = 2400;
-    private static final int REGEN_BUFF_BASE_DURATION = 100;
     private boolean isTempted = false;
     private int eggLayingTimer = -1;
 
@@ -263,12 +253,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void customServerAiStep() {
-        this.level.getProfiler().push("axolotlBrain");
         this.getBrain().tick((ServerLevel)this.level, this);
-        this.level.getProfiler().pop();
-        this.level.getProfiler().push("axolotlActivityUpdate");
         AxolotlBrain.updateActivity(this);
-        this.level.getProfiler().pop();
         if (!this.isNoAi()) {
             Optional<Integer> optional = this.getBrain().getMemory(MemoryModuleType.PLAY_DEAD_TICKS);
             this.setPlayingDead(optional.isPresent() && optional.get() > 0);
@@ -366,7 +352,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void incrementHunger() {
-
+        if(this.sleeping) {
+            this.hunger = this.hunger + (0.5F*getHungerModifier());
+        } else {
+            this.hunger = this.hunger + (getHungerModifier());
+        }
     }
 
     @Override
@@ -415,12 +405,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level world) {
-//        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(this.level);
-//        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-//        defaultCreateAndSpawn(enhancedAxolotl, world, babyGenes, -this.getAdultAge());
-//        this.level.addFreshEntity(enhancedAxolotl);
-    }
+    protected void createAndSpawnEnhancedChild(Level world) {}
 
     public int getHungerRestored(ItemStack stack) {
         return 8000;
@@ -504,6 +489,14 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.4F, 0.155F);
         }
         super.playStepSound(pos, blockIn);
+    }
+    @Override
+    protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
+        if (itemStack.is(Items.TROPICAL_FISH_BUCKET)) {
+            player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+        } else {
+            super.usePlayerItem(player, hand, itemStack);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

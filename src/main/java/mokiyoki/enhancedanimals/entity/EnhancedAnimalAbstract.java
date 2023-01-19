@@ -886,16 +886,19 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));
             } else if (!isChild && isBreedingItem(itemStack)) {
+                InteractionResult result;
                 if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
+                    result = InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
                 }
                 if (!this.level.isClientSide && !isChild && this.canFallInLove()) {
                     this.setInLove(entityPlayer);
-                    return InteractionResult.SUCCESS;
+                    result = InteractionResult.SUCCESS;
                 }
+                return result;
             } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
@@ -925,6 +928,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                         }
                         shrinkItemStack(entityPlayer, itemStack);
                     }
+                    return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
                 }
@@ -932,6 +936,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 if (hunger >= 4000) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
+                    return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
                 }

@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.entity;
 
-import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
@@ -294,6 +293,15 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.23D);
+    }
+
+    @Override
+    protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
+        if (itemStack.is(Items.WATER_BUCKET) && this.getFleeceDyeColour() != DyeColor.WHITE) {
+            player.setItemInHand(hand, new ItemStack(Items.BUCKET));
+        } else {
+            super.usePlayerItem(player, hand, itemStack);
+        }
     }
 
     @Override
@@ -1362,8 +1370,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         onSheared(entityPlayer, ItemStack.EMPTY, this.level, blockPosition(), 0);
                 }
 
-            } else if (item == Items.WATER_BUCKET) {
+            } else if (item == Items.WATER_BUCKET && this.getFleeceDyeColour() != DyeColor.WHITE) {
                 this.setFleeceDyeColour(DyeColor.WHITE);
+                entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
             } else if (item instanceof DyeItem) {
                 DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {

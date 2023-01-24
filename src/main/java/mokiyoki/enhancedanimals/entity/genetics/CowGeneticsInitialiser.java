@@ -267,7 +267,6 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
             autosomalGenes[27] = (2);
-
         } else {
             autosomalGenes[26] = (2);
             autosomalGenes[27] = (2);

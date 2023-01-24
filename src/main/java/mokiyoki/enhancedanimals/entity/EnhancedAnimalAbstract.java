@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LerpingModel;
+import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -1532,7 +1533,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
             this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
-                if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
+                if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0) {
                     eaa.refreshDimensions();
                     eaa.updateColouration = true;
                 }
@@ -1542,6 +1543,20 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         super.onSyncedDataUpdated(key);
     }
 
+    public void scheduleDespawn(int ticksToWait) {
+        this.scheduledToRun.add(new AnimalScheduledFunction(ticksToWait, (eea) -> {
+            despawn();
+        }));
+    }
+
+    protected void despawn() {
+        if (this.isLeashed()) {
+            if (this.getLeashHolder() instanceof WanderingTrader && !this.hasCustomName()) {
+                this.dropLeash(true, false);
+                this.discard();
+            }
+        }
+    }
 
     /*
     Client Sided Work

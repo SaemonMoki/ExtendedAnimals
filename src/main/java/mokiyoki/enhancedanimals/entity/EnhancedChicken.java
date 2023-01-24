@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
@@ -350,6 +351,25 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.entityData.define(ROOSTING, Boolean.FALSE);
     }
 
+    public void scheduleDespawn(int ticksToWait) {
+        this.scheduledToRun.add(new AnimalScheduledFunction(ticksToWait, (eaa) -> {
+            despawn();
+        }, (eaa) -> !eaa.getPassengers().isEmpty()));
+    }
+
+    @Override
+    protected void despawn() {
+        if (this.getPassengers().isEmpty()) {
+            if (this.isChickenJockey()) {
+                if (!(this.hasCustomName() || this.isLeashed() || this.isTame())) {
+                    this.discard();
+                }
+            } else {
+                super.despawn();
+            }
+        }
+    }
+
     @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_chicken";
@@ -370,6 +390,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         if (item == ModItems.ENHANCED_CHICKEN_EGG.get()) {
             return InteractionResult.SUCCESS;
+        }
+
+        if (this.isChickenJockey() && this.getPassengers().isEmpty()) {
+            if (hunger >= 6000 && (isFoodItem(itemStack) || item instanceof EnhancedEgg)) {
+                this.setChickenJockey(false);
+                this.setTame(true);
+            }
         }
 
         if (item instanceof EnhancedEgg && hunger >= 6000) {

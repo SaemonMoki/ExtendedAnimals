@@ -591,14 +591,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         }
     }
 
-    public void setDespawnDelay(int delay, boolean traderLlama) {
-        this.despawnDelay = delay;
-        if (traderLlama) {
-            this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
-            traderBlanket.getOrCreateTagElement("tradersblanket");
-            this.animalInventory.setItem(4, traderBlanket);
-        }
+    public void makeTraderLlama() {
+        this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+        traderBlanket.getOrCreateTagElement("tradersblanket");
+        this.animalInventory.setItem(4, traderBlanket);
         this.setStrengthAndInventory();
     }
 

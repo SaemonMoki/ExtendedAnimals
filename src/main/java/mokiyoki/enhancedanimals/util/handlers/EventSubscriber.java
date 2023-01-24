@@ -160,6 +160,17 @@ public class EventSubscriber {
             ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
                 return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
             }));
+        } else if (entity instanceof EnhancedAnimalAbstract) {
+            if (((EnhancedAnimalAbstract) entity).isLeashed()) {
+                Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
+                if (leashHolder instanceof WanderingTrader) {
+                    ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
+                }
+            } else if (entity instanceof EnhancedChicken) {
+                if (((EnhancedChicken) entity).isChickenJockey()) {
+                    ((EnhancedChicken) entity).scheduleDespawn(4000);
+                }
+            }
         }
     }
 
@@ -288,6 +299,7 @@ public class EventSubscriber {
                                         enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
                                     }
                                     enhancedChicken.setChickenJockey(true);
+//                                    enhancedChicken.scheduleDespawn();
                                     for (Entity rider : riders) {
                                         rider.startRiding(enhancedChicken);
                                     }
@@ -457,6 +469,7 @@ public class EventSubscriber {
                                     if (entity instanceof TraderLlama) {
                                         enhancedLlama.equipTraderAnimal(((Llama) entity).hasChest());
                                         enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
+                                        enhancedLlama.makeTraderLlama();
                                     } else {
                                         enhancedLlama.equipAnimal(((Llama) entity).hasChest(), ((Llama) entity).getSwag());
                                     }
@@ -478,6 +491,8 @@ public class EventSubscriber {
                                     enhancedLlama.setLeashedTo(((Llama) entity).getLeashHolder(), true);
                                 }
                             }
+                        } else if (entity instanceof TraderLlama) {
+                            ((TraderLlama) entity).dropLeash(true, false);
                         }
                         entity.remove(Entity.RemovalReason.DISCARDED);
                         event.setCanceled(true);
@@ -620,15 +635,15 @@ public class EventSubscriber {
                         if(enhancedLlama != null) {
                             enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                             enhancedLlama.setLeashedTo(entity, true);
-                            enhancedLlama.setDespawnDelay(48000, true);
                             enhancedLlama.setAge(0);
                             enhancedLlama.setBirthTime(entity.getCommandSenderWorld(), -((ThreadLocalRandom.current().nextInt(25)*500000) + 10000000));
+                            enhancedLlama.makeTraderLlama();
+                            enhancedLlama.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
                         }
                     }
                 }
 
                 if (ThreadLocalRandom.current().nextInt(5) == 0) {
-                    int r = ThreadLocalRandom.current().nextInt(2) + 1;
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
                         animals.add(ENHANCED_COW.get());
@@ -647,7 +662,6 @@ public class EventSubscriber {
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get() && EanimodCommonConfig.COMMON.wanderingTraderLlama.get()) {
                         animals.add(ENHANCED_LLAMA.get());
-                        r = 1;
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticTurtles.get() && EanimodCommonConfig.COMMON.wanderingTraderTurtle.get()) {
                         animals.add(ENHANCED_TURTLE.get());
@@ -661,22 +675,26 @@ public class EventSubscriber {
 
                     Collections.shuffle(animals);
 
-                    for (int i = 0; i < r; i++) {
-                        BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
-                        Entity animal = animals.get(0).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
-                        if (animal instanceof EnhancedAnimalAbstract) {
-                            EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract)animal;
-                            Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
-                            enhancedAnimal.setGenes(animalGenes);
-                            enhancedAnimal.setSharedGenes(animalGenes);
-                            enhancedAnimal.setInitialDefaults();
-                            enhancedAnimal.initilizeAnimalSize();
-                            enhancedAnimal.getReloadTexture();
-                            enhancedAnimal.setLeashedTo(entity, true);
+                        for (int i = 1; i <= 2; i++) {
+                            BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
+                            Entity animal = animals.get(0).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
+                            if (animal instanceof EnhancedAnimalAbstract) {
+                                EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animal;
+                                Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
+                                enhancedAnimal.setGenes(animalGenes);
+                                enhancedAnimal.setSharedGenes(animalGenes);
+                                enhancedAnimal.setInitialDefaults();
+                                enhancedAnimal.initilizeAnimalSize();
+                                enhancedAnimal.getReloadTexture();
+                                enhancedAnimal.setLeashedTo(entity, true);
+                                enhancedAnimal.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
+                            }
+                            if (animal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");

@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.util;
+package mokiyoki.enhancedanimals.util.scheduling;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 
@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class AnimalScheduledFunction {
 
-    int initialTicks;
+    int initialTicks = 0;
     int ticksToWait;
 
     Consumer<EnhancedAnimalAbstract> functionToRun;
@@ -41,7 +41,18 @@ public class AnimalScheduledFunction {
         }
     }
 
+    public int[] getTickState() {
+        if (this.initialTicks != 0) {
+            return new int[]{this.ticksToWait, this.initialTicks};
+        }
+        return new int[]{this.ticksToWait};
+    }
+
     public int getTicksToWait() {
         return this.ticksToWait;
+    }
+
+    public void setInitialTicks(int initialTicks) {
+        this.initialTicks = initialTicks;
     }
 }

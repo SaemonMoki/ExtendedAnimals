@@ -23,7 +23,8 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
+import mokiyoki.enhancedanimals.util.scheduling.AnimalScheduledFunction;
+import mokiyoki.enhancedanimals.util.scheduling.Schedules;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.damagesource.DamageSource;
@@ -84,6 +85,9 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RESIZE_AND_REFRESH_TEXTURE_SCHEDULE;
 
 public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel {
 
@@ -181,7 +185,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @Nullable
     private CompoundTag leashNBTTag;
 
-    List<AnimalScheduledFunction> scheduledToRun = new ArrayList<>();
+    Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
 
     /*
     Entity Construction
@@ -261,7 +265,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     //returns if the animal is still growing
-    protected boolean isGrowing() {
+    public boolean isGrowing() {
         return this.getEnhancedAnimalAge()<(float)this.getFullSizeAge();
     }
 
@@ -710,14 +714,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         super.aiStep();
 
         if (!scheduledToRun.isEmpty()) {
-            scheduledToRun.forEach(scheduledFunction -> {
+            scheduledToRun.values().forEach(scheduledFunction -> {
                 scheduledFunction.tick();
                 if (scheduledFunction.getTicksToWait() <= 0) {
                     scheduledFunction.runFunction(this);
                     scheduledFunction.runRepeatCondition(this);
                 }
             });
-            scheduledToRun.removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
+            scheduledToRun.values().removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
         }
 
         //run client-sided tick stuff
@@ -1038,6 +1042,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
         writeInventory(compound);
+
+        writeScheduling(compound);
     }
 
     protected void writeInventory(CompoundTag compound) {
@@ -1141,6 +1147,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.toggleReloadTexture();
 
         readInventory(compound);
+
+        readScheduling(compound);
     }
 
     protected void resetGrowingAgeToAge() {
@@ -1197,6 +1205,31 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
 
         this.updateInventorySlots();
+    }
+
+    private void writeScheduling(CompoundTag compound) {
+        if (!this.scheduledToRun.isEmpty()) {
+            CompoundTag schedulesTag = new CompoundTag();
+
+            this.scheduledToRun.keySet().forEach(schedule -> schedulesTag.putIntArray(schedule, this.scheduledToRun.get(schedule).getTickState()));
+
+            compound.put("Schedules", schedulesTag);
+        }
+    }
+
+    private void readScheduling(CompoundTag compound) {
+        if (compound.contains("Schedules")) {
+            CompoundTag schedules = compound.getCompound("Schedules");
+
+            schedules.getAllKeys().forEach(scheduleTag -> {
+                int[] tickStates = schedules.getIntArray(scheduleTag);
+                AnimalScheduledFunction scheduleFunction = Schedules.getScheduledFunction(scheduleTag, tickStates[0]);
+                if (tickStates.length > 1) {
+                    scheduleFunction.setInitialTicks(tickStates[1]);
+                }
+                this.scheduledToRun.put(scheduleTag, scheduleFunction);
+            });
+        }
     }
 
     protected void writeNBTGenes(String name, CompoundTag compound, Genes genetics) {
@@ -1532,24 +1565,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
-            this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
-                if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0) {
-                    eaa.refreshDimensions();
-                    eaa.updateColouration = true;
-                }
-            }, (eaa) -> eaa.isGrowing()));
+            this.scheduledToRun.put(RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.funcName, RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.function.apply(50));
         }
 
         super.onSyncedDataUpdated(key);
     }
 
     public void scheduleDespawn(int ticksToWait) {
-        this.scheduledToRun.add(new AnimalScheduledFunction(ticksToWait, (eea) -> {
-            despawn();
-        }));
+        this.scheduledToRun.put(DESPAWN_SCHEDULE.funcName, DESPAWN_SCHEDULE.function.apply(ticksToWait));
     }
 
-    protected void despawn() {
+    public void despawn() {
         if (this.isLeashed()) {
             if (this.getLeashHolder() instanceof WanderingTrader && !this.hasCustomName()) {
                 this.dropLeash(true, false);

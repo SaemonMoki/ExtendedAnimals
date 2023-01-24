@@ -19,7 +19,6 @@ import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
-import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
@@ -68,6 +67,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -352,13 +352,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void scheduleDespawn(int ticksToWait) {
-        this.scheduledToRun.add(new AnimalScheduledFunction(ticksToWait, (eaa) -> {
-            despawn();
-        }, (eaa) -> !eaa.getPassengers().isEmpty()));
+        this.scheduledToRun.put(DESPAWN_NO_PASSENGER_SCHEDULE.funcName, DESPAWN_NO_PASSENGER_SCHEDULE.function.apply(ticksToWait));
     }
 
     @Override
-    protected void despawn() {
+    public void despawn() {
         if (this.getPassengers().isEmpty()) {
             if (this.isChickenJockey()) {
                 if (!(this.hasCustomName() || this.isLeashed() || this.isTame())) {

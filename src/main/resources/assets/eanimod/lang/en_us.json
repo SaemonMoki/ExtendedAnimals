@@ -1,4 +1,6 @@
 {
+  "item.eanimod.debug_gene_book": "Debugging Book",
+  "item.eanimod.debug_gene_book_hover": "Used to help report genetics-related bugs",
   "item.eanimod.egg_white": "White Egg",
   "item.eanimod.egg_greygreen": "Grey Egg",
   "item.eanimod.egg_greygreen_spot": "Grey Egg",

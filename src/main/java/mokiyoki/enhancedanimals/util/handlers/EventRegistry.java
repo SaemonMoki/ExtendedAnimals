@@ -168,7 +168,6 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onEntityAttributeCreationRegistry(EntityAttributeCreationEvent event) {
-//        event.put(ENHANCED_AXOLOTL_EGG.get(), AttributeSupplier.builder().build());
         event.put(ENHANCED_AXOLOTL.get(), EnhancedAxolotl.prepareAttributes().build());
         event.put(ENHANCED_CHICKEN.get(), EnhancedChicken.prepareAttributes().build());
         event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());

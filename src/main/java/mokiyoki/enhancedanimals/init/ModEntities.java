@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
@@ -39,6 +40,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EnhancedHorse>> ENHANCED_HORSE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_horse", () -> EntityType.Builder.of(EnhancedHorse::new, MobCategory.CREATURE).sized(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse"));
     public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_turtle", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
     public static final RegistryObject<EntityType<EnhancedAxolotl>> ENHANCED_AXOLOTL = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl", () -> EntityType.Builder.of(EnhancedAxolotl::new, MobCategory.AXOLOTLS).sized(0.75F, 0.42F).build(Reference.MODID + ":enhanced_axolotl"));
+    public static final RegistryObject<EntityType<EnhancedAxolotlEgg>> ENHANCED_AXOLOTL_EGG = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl_egg", () -> EntityType.Builder.of(EnhancedAxolotlEgg::new, MobCategory.WATER_CREATURE).sized(0.375F, 0.375F).build(Reference.MODID + ":axolotl_egg"));
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 

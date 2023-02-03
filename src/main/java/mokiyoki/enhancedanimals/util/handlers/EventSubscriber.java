@@ -113,7 +113,6 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
  */
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EventSubscriber {
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();

@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.PostBlock;
+import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Fluids;
@@ -409,6 +411,7 @@ public class ModItems {
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_DIAMONDBELL = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_diamondbell", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, true));
 
     public static final RegistryObject<Item> ENHANCED_AXOLOTL_BUCKET = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_bucket", () -> new EnhancedAxolotlBucket(new Item.Properties().stacksTo(1), ModEntities.ENHANCED_AXOLOTL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL));
+    public static final RegistryObject<Item> ENHANCED_AXOLOTL_EGG_BUCKET = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_egg_bucket", () -> new EnhancedAxolotlEggBucket(ModEntities.ENHANCED_AXOLOTL_EGG, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL, new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> GENETICS_ENCYCLOPEDIA = ITEMS_DEFERRED_REGISTRY.register("genetics_encyclopedia", () -> new GeneticsEncyclopedia(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));
     public static final RegistryObject<Item> DEBUG_GENE_BOOK = ITEMS_DEFERRED_REGISTRY.register("debug_gene_book", () -> new DebugGenesBook(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));

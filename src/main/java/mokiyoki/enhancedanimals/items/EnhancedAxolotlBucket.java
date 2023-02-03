@@ -135,14 +135,6 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return new Genes(genetics.getIntArray("SGenes"), genetics.getIntArray("AGenes"));
     }
 
-    public static void setIsFemale(ItemStack stack, boolean isFemale) {
-        stack.getOrCreateTagElement("Genetics").putBoolean("IsFemale", isFemale);
-    }
-
-    private boolean getIsFemale(ItemStack stack) {
-        return stack.getOrCreateTagElement("Genetics").getBoolean("IsFemale");
-    }
-
     public static void setMateIsFemale(ItemStack stack, boolean isFemale) {
         stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
     }

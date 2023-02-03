@@ -116,6 +116,8 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
         public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
         public final ForgeConfigSpec.IntValue adultAgeAxolotl;
+        public final ForgeConfigSpec.IntValue axolotlHatchTime;
+        public final ForgeConfigSpec.DoubleValue axolotlHatchTemperatureImportance;
         public final ForgeConfigSpec.IntValue spawnWeightAxolotls;
         public final ForgeConfigSpec.IntValue minimumAxolotlGroup;
         public final ForgeConfigSpec.IntValue maximumAxolotlGroup;
@@ -348,7 +350,11 @@ public class EanimodCommonConfig {
             spawnGeneticAxolotls = builder
                     .define("Allow Genetic Axolotls to continue to spawn/exist:", true);
             adultAgeAxolotl = builder
-                    .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more. Default is 10", 60000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for an Axolotl to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
+            axolotlHatchTime = builder
+                    .defineInRange("How long int ticks it takes an axolotl egg to hatch in temperate biomes. Default is 24000", 24000, 1, Integer.MAX_VALUE);
+            axolotlHatchTemperatureImportance = builder
+                    .defineInRange("How long int ticks it takes an axolotl egg to hatch in temperate biomes. A value of 0 means they will never hatch unless they are in a temperate or warmer environment", 1.0D, 0.0D, 100.0D);
             spawnWeightAxolotls = builder
                     .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
             minimumAxolotlGroup = builder

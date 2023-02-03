@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
+import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
@@ -19,6 +20,7 @@ import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
 import mokiyoki.enhancedanimals.renderer.ModelLayers;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedLlama;
@@ -76,7 +78,6 @@ public class ClientEventRegistry {
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.AXOLOTL_EGG.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ALLIUM.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET.get(), RenderType.cutout());
@@ -134,6 +135,7 @@ public class ClientEventRegistry {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onEntityRenderersRegistry(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ENHANCED_AXOLOTL_EGG.get(), RenderEnhancedAxolotlEgg::new);
         event.registerEntityRenderer(ENHANCED_AXOLOTL.get(), RenderEnhancedAxolotl::new);
         event.registerEntityRenderer(ENHANCED_CHICKEN.get(), RenderEnhancedChicken::new);
         event.registerEntityRenderer(ENHANCED_COW.get(), RenderEnhancedCow::new);
@@ -154,6 +156,7 @@ public class ClientEventRegistry {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(RenderEnhancedAxolotlEgg.AXOLOTL_EGG_LAYER, ModelEnhancedAxolotlEgg::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedAxolotl.AXOLOTL_LAYER, ModelEnhancedAxolotl::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedChicken.CHICKEN_LAYER, ModelEnhancedChicken::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedCow.COW_LAYER, ModelEnhancedCow::createBodyLayer);

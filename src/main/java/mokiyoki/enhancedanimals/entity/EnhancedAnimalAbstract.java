@@ -197,7 +197,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGender = false;
         this.bottleFeedable = bottleFeedable;
-
         initInventory();
     }
 

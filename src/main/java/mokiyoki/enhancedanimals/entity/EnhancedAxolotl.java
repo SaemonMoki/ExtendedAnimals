@@ -4,13 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
-import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
-import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
@@ -34,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -69,6 +67,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -87,9 +86,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
@@ -493,8 +494,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
     @Override
     protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
-        if (itemStack.is(Items.TROPICAL_FISH_BUCKET)) {
-            player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+        if (itemStack.getItem() instanceof MobBucketItem) {
+            if (!player.isCreative()) {
+                player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+            }
         } else {
             super.usePlayerItem(player, hand, itemStack);
         }
@@ -857,7 +860,6 @@ NBT read/write
             EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
-            EnhancedAxolotlBucket.setIsFemale(stack, this.getOrSetIsFemale());
             if (this.mateGenetics != null) {
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
                 EnhancedAxolotlBucket.setMateIsFemale(stack, this.mateGender);
@@ -1109,21 +1111,30 @@ NBT read/write
             if (this.axolotl.isInWater() && this.isReachedTarget()) {
                 if (this.axolotl.eggLayingTimer == -1) {
                     this.axolotl.eggLayingTimer = 0;
-                } else if (this.axolotl.eggLayingTimer > 200) {
-                    Level world = this.axolotl.level;
-                    world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                    int numberOfEggs = this.axolotl.random.nextInt(4) + 1;
-                    BlockPos pos = this.blockPos;
-                    String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
-                    String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
-                    for (int i = 0; i < numberOfEggs;i++) {
-                        Genes eggGenes = new Genes(this.axolotl.getGenes()).makeChild(true, true, this.axolotl.mateGenetics);
-                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
+                } else if (this.axolotl.eggLayingTimer >= 200) {
+                    if (this.axolotl.eggLayingTimer == 200) {
+                        this.axolotl.eggLayingTimer = 200 + (this.axolotl.random.nextInt(4) * 40);
                     }
-                    world.setBlock(pos, ModBlocks.AXOLOTL_EGG.get().defaultBlockState().setValue(EnhancedAxolotlEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
-                    this.axolotl.setHasEgg(false);
-                    this.axolotl.pregnant = false;
-                    this.axolotl.eggLayingTimer = -1;
+
+                    if (this.axolotl.eggLayingTimer%40 == 0) {
+                        Level level = this.axolotl.getLevel();
+                        BlockPos pos = this.blockPos;
+                        String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
+                        String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
+                        level.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + level.random.nextFloat() * 0.2F);
+                        Genes eggGenes = new Genes(this.axolotl.getGenes()).makeChild(true, true, this.axolotl.mateGenetics);
+                        EnhancedAxolotlEgg egg = ENHANCED_AXOLOTL_EGG.get().create(level);
+                        egg.setParentNames(mateName, name);
+                        egg.setGenes(eggGenes);
+                        egg.moveTo(pos.getX()+0.5D+(ThreadLocalRandom.current().nextFloat(-0.375F, 0.375F)), axolotl.getY(), pos.getZ()+0.5D+(ThreadLocalRandom.current().nextFloat(-0.375F, 0.375F)), ThreadLocalRandom.current().nextInt(4)* (Mth.HALF_PI*0.5F), 0.0F);
+                        level.addFreshEntity(egg);
+                    }
+
+                    if (this.axolotl.eggLayingTimer > 320) {
+                        this.axolotl.setHasEgg(false);
+                        this.axolotl.pregnant = false;
+                        this.axolotl.eggLayingTimer = -1;
+                    }
 //                    this.axolotl.setInLove(600);
                 }
 
@@ -1138,7 +1149,7 @@ NBT read/write
          * Return true to set given position as destination
          */
         protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
-            return EnhancedAxolotlEggBlock.isProperHabitat(worldIn, pos);
+            return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
         }
     }
 

@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 //import mokiyoki.enhancedanimals.entity.EnhancedBee;
 //import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
@@ -34,6 +35,7 @@ import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.DispensibleContainerItem;
@@ -67,6 +69,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_HORSE;
@@ -165,6 +168,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onEntityAttributeCreationRegistry(EntityAttributeCreationEvent event) {
+//        event.put(ENHANCED_AXOLOTL_EGG.get(), AttributeSupplier.builder().build());
         event.put(ENHANCED_AXOLOTL.get(), EnhancedAxolotl.prepareAttributes().build());
         event.put(ENHANCED_CHICKEN.get(), EnhancedChicken.prepareAttributes().build());
         event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());

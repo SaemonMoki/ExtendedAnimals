@@ -55,10 +55,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> GROWABLE_TALL_GRASS = BLOCKS_DEFERRED_REGISTRY.register("growable_tall_grass", () -> new GrowableDoubleHigh(Block.Properties.of(Material.REPLACEABLE_PLANT).randomTicks().noCollission().strength(0.0F).sound(SoundType.GRASS), Items.TALL_GRASS, false));
     public static final RegistryObject<Block> GROWABLE_LARGE_FERN = BLOCKS_DEFERRED_REGISTRY.register("growable_large_fern", () -> new GrowableDoubleHigh(Block.Properties.of(Material.REPLACEABLE_PLANT).randomTicks().noCollission().strength(0.0F).sound(SoundType.GRASS), Items.LARGE_FERN, true));
 
-//    private static RegistryObject<Block> createDeferred(String registryName, Block block) {
-//        return BLOCKS_DEFERRED_REGISTRY.register(registryName, () -> block);
-//    }
-
     public static void register(IEventBus modEventBus) {
         BLOCKS_DEFERRED_REGISTRY.register(modEventBus);
     }

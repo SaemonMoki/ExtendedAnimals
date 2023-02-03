@@ -527,6 +527,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             /**
              *      Wool
              */
+
             float woolScale = 1.0F + (data.coatLength/22.5F);
             float woolScale2 = 1.0F + (data.coatLength/45F);
             mapOfScale.put("body", ModelHelper.createScalings(woolScale, woolScale, woolScale2, 0.0F, 0.0F, 0.0F));
@@ -534,43 +535,37 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             for (int i = 0, l = neckWool.length; i < l; i++) {
                 this.neckWool[i].hide();
             }
-//            int test = 15;
-            float collarScale = 1.0F;
 
             //{0.4F, 0.75F, 1.1F, 1.5F, 2.0F, 2.5F, 3.0F}
             switch (data.coatLength) {
                 case 1, 2 -> {
                     this.neckWool[0].show();
-                    collarScale = 1.1F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.01F, 0.0F, 0.0F, 0.008F));
                 }
                 case 3, 4 -> {
                     this.neckWool[1].show();
-                    collarScale = 1.25F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.2F, 0.0F, 0.0F, 0.03F));
                 }
                 case 5, 6 -> {
                     this.neckWool[2].show();
-                    collarScale = 1.45F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.35F, 0.0F, 0.0F, 0.06F));
                 }
                 case 7, 8 -> {
                     this.neckWool[3].show();
-                    collarScale = 1.6F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.5F, 0.0F, 0.0F, 0.085F));
                 }
                 case 9, 10 -> {
                     this.neckWool[4].show();
-                    collarScale = 1.75F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.675F, 0.0F, 0.0F, 0.1F));
                 }
                 case 11, 12 -> {
                     this.neckWool[5].show();
-                    collarScale = 1.9F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(1.9F, 0.0F, 0.0F, 0.12F));
                 }
                 case 13, 14, 15 -> {
                     this.neckWool[6].show();
-                    collarScale = 2.1F;
+                    mapOfScale.put("collar", ModelHelper.createScalings(2.1F, 0.0F, 0.0F, 0.13F));
                 }
-            }
-
-            if (collarScale != 1.0F) {
-                mapOfScale.put("collar", ModelHelper.createScalings(collarScale, 0.0F, 0.0F, 0.02F + (0.112F * ((collarScale-1.1F)))));
             }
 
             if (data.coatLength > 2 && sheep.faceWool >= 1) {

@@ -67,10 +67,10 @@ public class ECRunAroundLikeCrazy extends Goal {
 
     public void tick() {
         if (!this.rideable.isTame() && this.rideable.getRandom().nextInt(this.adjustedTickDelay(50)) == 0) {
-            Entity entity = this.rideable.getPassengers().get(0);
-            if (entity == null) {
+            if (this.rideable.getPassengers().isEmpty() || this.rideable.getPassengers().get(0) == null) {
                 return;
             }
+            Entity entity = this.rideable.getPassengers().get(0);
 
             if (entity instanceof Player) {
                 int i = this.rideable.getTemper();

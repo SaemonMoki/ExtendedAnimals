@@ -1126,7 +1126,7 @@ NBT read/write
                         EnhancedAxolotlEgg egg = ENHANCED_AXOLOTL_EGG.get().create(level);
                         egg.setParentNames(mateName, name);
                         egg.setGenes(eggGenes);
-                        egg.moveTo(pos.getX()+0.5D+(ThreadLocalRandom.current().nextFloat(-0.375F, 0.375F)), axolotl.getY(), pos.getZ()+0.5D+(ThreadLocalRandom.current().nextFloat(-0.375F, 0.375F)), ThreadLocalRandom.current().nextInt(4)* (Mth.HALF_PI*0.5F), 0.0F);
+                        egg.moveTo(pos.getX()+0.125D+(ThreadLocalRandom.current().nextFloat()*0.75F), axolotl.getY(), pos.getZ()+0.125D+(ThreadLocalRandom.current().nextFloat()*0.75F), ThreadLocalRandom.current().nextInt(4)* (Mth.HALF_PI*0.5F), 0.0F);
                         level.addFreshEntity(egg);
                     }
 

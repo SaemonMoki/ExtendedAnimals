@@ -1803,7 +1803,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @OnlyIn(Dist.CLIENT)
     public TextureGrouping getTextureGrouping() {
         TextureGrouping compiledGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        if (this.enhancedAnimalTextureGrouping != null) {
+            compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        }
         for (Equipment equipmentKey : this.enhancedAnimalEquipmentGrouping.keySet()) {
             compiledGroup.addGrouping(this.enhancedAnimalEquipmentGrouping.get(equipmentKey));
         }

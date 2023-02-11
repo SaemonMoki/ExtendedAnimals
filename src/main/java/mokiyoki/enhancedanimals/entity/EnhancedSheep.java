@@ -17,6 +17,8 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -133,6 +135,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
+
+    @OnlyIn(Dist.CLIENT)
+    public SheepModelData sheepModelData;
 
     protected float maxBagSize;
     private int currentBagSize;
@@ -896,6 +901,18 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public boolean getSheared() {
         return (this.entityData.get(DYE_COLOUR) & 16) != 0;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public SheepModelData getModelData() {
+        return this.sheepModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.sheepModelData = (SheepModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

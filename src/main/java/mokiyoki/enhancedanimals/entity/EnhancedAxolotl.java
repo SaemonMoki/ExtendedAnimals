@@ -12,6 +12,8 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -233,6 +235,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final String[] CHEEK_SPOTS = new String[] {
             "cheeks.png", "cheeks_white.png", "cheeks_lightgrey.png", "cheeks_grey.png", "cheeks_black.png", "cheeks_brown.png", "cheeks_pink.png", "cheeks_red.png", "cheeks_orange.png", "cheeks_yellow.png", "cheeks_lime.png", "cheeks_green.png", "cheeks_cyan.png", "cheeks_lightblue.png", "cheeks_blue.png", "cheeks_purple.png", "cheeks_magenta.png",
     };
+
+    @OnlyIn(Dist.CLIENT)
+    private AxolotlModelData axolotlModelData;
 
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
         super(type, worldIn, 2, Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
@@ -501,6 +506,18 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         } else {
             super.usePlayerItem(player, hand, itemStack);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AxolotlModelData getModelData() {
+        return this.axolotlModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.axolotlModelData = (AxolotlModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

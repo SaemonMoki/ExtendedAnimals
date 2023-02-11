@@ -19,6 +19,8 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.CowModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -81,6 +83,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected GrazingGoal grazingGoal;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+
+    @OnlyIn(Dist.CLIENT)
+    private CowModelData cowModelData;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
@@ -541,6 +546,18 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             return old;
         }
         return "";
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public CowModelData getModelData() {
+        return this.cowModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.cowModelData = (CowModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

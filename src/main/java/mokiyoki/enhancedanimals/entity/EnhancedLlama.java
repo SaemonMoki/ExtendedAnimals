@@ -20,6 +20,8 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.LlamaModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -150,6 +152,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private EnhancedLlama caravanHead;
     @Nullable
     private EnhancedLlama caravanTail;
+
+    @OnlyIn(Dist.CLIENT)
+    private LlamaModelData llamaModelData;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
@@ -620,6 +625,19 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     private boolean isLeashedToStranger() {
         return this.isLeashed() && !this.isLeashedToTrader();
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public LlamaModelData getModelData() {
+        return this.llamaModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.llamaModelData = (LlamaModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

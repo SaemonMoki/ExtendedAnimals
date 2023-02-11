@@ -15,6 +15,8 @@ import mokiyoki.enhancedanimals.entity.genetics.RabbitGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.RabbitModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -22,7 +24,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -199,6 +200,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
+
+    @OnlyIn(Dist.CLIENT)
+    public RabbitModelData rabbitModelData;
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
@@ -899,6 +903,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public RabbitModelData getModelData() {
+        return this.rabbitModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.rabbitModelData = (RabbitModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

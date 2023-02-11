@@ -17,6 +17,7 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
@@ -1975,6 +1976,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         animal.getAttribute(Attributes.MAX_HEALTH).setBaseValue((double)health);
         animal.heal(animal.getMaxHealth() - animal.getHealth());
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public AnimalModelData getModelData() {
+        return null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setModelData(AnimalModelData animalModelData) {}
 
     public static class GroupData implements SpawnGroupData {
         public Genes groupGenes;

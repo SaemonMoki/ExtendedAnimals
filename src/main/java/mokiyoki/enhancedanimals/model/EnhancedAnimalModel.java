@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.model;
 
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -8,6 +7,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.SaddleType;
 import mokiyoki.enhancedanimals.model.util.GAModel;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -56,11 +58,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected WrappedModelPart stirrupNarrowLeft;
     protected WrappedModelPart stirrupNarrowRight;
     protected WrappedModelPart stirrup;
-
-
-    private Map<Integer, AnimalModelData> animalModelDataCache = new HashMap<>();
-    private int clearCacheTimer = 0;
-    protected Integer currentAnimal = null;
 
     public EnhancedAnimalModel(ModelPart modelPart) {
 
@@ -111,9 +108,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         return value >= valueB ? Math.max(valueB, (Math.min(value, valueA))) : Math.max(valueA, (Math.min(value, valueB)));
     }
 
-    @Override
-    public void renderToBuffer(PoseStack p_103111_, VertexConsumer p_103112_, int p_103113_, int p_103114_, float p_103115_, float p_103116_, float p_103117_, float p_103118_) {
-        AnimalModelData animalModelData = getAnimalModelData();
+    public void renderToBuffer(AnimalModelData animalModelData, PoseStack p_103111_, VertexConsumer p_103112_, int p_103113_, int p_103114_, float p_103115_, float p_103116_, float p_103117_, float p_103118_) {
 
         if (animalModelData != null) {
             if (this.eyes != null) {
@@ -142,54 +137,16 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     }
 
-    protected class AnimalModelData {
-        Map<String, Vector3f> offsets = Maps.newHashMap();
-        public Phenotype phenotype;
-        float growthAmount;
-        float size = 1.0F;
-        boolean sleeping = false;
-        boolean blink = false;
-        boolean collar = false;
-        boolean bridle = false;
-        boolean blanket = false;
-        SaddleType saddle = SaddleType.NONE;
-        boolean chests = false;
-        int lastAccessed = 0;
-        int dataReset = 0;
-        long clientGameTime = 0;
-        float random;
-        int isEating = 0;
-        boolean earTwitchSide = true;
-        int earTwitchTimer = 0;
-        boolean tailSwishSide = true;
-        int tailSwishTimer = 0;
-        int sleepDelay = -1;
-    }
 
-    protected AnimalModelData getAnimalModelData() {
-        if (this.currentAnimal == null || !animalModelDataCache.containsKey(this.currentAnimal)) {
-            return new AnimalModelData();
-        }
-        return animalModelDataCache.get(this.currentAnimal);
-    }
 
     protected AnimalModelData getCreateAnimalModelData(T enhancedAnimal) {
-        clearCacheTimer++;
-        if(clearCacheTimer > 50000) {
-            animalModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-            for (AnimalModelData animalModelData : animalModelDataCache.values()){
-                animalModelData.lastAccessed = 1;
-            }
-            clearCacheTimer = 0;
-        }
-
-        if (animalModelDataCache.containsKey(enhancedAnimal.getId())) {
+        if (enhancedAnimal.getModelData() != null) {
             updateModelData(enhancedAnimal);
         } else {
             setInitialModelData(enhancedAnimal);
         }
 
-        return animalModelDataCache.get(enhancedAnimal.getId());
+        return enhancedAnimal.getModelData();
     }
 
     protected void setBaseInitialModelData(AnimalModelData animalModelData, T enhancedAnimal) {
@@ -208,7 +165,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
             additionalModelDataInfo(animalModelData, enhancedAnimal);
 
-            animalModelDataCache.put(enhancedAnimal.getId(), animalModelData);
+            enhancedAnimal.setModelData(animalModelData);
         }
     }
 
@@ -216,15 +173,10 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) { }
 
-    protected void setInitialModelData(T enhancedAnimal) {
-        AnimalModelData animalModelData = new AnimalModelData();
-        setBaseInitialModelData(animalModelData, enhancedAnimal);
-    }
+    protected void setInitialModelData(T enhancedAnimal) {}
 
     protected void updateModelData(T enhancedAnimal) {
-        AnimalModelData animalModelData = animalModelDataCache.get(enhancedAnimal.getId());
-        animalModelData.lastAccessed = 0;
-        animalModelData.dataReset++;
+        AnimalModelData animalModelData = enhancedAnimal.getModelData();
         animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
         if (animalModelData.growthAmount != 1.0F) {
             animalModelData.growthAmount = enhancedAnimal.growthAmount();
@@ -347,21 +299,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
         public boolean getRunning(float time) {
             return time >= this.start && time < this.start+this.length;
-        }
-    }
-
-    protected enum SaddleType {
-        NONE(""),
-        VANILLA("saddle"),
-        ENGLISH("saddleE"),
-        WESTERN("saddleW");
-        final String name;
-        SaddleType(String name) {
-            this.name = name;
-        }
-
-        String getName() {
-            return this.name;
         }
     }
 }

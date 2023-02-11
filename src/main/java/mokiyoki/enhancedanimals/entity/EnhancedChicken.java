@@ -19,6 +19,8 @@ import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
@@ -253,6 +255,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     private String dropMeatType;
     public boolean chickenJockey;
+
+    @OnlyIn(Dist.CLIENT)
+    private ChickenModelData chickenModelData;
 
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
@@ -748,6 +753,18 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         return eggColour;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public ChickenModelData getModelData() {
+        return this.chickenModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.chickenModelData = (ChickenModelData) animalModelData;
     }
 
     @Override

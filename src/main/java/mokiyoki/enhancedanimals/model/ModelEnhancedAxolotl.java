@@ -4,8 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlPhenotype;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
-import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -57,6 +60,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     protected WrappedModelPart legBackLeft;
     protected WrappedModelPart legBackRight;
     protected WrappedModelPart collar;
+
+    private AxolotlModelData axolotlModelData;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -300,10 +305,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        AxolotlModelData axolotlModelData = getAxolotlModelData();
-        AxolotlPhenotype axolotl = (AxolotlPhenotype) axolotlModelData.phenotype;
-
-        if (axolotl!=null) {
+        if (this.axolotlModelData != null && this.axolotlModelData.getPhenotype()!=null) {
+            AxolotlPhenotype axolotl = this.axolotlModelData.getPhenotype();
 
             for (WrappedModelPart part : this.theTail.children) {
                 part.show(false);
@@ -369,11 +372,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        AxolotlModelData data = getCreateAxolotlModelData(entityIn);
-        if (data!=null) {
-            AxolotlPhenotype axolotl = data.getPhenotype();
-            this.setupInitialAnimationValues(data, netHeadYaw, headPitch, axolotl);
+        this.axolotlModelData = getCreateAxolotlModelData(entityIn);
+        if (this.axolotlModelData != null && this.axolotlModelData.getPhenotype() != null) {
+            AxolotlPhenotype axolotl = this.axolotlModelData.getPhenotype();
+            this.setupInitialAnimationValues(this.axolotlModelData, netHeadYaw, headPitch, axolotl);
 
             if (entityIn.isPlayingDead()) {
                 this.setupPlayDeadAnimation(ageInTicks);
@@ -400,7 +402,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             }
 
 
-            this.saveAnimationValues(data);
+            this.saveAnimationValues(this.axolotlModelData);
         }
 
     }
@@ -564,17 +566,6 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.lerpPart(this.theLegBackLeft, this.theLegBackRight.getXRot(), -this.theLegBackRight.getYRot(), -this.theLegBackRight.getZRot());
         this.lerpPart(this.theLegFrontLeft, this.theLegFrontRight.getXRot(), -this.theLegFrontRight.getYRot(), -this.theLegFrontRight.getZRot());
     }
-    private class AxolotlModelData extends AnimalModelData {
-        boolean hasEggs = false;
-
-        public AxolotlPhenotype getPhenotype() {
-            return (AxolotlPhenotype) this.phenotype;
-        }
-    }
-
-    private AxolotlModelData getAxolotlModelData() {
-        return (AxolotlModelData) getAnimalModelData();
-    }
 
     private AxolotlModelData getCreateAxolotlModelData(T enhancedAxolotl) {
         return (AxolotlModelData) getCreateAnimalModelData(enhancedAxolotl);
@@ -596,32 +587,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         return new AxolotlPhenotype(enhancedAxolotl.getSharedGenes());
     }
 
-    protected class AxolotlPhenotype implements Phenotype {
-        boolean glowingBody;
-        boolean glowingEyes;
-        boolean glowingGills;
-        boolean isLong;
-        TailLength tailLength;
 
-        AxolotlPhenotype(Genes genes) {
-            int[] gene = genes.getAutosomalGenes();
-            this.isLong = gene[32] == 2 && gene[33] == 2;
 
-            if (gene[26] == gene[27]) {
-                this.tailLength = gene[32] == 1 ? TailLength.NORMAL : TailLength.EXTRALONG;
-            } else {
-                this.tailLength = TailLength.LONG;
-            }
 
-            this.glowingBody = genes.has(10, 3) && !genes.has(10, 2);
-            this.glowingEyes = this.glowingBody || genes.has(20, 6);
-            this.glowingGills = this.glowingBody || (genes.has(38, 3) && !genes.has(38, 2));
-        }
-    }
-
-    private enum TailLength {
-        NORMAL,
-        LONG,
-        EXTRALONG
-    }
 }

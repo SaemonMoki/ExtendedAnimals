@@ -7,6 +7,8 @@ import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.TurtleModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -104,6 +106,9 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
             "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png"
     };
+
+    @OnlyIn(Dist.CLIENT)
+    private TurtleModelData turtleModelData;
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, Level worldIn) {
         super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, false);
@@ -372,6 +377,18 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         }
 
         return super.mobInteract(entityPlayer, hand);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public TurtleModelData getModelData() {
+        return this.turtleModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.turtleModelData = (TurtleModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

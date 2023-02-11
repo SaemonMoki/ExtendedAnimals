@@ -19,6 +19,8 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.PigModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -139,6 +141,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     private int angerLevel;
 
     private GrazingGoal grazingGoal;
+
+    @OnlyIn(Dist.CLIENT)
+    private PigModelData pigModelData;
 
 //    private boolean boosting;
 //    private int boostTime;
@@ -657,6 +662,18 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //        if (this.isChild()) {
 //            this.addGrowth(60);
 //        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public PigModelData getModelData() {
+        return this.pigModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.pigModelData = (PigModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

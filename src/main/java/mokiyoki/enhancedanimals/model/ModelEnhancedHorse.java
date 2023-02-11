@@ -4,6 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
+import mokiyoki.enhancedanimals.model.modeldata.HorsePhenotype;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -51,6 +54,8 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     private WrappedModelPart legBackRight;
 
     private WrappedModelPart tail;
+
+    private HorseModelData horseModelData;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -237,12 +242,10 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        HorseModelData horseModelData = getHorseModelData();
-        HorsePhenotype horse = horseModelData.getPhenotype();
+        if (this.horseModelData!=null && this.horseModelData.getPhenotype() != null) {
+            HorsePhenotype horse = horseModelData.getPhenotype();
 
-        resetCubes();
-
-        if (horse!=null) {
+            resetCubes();
 
             poseStack.pushPose();
             poseStack.scale(1.0F, 1.0F, 1.0F);
@@ -265,27 +268,15 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        HorseModelData horseModelData = getCreateHorseModelData(entityIn);
-        HorsePhenotype horse = horseModelData.getPhenotype();
-        float drive = ageInTicks + (1000 * horseModelData.random);
+        this.horseModelData = getCreateHorseModelData(entityIn);
+        HorsePhenotype horse = this.horseModelData.getPhenotype();
+        float drive = ageInTicks + (1000 * this.horseModelData.random);
 
         if (horse != null) {
 
         }
 
     }
-
-    private class HorseModelData extends AnimalModelData {
-        public HorsePhenotype getPhenotype() {
-            return (HorsePhenotype) this.phenotype;
-        }
-    }
-
-    private HorseModelData getHorseModelData() {
-        return (HorseModelData) getAnimalModelData();
-    }
-
     private HorseModelData getCreateHorseModelData(T enhancedHorse) {
         return (HorseModelData) getCreateAnimalModelData(enhancedHorse);
     }
@@ -299,15 +290,6 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
         return new HorsePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
-    }
-
-    protected class HorsePhenotype implements Phenotype {
-        float faceShape;
-        float faceLength;
-
-        HorsePhenotype(int[] gene) {
-
-        }
     }
 }
 

@@ -358,7 +358,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 }
             }
 
-            float size = ((1.0F + (axolotlModelData.growthAmount * 11.0F))/12.0F) * axolotlModelData.size;
+            float size = ((1.0F + (axolotlModelData.growthAmount * 3.0F))/4.0F) * axolotlModelData.size;
 
             poseStack.pushPose();
             poseStack.scale(size, size, size);

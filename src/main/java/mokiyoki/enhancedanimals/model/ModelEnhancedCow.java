@@ -1070,8 +1070,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 this.nipples.show();
                 float nipScale = 1.5F / (0.5F + cowModelData.bagSize);
                 float bagthickness = cowModelData.bagSize * cowModelData.bagSize;
-                mapOfScale.put("Udder", ModelHelper.createScalings(bagthickness, cowModelData.bagSize, bagthickness, 0.0F, 0.0F, 0.0F));
-                mapOfScale.put("Nipples", ModelHelper.createScalings(nipScale, nipScale, nipScale, 0.0F, (cowModelData.bagSize - 1.0F) * 0.05F, 0.0F));
+                mapOfScale.put("udder", ModelHelper.createScalings(bagthickness, cowModelData.bagSize, bagthickness, 0.0F, 0.0F, 0.0F));
+                mapOfScale.put("nipples", ModelHelper.createScalings(nipScale, nipScale, nipScale, 0.0F, (cowModelData.bagSize - 1.0F) * 0.05F, 0.0F));
             } else {
                 this.udder.hide();
                 this.nipples.hide();

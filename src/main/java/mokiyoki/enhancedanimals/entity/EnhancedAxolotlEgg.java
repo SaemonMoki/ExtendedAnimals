@@ -49,13 +49,10 @@ public class EnhancedAxolotlEgg extends Entity {
     private static final EntityDataAccessor<String> DAM = SynchedEntityData.<String>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> HATCH_TIME = SynchedEntityData.<Integer>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.INT);
 
-    private static final float hatchStep = 1.0F/Math.max(EanimodCommonConfig.COMMON.axolotlHatchTime.get(), 0);
     private boolean hasParents = false;
     public int time;
-
     private boolean clockwise = this.random.nextBoolean();
-    @OnlyIn(Dist.CLIENT)
-    private int animationTicks = this.random.nextInt(500);
+    private int animationTicks = this.level.isClientSide ? this.random.nextInt(500) : 0;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
@@ -178,6 +175,10 @@ public class EnhancedAxolotlEgg extends Entity {
             }
         } else if (this.getHatchTime() > 0){
             this.setHatchTime(this.getHatchTime() - 1);
+        }
+
+        if (this.level.isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
+            this.animationTicks++;
         }
     }
 
@@ -312,7 +313,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
     @OnlyIn(Dist.CLIENT)
     public int getAddAnimationTick() {
-        return this.fallDistance == 0.0F  ? this.animationTicks++ : this.animationTicks;
+        return this.animationTicks;
     }
 
     @Override

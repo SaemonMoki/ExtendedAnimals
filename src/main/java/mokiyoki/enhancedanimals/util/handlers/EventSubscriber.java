@@ -467,8 +467,8 @@ public class EventSubscriber {
                                     enhancedLlama.setBirthTime(entity.getCommandSenderWorld(), -500000);
                                     if (entity instanceof TraderLlama) {
                                         enhancedLlama.equipTraderAnimal(((Llama) entity).hasChest());
-                                        enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                                         enhancedLlama.makeTraderLlama();
+                                        enhancedLlama.setInitialDefaults();
                                     } else {
                                         enhancedLlama.equipAnimal(((Llama) entity).hasChest(), ((Llama) entity).getSwag());
                                     }
@@ -485,7 +485,7 @@ public class EventSubscriber {
                                         }
                                     }
                                 }
-                                entity.getCommandSenderWorld().addFreshEntity(enhancedLlama);
+                                enhancedLlama.getCommandSenderWorld().addFreshEntity(enhancedLlama);
                                 if (((Llama) entity).isLeashed()) {
                                     enhancedLlama.setLeashedTo(((Llama) entity).getLeashHolder(), true);
                                 }
@@ -632,11 +632,11 @@ public class EventSubscriber {
                         BlockPos blockPos = nearbySpawn(((ServerLevel)world), new BlockPos(entity.blockPosition()));
                         EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().spawn((ServerLevel)world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
                         if(enhancedLlama != null) {
-                            enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                             enhancedLlama.setLeashedTo(entity, true);
                             enhancedLlama.setAge(0);
                             enhancedLlama.setBirthTime(entity.getCommandSenderWorld(), -((ThreadLocalRandom.current().nextInt(25)*500000) + 10000000));
                             enhancedLlama.makeTraderLlama();
+                            enhancedLlama.setInitialDefaults();
                             enhancedLlama.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
                         }
                     }

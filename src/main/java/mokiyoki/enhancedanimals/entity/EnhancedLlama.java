@@ -597,6 +597,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     public void makeTraderLlama() {
+        this.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
         this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
         ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
         traderBlanket.getOrCreateTagElement("tradersblanket");

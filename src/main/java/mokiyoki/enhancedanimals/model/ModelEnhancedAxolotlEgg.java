@@ -42,9 +42,9 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityIn instanceof EnhancedAxolotlEgg) {
             EnhancedAxolotlEgg axolotlEgg = (EnhancedAxolotlEgg) entityIn;
-            this.egg.y = 0.5F * ((float) Math.cos(0.01F * axolotlEgg.getAddAnimationTick()));
-            this.egg.x = 0.5F * ((float) Math.cos((0.015F * axolotlEgg.getAddAnimationTick()+1)));
-            this.egg.z = 0.5F * ((float) Math.cos((0.015F * axolotlEgg.getAddAnimationTick()+1)));
+            this.egg.y = 0.5F * ((float) Math.cos(0.03F * axolotlEgg.getAddAnimationTick()));
+            this.egg.x = 0.5F * ((float) Math.cos((0.05F * axolotlEgg.getAddAnimationTick()+1)));
+            this.egg.z = 0.5F * ((float) Math.cos((0.05F * axolotlEgg.getAddAnimationTick()+2)));
         }
     }
 

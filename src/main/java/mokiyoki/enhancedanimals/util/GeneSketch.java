@@ -233,7 +233,7 @@ public class GeneSketch {
             for (int i = 0, l = splitGene.length; i < l; i++) {
                 if (splitGene[i].contains("-")) {
                     String[] subSplit = splitGene[i].split("-");
-                    c+= Math.abs(Integer.valueOf(subSplit[0])-Integer.valueOf(subSplit[1]));
+                    c+= Math.abs(Math.max(Integer.valueOf(subSplit[0]), Integer.valueOf(subSplit[1]))-Math.min(Integer.valueOf(subSplit[0]), Integer.valueOf(subSplit[1])));
                     if (!flag) {
                         flag = true;
                     }
@@ -244,14 +244,14 @@ public class GeneSketch {
 
             if (flag) {
                 int[] selections = new int[c];
-                for (int i = 0, l = 0, j = 0, k = splitGene.length; i < c && j < k;i++) {
+                for (int i = 0, l = 0, j = 0, k = splitGene.length; i < c;i++) {
                     if (l!=0) {
                         selections[i] = selections[i-1] + 1;
                         l-=1;
                     } else if (splitGene[j].contains("-")) {
                         String[] subSplit = splitGene[j].split("-");
-                        l = Math.abs(Integer.valueOf(subSplit[0])-Integer.valueOf(subSplit[1]));
-                        selections[i] = Integer.valueOf(subSplit[0]);
+                        l = Math.abs(Math.max(Integer.valueOf(subSplit[0]), Integer.valueOf(subSplit[1]))-Math.min(Integer.valueOf(subSplit[0]), Integer.valueOf(subSplit[1])));
+                        selections[i] = Math.min(Integer.valueOf(subSplit[0]), Integer.valueOf(subSplit[1]));
                         j++;
                     } else {
                         selections[i] = Integer.valueOf(splitGene[j]);
@@ -259,10 +259,7 @@ public class GeneSketch {
                     }
                 }
 
-                selections = Arrays.stream(selections).sorted().toArray();
-                c = ThreadLocalRandom.current().nextInt(0, c);
-
-                return selections[c];
+                return selections[ThreadLocalRandom.current().nextInt(0, c)];
 
             } else {
                 return Integer.valueOf(splitGene[(ThreadLocalRandom.current().nextInt((splitGene.length)))]);

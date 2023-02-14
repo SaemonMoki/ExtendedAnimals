@@ -581,6 +581,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                     this.noseWool.show();
                     mapOfScale.put("bridleN", ModelHelper.createScalings(1.0F, 1.0F, 0.6F, 0.0F, -0.01F, -0.35F));
                 } else {
+                    mapOfScale.put("bridleN", ModelHelper.createScalings(0.833333F, 0.833333F, 0.666666F, 0.0F, 0.05F, -0.25F));
                     this.noseWool.hide();
                 }
             } else {

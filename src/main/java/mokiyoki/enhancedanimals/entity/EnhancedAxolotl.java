@@ -75,6 +75,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -281,7 +283,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
-        float nbSize = 0.1F;
+        float nbSize = 0.25F;
         return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
     }
 
@@ -318,7 +320,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         return this.entityData.get(HAS_EGG) || this.pregnant;
     }
 
-    private void setHasEgg(boolean hasEgg) {
+    public void setHasEgg(boolean hasEgg) {
         this.entityData.set(HAS_EGG, hasEgg);
     }
 
@@ -582,7 +584,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 }
             }
 
-            if (gene[44] == 2 || gene[45] == 2) {
+            if (gene[38] == 2 || gene[39] == 2) {
                 gillsColour = gene[40] - 1;
                 gillsColour2 = gene[41] - 1;
             }
@@ -877,9 +879,8 @@ NBT read/write
             EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
-            if (this.mateGenetics != null) {
-                EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
-                EnhancedAxolotlBucket.setMateIsFemale(stack, this.mateGender);
+            if (this.hasEgg() && this.mateGenetics != null) {
+                EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
@@ -1166,7 +1167,15 @@ NBT read/write
          * Return true to set given position as destination
          */
         protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
-            return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
+            if (worldIn.isWaterAt(pos.above())) {
+                return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
+            } else {
+                if (worldIn.isWaterAt(pos)) {
+                    Block block = worldIn.getBlockState(pos).getBlock();
+                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block);
+                }
+            }
+            return false;
         }
     }
 

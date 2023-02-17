@@ -362,6 +362,19 @@ public class Genes {
         return Arrays.stream(this.sexlinked).noneMatch(i -> i == 0) && Arrays.stream(this.autosomal).noneMatch(i -> i == 0);
     }
 
+    public void fixGenes(int gene) {
+        for (int i = 0; i < this.sexlinked.length; i++) {
+            if (this.sexlinked[i] == 0) {
+                this.sexlinked[i] = gene;
+            }
+        }
+        for (int i = 0; i < this.autosomal.length; i++) {
+            if (this.autosomal[i] == 0) {
+                this.autosomal[i] = gene;
+            }
+        }
+    }
+
     public List<GeneLink> getLinkages(Species species) {
         List<GeneLink> linkages = new ArrayList<>();
         if (species == Species.CHICKEN) {

@@ -61,6 +61,32 @@ public class TexturingUtils {
         }
     }
 
+    public static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int y) {
+        if (baseImage.getWidth() == x && baseImage.getHeight() == y) {
+            int scale = appliedImage.getWidth() / x;
+            for (int iy = 0; iy < y; iy++) {
+                for (int ix = 0; ix < x; ix++) {
+                    layerPixel(baseImage, ix, iy, appliedImage.getPixelRGBA(ix*scale, iy*scale));
+                }
+            }
+        } else if (appliedImage.getWidth() == x && appliedImage.getHeight() == y) {
+            int scale = baseImage.getWidth() / x;
+            for (int iy = 0; iy < y; iy++) {
+                for (int ix = 0; ix < x; ix++) {
+                    int appliedImageRGBA = appliedImage.getPixelRGBA(ix, iy);
+
+                    layerPixel(baseImage, ix, iy, appliedImage.getPixelRGBA(ix*scale, iy*scale));
+                }
+            }
+        } else {
+            for(int i = 0; i < appliedImage.getHeight(); ++i) {
+                for(int j = 0; j < appliedImage.getWidth(); ++j) {
+                    layerPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
+                }
+            }
+        }
+    }
+
     public static void applyAlphaMaskBlend(NativeImage maskingImage, NativeImage appliedImage) {
         for (int i = 0; i < appliedImage.getHeight(); ++i) {
             for (int j = 0; j < appliedImage.getWidth(); ++j) {

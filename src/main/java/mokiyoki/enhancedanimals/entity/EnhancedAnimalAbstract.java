@@ -1739,8 +1739,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texture));
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, Integer RGB) {
+        TextureLayer textureLayer = new TextureLayer(texture);
+        textureLayer.setRGB(RGB);
+        textureGroup.addTextureLayers(textureLayer);
         this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
@@ -1769,7 +1777,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
         this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);

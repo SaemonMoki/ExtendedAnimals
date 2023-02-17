@@ -63,7 +63,7 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                EnhancedLayeredTexturer texture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration);
+                EnhancedLayeredTexturer texture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration, 64, 64);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                 textureCache.putInCache(s, resourcelocation);
                 entity.setBucketImageData(texture);

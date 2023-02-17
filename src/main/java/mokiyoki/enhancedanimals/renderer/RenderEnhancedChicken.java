@@ -4,6 +4,8 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -54,16 +56,16 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            String[] textures = entity.getVariantTexturePaths();
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
 
-            if (textures == null || textures.length == 0) {
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, 320, 320));
 //                if (genes[106] == 1 || genes[107] == 1) {
 //                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
 //                } else {

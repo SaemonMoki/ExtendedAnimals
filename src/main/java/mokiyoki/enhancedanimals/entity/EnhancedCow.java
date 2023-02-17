@@ -61,8 +61,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static mokiyoki.enhancedanimals.entity.textures.CowTextureHelper.calculateCowRGB;
-import static mokiyoki.enhancedanimals.entity.textures.CowTextureHelper.calculateCowTextures;
+import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCowRGB;
+import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCowTextures;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 

@@ -34,16 +34,21 @@ public class EnhancedLayeredTexturer extends AbstractTexture {
     private boolean hasImage = false;
     private NativeImage image;
 
-    public EnhancedLayeredTexturer(String modLocation, TextureGrouping textureGrouping, Colouration colouration) {
+    private final int x;
+    private final int y;
+
+    public EnhancedLayeredTexturer(String modLocation, TextureGrouping textureGrouping, Colouration colouration, int x, int y) {
         this.modLocation = modLocation;
         this.animalTextureGrouping = textureGrouping;
         this.colouration = colouration;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public void load(ResourceManager manager) throws IOException {
         if (animalTextureGrouping != null) {
-            NativeImage nativeImage = animalTextureGrouping.processGrouping(this.modLocation, manager, this.colouration);
+            NativeImage nativeImage = animalTextureGrouping.processGrouping(this.modLocation, manager, this.colouration, this.x, this.y);
             TextureUtil.prepareImage(this.getId(), nativeImage.getWidth(), nativeImage.getHeight());
             nativeImage.upload(0, 0, 0, false);
 

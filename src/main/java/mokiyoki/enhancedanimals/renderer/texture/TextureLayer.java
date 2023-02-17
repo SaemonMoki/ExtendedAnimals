@@ -34,6 +34,10 @@ public class TextureLayer {
         return RGB;
     }
 
+    public void setRGB(Integer RGB) {
+        this.RGB = RGB;
+    }
+
     public String getTexture() {
         return texture;
     }

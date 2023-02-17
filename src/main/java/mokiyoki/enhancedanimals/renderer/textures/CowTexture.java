@@ -1,10 +1,10 @@
-package mokiyoki.enhancedanimals.entity.textures;
+package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 
-public class CowTextureHelper {
+public class CowTexture {
 
     public static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"

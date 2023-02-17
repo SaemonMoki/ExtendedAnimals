@@ -20,12 +20,12 @@ public class TextureGrouping {
         this.texturingType = texturingType;
     }
 
-    public NativeImage processGrouping(String modLocation, ResourceManager manager, Colouration colouration) {
+    public NativeImage processGrouping(String modLocation, ResourceManager manager, Colouration colouration, int x, int y) {
         try {
             List<NativeImage> groupImages = new ArrayList<>();
 
             for (TextureGrouping group : textureGroupings) {
-                NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration);
+                NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration, x, y);
                 if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
             }
 
@@ -37,7 +37,7 @@ public class TextureGrouping {
                 }
             }
 
-            NativeImage mergedGroupImage = applyGroupMerging(groupImages, colouration);
+            NativeImage mergedGroupImage = applyGroupMerging(groupImages, x, y);
 
             return mergedGroupImage;
         } catch (Exception e) {
@@ -46,15 +46,15 @@ public class TextureGrouping {
         }
     }
 
-    private NativeImage applyGroupMerging(List<NativeImage> groupImages, Colouration colouration) {
+    private NativeImage applyGroupMerging(List<NativeImage> groupImages, int x, int y) {
         if (!groupImages.isEmpty()) {
             NativeImage baseImage = groupImages.get(0);
             groupImages.remove(0);
 
             switch(texturingType) {
-                case MERGE_GROUP -> layerGroups(baseImage, groupImages);
-                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages);
-                case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
+                case MERGE_GROUP -> layerGroups(baseImage, groupImages, x, y);
+                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages, x, y);
+                case AVERAGE_GROUP -> blendAverage(baseImage, groupImages, x, y);
             }
 
             return baseImage;
@@ -63,13 +63,17 @@ public class TextureGrouping {
         return null;
     }
 
-    private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
+    private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages, int x, int y) {
         for (NativeImage applyImage : groupImages) {
-            applyPixelLayer(compiledImage, applyImage);
+            if (compiledImage.getWidth() == applyImage.getWidth() && compiledImage.getHeight() == applyImage.getHeight()) {
+                applyPixelLayer(compiledImage, applyImage);
+            } else {
+                applyPixelLayer(compiledImage, applyImage, x, y);
+            }
         }
     }
 
-    private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
+    private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages, int x, int y) {
         if (!groupImages.isEmpty()) {
             NativeImage mergeGroup = groupImages.get(0);
             //First merge image groups
@@ -85,7 +89,7 @@ public class TextureGrouping {
         }
     }
 
-    private void blendAverage(NativeImage compiledImage, List<NativeImage> groupImages) {
+    private void blendAverage(NativeImage compiledImage, List<NativeImage> groupImages, int x, int y) {
         applyAverageBlend(compiledImage, groupImages);
     }
 
@@ -114,6 +118,9 @@ public class TextureGrouping {
                 break;
             case APPLY_EYE_RIGHT_COLOUR:
                 layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getRightEyeColour()));
+                break;
+            case APPLY_RGB:
+                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
                 break;
 
         }

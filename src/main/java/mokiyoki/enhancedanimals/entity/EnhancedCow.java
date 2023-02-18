@@ -597,11 +597,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         this.colouration = super.getRgb();
         Genes genes = getSharedGenes();
 
-        calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());
+        if (genes != null) {
+            calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());
 
-        if (this.isBaby() && !genes.has(0,0) && this.updateColouration) {
-            colouration.setBabyAlpha(this.growthAmount());
-            this.updateColouration = false;
+            if (this.isBaby() && !genes.has(0,0) && this.updateColouration) {
+                colouration.setBabyAlpha(this.growthAmount());
+                this.updateColouration = false;
+            }
         }
 
         return this.colouration;

@@ -14,6 +14,7 @@ public class ChickenPhenotype implements Phenotype {
     public Beard beard;
     public boolean butterCup = false;
     public boolean isVultureHocked;
+    public boolean isScaleless;
     public boolean isNakedNeck;
     public boolean earTufts;
     public boolean rumpless;
@@ -34,6 +35,7 @@ public class ChickenPhenotype implements Phenotype {
 
     public ChickenPhenotype(Genes genes) {
         int[] gene = genes.getAutosomalGenes();
+        this.isScaleless = gene[108] == 2 && gene[109] == 2;
         this.isNakedNeck = gene[52] == 1 || gene[53] == 1;
         this.rumpless = gene[72] == 2 || gene[73] == 2;
         this.earTufts = gene[150] == 2 || gene[151] == 2;

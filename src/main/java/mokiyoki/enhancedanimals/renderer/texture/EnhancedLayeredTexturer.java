@@ -37,6 +37,13 @@ public class EnhancedLayeredTexturer extends AbstractTexture {
     private final int x;
     private final int y;
 
+    public EnhancedLayeredTexturer(String modLocation, TextureGrouping textureGrouping, Colouration colouration, int s) {
+        this.modLocation = modLocation;
+        this.animalTextureGrouping = textureGrouping;
+        this.colouration = colouration;
+        this.x = s;
+        this.y = s;
+    }
     public EnhancedLayeredTexturer(String modLocation, TextureGrouping textureGrouping, Colouration colouration, int x, int y) {
         this.modLocation = modLocation;
         this.animalTextureGrouping = textureGrouping;

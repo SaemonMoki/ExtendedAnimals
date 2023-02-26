@@ -26,7 +26,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
-    private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
     public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "chicken"), "chicken_layer");
 
@@ -65,12 +64,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, 320, 320));
-//                if (genes[106] == 1 || genes[107] == 1) {
-//                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
-//                } else {
-//                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, textures, null));
-//                }
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, silkie ? 64 : 320));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

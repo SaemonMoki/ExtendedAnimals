@@ -22,14 +22,59 @@ public class TexturingUtils {
     final static Logger LOGGER = LogManager.getLogger();
     private final static float COLOUR_DEGREE = 1F/255F;
 
-    public static void createTexture(TextureLayer layer, String modLocation, ResourceManager manager) {
-        layer.setTextureImage(loadNativeImage(layer.getTexture(), manager, modLocation));
+    public static void createTexture(TextureLayer layer, String modLocation, ResourceManager manager, int x, int y) {
+        layer.setTextureImage(loadNativeImage(layer.getTexture(), manager, modLocation, x, y));
     }
 
-    public static NativeImage loadNativeImage(String texture, ResourceManager manager, String modLocation) {
+    public static NativeImage loadNativeImage(String texture, ResourceManager manager, String modLocation, int x, int y) {
         try {
             Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture));
-            return NativeImage.read(iresource.getInputStream());
+            NativeImage image = NativeImage.read(iresource.getInputStream());
+            if (image.getWidth() != x || image.getHeight() != y) {
+                NativeImage image1 = new NativeImage(x, y, true);
+                image1.downloadTexture(0, true);
+                int xb = image.getWidth();
+                int yb = image.getHeight();
+                if (xb >= x && yb >= y) {
+                    int scale = (int)(((float) xb)/((float) x));
+                    int scaleSize = scale*scale;
+                    for (int i = 0; i < y; i++) {
+                        for (int j = 0; j < x;j++) {
+                            float r = 0.0F;
+                            float g = 0.0F;
+                            float b = 0.0F;
+                            float a = 0.0F;
+                            float f = 1F/255F;
+                            for (int k = 0; k < scale; k++) {
+                                for (int l = 0; l < scale; l++) {
+                                    int getX = (j*scale)+l;
+                                    int getY = (i*scale)+k;
+                                    int color = image.getPixelRGBA(getX, getY);
+                                    float val = getR(color)*f;
+                                    r += val*val;
+                                    val = (float)getG(color)*f;
+                                    g += val*val;
+                                    val = (float)getB(color)*f;
+                                    b += val*val;
+                                    val = (float)getA(color)*f;
+                                    a += val*val;
+                                }
+                            }
+                            image1.setPixelRGBA(j, i, combine( ((int)(255*(Math.sqrt(a/scaleSize)))), ((int)(255*(Math.sqrt(b/scaleSize)))), ((int)(255*(Math.sqrt(g/scaleSize)))), ((int)(255*(Math.sqrt(r/scaleSize))))));
+                        }
+                    }
+
+                } else if (xb <= x && yb <=y) {
+                    int scale = (int)(((float) x)/((float) xb));
+                    for (int i = 0; i < yb; i++) {
+                        for (int j = 0; j < xb; j++) {
+                            image1.fillRect(j*scale, i*scale, scale, scale, image.getPixelRGBA(j, i));
+                        }
+                    }
+                }
+                image = image1;
+            }
+            return image;
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't load layered image", e);
         }
@@ -61,27 +106,44 @@ public class TexturingUtils {
         }
     }
 
-    public static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int y) {
-        if (baseImage.getWidth() == x && baseImage.getHeight() == y) {
-            int scale = appliedImage.getWidth() / x;
-            for (int iy = 0; iy < y; iy++) {
-                for (int ix = 0; ix < x; ix++) {
-                    layerPixel(baseImage, ix, iy, appliedImage.getPixelRGBA(ix*scale, iy*scale));
-                }
-            }
-        } else if (appliedImage.getWidth() == x && appliedImage.getHeight() == y) {
-            int scale = baseImage.getWidth() / x;
-            for (int iy = 0; iy < y; iy++) {
-                for (int ix = 0; ix < x; ix++) {
-                    int appliedImageRGBA = appliedImage.getPixelRGBA(ix, iy);
+    private static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int y) {
+        int bw = baseImage.getWidth();
+        int bh = baseImage.getHeight();
+        int aw = appliedImage.getWidth();
+        int ah = appliedImage.getHeight();
 
-                    layerPixel(baseImage, ix, iy, appliedImage.getPixelRGBA(ix*scale, iy*scale));
-                }
+        if (bw==aw && bh==ah) {
+            applyPixelLayer(baseImage, appliedImage);
+        } else if (bw == x && bh == y) {
+            if (aw < x && ah < y) {
+                applyScaledPixelLayer(baseImage, appliedImage, x, aw, ah);
             }
-        } else {
-            for(int i = 0; i < appliedImage.getHeight(); ++i) {
-                for(int j = 0; j < appliedImage.getWidth(); ++j) {
-                    layerPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
+        } else if (aw == x && bh == y) {
+            if (bw < x && bw < y) {
+                int scale = x / bw;
+//                baseImage.resizeSubRectTo();
+//                for (int i = 0; i < bh; ++i) {
+//                    for (int j = 0; j < bw; ++j) {
+//                        scaledBase.fillRect(i*scale,j*scale, (i*scale)+scale, (j*scale)+scale, baseImage.getPixelRGBA(j,i));
+//                    }
+//                }
+//                baseImage = new NativeImage(x, y, true);
+//                baseImage.copyFrom(scaledBase);
+//                applyPixelLayer(baseImage, appliedImage);
+//                scaledBase.close();
+            }
+        }
+    }
+
+    public static void applyScaledPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int aw, int ah) {
+        int scale = x / aw;
+        for (int i = 0; i < ah; ++i) {
+            for (int j = 0; j < aw; ++j) {
+                int aPixelRGB = appliedImage.getPixelRGBA(j, i);
+                for (int k = 0; k < scale; k++) {
+                    for (int l = 0; l < scale; l++) {
+                        layerPixel(baseImage, (j * scale) + k, (i * scale) + l, aPixelRGB);
+                    }
                 }
             }
         }

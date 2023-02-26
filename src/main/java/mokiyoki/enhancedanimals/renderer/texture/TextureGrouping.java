@@ -31,13 +31,13 @@ public class TextureGrouping {
 
             for (TextureLayer layer : textureLayers) {
                 if (!layer.getTexture().isEmpty()) {
-                    createTexture(layer, modLocation, manager);
+                    createTexture(layer, modLocation, manager, x, y);
                     applyLayerSpecifics(layer, colouration);
                     groupImages.add(layer.getTextureImage());
                 }
             }
 
-            NativeImage mergedGroupImage = applyGroupMerging(groupImages, x, y);
+            NativeImage mergedGroupImage = applyGroupMerging(groupImages);
 
             return mergedGroupImage;
         } catch (Exception e) {
@@ -46,15 +46,15 @@ public class TextureGrouping {
         }
     }
 
-    private NativeImage applyGroupMerging(List<NativeImage> groupImages, int x, int y) {
+    private NativeImage applyGroupMerging(List<NativeImage> groupImages) {
         if (!groupImages.isEmpty()) {
             NativeImage baseImage = groupImages.get(0);
             groupImages.remove(0);
 
             switch(texturingType) {
-                case MERGE_GROUP -> layerGroups(baseImage, groupImages, x, y);
-                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages, x, y);
-                case AVERAGE_GROUP -> blendAverage(baseImage, groupImages, x, y);
+                case MERGE_GROUP -> layerGroups(baseImage, groupImages);
+                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages);
+                case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
             }
 
             return baseImage;
@@ -63,17 +63,13 @@ public class TextureGrouping {
         return null;
     }
 
-    private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages, int x, int y) {
+    private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
         for (NativeImage applyImage : groupImages) {
-            if (compiledImage.getWidth() == applyImage.getWidth() && compiledImage.getHeight() == applyImage.getHeight()) {
-                applyPixelLayer(compiledImage, applyImage);
-            } else {
-                applyPixelLayer(compiledImage, applyImage, x, y);
-            }
+            applyPixelLayer(compiledImage, applyImage);
         }
     }
 
-    private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages, int x, int y) {
+    private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
         if (!groupImages.isEmpty()) {
             NativeImage mergeGroup = groupImages.get(0);
             //First merge image groups
@@ -89,7 +85,7 @@ public class TextureGrouping {
         }
     }
 
-    private void blendAverage(NativeImage compiledImage, List<NativeImage> groupImages, int x, int y) {
+    private void blendAverage(NativeImage compiledImage, List<NativeImage> groupImages) {
         applyAverageBlend(compiledImage, groupImages);
     }
 

@@ -15,7 +15,7 @@ apply plugin: 'kotlin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0_8_20'
+version = '0_8_21'
 group = 'com.mokiyoki.enhancedanimals' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'GeneticAnimals'
 

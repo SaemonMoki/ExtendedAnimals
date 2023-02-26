@@ -5,8 +5,6 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ChickenTexture {
     /**
@@ -18,21 +16,31 @@ public class ChickenTexture {
      *
      */
 
+    private static final String[] PATTERN = new String[] {
+            "duckwing_male", "duckwing_female", "bsinglelace"
+    };
+
     public static void calculateChickenTextures(EnhancedChicken chicken) {
         if (chicken.getSharedGenes() != null) {
             boolean isFemale = chicken.getOrSetIsFemale();
             int[] sGene = chicken.getSharedGenes().getSexlinkedGenes();
             int[] gene = chicken.getSharedGenes().getAutosomalGenes();
 
+            int pattern = isFemale ? 2 : 0;
+
+
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-//            TextureGrouping featherGroup = new TextureGrouping(TexturingType.ALPHA_GROUP);
+            TextureGrouping featherGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+//            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather length cutout");
+            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_base.png", calculateGroundRGB(sGene, gene, isFemale));
+            chicken.addTextureToAnimalTextureGrouping(featherGroup, "pattern/"+PATTERN[pattern]+".png", pattern, calculateGroundRGB(sGene, gene, isFemale));
+            parentGroup.addGrouping(featherGroup);
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            chicken.addTextureToAnimalTextureGrouping(detailGroup, "skin.png", calculateChickenSkinRGB(sGene, gene, isFemale));
-            chicken.addTextureToAnimalTextureGrouping(detailGroup, "shanks.png", calculateChickenShanksRGB(sGene, gene, isFemale));
-//            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RED, "face.png");
-//            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RED, "comb.png");
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, "skin.png", calculateSkinRGB(sGene, gene, isFemale));
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, "shanks.png", calculateShanksRGB(sGene, gene, isFemale));
+            chicken.addTextureToAnimalTextureGrouping(detailGroup,"comb_wattles.png", calculateCombRGB(sGene, gene, isFemale));
 //            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_DYE, "ear.png");
 //            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "ear.png");
             chicken.addTextureToAnimalTextureGrouping(detailGroup, "eyes_black.png");
@@ -42,11 +50,37 @@ public class ChickenTexture {
         }
     }
 
-    public static int calculateChickenShanksRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
+    private static int calculateGroundRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
+        if (isFemale) {
+            if (sexlinkGenes[0] == 1) {
+                return 13808640;
+            }
+        } else {
+            if (sexlinkGenes[0] == 1 || sexlinkGenes[1] == 1) {
+                return sexlinkGenes[0] == sexlinkGenes[1]? 13808640 : 13808740;
+            }
+        }
+        return 16777215;
+    }
+    private static int calculateShanksRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
+        if (isFemale?(sexlinkGenes[8]==1):(sexlinkGenes[8]==1 && sexlinkGenes[9]==1)) {
+            if (autosomalGenes[42]==1 || autosomalGenes[43]==1) {
+                return autosomalGenes[42]==autosomalGenes[43]? 3289655 : 6579303;
+            }
+        }
         return 16777215;
     }
 
-    public static int calculateChickenSkinRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
+    private static int calculateSkinRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
+        if (isFemale?(sexlinkGenes[8]==1):(sexlinkGenes[8]==1 && sexlinkGenes[9]==1)) {
+            if (autosomalGenes[42]==1 || autosomalGenes[43]==1) {
+                return autosomalGenes[42]==autosomalGenes[43]? 3289655 : 6579303;
+            }
+        }
+        return 16777215;
+    }
+
+    private static int calculateCombRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
         if (isFemale?(sexlinkGenes[8]==1):(sexlinkGenes[8]==1 && sexlinkGenes[9]==1)) {
             if (autosomalGenes[42]==1 || autosomalGenes[43]==1) {
                 return autosomalGenes[42]==autosomalGenes[43]? 3289655 : 6579303;

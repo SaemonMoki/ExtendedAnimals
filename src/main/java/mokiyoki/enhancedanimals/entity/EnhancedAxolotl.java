@@ -1172,7 +1172,8 @@ NBT read/write
             } else {
                 if (worldIn.isWaterAt(pos)) {
                     Block block = worldIn.getBlockState(pos).getBlock();
-                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block);
+                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) ||
+                            Blocks.SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock()) || Blocks.TALL_SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock());
                 }
             }
             return false;

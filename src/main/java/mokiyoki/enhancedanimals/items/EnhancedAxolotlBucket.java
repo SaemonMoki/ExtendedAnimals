@@ -277,7 +277,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             axolotl.setSharedGenes(genes);
 
             genes = this.getMateGenes(stack);
-            if (genes.isValid()) {
+            if (genes.isValid() && genes.getSexlinkedGenes().length > 0 && genes.getAutosomalGenes().length > 0) {
                 axolotl.setMateGender(this.getMateIsFemale(stack));
                 axolotl.setMateGenes(this.getMateGenes(stack));
                 axolotl.setHasEgg(true);

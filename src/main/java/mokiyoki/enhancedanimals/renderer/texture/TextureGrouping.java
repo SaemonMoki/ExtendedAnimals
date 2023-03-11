@@ -6,8 +6,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.renderer.texture.TexturingUtils.*;
 

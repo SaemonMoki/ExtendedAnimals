@@ -289,7 +289,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Mottled [ wildtype, mottled ]  // cold biome exclusive
+        //Mottled [ wildtype, mottled, white crested ]  // cold biome exclusive
         if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 3) {
             autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
@@ -1602,18 +1602,17 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[193] = (1);
         }
 
-        //Body Angle5 [wildtype, angled ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[194] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[194] = (1);
-        }
+        //Body Angle5 [ wildtype, angled ]
+        autosomalGenes[194] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[195] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[195] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[195] = (1);
-        }
+        //Hen Feathering [ wildtype, hen feathering ]
+        autosomalGenes[196] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[197] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //Feather Growth Gene [ wildtype, feather growth ]
+        autosomalGenes[198] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[199] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         return new Genes(sexlinkedGenes, autosomalGenes);
 

@@ -75,7 +75,7 @@ public class TexturingUtils {
                 image = image1;
             }
             return image;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalStateException("Couldn't load layered image", e);
         }
     }
@@ -102,49 +102,6 @@ public class TexturingUtils {
         for(int i = 0; i < appliedImage.getHeight(); ++i) {
             for(int j = 0; j < appliedImage.getWidth(); ++j) {
                 layerPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
-            }
-        }
-    }
-
-    private static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int y) {
-        int bw = baseImage.getWidth();
-        int bh = baseImage.getHeight();
-        int aw = appliedImage.getWidth();
-        int ah = appliedImage.getHeight();
-
-        if (bw==aw && bh==ah) {
-            applyPixelLayer(baseImage, appliedImage);
-        } else if (bw == x && bh == y) {
-            if (aw < x && ah < y) {
-                applyScaledPixelLayer(baseImage, appliedImage, x, aw, ah);
-            }
-        } else if (aw == x && bh == y) {
-            if (bw < x && bw < y) {
-                int scale = x / bw;
-//                baseImage.resizeSubRectTo();
-//                for (int i = 0; i < bh; ++i) {
-//                    for (int j = 0; j < bw; ++j) {
-//                        scaledBase.fillRect(i*scale,j*scale, (i*scale)+scale, (j*scale)+scale, baseImage.getPixelRGBA(j,i));
-//                    }
-//                }
-//                baseImage = new NativeImage(x, y, true);
-//                baseImage.copyFrom(scaledBase);
-//                applyPixelLayer(baseImage, appliedImage);
-//                scaledBase.close();
-            }
-        }
-    }
-
-    public static void applyScaledPixelLayer(NativeImage baseImage, NativeImage appliedImage, int x, int aw, int ah) {
-        int scale = x / aw;
-        for (int i = 0; i < ah; ++i) {
-            for (int j = 0; j < aw; ++j) {
-                int aPixelRGB = appliedImage.getPixelRGBA(j, i);
-                for (int k = 0; k < scale; k++) {
-                    for (int l = 0; l < scale; l++) {
-                        layerPixel(baseImage, (j * scale) + k, (i * scale) + l, aPixelRGB);
-                    }
-                }
             }
         }
     }
@@ -210,6 +167,21 @@ public class TexturingUtils {
         int j = (int)(maskingAlpha * originalAlpha * 255F);
 
         maskingImage.setPixelRGBA(xIn, yIn, j << 24 | (i >> 16 & 255) << 16 | (i >> 8 & 255) << 8 | (i & 255));
+    }
+
+    protected static void cutoutAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
+        int maskA = maskingImage.getPixelRGBA(xIn, yIn) >> 24 & 255;
+        if (maskA != 255) {
+            int colour = nativeImage.getPixelRGBA(xIn, yIn);
+            maskA = 255-maskA;
+            float a = ((float)maskA)/255F;
+            a = a * ((colour >> 24 & 255)/255F);
+            maskA = (int)(a * 255F);
+
+            maskingImage.setPixelRGBA(xIn, yIn, maskA << 24 | (colour >> 16 & 255) << 16 | (colour >> 8 & 255) << 8 | (colour & 255));
+        } else {
+            maskingImage.setPixelRGBA(xIn, yIn, 0);
+        }
     }
 
     private static void averageAlpha(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {

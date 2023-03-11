@@ -5,13 +5,13 @@ public enum TexturingType {
     //Group texturing types
 
     MERGE_GROUP, //the default for groups, simply merges each image into each other via pixel blending
-    ALPHA_GROUP, //the grouping used for alpha masking layering. The first image(grouped images) in the group is treated as the mask the other group will be applied against it
+    MASK_GROUP, //the grouping used for alpha masking layering. The first image(grouped images) in the group is treated as the mask the other group will be applied against it
     AVERAGE_GROUP, //this grouping will average the individual pixels for all textures in the group
+    CUTOUT_GROUP, //a layer that merges its textures to cutout the textures in its sub-group
 
     /*******/
 
     //Layer texturing types
-
     APPLY_RED, //a layer specific type, used to apply a red blend to an individual texture from global rgb
     APPLY_BLACK, //a layer specific type, used to apply a red blend to an individual texture from global rgb
     APPLY_COLLAR_COLOUR, //a layer specific type, used to apply the collar colour to an individual texture from global rgb

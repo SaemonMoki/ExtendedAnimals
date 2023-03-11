@@ -159,8 +159,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         PartDefinition bBeard = bHead.addOrReplaceChild("bBeard", CubeListBuilder.create(), PartPose.offset(0.0F, 2.5F, 0.0F));
         PartDefinition bLeftWing = bBody.addOrReplaceChild("bWingL", CubeListBuilder.create(), PartPose.offset(2.5F, -5.0F, -3.0F));
         PartDefinition bRightWing = bBody.addOrReplaceChild("bWingR", CubeListBuilder.create(), PartPose.offset(-2.5F, -5.0F, -3.0F));
-        PartDefinition bLeftLeg = bChicken.addOrReplaceChild("bLegL", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -1.0F));
-        PartDefinition bRightLeg = bChicken.addOrReplaceChild("bLegR", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -1.0F));
+        PartDefinition bLeftLeg = bChicken.addOrReplaceChild("bLegL", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -0.5F));
+        PartDefinition bRightLeg = bChicken.addOrReplaceChild("bLegR", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -0.5F));
             bChicken.addOrReplaceChild("bFootL", CubeListBuilder.create(), PartPose.ZERO);
             bChicken.addOrReplaceChild("bFootR", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition bSaddle = bBody.addOrReplaceChild("bSaddle", CubeListBuilder.create(), PartPose.offset(0.0F, -6.0F, 2.5F));
@@ -533,12 +533,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         );
 
         bRightWing.addOrReplaceChild("wingRM", CubeListBuilder.create()
-                        .texOffs(16, 24)
+                        .texOffs(30, 24)
                         .addBox(-1.0F, 0.0F, 0.0F, 1, 4, 6),
                 PartPose.ZERO
         );
         bRightWing.addOrReplaceChild("wingRS", CubeListBuilder.create()
-                        .texOffs(17, 25)
+                        .texOffs(31, 25)
                         .addBox(-1.0F, 0.0F, 0.0F, 1, 3, 5),
                 PartPose.ZERO
         );
@@ -551,6 +551,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         /**
          *      Legs
          */
+        bLeftLeg.addOrReplaceChild("thighL", CubeListBuilder.create()
+                        .texOffs(40, 59)
+                        .addBox(-2.5F, 3.0F, 0.5F, 2, 2, 3),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("thighR", CubeListBuilder.create()
+                        .texOffs(54, 59)
+                        .addBox(0.5F, 3.0F, 0.5F, 2, 2, 3),
+                PartPose.ZERO
+        );
+
         bLeftLeg.addOrReplaceChild("legLS", CubeListBuilder.create()
                         .texOffs(8, 21)
                         .addBox(-2.0F, 3.5F, 1.0F, 1, 3, 1),
@@ -602,49 +613,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         /**
          *      Leg Feathers
          */
-        bLeftLeg.addOrReplaceChild("thighL", CubeListBuilder.create()
-                        .texOffs(40, 59)
-                        .addBox(-3.0F, 3.0F, 0.5F, 2, 2, 3),
-                PartPose.ZERO
-        );
         bLeftLeg.addOrReplaceChild("bloomersL", CubeListBuilder.create()
                         .texOffs(50, 23)
                         .addBox(-3.75F, 3.0F, 0.0F, 3, 3, 4, new CubeDeformation(0.5F)),
-                PartPose.ZERO
-        );
-        bLeftLeg.addOrReplaceChild("pantsL", CubeListBuilder.create()
-                        .mirror(true)
-                        .texOffs(1, 35)
-                        .addBox(-3.1F, 4.0F, -0.001F, 2, 3, 3),
-                PartPose.ZERO
-        );
-        bLeftLeg.addOrReplaceChild("pantsLL", CubeListBuilder.create()
-                        .mirror(true)
-                        .texOffs(1, 35)
-                        .addBox(-3.1F, 4.0F, 0.0F, 2, 3, 3)
-                        .addBox(-3.1F, 1.0F, 0.0F, 2, 1, 3),
-                PartPose.ZERO
-        );
-        bLeftLeg.addOrReplaceChild("bootsL", CubeListBuilder.create()
-                        .mirror(true)
-                        .texOffs(12, 34)
-                        .addBox(-3.5F, 7.0F, -2.5F, 2, 2, 5),
-                PartPose.ZERO
-        );
-        bLeftLeg.addOrReplaceChild("toeFeathersL", CubeListBuilder.create()
-                        .mirror(true)
-                        .texOffs(28, 36)
-                        .addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5),
-                PartPose.ZERO
-        );
-        bLeftLeg.addOrReplaceChild("vultureHocksL", CubeListBuilder.create()
-                        .texOffs(33, 32)
-                        .addBox(-3.5F, 3.0F, 2.5F, 0, 3, 4, new CubeDeformation(-0.2F)),
-                PartPose.ZERO
-        );
-        bRightLeg.addOrReplaceChild("thighR", CubeListBuilder.create()
-                        .texOffs(54, 59)
-                        .addBox(1.0F, 3.0F, 0.5F, 2, 2, 3),
                 PartPose.ZERO
         );
         bRightLeg.addOrReplaceChild("bloomersR", CubeListBuilder.create()
@@ -652,30 +623,57 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(0.75F, 3.0F, 0.0F, 3, 3, 4, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
+
+        bLeftLeg.addOrReplaceChild("pantsL", CubeListBuilder.create()
+                        .texOffs(40, 11)
+                        .addBox(-3.5F, 5.901F, 0.5F, 2, 3, 2),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("pantsLL", CubeListBuilder.create()
+                        .texOffs(40, 11)
+                        .addBox(-3.5F, 5.901F, 0.5F, 2, 4, 2),
+                PartPose.ZERO
+        );
         bRightLeg.addOrReplaceChild("pantsR", CubeListBuilder.create()
-                        .texOffs(1, 35)
-                        .addBox(1.1F, 4.0F, -0.001F, 2, 3, 3),
+                        .texOffs(32, 11)
+                        .addBox(1.5F, 5.901F, 0.5F, 2, 3, 2),
                 PartPose.ZERO
         );
         bRightLeg.addOrReplaceChild("pantsLR", CubeListBuilder.create()
-                        .texOffs(1, 35)
-                        .addBox(1.1F, 4.0F, 0.0F, 2, 3, 3)
-                        .addBox(1.1F, 1.0F, 0.0F, 2, 1, 3),
+                        .texOffs(32, 11)
+                        .addBox(1.5F, 5.901F, 0.5F, 2, 4, 2),
                 PartPose.ZERO
         );
+
+        bLeftLeg.addOrReplaceChild("bootsL", CubeListBuilder.create()
+                        .texOffs(38, 0)
+                        .addBox(0.0F, 3.9F, 0.0F, 5, 5, 0),
+                PartPose.offsetAndRotation(-2.25F, 0.0F, 4.0F, 0.0F, Mth.HALF_PI, 0.0F)
+        );
         bRightLeg.addOrReplaceChild("bootsR", CubeListBuilder.create()
-                        .texOffs(12, 34)
-                        .addBox(1.5F, 7.0F, -2.5F, 2, 2, 5),
+                        .texOffs(28, 0)
+                        .addBox(0.0F, 3.9F, 0.0F, 5, 5, 0),
+                PartPose.offsetAndRotation(2.25F, 0.0F, 4.0F, 0.0F, Mth.HALF_PI, 0.0F)
+        );
+
+        bLeftLeg.addOrReplaceChild("toeFeathersL", CubeListBuilder.create()
+                        .texOffs(4, 12)
+                        .addBox(-6.0F, 8.9F, -2.0F, 5, 0, 6),
                 PartPose.ZERO
         );
         bRightLeg.addOrReplaceChild("toeFeathersR", CubeListBuilder.create()
-                        .texOffs(28, 36)
-                        .addBox(3.5F, 8.9F, -2.5F, 4, 1, 5),
+                        .texOffs(6, 24)
+                        .addBox(1.0F, 8.9F, -2.0F, 5, 0, 6),
+                PartPose.ZERO
+        );
+
+        bLeftLeg.addOrReplaceChild("vultureHocksL", CubeListBuilder.create()
+                        .texOffs(33, 32)
+                        .addBox(-3.5F, 3.0F, 2.5F, 0, 3, 4, new CubeDeformation(-0.2F)),
                 PartPose.ZERO
         );
         bRightLeg.addOrReplaceChild("vultureHocksR", CubeListBuilder.create()
-                        .mirror(true)
-                        .texOffs(33, 32)
+                        .texOffs(28, 23)
                         .addBox(3.5F, 3.0F, 2.5F, 0, 3, 4, new CubeDeformation(-0.2F)),
                 PartPose.ZERO
         );
@@ -694,7 +692,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          */
         bCoverts.addOrReplaceChild("covertsMF", CubeListBuilder.create()
                         .texOffs(48, 0)
-                        .addBox(-1.0F, -6.75F, -1.5F, 2, 7, 6),
+                        .addBox(-1.0F, -7.25F, -1.5F, 2, 7, 6),
                 PartPose.ZERO
         );
 
@@ -703,7 +701,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          */
         bTail.addOrReplaceChild("tail", CubeListBuilder.create()
                         .texOffs(24, 14)
-                        .addBox(0.0F, -8.75F, -2.0F, 0, 16, 20),
+                        .addBox(0.0F, -9.5F, -2.0F, 0, 16, 20),
                 PartPose.ZERO
         );
 
@@ -715,7 +713,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-5.0F, -2.0F, -3.0F, 10,  2, 8)
                         .texOffs(28, 54)
                         .addBox(0.0F, -2.6666F, -5.0F, 0,  4, 4),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(0.0F, 3.5F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
         );
         bChicken.addOrReplaceChild("collarH", CubeListBuilder.create()
                         .texOffs(30, 52)
@@ -1218,7 +1216,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 /**
                  *      Neck
                  */
-                this.hackle.show(chicken.isNakedNeck);
+                this.hackle.show(!chicken.isNakedNeck);
 
                 /**
                  *      Beard

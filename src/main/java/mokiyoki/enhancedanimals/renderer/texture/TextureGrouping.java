@@ -37,9 +37,7 @@ public class TextureGrouping {
                 }
             }
 
-            NativeImage mergedGroupImage = applyGroupMerging(groupImages);
-
-            return mergedGroupImage;
+            return applyGroupMerging(groupImages);
         } catch (Exception e) {
             throw new IllegalStateException(
                     "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);
@@ -48,19 +46,35 @@ public class TextureGrouping {
 
     private NativeImage applyGroupMerging(List<NativeImage> groupImages) {
         if (!groupImages.isEmpty()) {
-            NativeImage baseImage = groupImages.get(0);
-            groupImages.remove(0);
+            NativeImage baseImage = groupImages.remove(0);
 
             switch(texturingType) {
                 case MERGE_GROUP -> layerGroups(baseImage, groupImages);
-                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages);
+                case MASK_GROUP -> maskAlpha(baseImage, groupImages);
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
+                case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
             }
 
             return baseImage;
         }
 
         return null;
+    }
+
+    private void cutoutTextures(NativeImage cutoutImage, List<NativeImage> groupImages) {
+        if (!groupImages.isEmpty()) {
+            NativeImage image = groupImages.remove(0);
+            if (!groupImages.isEmpty()) {
+                layerGroups(image, groupImages);
+            }
+            int h = cutoutImage.getHeight();
+            int w = cutoutImage.getWidth();
+            for (int i = 0; i < h; i++) {
+                for (int j = 0; j < w; j++) {
+                    cutoutAlpha(j, i, cutoutImage, image);
+                }
+            }
+        }
     }
 
     private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
@@ -118,7 +132,6 @@ public class TextureGrouping {
             case APPLY_RGB:
                 layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
                 break;
-
         }
     }
 

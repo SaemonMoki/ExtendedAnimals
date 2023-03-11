@@ -1745,7 +1745,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, Integer RGB) {
+    public void addRGBTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, Integer RGB) {
         TextureLayer textureLayer = new TextureLayer(TexturingType.APPLY_RGB, texture);
         textureLayer.setRGB(RGB);
         textureGroup.addTextureLayers(textureLayer);

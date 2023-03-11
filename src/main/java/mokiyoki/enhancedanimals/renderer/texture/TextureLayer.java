@@ -20,12 +20,6 @@ public class TextureLayer {
         this.texture = texture;
     }
 
-    public TextureLayer(TexturingType texturingType, int rgb, String texture) {
-        this.texturingType = texturingType;
-        this.RGB = rgb;
-        this.texture = texture;
-    }
-
     public TexturingType getTexturingType() {
         return texturingType;
     }

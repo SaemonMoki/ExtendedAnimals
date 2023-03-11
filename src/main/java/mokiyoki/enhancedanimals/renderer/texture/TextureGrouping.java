@@ -6,6 +6,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.renderer.texture.TexturingUtils.*;
 
@@ -37,9 +39,7 @@ public class TextureGrouping {
                 }
             }
 
-            NativeImage mergedGroupImage = applyGroupMerging(groupImages, colouration);
-
-            return mergedGroupImage;
+            return applyGroupMerging(groupImages, colouration);
         } catch (Exception e) {
             throw new IllegalStateException(
                     "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);

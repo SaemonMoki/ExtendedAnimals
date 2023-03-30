@@ -15,6 +15,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -23,6 +24,8 @@ import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
 import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HayBlock;
@@ -572,12 +575,16 @@ public class EventSubscriber {
                             enhancedAxolotl.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedAxolotl.yBodyRot = ((Axolotl) entity).yBodyRot;
                             String breed = "";
-                            switch (((Axolotl) entity).getVariant()) {
-                                case BLUE -> breed = "rarebluevarient";
-                                case CYAN -> breed = "cyanvarient";
-                                case LUCY -> breed = "lucyvarient";
-                                case GOLD -> breed = "goldvarient";
-                                case WILD -> breed = "wildvarient";
+                            if (entity.getTags().contains("WanderingTrader")) {
+                                breed = "WanderingTrader";
+                            } else {
+                                switch (((Axolotl) entity).getVariant()) {
+                                    case BLUE -> breed = "rarebluevarient";
+                                    case CYAN -> breed = "cyanvarient";
+                                    case LUCY -> breed = "lucyvarient";
+                                    case GOLD -> breed = "goldvarient";
+                                    case WILD -> breed = "wildvarient";
+                                }
                             }
                             Genes axolotlGenes = enhancedAxolotl.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), breed);
                             enhancedAxolotl.setGenes(axolotlGenes);
@@ -585,6 +592,9 @@ public class EventSubscriber {
                             enhancedAxolotl.initilizeAnimalSize();
                             enhancedAxolotl.getReloadTexture();
 
+                            if (((Axolotl)entity).fromBucket()) {
+                                enhancedAxolotl.setFromBucket(true);
+                            }
                             if (entity.hasCustomName()) {
                                 enhancedAxolotl.setCustomName(entity.getCustomName());
                             }
@@ -642,7 +652,7 @@ public class EventSubscriber {
                     }
                 }
 
-                if (ThreadLocalRandom.current().nextInt(5) == 0) {
+                if (/*ThreadLocalRandom.current().nextInt(5) == 0*/true) {
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
                         animals.add(ENHANCED_COW.get());
@@ -671,12 +681,30 @@ public class EventSubscriber {
                     if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get() && EanimodCommonConfig.COMMON.wanderingTraderMoobloom.get()) {
                         animals.add(ENHANCED_MOOBLOOM.get());
                     }
+                    if (EanimodCommonConfig.COMMON.spawnGeneticAxolotls.get() && EanimodCommonConfig.COMMON.wanderingTraderAxolotl.get()) {
+                        animals.add(ENHANCED_AXOLOTL.get());
+                    }
 
-                    Collections.shuffle(animals);
+                    int selection = animals.size()==1?0:ThreadLocalRandom.current().nextInt(animals.size());
 
+                    if (animals.get(selection) == ENHANCED_TURTLE.get()) {
+                        ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
+                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                    } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
+                        ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
+                        CompoundTag tag = stack.getOrCreateTag();
+                        tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200)==0?4:ThreadLocalRandom.current().nextInt(4));
+                        //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
+//                        CompoundTag entityTags = new CompoundTag();
+//                        ListTag listtag = new ListTag();
+//                        listtag.add(StringTag.valueOf("WanderingTrader"));
+//                        entityTags.put("Tags", listtag);
+//                        tag.put("EntityTags",entityTags);
+                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                    } else {
                         for (int i = 1; i <= 2; i++) {
                             BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
-                            Entity animal = animals.get(0).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
+                            Entity animal = animals.get(selection).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
                             if (animal instanceof EnhancedAnimalAbstract) {
                                 EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animal;
                                 Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
@@ -694,6 +722,7 @@ public class EventSubscriber {
                         }
                     }
                 }
+            }
 
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");
@@ -739,7 +768,7 @@ public class EventSubscriber {
             Entity entity = event.getEntity();
             if (entity instanceof EnhancedPig || entity.getClass().getName().toLowerCase().contains("pig")) {
                 String name = entity.getCustomName().getString().toLowerCase();
-                if (name.equals("technoblade")) {
+                if (name.equals("technoblade") || name.equals("techno")) {
                     event.setCanceled(true);
                 }
             }

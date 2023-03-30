@@ -584,7 +584,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 }
             }
 
-            if (gene[38] == 2 || gene[39] == 2) {
+            if (gene[38] != 1 || gene[39] != 1) {
                 gillsColour = gene[40] - 1;
                 gillsColour2 = gene[41] - 1;
             }

@@ -361,11 +361,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void incrementHunger() {
-        if(this.sleeping) {
-            this.hunger = this.hunger + (0.5F*getHungerModifier());
-        } else {
-            this.hunger = this.hunger + (getHungerModifier());
-        }
+//        if(this.sleeping) {
+//            this.hunger = this.hunger + (0.5F*getHungerModifier());
+//        } else {
+//            this.hunger = this.hunger + (getHungerModifier());
+//        }
     }
 
     @Override

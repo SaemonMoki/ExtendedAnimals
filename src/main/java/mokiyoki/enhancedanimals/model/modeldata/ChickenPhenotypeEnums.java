@@ -48,4 +48,10 @@ public enum Beard {
     NONE
 }
 
+public enum NakedNeckType {
+    NAKED_NECK,
+    BOWTIE_NECK,
+    NONE
+}
+
 }

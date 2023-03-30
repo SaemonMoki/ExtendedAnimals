@@ -223,6 +223,9 @@ public class Colouration {
     }
 
     public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
+        hue = Math.min(hue, 1.0F);
+        saturation = Math.min(saturation, 1.0F);
+        brightness = Math.min(brightness, 1.0F);
         int[] rgb = getRGBFromHSB(hue, saturation, brightness);
 
         int a = (int)(alpha * 255.0f);

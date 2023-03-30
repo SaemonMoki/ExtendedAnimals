@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +94,17 @@ public class TexturingUtils {
                 blendBGR(j, i, rgb, textureImage);
             }
         }
+        return textureImage;
+    }
+
+    public static NativeImage applyHueShift(NativeImage textureImage, int ahsb) {
+//        if (ahsb!=0) {
+            for(int i = 0; i < textureImage.getHeight(); ++i) {
+                for (int j = 0; j < textureImage.getWidth(); ++j) {
+                    blendAH(j, i, ahsb, textureImage);
+                }
+            }
+//        }
         return textureImage;
     }
 
@@ -253,6 +263,104 @@ public class TexturingUtils {
             int i1 = (int)(f12);
 
             nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+        }
+    }
+
+    private static void blendAH(int x, int y, int ah, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(x, y);
+
+        int a = ah >> 8 & 255;
+        if (a!=255) {
+            if (a!=0) {
+                a = (int)(((float)a*COLOUR_DEGREE)*((float)(i >> 24 & 255) * COLOUR_DEGREE)*255F);
+                int h = ah & 255;
+
+                int r = i >> 16 & 255;
+                int g = i >> 8 & 255;
+                int b = i & 255;
+
+                if (h!=0) {
+                    float hue, saturation, brightness;
+                    int cmax = Math.max(r, g);
+                    if (b > cmax) cmax = b;
+                    int cmin = Math.min(r, g);
+                    if (b < cmin) cmin = b;
+
+                    brightness = ((float) cmax) / 255.0f;
+
+                    if (cmax != 0) {
+                        saturation = ((float) (cmax - cmin)) / ((float) cmax);
+                    } else {
+                        saturation = 0;
+                    }
+                    if (saturation == 0) {
+                        hue = 0;
+                    } else {
+                        float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+                        float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+                        float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+                        if (r == cmax) {
+                            hue = bluec - greenc;
+                        } else if (g == cmax) {
+                            hue = 2.0f + redc - bluec;
+                        } else {
+                            hue = 4.0f + greenc - redc;
+                            hue = hue / 6.0f;
+                            if (hue < 0) {
+                                hue = hue + 1.0f;
+                            }
+                        }
+                    }
+                    hue += ((float) h) * COLOUR_DEGREE;
+                    hue = hue > 1.0F ? hue-1.0F : hue;
+
+                    if (saturation == 0) {
+                        r = g = b = (int) (brightness * 255.0f + 0.5f);
+                    } else {
+                        float hueConversionVal = (hue - (float)Math.floor(hue)) * 6.0f;
+                        float f = hueConversionVal - (float)java.lang.Math.floor(hueConversionVal);
+                        float p = brightness * (1.0f - saturation);
+                        float q = brightness * (1.0f - saturation * f);
+                        float t = brightness * (1.0f - (saturation * (1.0f - f)));
+                        switch ((int) hueConversionVal) {
+                            case 0:
+                                r = (int) (brightness * 255.0f + 0.5f);
+                                g = (int) (t * 255.0f + 0.5f);
+                                b = (int) (p * 255.0f + 0.5f);
+                                break;
+                            case 1:
+                                r = (int) (q * 255.0f + 0.5f);
+                                g = (int) (brightness * 255.0f + 0.5f);
+                                b = (int) (p * 255.0f + 0.5f);
+                                break;
+                            case 2:
+                                r = (int) (p * 255.0f + 0.5f);
+                                g = (int) (brightness * 255.0f + 0.5f);
+                                b = (int) (t * 255.0f + 0.5f);
+                                break;
+                            case 3:
+                                r = (int) (p * 255.0f + 0.5f);
+                                g = (int) (q * 255.0f + 0.5f);
+                                b = (int) (brightness * 255.0f + 0.5f);
+                                break;
+                            case 4:
+                                r = (int) (t * 255.0f + 0.5f);
+                                g = (int) (p * 255.0f + 0.5f);
+                                b = (int) (brightness * 255.0f + 0.5f);
+                                break;
+                            case 5:
+                                r = (int) (brightness * 255.0f + 0.5f);
+                                g = (int) (p * 255.0f + 0.5f);
+                                b = (int) (q * 255.0f + 0.5f);
+                                break;
+                        }
+                    }
+                }
+
+                nativeimage.setPixelRGBA(x, y, a << 24 | r << 16 | g << 8 | b);
+            }
+        } else {
+            nativeimage.setPixelRGBA(x, y, 0);
         }
     }
 

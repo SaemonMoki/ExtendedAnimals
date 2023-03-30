@@ -186,6 +186,12 @@ public final class ChickenBreeds {
     public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", Biomes.SAVANNA, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.GREYLEGS, GeneSet.V).get()));
 
+    public static final Breed FAVEROLLE = new Breed(ORPINGTON, new Breed.Properties().setData("faverolle", Biomes.FLOWER_FOREST, Breed.Rarity.RARE)
+            .setGeneSketch(new NewGeneSet(GeneSet.BEARDED, GeneSet.CRESTLESS, GeneSet.GREYLEGS, GeneSet.SINGLE).get()));
+
+    public static final Breed BLUE_SALMON_FAVEROLLE = new Breed(FAVEROLLE, new Breed.Properties().setData("bluesalmonfaverolle", Biomes.FLOWER_FOREST, Breed.Rarity.RARE)
+            .setGeneSketch(new GeneSketch(0,"2").add(4, "1","1","_","1","1"), new GeneSketch().add(24, "3").add(34, "1").add(40, "1|2").add(58, "1").add(64, "2","1","1").add(80, "2","2","1","2","1").add(170, "1","2").add(178, "2|3","1|2","1|2")));
+
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(
 //                    createVarientList(GeneSet.FLATROSE.with(GeneSet.BEARDED).with(GeneSet.CRESTLESS).with(GeneSet.CLEANLEGS).get(),

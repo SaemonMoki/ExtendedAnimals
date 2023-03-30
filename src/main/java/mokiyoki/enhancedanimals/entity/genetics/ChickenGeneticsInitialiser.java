@@ -67,6 +67,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.SILKIE);
         this.breeds.add(ChickenBreeds.SCOTS_DUMPY);
         this.breeds.add(ChickenBreeds.LA_FLECHE);
+        this.breeds.add(ChickenBreeds.BLUE_SALMON_FAVEROLLE);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
@@ -114,7 +115,6 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //Gold [ gold, silver ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             sexlinkedGenes[0] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             if (wildType == 3) {
                 //cold biome silver variation
@@ -423,7 +423,6 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //Mahogany [ mahogany, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             if (wildType == 2) {
                 autosomalGenes[34] = (1);
@@ -452,14 +451,14 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[37] = (1);
         }
 
-        //Dominant White [ dominant white, wildtype ]
+        //Dominant White [ dominant white, wildtype, Dun, Smokey ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC || (wildType == 3)) {
-            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
             autosomalGenes[38] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC || (wildType == 3)) {
-            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
             autosomalGenes[39] = (2);
         }
@@ -967,16 +966,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         // Scaless [ wildtype, scaleless ]
-        //    if (ThreadLocalRandom.current().nextInt(200) > 199) {
-        //        autosomalGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
-        //        if (autosomalGenes[108] != 2) {
-        //            autosomalGenes[108] = 1;
-        //        }
-        //        autosomalGenes[109] = (1);
-        //    } else {
-        autosomalGenes[108] = (1);
+        autosomalGenes[108] = ThreadLocalRandom.current().nextInt(200) > 198 ? 2 : 1;
         autosomalGenes[109] = (1);
-        //    }
 
         // Adrenaline A [ more alert, moderate alertness ,less alert ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

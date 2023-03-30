@@ -21,6 +21,8 @@ public enum TexturingType {
     APPLY_EYE_RIGHT_COLOUR, //a layer specific type, used to apply the right eye colour to an individual texture from global rgb
     APPLY_DYE, //a layer specific type, used to apply a dye blend to an individual texture from dye rgb
     APPLY_RGB, //a layer specific type, used to apply an RGB value to an individual texture
+    APPLY_SHIFT, //a layer specific type, used to apply a hue shift and/or changed alpha to individual texture
+    APPLY_SHADING, //a special case layer used for shading
 
     /*******/
 

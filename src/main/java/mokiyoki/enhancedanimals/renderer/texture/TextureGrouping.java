@@ -53,12 +53,27 @@ public class TextureGrouping {
                 case MASK_GROUP -> maskAlpha(baseImage, groupImages);
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
                 case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
+                case APPLY_SHADING -> applyShading(baseImage, groupImages);
             }
 
             return baseImage;
         }
 
         return null;
+    }
+
+    private void applyShading(NativeImage baseImage, List<NativeImage> groupImages) {
+        NativeImage shading = groupImages.remove(groupImages.size()-1);
+        layerGroups(baseImage, groupImages);
+        for(int i = 0; i < baseImage.getHeight(); ++i) {
+            for(int j = 0; j < baseImage.getWidth(); ++j) {
+                int shadingARGB = shading.getPixelRGBA(j, i);
+                int shadingA = shadingARGB >> 24 & 255;
+                if (shadingA != 255) {
+
+                }
+            }
+        }
     }
 
     private void cutoutTextures(NativeImage cutoutImage, List<NativeImage> groupImages) {
@@ -132,6 +147,8 @@ public class TextureGrouping {
             case APPLY_RGB:
                 layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
                 break;
+            case APPLY_SHIFT:
+                layer.setTextureImage(applyHueShift(layer.getTextureImage(), layer.getRGB()));
         }
     }
 

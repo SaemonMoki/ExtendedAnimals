@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.NakedNeckType;
 import mokiyoki.enhancedanimals.util.Genes;
 
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Crested;
@@ -15,7 +16,7 @@ public class ChickenPhenotype implements Phenotype {
     public boolean butterCup = false;
     public boolean isVultureHocked;
     public boolean isScaleless;
-    public boolean isNakedNeck;
+    public NakedNeckType nakedNeckType;
     public boolean earTufts;
     public boolean rumpless;
     public boolean longHockFeathers;
@@ -36,14 +37,14 @@ public class ChickenPhenotype implements Phenotype {
     public ChickenPhenotype(Genes genes) {
         int[] gene = genes.getAutosomalGenes();
         this.isScaleless = gene[108] == 2 && gene[109] == 2;
-        this.isNakedNeck = gene[52] == 1 || gene[53] == 1;
+        this.nakedNeckType = gene[52] == 1 || gene[53] == 1 ? (gene[52]==gene[53]?NakedNeckType.NAKED_NECK:NakedNeckType.BOWTIE_NECK):NakedNeckType.NONE;
         this.rumpless = gene[72] == 2 || gene[73] == 2;
         this.earTufts = gene[150] == 2 || gene[151] == 2;
         this.isVultureHocked = gene[102] == 2 && gene[103] == 2;
         this.creeper = gene[70] == 2 || gene[71] == 2;
 
         if (gene[56] == 1 || gene[57] == 1) {
-            this.beard = this.isNakedNeck ? Beard.NN_BEARD : Beard.BIG_BEARD;
+            this.beard = this.nakedNeckType!=NakedNeckType.NONE ? Beard.NN_BEARD : Beard.BIG_BEARD;
         } else {
             this.beard = Beard.NONE;
         }

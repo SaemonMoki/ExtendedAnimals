@@ -185,14 +185,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         bHead.addOrReplaceChild("beak",
                 CubeListBuilder.create()
                         .texOffs(0, 21)
-                        .addBox(-0.5F, 0.0F, -1.76F, 1, 1, 2),
-                PartPose.offset(0.0F,  -1.25F, -2.0F)
+                        .addBox(-0.5F, 0.0F, -2.0F, 1, 1, 2),
+                PartPose.offset(0.0F,  -1.25F, -2.5F)
         );
         bHead.addOrReplaceChild("jaw",
                 CubeListBuilder.create()
                         .texOffs(0, 22)
-                        .addBox(-0.5F, 0.25F, -1.51F, 1, 1, 2, new CubeDeformation(-0.005F)),
-                PartPose.offset(0.0F,  -4.5F, -2.0F)
+                        .addBox(-0.5F, 0.0F, -2.0F, 1, 1, 2, new CubeDeformation(-0.01F, -0.4F, -0.1F)),
+                PartPose.offset(0.0F,  -1.0F, -2.5F)
         );
         bHead.addOrReplaceChild("ears",
                 CubeListBuilder.create()
@@ -246,26 +246,27 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
         bBeard.addOrReplaceChild("beardL",
             CubeListBuilder.create()
-                .texOffs(2, 29)
+                .texOffs(0, 30)
                 .addBox(-3.0F, -4.0F, -2.0F, 2, 2, 2)
-                .addBox(-2.5F, -3.5F, -2.75F, 2, 2, 2)
-                .texOffs(3, 30)
-                .addBox(-1.0F, -2.25F, -3.25F, 2, 2, 2)
-//                .addBox(-0.5F, -2.25F, -3.75F, 1, 1, 1)
-                .texOffs(2, 29)
+                .texOffs(6, 28)
                 .addBox(1F, -4.0F, -2F, 2, 2, 2)
-                .addBox(0.5F, -3.5F, -2.75F, 2, 2, 2),
+                .texOffs(0, 34)
+                .addBox(-2.0F, -3.5F, -2.75F, 4, 2, 2)
+                .texOffs(10, 32)
+                .addBox(-1.0F, -2.25F, -3.25F, 2, 2, 2),
             PartPose.ZERO
         );
         bBeard.addOrReplaceChild("beardNN", CubeListBuilder.create()
-                    .texOffs(2, 29)
-                    .addBox(-3F, -4F, -2F, 1, 2, 2)
-                    .addBox(-2F, -3.0F, -2.75F, 2, 2, 2)
-                    .texOffs(3, 30)
-                    .addBox(-0.5F, -2.0F, -3.5F, 1, 1, 1)
-                    .texOffs(2, 29)
-                    .addBox(2F, -4F, -2F, 1, 2, 2)
-                    .addBox(0F, -3F, -2.75F, 2, 2, 2),
+                .texOffs(0, 30)
+                .addBox(-3F, -4F, -2F, 1, 2, 2)
+                .texOffs(6, 28)
+                .addBox(2F, -4F, -2F, 1, 2, 2)
+                .texOffs(0, 34)
+                .addBox(-2F, -3.0F, -2.75F, 2, 2, 2)
+                .texOffs(4, 34)
+                .addBox(0F, -3F, -2.75F, 2, 2, 2)
+                .texOffs(10, 32)
+                .addBox(-0.5F, -2.0F, -3.5F, 1, 1, 1),
             PartPose.ZERO
         );
 
@@ -273,32 +274,32 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          *      EarTufts
          */
         bHead.addOrReplaceChild("earTuftL", CubeListBuilder.create()
-                .texOffs(54, 26)
-                .addBox(-2.0F, 0.0F, 0.0F, 2, 0, 3),
-            PartPose.offsetAndRotation(-1.5F, -4.5F, -1.0F, 1.4F, 0.0F, -1.4F)
+                .texOffs(12, 8)
+                .addBox(-3.0F, 0.0F, 0.0F, 3, 2, 0),
+            PartPose.offsetAndRotation(-1.5F, -1.5F, -1.0F, 0.0F, Mth.HALF_PI*0.5F, 0.0F)
         );
         bHead.addOrReplaceChild("earTuftR", CubeListBuilder.create()
                 .mirror(true)
-                .texOffs(54, 26)
-                .addBox(0.0F, 0.0F, 0.0F, 2, 0, 3),
-            PartPose.offsetAndRotation(1.5F, -4.5F, -1.0F, 1.4F, 0.0F, 1.4F)
+                .texOffs(22, 8)
+                .addBox(0.0F, 0.0F, 0.0F, 3, 2, 0),
+            PartPose.offsetAndRotation(1.5F, -1.5F, -1.0F, 0.0F, -Mth.HALF_PI*0.5F, 0.0F)
         );
 
         /**
          *      Crests
          */
         bCrest.addOrReplaceChild("crestSF", CubeListBuilder.create()
-                        .texOffs(2, 43)
+                        .texOffs(1, 39)
                         .addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, new CubeDeformation(0.1F)),
                 PartPose.ZERO
         );
         bCrest.addOrReplaceChild("crestMF", CubeListBuilder.create()
-                        .texOffs(2, 43)
+                        .texOffs(1, 39)
                         .addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, new CubeDeformation(0.6F)),
                 PartPose.ZERO
         );
         bCrest.addOrReplaceChild("crestLF", CubeListBuilder.create()
-                        .texOffs(1, 42)
+                        .texOffs(0, 38)
                         .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
@@ -517,12 +518,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          *      Wings
          */
         bLeftWing.addOrReplaceChild("wingLM", CubeListBuilder.create()
-                        .texOffs(16, 24)
+                        .texOffs(30, 24)
                         .addBox(0.0F, 0.0F, 0.0F, 1, 4, 6),
                 PartPose.ZERO
         );
         bLeftWing.addOrReplaceChild("wingLS", CubeListBuilder.create()
-                        .texOffs(17, 25)
+                        .texOffs(31, 25)
                         .addBox(0.0F, 0.0F, 0.0F, 1, 3, 5),
                 PartPose.ZERO
         );
@@ -533,12 +534,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         );
 
         bRightWing.addOrReplaceChild("wingRM", CubeListBuilder.create()
-                        .texOffs(30, 24)
+                        .texOffs(16, 24)
                         .addBox(-1.0F, 0.0F, 0.0F, 1, 4, 6),
                 PartPose.ZERO
         );
         bRightWing.addOrReplaceChild("wingRS", CubeListBuilder.create()
-                        .texOffs(31, 25)
+                        .texOffs(17, 25)
                         .addBox(-1.0F, 0.0F, 0.0F, 1, 3, 5),
                 PartPose.ZERO
         );
@@ -614,12 +615,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          *      Leg Feathers
          */
         bLeftLeg.addOrReplaceChild("bloomersL", CubeListBuilder.create()
-                        .texOffs(50, 23)
+                        .texOffs(38, 20)
                         .addBox(-3.75F, 3.0F, 0.0F, 3, 3, 4, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
         bRightLeg.addOrReplaceChild("bloomersR", CubeListBuilder.create()
-                        .texOffs(38, 20)
+                        .texOffs(50, 23)
                         .addBox(0.75F, 3.0F, 0.0F, 3, 3, 4, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
@@ -713,7 +714,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-5.0F, -2.0F, -3.0F, 10,  2, 8)
                         .texOffs(28, 54)
                         .addBox(0.0F, -2.6666F, -5.0F, 0,  4, 4),
-                PartPose.offsetAndRotation(0.0F, 3.5F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(0.0F, 0.0F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
         );
         bChicken.addOrReplaceChild("collarH", CubeListBuilder.create()
                         .texOffs(30, 52)
@@ -874,9 +875,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theHead.addChild(this.beak);
         this.theHead.addChild(this.eyes);
 //        this.theHead.addChild(this.ears);
-//        this.theHead.addChild(this.earTuftLeft);
-//        this.theHead.addChild(this.earTuftRight);
-//        this.theHead.addChild(this.collar);
+        this.theHead.addChild(this.earTuftLeft);
+        this.theHead.addChild(this.earTuftRight);
 
         this.theComb.addChild(this.combSingleXs);
         this.theComb.addChild(this.combSingleS);
@@ -1006,7 +1006,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.collar = new WrappedModelPart("collar", bChicken);
         this.collarHardware = new WrappedModelPart("collarH", bChicken);
 
-        this.theHead.addChild(this.collar);
+        this.theNeck.addChild(this.collar);
         this.collar.addChild(this.collarHardware);
     }
 
@@ -1216,7 +1216,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 /**
                  *      Neck
                  */
-                this.hackle.show(!chicken.isNakedNeck);
+                this.hackle.show(chicken.nakedNeckType!=NakedNeckType.NAKED_NECK);
+                this.neck.show(chicken.nakedNeckType!=NakedNeckType.NONE);
 
                 /**
                  *      Beard
@@ -1465,9 +1466,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         standUpAnimation(chicken.bodyAngle);
                     }
 
-                    float h = this.head.getY();
-                    if (h != -5.0F || (netHeadYaw == 0 && headPitch == 0)) {
-                        moveHeadAnimation(h, chicken.bodyAngle);
+                    if ((netHeadYaw == 0 && headPitch == 0)) {
+                        moveHeadAnimation(0, chicken.bodyAngle);
                     } else {
                         headLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle);
                     }
@@ -1517,14 +1517,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     private void headLookingAnimation(float netHeadYaw, float headPitch, float bodyAngle) {
-        this.theNeck.setXRot((headPitch * 0.017453292F) - bodyAngle);
-        this.theNeck.setYRot(netHeadYaw * 0.017453292F);
+        float xRot = (headPitch * 0.017453292F)*0.5F;
+        float yRot = (netHeadYaw * 0.017453292F)*0.5F;
+        this.theHead.setXRot(xRot);
+        this.theHead.setYRot(yRot);
+        this.theNeck.setXRot(xRot - bodyAngle);
+        this.theNeck.setYRot(yRot);
 //        this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -5.0F));
 //        this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -2.75F));
     }
 
     private void moveHeadAnimation(float h, float bodyAngle) {
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), -bodyAngle));
         if (h > -5.0F) {
             //corrects sleeping head pos/rot
             h = Math.abs(this.theNeck.getXRot());
@@ -1534,6 +1537,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 //            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -5.0F));
 //            this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -2.75F));
         } else {
+            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), -bodyAngle));
             this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
         }
     }

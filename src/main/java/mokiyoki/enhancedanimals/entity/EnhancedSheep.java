@@ -1017,7 +1017,22 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                             maxCoatLength = maxCoatLength + 1;
                         }
 
-                        grey = 4;
+                        int faceWool = 0;
+                        if (gene[42] == 1 || gene[43] == 1) {
+                            if (gene[40] == 1) {
+                                faceWool++;
+                            }
+                            if (gene[41] == 1) {
+                                faceWool++;
+                            }
+                            if (gene[38] == 1 || gene[39] == 1) {
+                                faceWool++;
+                            } else if (gene[38] == 3 && gene[39] == 3) {
+                                faceWool--;
+                            }
+                        }
+
+                        grey = maxCoatLength < 3 ? 0 : 1+faceWool;
                         pattern1 = gene[0] == 2 ? 14 : 0;
                         pattern2 = gene[1] == 2 ? 14 : 0;
                     }

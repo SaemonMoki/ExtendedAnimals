@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
@@ -95,6 +96,7 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -358,55 +360,63 @@ public class EventSubscriber {
                         event.setCanceled(true);
                     }
                 }
-            } else if (entity instanceof MushroomCow) {
-                if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
-                    if (entity.getClass().getName().toLowerCase().contains("mooshroom")) {
-                        EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                        if (enhancedMooshroom != null) {
-                            if (entity.hasCustomName()) {
-                                enhancedMooshroom.setCustomName(entity.getCustomName());
-                            }
-                            if (((MushroomCow) entity).isBaby()) {
-                                int age = ((MushroomCow) entity).getAge();
-                                enhancedMooshroom.setAge(age);
-                                enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
-                            } else {
-                                enhancedMooshroom.setAge(0);
-                                enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), -500000);
-                            }
-                            enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getMushroomType().name()));
-                            if (((MushroomCow) entity).isLeashed()) {
-                                enhancedMooshroom.setLeashedTo(((MushroomCow) entity).getLeashHolder(), true);
-                            }
-                        }
-                        entity.remove(Entity.RemovalReason.DISCARDED);
-                        event.setCanceled(true);
-                    }
-                }
             } else if (entity instanceof Cow) {
-                if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
-                    EnhancedCow enhancedCow;
-                    boolean flag = true;
-                    if (entity.getClass().getName().toLowerCase().contains("moobloom")) {
-                        if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
-                            enhancedCow = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                        } else {
-                            enhancedCow = null;
-                            flag = false;
+                if (entity instanceof MushroomCow) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
+                        if (entity.getClass().getName().toLowerCase().contains("shroom")) {
+                            EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            if (enhancedMooshroom != null) {
+                                if (entity.hasCustomName()) {
+                                    enhancedMooshroom.setCustomName(entity.getCustomName());
+                                }
+                                if (((MushroomCow) entity).isBaby()) {
+                                    int age = ((MushroomCow) entity).getAge();
+                                    enhancedMooshroom.setAge(age);
+                                    enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
+                                } else {
+                                    enhancedMooshroom.setAge(0);
+                                    enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                                }
+                                enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getMushroomType().name()));
+                                if (((MushroomCow) entity).isLeashed()) {
+                                    enhancedMooshroom.setLeashedTo(((MushroomCow) entity).getLeashHolder(), true);
+                                }
+                            }
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
                         }
-                    } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
-                        enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                    } else {
-                        enhancedCow = null;
-                        flag = false;
                     }
+                } else if (entity.getClass().getName().toLowerCase().contains("bloom")) {
+                    if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                        EnhancedMoobloom enhancedMoobloom = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        if (enhancedMoobloom!=null) {
+                            if (entity.hasCustomName()) {
+                                enhancedMoobloom.setCustomName(entity.getCustomName());
+                            }
+                            if (((Cow) entity).isBaby()) {
+                                int age = ((Cow) entity).getAge();
+                                enhancedMoobloom.setAge(age);
+                                enhancedMoobloom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
+                            } else {
+                                enhancedMoobloom.setAge(0);
+                                enhancedMoobloom.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                            }
+                            if (((Cow) entity).isLeashed()) {
+                                enhancedMoobloom.setLeashedTo(Objects.requireNonNull(((Cow) entity).getLeashHolder()), true);
+                            }
 
-                    if (flag) {
-                        if (enhancedCow != null) {
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
+                        }
+                    }
+                } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
+                        EnhancedCow enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);;
+                        if (enhancedCow!=null) {
                             if (entity.hasCustomName()) {
                                 enhancedCow.setCustomName(entity.getCustomName());
                             }
-                            if (((Cow) entity).isBaby()) {
+                            if (((Cow)entity).isBaby()) {
                                 int age = ((Cow) entity).getAge();
                                 enhancedCow.setAge(age);
                                 enhancedCow.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
@@ -417,12 +427,13 @@ public class EventSubscriber {
                             if (((Cow) entity).isLeashed()) {
                                 enhancedCow.setLeashedTo(((Cow) entity).getLeashHolder(), true);
                             }
+
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
                         }
-                        entity.remove(Entity.RemovalReason.DISCARDED);
-                        event.setCanceled(true);
                     }
                 }
-            } else if (entity instanceof Llama && entity.getClass().getName().toLowerCase().contains("llama")) {
+            } else if (entity instanceof Llama) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("llama")) {
                         if (!(((Llama) entity).getLeashHolder() instanceof WanderingTrader)) {
@@ -652,7 +663,7 @@ public class EventSubscriber {
                     }
                 }
 
-                if (/*ThreadLocalRandom.current().nextInt(5) == 0*/true) {
+                if (ThreadLocalRandom.current().nextInt(5) == 0) {
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
                         animals.add(ENHANCED_COW.get());

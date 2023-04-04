@@ -682,21 +682,21 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         Entity entity = this.getLeashHolder();
         if (entity != null && entity.level == this.level) {
             this.restrictTo(new BlockPos(entity.blockPosition()), 5);
-            float f = this.distanceTo(entity);
+            float distanceToEntity = this.distanceTo(entity);
 
-            this.onLeashDistance(f);
-            if (f > 10.0F) {
+            this.onLeashDistance(distanceToEntity);
+            if (distanceToEntity > 10.0F) {
                 this.dropLeash(true, true);
                 this.goalSelector.disableControlFlag(Goal.Flag.MOVE);
-            } else if (f > 6.0F) {
-                double d0 = (entity.getX() - this.getX()) / (double)f;
-                double d1 = (entity.getY() - this.getY()) / (double)f;
-                double d2 = (entity.getZ() - this.getZ()) / (double)f;
-                this.setDeltaMovement(this.getDeltaMovement().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
-            } else if (!ableToMoveWhileLeashed()){
+            } else if (distanceToEntity > 6.0F) {
+                double deltaX = (entity.getX() - this.getX()) / (double)distanceToEntity;
+                double deltaY = (entity.getY() - this.getY()) / (double)distanceToEntity;
+                double deltaZ = (entity.getZ() - this.getZ()) / (double)distanceToEntity;
+                this.setDeltaMovement(this.getDeltaMovement().add(Math.copySign(deltaX * deltaX * 0.4D, deltaX), Math.copySign(deltaY * deltaY * 0.4D, deltaY), Math.copySign(deltaZ * deltaZ * 0.4D, deltaZ)));
+            } else if (!ableToMoveWhileLeashed()) {
                 this.goalSelector.enableControlFlag(Goal.Flag.MOVE);
-                Vec3 vec3d = (new Vec3(entity.getX() - this.getX(), entity.getY() - this.getY(), entity.getZ() - this.getZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
-                this.getNavigation().moveTo(this.getX() + vec3d.x, this.getY() + vec3d.y, this.getZ() + vec3d.z, this.followLeashSpeed());
+                Vec3 direction = entity.position().subtract(this.position()).normalize().scale((double)Math.max(distanceToEntity - 2.0F, 0.0F));
+                this.getNavigation().moveTo(this.getX() + direction.x, this.getY() + direction.y, this.getZ() + direction.z, this.followLeashSpeed());
             }
         }
     }
@@ -1851,17 +1851,24 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected String getCompiledTextures(String eanimal) {
         if (this.compiledTexture == null) {
-            this.compiledTexture = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
+            this.compiledTexture = String.join("", texturesIndexes) + eanimal + "/";
         }
 
         if (this.compiledAlphaTexture == null) {
-            this.compiledAlphaTexture = this.enhancedAnimalAlphaTextures.stream().collect(Collectors.joining("/"));
+            this.compiledAlphaTexture = String.join("/", enhancedAnimalAlphaTextures) + "/";
         }
 
         if (this.compiledEquipmentTexture == null) {
-            this.compiledEquipmentTexture = this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
+            StringBuilder sb = new StringBuilder();
+            for (List<String> textures : this.equipmentTextures.values()) {
+                for (String texture : textures) {
+                    sb.append(texture).append("/");
+                }
+            }
+            this.compiledEquipmentTexture = sb.toString();
         }
-        return this.compiledTexture + compiledAlphaTexture + compiledEquipmentTexture;
+
+        return this.compiledTexture + this.compiledAlphaTexture + this.compiledEquipmentTexture;
     }
 
     protected void geneFixer() {

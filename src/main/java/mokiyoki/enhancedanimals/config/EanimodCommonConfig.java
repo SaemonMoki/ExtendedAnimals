@@ -44,6 +44,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.BooleanValue wanderingTraderMooshroom;
         public final ForgeConfigSpec.BooleanValue wanderingTraderMoobloom;
         public final ForgeConfigSpec.BooleanValue wanderingTraderTurtle;
+        public final ForgeConfigSpec.BooleanValue wanderingTraderAxolotl;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
         public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
@@ -185,7 +186,10 @@ public class EanimodCommonConfig {
                     .define("Wandering traders sell mooblooms", false);
             wanderingTraderTurtle = builder
                     .comment("If true wandering traders have a chance to bring turtles to trade")
-                    .define("Wandering traders sell turtles", false);
+                    .define("Wandering traders sell turtles", true);
+            wanderingTraderAxolotl = builder
+                    .comment("If true wandering traders have a chance to bring axolotls to trade")
+                    .define("Wandering traders sell axolotls", true);
             builder.pop();
 
             builder.push("pig");

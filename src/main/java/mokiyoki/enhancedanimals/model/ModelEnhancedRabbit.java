@@ -118,9 +118,9 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
                         .texOffs(0, 16)
-                        .addBox(2.0F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F))
+                        .addBox(2.5F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F))
                         .texOffs(0, 20)
-                        .addBox(-3.0F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F)),
+                        .addBox(-3.5F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F)),
                 PartPose.offset(0.0F, 2.0F, -5.0F)
         );
 

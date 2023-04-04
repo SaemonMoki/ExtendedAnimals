@@ -111,7 +111,7 @@ public class CowBreeds {
                     .add(122, "1")
             ));
 
-    public static final Breed MURREY_GREY = new Breed(new Breed.Properties().setData("grey", Biomes.SAVANNA, Breed.Rarity.ORDINARY)
+    public static final Breed MURREY_GREY = new Breed(BLACK_ANGUS, new Breed.Properties().setData("murreygrey", Biomes.SAVANNA, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(0, "1")
                     .add(2, "1|2|3,1|2|3")

@@ -37,14 +37,14 @@ public class TextureGrouping {
                 }
             }
 
-            return applyGroupMerging(groupImages);
+            return applyGroupMerging(groupImages, colouration);
         } catch (Exception e) {
             throw new IllegalStateException(
                     "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);
         }
     }
 
-    private NativeImage applyGroupMerging(List<NativeImage> groupImages) {
+    private NativeImage applyGroupMerging(List<NativeImage> groupImages, Colouration colouration) {
         if (!groupImages.isEmpty()) {
             NativeImage baseImage = groupImages.remove(0);
 
@@ -54,12 +54,18 @@ public class TextureGrouping {
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
                 case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
                 case APPLY_SHADING -> applyShading(baseImage, groupImages);
+                case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
             }
 
             return baseImage;
         }
 
         return null;
+    }
+
+    private void blendGroupDye(NativeImage baseImage, List<NativeImage> groupImages, int dyeColour) {
+        layerGroups(baseImage, groupImages);
+        applyBGRBlend(baseImage, dyeColour);
     }
 
     private void applyShading(NativeImage baseImage, List<NativeImage> groupImages) {

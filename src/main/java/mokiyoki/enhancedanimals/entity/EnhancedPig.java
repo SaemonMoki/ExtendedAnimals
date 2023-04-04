@@ -15,9 +15,12 @@ import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.PigModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -139,6 +142,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     private GrazingGoal grazingGoal;
 
+    @OnlyIn(Dist.CLIENT)
+    private PigModelData pigModelData;
+
 //    private boolean boosting;
 //    private int boostTime;
 //    private int totalBoostTime;
@@ -185,6 +191,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.targetSelector.addGoal(2, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(3, new EnhancedPig.TargetAggressorGoal(this));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
         this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
@@ -289,6 +296,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_PIG_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
 
         if (item == Items.NAME_TAG) {
             itemStack.interactLivingEntity(entityPlayer, this, hand);
@@ -651,6 +662,18 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //        if (this.isChild()) {
 //            this.addGrowth(60);
 //        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public PigModelData getModelData() {
+        return this.pigModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.pigModelData = (PigModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

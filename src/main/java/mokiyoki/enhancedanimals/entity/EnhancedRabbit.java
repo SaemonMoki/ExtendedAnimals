@@ -15,6 +15,8 @@ import mokiyoki.enhancedanimals.entity.genetics.RabbitGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.RabbitModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -22,6 +24,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -200,6 +206,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
+    @OnlyIn(Dist.CLIENT)
+    public RabbitModelData rabbitModelData;
+
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     private GrazingGoal grazingGoal;
@@ -255,6 +264,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new EnhancedRabbitPanicGoal(this, 2.2D));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Cat.class, 10.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 6.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 2.2D, 2.2D, null));
@@ -566,6 +576,17 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
                 }
             }
         }
+    }
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_SHEEP_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(entityPlayer, hand);
     }
 
     @Override
@@ -887,6 +908,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public RabbitModelData getModelData() {
+        return this.rabbitModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.rabbitModelData = (RabbitModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

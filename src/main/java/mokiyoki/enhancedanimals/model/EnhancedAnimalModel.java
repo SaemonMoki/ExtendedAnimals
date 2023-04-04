@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.model;
 
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -8,6 +7,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.SaddleType;
 import mokiyoki.enhancedanimals.model.util.GAModel;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -56,11 +58,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected WrappedModelPart stirrupNarrowLeft;
     protected WrappedModelPart stirrupNarrowRight;
     protected WrappedModelPart stirrup;
-
-
-    private Map<Integer, AnimalModelData> animalModelDataCache = new HashMap<>();
-    private int clearCacheTimer = 0;
-    protected Integer currentAnimal = null;
 
     public EnhancedAnimalModel(ModelPart modelPart) {
 
@@ -111,44 +108,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         return value >= valueB ? Math.max(valueB, (Math.min(value, valueA))) : Math.max(valueA, (Math.min(value, valueB)));
     }
 
-    protected void animatePart(WrappedModelPart part,Map<String, Vector3f> rotationMap, float driver, Animation animation) {
-        animatePart(part, rotationMap.get(part.boxName), (driver%animation.length)*0.05F, animation.getFramesFor(part.boxName));
-    }
-
-    protected void animatePart(WrappedModelPart part,Vector3f baseRot, float driver, List<Frame> animation) {
-        if (animation!=null) {
-            boolean flag = true;
-            for (int i = 0, animationSize = animation.size(); i < animationSize; i++) {
-                if (animation.get(i).getRunning(driver)) {
-                    Frame frame = animation.get(i);
-                    Vector3f pRot = baseRot.copy();
-                    if (i != 0) {
-                        Frame pf = animation.get(i - 1);
-                        if (pf.x != null) pRot.setX(pf.x);
-                        if (pf.y != null) pRot.setY(pf.y);
-                        if (pf.z != null) pRot.setZ(pf.z);
-                    }
-                    float time = (driver - frame.getStart()) / frame.getLength();
-                    time = (float) Math.pow(time, 1.5D);
-                    part.setXRot((pRot.x()) + ((frame.xOrElse(baseRot.x()) - pRot.x()) * time));
-                    part.setYRot((pRot.y()) + ((frame.yOrElse(baseRot.y()) - pRot.y()) * time));
-                    part.setZRot((pRot.z()) + ((frame.zOrElse(baseRot.z()) - pRot.z()) * time));
-                    flag = false;
-                    break;
-                }
-            }
-
-            if (flag) {
-                part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
-            }
-        } else {
-            part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
-        }
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack p_103111_, VertexConsumer p_103112_, int p_103113_, int p_103114_, float p_103115_, float p_103116_, float p_103117_, float p_103118_) {
-        AnimalModelData animalModelData = getAnimalModelData();
+    public void renderToBuffer(AnimalModelData animalModelData, PoseStack p_103111_, VertexConsumer p_103112_, int p_103113_, int p_103114_, float p_103115_, float p_103116_, float p_103117_, float p_103118_) {
 
         if (animalModelData != null) {
             if (this.eyes != null) {
@@ -177,54 +137,16 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     }
 
-    protected class AnimalModelData {
-        Map<String, Vector3f> offsets = Maps.newHashMap();
-        public Phenotype phenotype;
-        float growthAmount;
-        float size = 1.0F;
-        boolean sleeping = false;
-        boolean blink = false;
-        boolean collar = false;
-        boolean bridle = false;
-        boolean blanket = false;
-        SaddleType saddle = SaddleType.NONE;
-        boolean chests = false;
-        int lastAccessed = 0;
-        int dataReset = 0;
-        long clientGameTime = 0;
-        float random;
-        int isEating = 0;
-        boolean earTwitchSide = true;
-        int earTwitchTimer = 0;
-        boolean tailSwishSide = true;
-        int tailSwishTimer = 0;
-        int sleepDelay = -1;
-    }
 
-    protected AnimalModelData getAnimalModelData() {
-        if (this.currentAnimal == null || !animalModelDataCache.containsKey(this.currentAnimal)) {
-            return new AnimalModelData();
-        }
-        return animalModelDataCache.get(this.currentAnimal);
-    }
 
     protected AnimalModelData getCreateAnimalModelData(T enhancedAnimal) {
-        clearCacheTimer++;
-        if(clearCacheTimer > 50000) {
-            animalModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-            for (AnimalModelData animalModelData : animalModelDataCache.values()){
-                animalModelData.lastAccessed = 1;
-            }
-            clearCacheTimer = 0;
-        }
-
-        if (animalModelDataCache.containsKey(enhancedAnimal.getId())) {
+        if (enhancedAnimal.getModelData() != null) {
             updateModelData(enhancedAnimal);
         } else {
             setInitialModelData(enhancedAnimal);
         }
 
-        return animalModelDataCache.get(enhancedAnimal.getId());
+        return enhancedAnimal.getModelData();
     }
 
     protected void setBaseInitialModelData(AnimalModelData animalModelData, T enhancedAnimal) {
@@ -243,7 +165,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
             additionalModelDataInfo(animalModelData, enhancedAnimal);
 
-            animalModelDataCache.put(enhancedAnimal.getId(), animalModelData);
+            enhancedAnimal.setModelData(animalModelData);
         }
     }
 
@@ -251,15 +173,10 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) { }
 
-    protected void setInitialModelData(T enhancedAnimal) {
-        AnimalModelData animalModelData = new AnimalModelData();
-        setBaseInitialModelData(animalModelData, enhancedAnimal);
-    }
+    protected void setInitialModelData(T enhancedAnimal) {}
 
     protected void updateModelData(T enhancedAnimal) {
-        AnimalModelData animalModelData = animalModelDataCache.get(enhancedAnimal.getId());
-        animalModelData.lastAccessed = 0;
-        animalModelData.dataReset++;
+        AnimalModelData animalModelData = enhancedAnimal.getModelData();
         animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
         if (animalModelData.growthAmount != 1.0F) {
             animalModelData.growthAmount = enhancedAnimal.growthAmount();
@@ -295,108 +212,5 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             }
         }
         return SaddleType.NONE;
-    }
-
-    static class Animation {
-        float length;
-        Map<String, List<Frame>> frames = new HashMap<>();
-
-        Animation(float length, Frame... frames) {
-            this.length = length;
-            int i = 1;
-            for (Frame frame : frames) {
-                frame.setLength(i >= frames.length ? this.length : frames[i++].start);
-                List<Frame> list = this.frames.getOrDefault(frame.getName(), new ArrayList<>());
-                list.add(frame);
-                this.frames.put(frame.getName(), list);
-            }
-        }
-
-        public List<Frame> getFramesFor(String partName) {
-            return this.frames.get(partName);
-        }
-    }
-
-    static class Frame {
-        private static final float degree = Mth.PI/180;
-        String name;
-        float start;
-        float length = 5.0F;
-        Float x;
-        Float y;
-        Float z;
-
-        Frame(String name, float start, Float targetX, Float targetY, Float z){
-            this.name = name;
-            this.start = start;
-            if (targetX!=null) this.x = targetX * degree;
-            if (targetY!=null) this.y = targetY * degree;
-            if (z !=null) this.z = z * degree;
-        }
-
-        Frame(String name, float start) {
-            this.name = name;
-            this.start = start;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public float getStart() {
-            return this.start;
-        }
-
-        public void setLength(float nextFrameStart) {
-            this.length = nextFrameStart-this.start;
-        }
-
-        public float getLength() {
-            return this.length;
-        }
-
-        public Frame x(float target) {
-            this.x = target * degree;
-            return this;
-        }
-        public Frame y(float target) {
-            this.y = target * degree;
-            return this;
-        }
-        public Frame z(float target) {
-            this.z = target * degree;
-            return this;
-        }
-
-        public float xOrElse(float alt) {
-            return this.x == null ? alt : this.x;
-        }
-
-        public float yOrElse(float alt) {
-            return this.y == null ? alt : this.y;
-        }
-
-        public float zOrElse(float alt) {
-            return this.z == null ? alt : this.z;
-        }
-
-        public boolean getRunning(float time) {
-            return time >= this.start && time < this.start+this.length;
-        }
-    }
-
-    protected enum SaddleType {
-        NONE(""),
-        VANILLA("saddle"),
-        ENGLISH("saddleE"),
-        WESTERN("saddleW");
-        final String name;
-        SaddleType(String name) {
-            this.name = name;
-        }
-
-        String getName() {
-            return this.name;
-        }
     }
 }

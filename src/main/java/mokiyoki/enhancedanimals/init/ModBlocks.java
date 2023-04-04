@@ -38,6 +38,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> EGG_CARTON = BLOCKS_DEFERRED_REGISTRY.register("egg_carton", () -> new EggCartonBlock(Block.Properties.of(Material.WOOL, MaterialColor.COLOR_LIGHT_GRAY).strength(0.0F).sound(SoundType.WOOL).noOcclusion()));
     public static final RegistryObject<Block> TURTLE_EGG = BLOCKS_DEFERRED_REGISTRY.register("turtle_egg", () -> new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.SAND).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()));
     public static final RegistryObject<Block> AXOLOTL_EGG = BLOCKS_DEFERRED_REGISTRY.register("axolotl_egg", () -> new EnhancedAxolotlEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.CLAY).strength(0.5F).sound(SoundType.SLIME_BLOCK).randomTicks().noOcclusion().noCollission()));
+//    public static final RegistryObject<Block> CHICKEN_NEST = BLOCKS_DEFERRED_REGISTRY.register("chicken_nest", () -> new EnhancedChickenEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.CLAY).strength(0.5F).sound(SoundType.BONE_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryObject<Block> UNBOUNDHAY_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new UnboundHayBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_YELLOW).strength(0.5F).sound(SoundType.GRASS).noOcclusion()));
     public static final RegistryObject<Block> SPARSEGRASS_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("sparsegrass_block", () -> new SparseGrassBlock(Block.Properties.of(Material.GRASS, MaterialColor.DIRT).randomTicks().strength(0.5F).sound(SoundType.GRASS)));
     public static final RegistryObject<Block> PATCHYMYCELIUM_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("patchymycelium_block", () -> new PatchyMyceliumBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.5F).sound(SoundType.GRASS)));
@@ -53,10 +54,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> GROWABLE_SUNFLOWER = BLOCKS_DEFERRED_REGISTRY.register("growable_sunflower", () -> new GrowableDoubleHigh(Block.Properties.of(Material.REPLACEABLE_PLANT).randomTicks().noCollission().strength(0.0F).sound(SoundType.GRASS), Items.SUNFLOWER, true));
     public static final RegistryObject<Block> GROWABLE_TALL_GRASS = BLOCKS_DEFERRED_REGISTRY.register("growable_tall_grass", () -> new GrowableDoubleHigh(Block.Properties.of(Material.REPLACEABLE_PLANT).randomTicks().noCollission().strength(0.0F).sound(SoundType.GRASS), Items.TALL_GRASS, false));
     public static final RegistryObject<Block> GROWABLE_LARGE_FERN = BLOCKS_DEFERRED_REGISTRY.register("growable_large_fern", () -> new GrowableDoubleHigh(Block.Properties.of(Material.REPLACEABLE_PLANT).randomTicks().noCollission().strength(0.0F).sound(SoundType.GRASS), Items.LARGE_FERN, true));
-
-//    private static RegistryObject<Block> createDeferred(String registryName, Block block) {
-//        return BLOCKS_DEFERRED_REGISTRY.register(registryName, () -> block);
-//    }
 
     public static void register(IEventBus modEventBus) {
         BLOCKS_DEFERRED_REGISTRY.register(modEventBus);

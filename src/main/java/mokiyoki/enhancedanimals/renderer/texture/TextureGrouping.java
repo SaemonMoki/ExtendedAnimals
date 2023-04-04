@@ -21,25 +21,27 @@ public class TextureGrouping {
     }
 
     public NativeImage processGrouping(String modLocation, ResourceManager manager, Colouration colouration) {
-        List<NativeImage> groupImages = new ArrayList<>();
+        try {
+            List<NativeImage> groupImages = new ArrayList<>();
 
-        for (TextureGrouping group : textureGroupings) {
-
-            NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration);
-            if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
-        }
-
-        for (TextureLayer layer : textureLayers) {
-            if (!layer.getTexture().isEmpty()) {
-                createTexture(layer, modLocation, manager);
-                applyLayerSpecifics(layer, colouration);
-                groupImages.add(layer.getTextureImage());
+            for (TextureGrouping group : textureGroupings) {
+                NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration);
+                if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
             }
+
+            for (TextureLayer layer : textureLayers) {
+                if (!layer.getTexture().isEmpty()) {
+                    createTexture(layer, modLocation, manager);
+                    applyLayerSpecifics(layer, colouration);
+                    groupImages.add(layer.getTextureImage());
+                }
+            }
+
+            return applyGroupMerging(groupImages, colouration);
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);
         }
-
-        NativeImage mergedGroupImage = applyGroupMerging(groupImages, colouration);
-
-        return mergedGroupImage;
     }
 
     private NativeImage applyGroupMerging(List<NativeImage> groupImages, Colouration colouration) {
@@ -116,7 +118,7 @@ public class TextureGrouping {
     }
 
     public void addGrouping(TextureGrouping textureGrouping) {
-        this.textureGroupings.add(textureGrouping);
+            this.textureGroupings.add(textureGrouping);
     }
 
     public void addTextureLayers(TextureLayer textureLayer) {

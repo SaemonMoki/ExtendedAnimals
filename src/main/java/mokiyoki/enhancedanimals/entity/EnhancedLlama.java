@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
@@ -16,8 +17,11 @@ import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.LlamaModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.network.chat.Component;
@@ -151,6 +155,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Nullable
     private EnhancedLlama caravanTail;
 
+    @OnlyIn(Dist.CLIENT)
+    private LlamaModelData llamaModelData;
+
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
@@ -192,6 +199,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
         this.goalSelector.addGoal(2, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(3, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(4, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
@@ -314,6 +322,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_LLAMA_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
 
         if (this.isVehicle()) {
             return super.mobInteract(entityPlayer, hand);
@@ -597,6 +609,15 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.setStrengthAndInventory();
     }
 
+    public void makeTraderLlama() {
+        this.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
+        this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+        traderBlanket.getOrCreateTagElement("tradersblanket");
+        this.animalInventory.setItem(4, traderBlanket);
+        this.setStrengthAndInventory();
+    }
+
     private void tryDespawn() {
         if (this.canDespawn()) {
             this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTrader)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
@@ -618,6 +639,19 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     private boolean isLeashedToStranger() {
         return this.isLeashed() && !this.isLeashedToTrader();
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public LlamaModelData getModelData() {
+        return this.llamaModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.llamaModelData = (LlamaModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

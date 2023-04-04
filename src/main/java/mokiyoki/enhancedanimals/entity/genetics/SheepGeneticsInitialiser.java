@@ -37,6 +37,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(SheepBreeds.RECESSIVE_BLACK);
         this.breeds.add(SheepBreeds.MOORIT);
         this.breeds.add(SheepBreeds.RED);
+        this.breeds.add(SheepBreeds.RANDOMRUFOUS);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

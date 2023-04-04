@@ -19,6 +19,8 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.CowModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -83,6 +85,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected GrazingGoal grazingGoal;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+
+    @OnlyIn(Dist.CLIENT)
+    private CowModelData cowModelData;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
@@ -546,11 +551,23 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
+    public CowModelData getModelData() {
+        return this.cowModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.cowModelData = (CowModelData) animalModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.reload) {
-            this.reload = false;
+        } else if (this.getReloadTexture() ^ this.reload) {
+            this.reload = !this.reload;
             this.reloadTextures();
         }
 
@@ -582,7 +599,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         this.colouration = super.getRgb();
         Genes genes = getSharedGenes();
 
-        calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale(), this.isBaby(), this.growthAmount());
+        if (genes != null) {
+            calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());
+
+            if (this.isBaby() && !genes.has(0,0) && this.updateColouration) {
+                colouration.setBabyAlpha(this.growthAmount());
+                this.updateColouration = false;
+            }
+        }
 
         return this.colouration;
     }
@@ -674,6 +698,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         if (item == Items.NAME_TAG) {
             itemStack.interactLivingEntity(entityPlayer, this, hand);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (item == ModItems.ENHANCED_COW_EGG.get()) {
             return InteractionResult.SUCCESS;
         }
 

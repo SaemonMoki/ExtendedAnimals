@@ -37,17 +37,20 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
     private final EnhancedAnimalAbstract animal;
     private boolean wantsToEat;
     private boolean canEat;
+
+    private boolean griefingAllowed;
     protected Map<Block, EatValues> ediblePlants;
 
     public EnhancedEatPlantsGoal(EnhancedAnimalAbstract animalIn, Map<Block, EatValues> foods) {
         super(animalIn, (double)0.7F, 16);
         this.animal = animalIn;
         this.ediblePlants = foods;
+        this.griefingAllowed = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.animal.level, this.animal);
     }
 
     public boolean canUse() {
         if (this.nextStartTick <= 0) {
-            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.animal.level, this.animal)) {
+            if (!griefingAllowed) {
                 return false;
             }
 

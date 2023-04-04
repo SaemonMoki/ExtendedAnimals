@@ -431,15 +431,14 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @Override
     public boolean canBeControlledByRider() {
         Entity entity = this.getControllingPassenger();
-        if (!(entity instanceof Player)) {
-            return false;
-        } else {
+        if (entity instanceof Player) {
             Player playerentity = (Player)entity;
             if (playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK) {
                 return true;
             }
             return super.canBeControlledByRider();
         }
+        return false;
     }
 
     @Override
@@ -449,8 +448,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal
         if (this.isAlive()) {
             if (this.isVehicle() && this.canBeControlledByRider()) {
+                this.allowStandSliding = true;
                 LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
-                if (this.hasBridle()) {
+                if (this.hasBridle() && !livingentity.isHolding(Items.CARROT_ON_A_STICK)) {
                     this.setYRot(livingentity.getYRot());
                     this.yRotO = this.getYRot();
                     this.setXRot(livingentity.getXRot() * 0.5F);
@@ -553,6 +553,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     this.animationPosition += this.animationSpeed;
                 }
             } else {
+                this.allowStandSliding = false;
                 this.maxUpStep = 1.1F;
                 this.flyingSpeed = 0.02F;
                 super.travel(p_213352_1_);

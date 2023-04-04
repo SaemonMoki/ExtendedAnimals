@@ -125,28 +125,17 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
 
 
 
-    public static void setMateGenes(ItemStack stack, Genes genes) {
+    public static void setMateGenes(ItemStack stack, Genes genes, boolean isFemale) {
         if (genes != null) {
             stack.getOrCreateTagElement("MateGenetics").putIntArray("SGenes", genes.getSexlinkedGenes());
             stack.getOrCreateTagElement("MateGenetics").putIntArray("AGenes", genes.getAutosomalGenes());
+            stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
         }
     }
 
     private Genes getMateGenes(ItemStack stack) {
         CompoundTag genetics = stack.getOrCreateTagElement("MateGenetics");
         return new Genes(genetics.getIntArray("SGenes"), genetics.getIntArray("AGenes"));
-    }
-
-    public static void setIsFemale(ItemStack stack, boolean isFemale) {
-        stack.getOrCreateTagElement("Genetics").putBoolean("IsFemale", isFemale);
-    }
-
-    private boolean getIsFemale(ItemStack stack) {
-        return stack.getOrCreateTagElement("Genetics").getBoolean("IsFemale");
-    }
-
-    public static void setMateIsFemale(ItemStack stack, boolean isFemale) {
-        stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
     }
 
     public static void setAxolotlUUID(ItemStack stack, String uuid) {
@@ -281,12 +270,19 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         }
         axolotl.setSireName(data.getString("SireName"));
         axolotl.setDamName(data.getString("DamName"));
-        if (this.getGenes(stack).isValid()) {
-            axolotl.setGenes(this.getGenes(stack));
-            axolotl.setSharedGenes(this.getGenes(stack));
-            if (this.getMateGenes(stack).isValid()) {
+        if (this.getGenes(stack) != null) {
+            Genes genes = this.getGenes(stack);
+            if (!genes.isValid() && genes.getNumberOfAutosomalGenes() != 0) {
+                genes.fixGenes(1);
+            }
+            axolotl.setGenes(genes);
+            axolotl.setSharedGenes(genes);
+
+            genes = this.getMateGenes(stack);
+            if (genes.isValid() && genes.getSexlinkedGenes().length > 0 && genes.getAutosomalGenes().length > 0) {
                 axolotl.setMateGender(this.getMateIsFemale(stack));
                 axolotl.setMateGenes(this.getMateGenes(stack));
+                axolotl.setHasEgg(true);
             }
         }
         if (data.contains("collar")) {

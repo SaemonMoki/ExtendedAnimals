@@ -4,6 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.PigModelData;
+import mokiyoki.enhancedanimals.model.modeldata.PigPhenotype;
+import mokiyoki.enhancedanimals.model.modeldata.SaddleType;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -87,6 +92,8 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     private WrappedModelPart tail4;
     private WrappedModelPart tail5;
 
+    private PigModelData pigModelData;
+
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
@@ -95,13 +102,13 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         PartDefinition bButt = bBody.addOrReplaceChild("bButt", CubeListBuilder.create(), PartPose.offset(0.0F, 11.0F, 0.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 9.5F));
         PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -7.0F, -4.0F));
-        PartDefinition bMouth = bHead.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+            bHead.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, -3.0F, -3.0F));
         PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, -3.0F, -3.0F));
         PartDefinition bLegFrontLeft = bPig.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, 0.0F));
         PartDefinition bLegFrontRight = bPig.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, 0.0F));
-        PartDefinition bLegBackLeft = bPig.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(4.0F, 14.0F, 0.0F));
-        PartDefinition bLegBackRight = bPig.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-4.0F, 14.0F, 0.0F));
+        PartDefinition bLegBackLeft = bPig.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(4.0F, 14.0F, -2.0F));
+        PartDefinition bLegBackRight = bPig.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-4.0F, 14.0F, -2.0F));
         PartDefinition bTail = bBody.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, 8.0F));
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
@@ -280,12 +287,12 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         );
         bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(49, 44)
-                        .addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3),
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 6, 3),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(61, 44)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 8, 3),
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 6, 3),
                 PartPose.ZERO
         );
 
@@ -624,13 +631,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        PigModelData pigModelData = getPigModelData();
-        PigPhenotype pig = pigModelData.getPhenotype();
+        if (this.pigModelData!=null && this.pigModelData.getPhenotype() != null) {
+            PigPhenotype pig = pigModelData.getPhenotype();
 
-        resetCubes();
-        
-        if (pig!=null) {
-            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            resetCubes();
+            super.renderToBuffer(this.pigModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
@@ -807,18 +812,17 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        PigModelData data = getCreatePigModelData(entityIn);
+        this.pigModelData = getCreatePigModelData(entityIn);
 
-        if (data!=null) {
-            PigPhenotype pig = data.getPhenotype();
-            readInitialAnimationValues(data, pig);
+        if (this.pigModelData!=null) {
+            PigPhenotype pig = this.pigModelData.getPhenotype();
+            readInitialAnimationValues(this.pigModelData, pig);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            if (data.earTwitchTimer <= ageInTicks) {
+            if (this.pigModelData.earTwitchTimer <= ageInTicks) {
                 float[] oldRot;
                 boolean flag;
-                if (data.earTwitchSide) {
+                if (this.pigModelData.earTwitchSide) {
                     oldRot = new float[]{this.theEarLeft.getXRot(), this.theEarLeft.getYRot(), this.theEarLeft.getZRot()};
                     calculateEars(pig);
                     flag = oldRot[0] == this.theEarLeft.getXRot() && oldRot[1] == this.theEarLeft.getYRot() && oldRot[2] == this.theEarLeft.getZRot();
@@ -829,10 +833,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
 
                 if (flag) {
-                    data.earTwitchSide = entityIn.getRandom().nextBoolean();
-                    data.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(data.sleeping ? 60 : 30) * 20) + 30;
+                    this.pigModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
+                    this.pigModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(this.pigModelData.sleeping ? 60 : 30) * 20) + 30;
                 } else {
-                    if (data.earTwitchSide) {
+                    if (this.pigModelData.earTwitchSide) {
                         this.theEarLeft.setXRot(this.lerpTo(oldRot[0], this.theEarLeft.getXRot()));
                         this.theEarLeft.setYRot(this.lerpTo(oldRot[1], this.theEarLeft.getYRot()));
                         this.theEarLeft.setZRot(this.lerpTo(oldRot[2], this.theEarLeft.getZRot()));
@@ -842,11 +846,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                         this.theEarRight.setZRot(this.lerpTo(oldRot[2], this.theEarRight.getZRot()));
                     }
                 }
-            } else if (data.earTwitchTimer <= ageInTicks + 30) {
-                twitchEarAnimation(data.earTwitchSide, (int)ageInTicks);
+            } else if (this.pigModelData.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(this.pigModelData.earTwitchSide, (int)ageInTicks);
             }
 
-            if (data.sleeping && !isMoving) {
+            if (this.pigModelData.sleeping && !isMoving) {
                 if (this.thePig.getY() < 22.0F && this.thePig.getZRot() == 0.0F) {
                     layDownAnimation();
                 } else {
@@ -863,13 +867,13 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
 
                 boolean flag = true;
-                if (data.isEating != 0) {
-                    if (data.isEating == -1) {
-                        data.isEating = (int)ageInTicks + 90;
-                    } else if (data.isEating < ageInTicks) {
-                        data.isEating = 0;
+                if (this.pigModelData.isEating != 0) {
+                    if (this.pigModelData.isEating == -1) {
+                        this.pigModelData.isEating = (int)ageInTicks + 90;
+                    } else if (this.pigModelData.isEating < ageInTicks) {
+                        this.pigModelData.isEating = 0;
                     }
-                    flag = grazingAnimation(data.isEating - (int)ageInTicks);
+                    flag = grazingAnimation(this.pigModelData.isEating - (int)ageInTicks);
                 }
 
                 if (flag) {
@@ -887,8 +891,8 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
             }
 
-            if (data.saddle != SaddleType.NONE) {
-                switch (data.saddle) {
+            if (this.pigModelData.saddle != SaddleType.NONE) {
+                switch (this.pigModelData.saddle) {
                     case VANILLA -> {
                         this.stirrupNarrowLeft.setPos(8.0F, 0.0F, 0.0F);
                         this.stirrupNarrowRight.setPos(-8.0F, 0.0F, 0.0F);
@@ -910,7 +914,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
             }
 
-           saveAnimationValues(data, pig);
+           saveAnimationValues(this.pigModelData, pig);
         }
 
     }
@@ -1089,16 +1093,6 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         }
     }
 
-    private class PigModelData extends AnimalModelData {
-        public PigPhenotype getPhenotype() {
-            return (PigPhenotype) this.phenotype;
-        }
-    }
-
-    private PigModelData getPigModelData() {
-        return (PigModelData) getAnimalModelData();
-    }
-
     private PigModelData getCreatePigModelData(T enhancedPig) {
         return (PigModelData) getCreateAnimalModelData(enhancedPig);
     }
@@ -1110,7 +1104,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     }
 
     @Override
-    protected void additionalUpdateModelDataInfo(EnhancedAnimalModel<T>.AnimalModelData animalModelData, T enhancedAnimal) {
+    protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
     }
 
@@ -1119,198 +1113,5 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         return new PigPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
     }
 
-    protected class PigPhenotype implements Phenotype {
-        float earFlopMod;
-        int earSizeMod = 0;
-        boolean tailCurl;
-        boolean hasWaddles;
-        float snoutLength;
-        float tailCurlAmount;
-        int shape;
 
-        PigPhenotype(int[] gene,char uuid) {
-            this.tailCurl = Character.isLetter(uuid);
-
-            float earSize = 0.0F;
-            float earFlop = 1.0F;
-            //SSC1
-            if (gene[68] == 2 || gene[69] == 2) {
-                earSize = earSize + 0.12F;
-                earFlop = earFlop - 0.44F;
-            } else if (gene[68] == 3 || gene[69] == 3) {
-                earSize = earSize + 0.03F;
-            }
-            //SSC5
-            if (gene[70] == 2 || gene[71] == 2) {
-                earSize = earSize + 0.35F;
-                earFlop = earFlop - 0.48F;
-            } else if (gene[70] == 3 && gene[71] == 3) {
-                earSize = earSize + 0.09F;
-            }
-            //SSC6
-            if (gene[72] == 2 || gene[73] == 2) {
-                earSize = earSize - 0.031F;
-            }
-            //SSC7
-            if (gene[74] == 2 || gene[75] == 2) {
-                earSize = earSize + 0.29F;
-                earFlop = earFlop - 0.62F;
-            } else if (gene[70] == 3 && gene[71] == 3) {
-                earSize = earSize + 0.09F;
-            }
-            //SSC9
-            if (gene[76] == 2 || gene[77] == 2) {
-                earSize = earSize + 0.11F;
-                earFlop = earFlop - 0.32F;
-            } else if (gene[70] == 3 && gene[71] == 3) {
-                earSize = earSize + 0.03F;
-            }
-            //SSC12
-            if (gene[78] == 2 || gene[79] == 2) {
-                earSize = earSize + 0.11F;
-                earFlop = earFlop - 0.14F;
-            } else if (gene[78] == 3 && gene[79] == 3) {
-                earSize = earSize + 0.03F;
-            }
-
-            for (int i = 80; i < 100; i+= 2) {
-                if (gene[i] != 1 && gene[i+1] != 1) {
-                    if (gene[i] == 2 || gene[i+1] == 2) {
-                        earSize = earSize + 0.007F;
-                    } else if (gene[i] == 3 || gene[i+1] == 3){
-                        earSize = earSize + 0.007F;
-                        earFlop = earFlop - 0.004F;
-                    } else {
-                        earSize = earSize + 0.007F;
-                        earFlop = earFlop - 0.007F;
-                    }
-                }
-            }
-            for (int i = 100; i < 120; i+= 2) {
-                if (gene[i] != 1 && gene[i+1] != 1) {
-                    if (gene[i] == 2 || gene[i+1] == 2) {
-                        earSize = earSize - 0.007F;
-                    } else if (gene[i] == 3 || gene[i+1] == 3){
-                        earSize = earSize - 0.007F;
-                        earFlop = earFlop + 0.004F;
-                    } else {
-                        earSize = earSize - 0.007F;
-                        earFlop = earFlop + 0.007F;
-                    }
-                }
-            }
-
-            if (earFlop > 1.0F) {
-                this.earFlopMod = 1.0F;
-            } else {
-                this.earFlopMod = earFlop < -1.0F ? -1.0F : earFlop;
-            }
-
-            if (earSize > 0.2F) {
-                if (earSize > 0.5F) {
-                    this.earSizeMod = 2;
-                } else {
-                    this.earSizeMod = 1;
-                }
-            }
-
-            //snoutLength
-            float snoutlength1 = 1.0F;
-            float snoutlength2 = 1.0F;
-            float snoutlength = 0.0F;
-
-            // 1 - 5, longest - shortest
-            for (int i = 1; i < gene[18];i++){
-                snoutlength1 = snoutlength1 - 0.1F;
-            }
-
-            for (int i = 1; i < gene[19];i++){
-                snoutlength2 = snoutlength2 - 0.1F;
-            }
-
-            for (int i = 1; i < gene[66];i++){
-                snoutlength1 = snoutlength1 - 0.1F;
-            }
-
-            for (int i = 1; i < gene[67];i++){
-                snoutlength2 = snoutlength2 - 0.1F;
-            }
-
-            //causes partial dominance of longer nose over shorter nose.
-            if (snoutlength1 > snoutlength2){
-                snoutlength = (snoutlength1*0.75F) + (snoutlength2*0.25F);
-            }else if (snoutlength1 < snoutlength2){
-                snoutlength = (snoutlength1*0.25F) + (snoutlength2*0.75F);
-            }else{
-                snoutlength = snoutlength1;
-            }
-
-            // 1 - 4, longest - shortest
-            if (gene[42] >= gene[43]) {
-                snoutlength = snoutlength + ((4 - gene[42])/8.0F);
-            } else {
-                snoutlength = snoutlength + ((4 - gene[43])/8.0F);
-            }
-
-            if (gene[44] >= 2 && gene[45] >= 2) {
-                if (gene[44] == 2 || gene[45] == 2) {
-                    snoutlength = snoutlength * 0.9F;
-                } else {
-                    snoutlength = snoutlength * 0.75F;
-                }
-            }
-
-            if (gene[46] == 2 && gene[47] == 2) {
-                snoutlength = snoutlength * 0.6F;
-            }
-
-            if (snoutlength > 1.0F) {
-                this.snoutLength = 1.0F;
-            } else if (snoutlength < 0.0F) {
-                this.snoutLength = 0.0F;
-            } else {
-                this.snoutLength = snoutlength;
-            }
-
-            float inbreedingFactor = 0.0F;
-
-            if (gene[20] == gene[21]) {
-                inbreedingFactor = 0.1667F;
-            }
-            if (gene[22] == gene[23]) {
-                inbreedingFactor = inbreedingFactor + 0.1667F;
-            }
-            if (gene[24] == gene[25]) {
-                inbreedingFactor = inbreedingFactor + 0.1667F;
-            }
-            if (gene[26] == gene[27]) {
-                inbreedingFactor = inbreedingFactor + 0.1667F;
-            }
-            if (gene[28] == gene[29]) {
-                inbreedingFactor = inbreedingFactor + 0.1667F;
-            }
-            if (gene[30] == gene[31]) {
-                inbreedingFactor = inbreedingFactor + 0.1667F;
-            }
-
-            this.tailCurlAmount = inbreedingFactor;
-
-//            int shape = 1;
-//
-//            if (gene[56] != 1 && gene[57] != 1) {
-//                if (gene[56] + gene[57] <= 8) {
-//                    shape = 0;
-//                } else if (gene[56] == 5 || gene[57] == 5) {
-//                    shape = 2;
-//                } else if (gene[56] == 6 || gene[57] == 6) {
-//                    shape = 3;
-//                } else if (gene[56] == 7 && gene[57] == 7) {
-//                    shape = 4;
-//                }
-//            }
-            this.shape = 2;
-
-            this.hasWaddles = gene[32] == 1 || gene[33] == 1;
-        }
-    }
 }

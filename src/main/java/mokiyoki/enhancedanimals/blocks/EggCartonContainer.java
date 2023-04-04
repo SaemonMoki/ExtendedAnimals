@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
@@ -10,6 +12,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.common.data.ForgeItemTagsProvider;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 
@@ -38,7 +41,7 @@ public class EggCartonContainer extends AbstractContainerMenu {
                     /**
                      * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
                      */
-                    public boolean mayPlace(ItemStack stack) { return ((stack.getItem() instanceof EnhancedEgg) || stack.getItem() == Items.TURTLE_EGG); }
+                    public boolean mayPlace(ItemStack stack) { return ((stack.getItem() instanceof EnhancedEgg) || stack.getItem() == Items.TURTLE_EGG || stack.getItem() == ModItems.TURTLE_EGG_ITEM.get()); }
 
                     public int getMaxStackSize() {
                         return 1;

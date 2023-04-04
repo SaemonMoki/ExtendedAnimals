@@ -481,215 +481,211 @@ public class CowTextureHelper {
         }
     }
 
-    public static void calculateCowRGB(Colouration colouration, Genes genes, boolean isFemale, boolean isBaby, float growthAmount) {
-        if (genes != null) {
-            if (colouration.getPheomelaninColour() == -1 || colouration.getMelaninColour() == -1) {
-                int[] gene = genes.getAutosomalGenes();
+    public static void calculateCowRGB(Colouration colouration, Genes genes, boolean isFemale) {
+        if (colouration.getPheomelaninColour() == -1 || colouration.getMelaninColour() == -1) {
+            int[] gene = genes.getAutosomalGenes();
 
-                float blackHue = 0.0F;
-                float blackSaturation = 0.05F;
-                float blackBrightness = 0.05F;
+            float blackHue = 0.0F;
+            float blackSaturation = 0.05F;
+            float blackBrightness = 0.05F;
 
-                float redHue = 0.05F;
-                float redSaturation = 0.57F;
-                float redBrightness = 0.55F;
+            float redHue = 0.05F;
+            float redSaturation = 0.57F;
+            float redBrightness = 0.55F;
 
-                if (gene[0] == 3 && gene[1] == 3) {
-                    //cow is red
-                    blackHue = redHue;
-                    blackSaturation = redSaturation;
-                    blackBrightness = (redBrightness + blackBrightness) * 0.5F;
+            if (gene[0] == 3 && gene[1] == 3) {
+                //cow is red
+                blackHue = redHue;
+                blackSaturation = redSaturation;
+                blackBrightness = (redBrightness + blackBrightness) * 0.5F;
+            }
+
+            for (int i = 130; i < 150; i++) {
+                if (gene[i] == 2) {
+                    redHue = redHue + ((0.1F - redHue) * 0.05F);
+                    redBrightness = redBrightness + 0.01F;
                 }
+            }
 
-                for (int i = 130; i < 150; i++) {
-                    if (gene[i] == 2) {
-                        redHue = redHue + ((0.1F - redHue) * 0.05F);
-                        redBrightness = redBrightness + 0.01F;
+            for (int i = 150; i < 170; i++) {
+                if (gene[i] == 2) {
+                    redHue = redHue - 0.00225F;
+                    if (redHue <= 0.0F) {
+                        redHue = 1.0F + redHue;
                     }
-                }
+                    redSaturation = redSaturation + 0.00175F;
+                    redBrightness = redBrightness - 0.0155F;
 
-                for (int i = 150; i < 170; i++) {
-                    if (gene[i] == 2) {
-                        redHue = redHue - 0.00225F;
-                        if (redHue <= 0.0F) {
-                            redHue = 1.0F + redHue;
-                        }
-                        redSaturation = redSaturation + 0.00175F;
-                        redBrightness = redBrightness - 0.0155F;
-
-                        blackHue = blackHue - 0.00225F;
-                        if (blackHue <= 0.0F) {
-                            blackHue = 1.0F + blackHue;
-                        }
-                        blackHue = blackHue + 0.002F;
+                    blackHue = blackHue - 0.00225F;
+                    if (blackHue <= 0.0F) {
+                        blackHue = 1.0F + blackHue;
                     }
+                    blackHue = blackHue + 0.002F;
                 }
+            }
 
-                float shadeIntensity = 0.5F;
-                for (int i = 170; i < 185; i++) {
-                    if (gene[i] == 2) {
-                        redBrightness = redBrightness + 0.005F;
-                        shadeIntensity = shadeIntensity - 0.005F;
-                    }
+            float shadeIntensity = 0.5F;
+            for (int i = 170; i < 185; i++) {
+                if (gene[i] == 2) {
+                    redBrightness = redBrightness + 0.005F;
+                    shadeIntensity = shadeIntensity - 0.005F;
                 }
+            }
 
-                for (int i = 185; i < 200; i++) {
-                    if (gene[i] == 2) {
-                        redBrightness = redBrightness - 0.005F;
-                        shadeIntensity = shadeIntensity + 0.005F;
-                    }
+            for (int i = 185; i < 200; i++) {
+                if (gene[i] == 2) {
+                    redBrightness = redBrightness - 0.005F;
+                    shadeIntensity = shadeIntensity + 0.005F;
                 }
+            }
 
-                for (int i = 200; i <= 224; i++) {
-                    if (gene[i] == 2) {
-                        shadeIntensity = shadeIntensity - 0.015F;
-                    }
+            for (int i = 200; i <= 224; i++) {
+                if (gene[i] == 2) {
+                    shadeIntensity = shadeIntensity - 0.015F;
                 }
+            }
 
-                for (int i = 226; i < 250; i++) {
-                    if (gene[i] == 2) {
-                        shadeIntensity = shadeIntensity + 0.02F;
-                    }
+            for (int i = 226; i < 250; i++) {
+                if (gene[i] == 2) {
+                    shadeIntensity = shadeIntensity + 0.02F;
                 }
+            }
 
-                /**
-                 *  Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
-                 */
-                if (gene[128] == 2 || gene[129] == 2) {
-                    if (gene[128] == 2 && gene[129] == 2) {
-                        //homo dun
-                        redSaturation = 0.0F;
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.9F);
-                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.2F);
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.05F);
-                    } else {
-                        //het dun
-                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.1F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.45F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.35F);
-                    }
+            /**
+             *  Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
+             */
+            if (gene[128] == 2 || gene[129] == 2) {
+                if (gene[128] == 2 && gene[129] == 2) {
+                    //homo dun
+                    redSaturation = 0.0F;
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.9F);
+                    blackSaturation = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.2F);
+                    blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.05F);
+                } else {
+                    //het dun
+                    redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.1F);
+                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.45F);
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.35F);
                 }
+            }
 
-                /**
-                 *  Dexter Dun - chocolate
-                 */
-                if (gene[10] == 2 && gene[11] == 2) {
-                    blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
-                    blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
-                    blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
-                }
+            /**
+             *  Dexter Dun - chocolate
+             */
+            if (gene[10] == 2 && gene[11] == 2) {
+                blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
+                blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
+                blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
+            }
 
-                /**
-                 *  Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
-                 */
-                if (gene[2] == 2 || gene[3] == 2) {
-                    // simmental or highland dilution
-                    if (gene[2] == 2 && gene[3] == 2) {
-                        //homo highland dun
+            /**
+             *  Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
+             */
+            if (gene[2] == 2 || gene[3] == 2) {
+                // simmental or highland dilution
+                if (gene[2] == 2 && gene[3] == 2) {
+                    //homo highland dun
 //                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
 //                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
 //                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.6F);
 //                        blackHue = Colouration.mixHueComponent(redHue, 0.1F, 0.9F);
 //                        blackSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
 //                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.6F);
-                        blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
-                        blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
-                        blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
-                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
+                    blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
+                    blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
+                    blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
+                    redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
+                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.5F);
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.5F);
+                    blackHue = Colouration.mixHueComponent(redHue, 0.0F, 0.5F);
+                    blackSaturation = Colouration.mixColourComponent(blackSaturation*0.65F, redSaturation*0.25F, 0.4F);
+                    blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.45F);
+                } else if (gene[2] == 1 || gene[3] == 1) {
+                    //het dun
+                    if (gene[0] == 1 || gene[1] == 1) {
+                        blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.15F);
+                        blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.225F);
+                        blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.125F);
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.7F);
                         redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.5F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.5F);
-                        blackHue = Colouration.mixHueComponent(redHue, 0.0F, 0.5F);
-                        blackSaturation = Colouration.mixColourComponent(blackSaturation*0.65F, redSaturation*0.25F, 0.4F);
-                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.45F);
-                    } else if (gene[2] == 1 || gene[3] == 1) {
-                        //het dun
-                        if (gene[0] == 1 || gene[1] == 1) {
-                            blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.15F);
-                            blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.225F);
-                            blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.125F);
-                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.7F);
-                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.5F);
-                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
 //                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.5F);
-                            blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
-                        } else if (gene[0] == 3 || gene[1] == 3) {
-                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
-                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                            blackHue = redHue;
-                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
-                            blackSaturation = redSaturation;
-                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
-                        } else {
+                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
+                    } else if (gene[0] == 3 || gene[1] == 3) {
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                        blackHue = redHue;
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
+                        blackSaturation = redSaturation;
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
+                    } else {
 //                    blackHue = mixColourComponent(blackHue, redHue, 0.5F);
 //                    blackSaturation = mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
-                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
-                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.6F);
-                            blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.4F);
-                        }
-                    } else {
-                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.85F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.84F);
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                        blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.6F);
+                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.4F);
+                    }
+                } else {
+                    redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
+                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.85F);
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.84F);
 //                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.1F);
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.75F);
-                    }
-                } else if (gene[2] == 3 || gene[3] == 3) {
-                    //charolais dilution very harsh
-                    if (gene[2] == 3 && gene[3] == 3) {
-                        redHue = 0.1F;
-                        redSaturation = 0.0F;
-                        redBrightness = 1.0F;
-                        blackHue = 0.1F;
-                        blackSaturation = 0.0F;
-                        blackBrightness = 1.0F;
-                    } else {
-                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.80F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.25F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.8F);
-                        blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.80F);
-                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 0.0F, 0.2F);
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.8F);
-                    }
+                    blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.75F);
                 }
-
-                //puts final values into array for processing
-                float[] melanin = {blackHue, blackSaturation, blackBrightness};
-                float[] pheomelanin = {redHue, redSaturation, redBrightness};
-
-                //checks that numbers are within the valid range
-                for (int i = 0; i <= 2; i++) {
-                    if (melanin[i] > 1.0F) {
-                        melanin[i] = 1.0F;
-                    } else if (melanin[i] < 0.0F) {
-                        melanin[i] = 0.0F;
-                    }
-                    if (pheomelanin[i] > 1.0F) {
-                        pheomelanin[i] = 1.0F;
-                    } else if (pheomelanin[i] < 0.0F) {
-                        pheomelanin[i] = 0.0F;
-                    }
+            } else if (gene[2] == 3 || gene[3] == 3) {
+                //charolais dilution very harsh
+                if (gene[2] == 3 && gene[3] == 3) {
+                    redHue = 0.1F;
+                    redSaturation = 0.0F;
+                    redBrightness = 1.0F;
+                    blackHue = 0.1F;
+                    blackSaturation = 0.0F;
+                    blackBrightness = 1.0F;
+                } else {
+                    redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.80F);
+                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.25F);
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.8F);
+                    blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.80F);
+                    blackSaturation = Colouration.mixColourComponent(blackBrightness, 0.0F, 0.2F);
+                    blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.8F);
                 }
-
-                if (!isFemale) {
-                    shadeIntensity = 0.5F * (shadeIntensity + 1.0F);
-                }
-
-                if (shadeIntensity <= 0.0F) {
-                    shadeIntensity = 0.00001F;
-                } else if (shadeIntensity >= 1.0F) {
-                    shadeIntensity = 0.99999F;
-                }
-
-                colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
-                colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
-
-            } else if (isBaby && !genes.has(0,0)) {
-                colouration.setBabyAlpha(growthAmount);
             }
+
+            //puts final values into array for processing
+            float[] melanin = {blackHue, blackSaturation, blackBrightness};
+            float[] pheomelanin = {redHue, redSaturation, redBrightness};
+
+            //checks that numbers are within the valid range
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
+                }
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
+                }
+            }
+
+            if (!isFemale) {
+                shadeIntensity = 0.5F * (shadeIntensity + 1.0F);
+            }
+
+            if (shadeIntensity <= 0.0F) {
+                shadeIntensity = 0.00001F;
+            } else if (shadeIntensity >= 1.0F) {
+                shadeIntensity = 0.99999F;
+            }
+
+            colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
+            colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
+
         }
     }
 

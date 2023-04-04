@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
@@ -15,12 +16,17 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HayBlock;
@@ -90,6 +96,7 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -111,7 +118,6 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
  */
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EventSubscriber {
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void editMobs(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
@@ -147,19 +153,28 @@ public class EventSubscriber {
         } else if (entity instanceof Zombie) {
             if (!(entity instanceof ZombifiedPiglin)) {
                 ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                if (entity instanceof Drowned) {
+                    ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), EnhancedAxolotl.class, true, false));
+                }
             }
             ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
-
         } else if (entity instanceof AbstractSkeleton) {
             ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
         } else if (entity instanceof Guardian) {
             ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
                 return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
             }));
-        } else if (entity instanceof Guardian) {
-            ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
-                return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
-            }));
+        } else if (entity instanceof EnhancedAnimalAbstract) {
+            if (((EnhancedAnimalAbstract) entity).isLeashed()) {
+                Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
+                if (leashHolder instanceof WanderingTrader) {
+                    ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
+                }
+            } else if (entity instanceof EnhancedChicken) {
+                if (((EnhancedChicken) entity).isChickenJockey()) {
+                    ((EnhancedChicken) entity).scheduleDespawn(4000);
+                }
+            }
         }
     }
 
@@ -288,6 +303,7 @@ public class EventSubscriber {
                                         enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
                                     }
                                     enhancedChicken.setChickenJockey(true);
+//                                    enhancedChicken.scheduleDespawn();
                                     for (Entity rider : riders) {
                                         rider.startRiding(enhancedChicken);
                                     }
@@ -344,55 +360,63 @@ public class EventSubscriber {
                         event.setCanceled(true);
                     }
                 }
-            } else if (entity instanceof MushroomCow) {
-                if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
-                    if (entity.getClass().getName().toLowerCase().contains("mooshroom")) {
-                        EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                        if (enhancedMooshroom != null) {
-                            if (entity.hasCustomName()) {
-                                enhancedMooshroom.setCustomName(entity.getCustomName());
-                            }
-                            if (((MushroomCow) entity).isBaby()) {
-                                int age = ((MushroomCow) entity).getAge();
-                                enhancedMooshroom.setAge(age);
-                                enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
-                            } else {
-                                enhancedMooshroom.setAge(0);
-                                enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), -500000);
-                            }
-                            enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getMushroomType().name()));
-                            if (((MushroomCow) entity).isLeashed()) {
-                                enhancedMooshroom.setLeashedTo(((MushroomCow) entity).getLeashHolder(), true);
-                            }
-                        }
-                        entity.remove(Entity.RemovalReason.DISCARDED);
-                        event.setCanceled(true);
-                    }
-                }
             } else if (entity instanceof Cow) {
-                if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
-                    EnhancedCow enhancedCow;
-                    boolean flag = true;
-                    if (entity.getClass().getName().toLowerCase().contains("moobloom")) {
-                        if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
-                            enhancedCow = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                        } else {
-                            enhancedCow = null;
-                            flag = false;
+                if (entity instanceof MushroomCow) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
+                        if (entity.getClass().getName().toLowerCase().contains("shroom")) {
+                            EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            if (enhancedMooshroom != null) {
+                                if (entity.hasCustomName()) {
+                                    enhancedMooshroom.setCustomName(entity.getCustomName());
+                                }
+                                if (((MushroomCow) entity).isBaby()) {
+                                    int age = ((MushroomCow) entity).getAge();
+                                    enhancedMooshroom.setAge(age);
+                                    enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
+                                } else {
+                                    enhancedMooshroom.setAge(0);
+                                    enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                                }
+                                enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getMushroomType().name()));
+                                if (((MushroomCow) entity).isLeashed()) {
+                                    enhancedMooshroom.setLeashedTo(((MushroomCow) entity).getLeashHolder(), true);
+                                }
+                            }
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
                         }
-                    } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
-                        enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                    } else {
-                        enhancedCow = null;
-                        flag = false;
                     }
+                } else if (entity.getClass().getName().toLowerCase().contains("bloom")) {
+                    if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                        EnhancedMoobloom enhancedMoobloom = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        if (enhancedMoobloom!=null) {
+                            if (entity.hasCustomName()) {
+                                enhancedMoobloom.setCustomName(entity.getCustomName());
+                            }
+                            if (((Cow) entity).isBaby()) {
+                                int age = ((Cow) entity).getAge();
+                                enhancedMoobloom.setAge(age);
+                                enhancedMoobloom.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
+                            } else {
+                                enhancedMoobloom.setAge(0);
+                                enhancedMoobloom.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                            }
+                            if (((Cow) entity).isLeashed()) {
+                                enhancedMoobloom.setLeashedTo(Objects.requireNonNull(((Cow) entity).getLeashHolder()), true);
+                            }
 
-                    if (flag) {
-                        if (enhancedCow != null) {
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
+                        }
+                    }
+                } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
+                        EnhancedCow enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);;
+                        if (enhancedCow!=null) {
                             if (entity.hasCustomName()) {
                                 enhancedCow.setCustomName(entity.getCustomName());
                             }
-                            if (((Cow) entity).isBaby()) {
+                            if (((Cow)entity).isBaby()) {
                                 int age = ((Cow) entity).getAge();
                                 enhancedCow.setAge(age);
                                 enhancedCow.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 84000);
@@ -403,12 +427,13 @@ public class EventSubscriber {
                             if (((Cow) entity).isLeashed()) {
                                 enhancedCow.setLeashedTo(((Cow) entity).getLeashHolder(), true);
                             }
+
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
                         }
-                        entity.remove(Entity.RemovalReason.DISCARDED);
-                        event.setCanceled(true);
                     }
                 }
-            } else if (entity instanceof Llama && entity.getClass().getName().toLowerCase().contains("llama")) {
+            } else if (entity instanceof Llama) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("llama")) {
                         if (!(((Llama) entity).getLeashHolder() instanceof WanderingTrader)) {
@@ -456,7 +481,8 @@ public class EventSubscriber {
                                     enhancedLlama.setBirthTime(entity.getCommandSenderWorld(), -500000);
                                     if (entity instanceof TraderLlama) {
                                         enhancedLlama.equipTraderAnimal(((Llama) entity).hasChest());
-                                        enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
+                                        enhancedLlama.makeTraderLlama();
+                                        enhancedLlama.setInitialDefaults();
                                     } else {
                                         enhancedLlama.equipAnimal(((Llama) entity).hasChest(), ((Llama) entity).getSwag());
                                     }
@@ -473,11 +499,13 @@ public class EventSubscriber {
                                         }
                                     }
                                 }
-                                entity.getCommandSenderWorld().addFreshEntity(enhancedLlama);
+                                enhancedLlama.getCommandSenderWorld().addFreshEntity(enhancedLlama);
                                 if (((Llama) entity).isLeashed()) {
                                     enhancedLlama.setLeashedTo(((Llama) entity).getLeashHolder(), true);
                                 }
                             }
+                        } else if (entity instanceof TraderLlama) {
+                            ((TraderLlama) entity).dropLeash(true, false);
                         }
                         entity.remove(Entity.RemovalReason.DISCARDED);
                         event.setCanceled(true);
@@ -558,11 +586,16 @@ public class EventSubscriber {
                             enhancedAxolotl.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedAxolotl.yBodyRot = ((Axolotl) entity).yBodyRot;
                             String breed = "";
-                            switch (((Axolotl) entity).getVariant()) {
-                                case BLUE -> breed = ThreadLocalRandom.current().nextBoolean() ? "blue" : "azure";
-                                case CYAN -> breed = "leucistic";
-                                case LUCY -> breed = "albino";
-                                case GOLD -> breed = "golden";
+                            if (entity.getTags().contains("WanderingTrader")) {
+                                breed = "WanderingTrader";
+                            } else {
+                                switch (((Axolotl) entity).getVariant()) {
+                                    case BLUE -> breed = "rarebluevarient";
+                                    case CYAN -> breed = "cyanvarient";
+                                    case LUCY -> breed = "lucyvarient";
+                                    case GOLD -> breed = "goldvarient";
+                                    case WILD -> breed = "wildvarient";
+                                }
                             }
                             Genes axolotlGenes = enhancedAxolotl.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), breed);
                             enhancedAxolotl.setGenes(axolotlGenes);
@@ -570,6 +603,9 @@ public class EventSubscriber {
                             enhancedAxolotl.initilizeAnimalSize();
                             enhancedAxolotl.getReloadTexture();
 
+                            if (((Axolotl)entity).fromBucket()) {
+                                enhancedAxolotl.setFromBucket(true);
+                            }
                             if (entity.hasCustomName()) {
                                 enhancedAxolotl.setCustomName(entity.getCustomName());
                             }
@@ -617,17 +653,17 @@ public class EventSubscriber {
                         BlockPos blockPos = nearbySpawn(((ServerLevel)world), new BlockPos(entity.blockPosition()));
                         EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().spawn((ServerLevel)world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
                         if(enhancedLlama != null) {
-                            enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                             enhancedLlama.setLeashedTo(entity, true);
-                            enhancedLlama.setDespawnDelay(48000, true);
                             enhancedLlama.setAge(0);
                             enhancedLlama.setBirthTime(entity.getCommandSenderWorld(), -((ThreadLocalRandom.current().nextInt(25)*500000) + 10000000));
+                            enhancedLlama.makeTraderLlama();
+                            enhancedLlama.setInitialDefaults();
+                            enhancedLlama.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
                         }
                     }
                 }
 
                 if (ThreadLocalRandom.current().nextInt(5) == 0) {
-                    int r = ThreadLocalRandom.current().nextInt(2) + 1;
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
                         animals.add(ENHANCED_COW.get());
@@ -646,7 +682,6 @@ public class EventSubscriber {
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get() && EanimodCommonConfig.COMMON.wanderingTraderLlama.get()) {
                         animals.add(ENHANCED_LLAMA.get());
-                        r = 1;
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticTurtles.get() && EanimodCommonConfig.COMMON.wanderingTraderTurtle.get()) {
                         animals.add(ENHANCED_TURTLE.get());
@@ -657,21 +692,44 @@ public class EventSubscriber {
                     if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get() && EanimodCommonConfig.COMMON.wanderingTraderMoobloom.get()) {
                         animals.add(ENHANCED_MOOBLOOM.get());
                     }
+                    if (EanimodCommonConfig.COMMON.spawnGeneticAxolotls.get() && EanimodCommonConfig.COMMON.wanderingTraderAxolotl.get()) {
+                        animals.add(ENHANCED_AXOLOTL.get());
+                    }
 
-                    Collections.shuffle(animals);
+                    int selection = animals.size()==1?0:ThreadLocalRandom.current().nextInt(animals.size());
 
-                    for (int i = 0; i < r; i++) {
-                        BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
-                        Entity animal = animals.get(0).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
-                        if (animal instanceof EnhancedAnimalAbstract) {
-                            EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract)animal;
-                            Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
-                            enhancedAnimal.setGenes(animalGenes);
-                            enhancedAnimal.setSharedGenes(animalGenes);
-                            enhancedAnimal.setInitialDefaults();
-                            enhancedAnimal.initilizeAnimalSize();
-                            enhancedAnimal.getReloadTexture();
-                            enhancedAnimal.setLeashedTo(entity, true);
+                    if (animals.get(selection) == ENHANCED_TURTLE.get()) {
+                        ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
+                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                    } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
+                        ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
+                        CompoundTag tag = stack.getOrCreateTag();
+                        tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200)==0?4:ThreadLocalRandom.current().nextInt(4));
+                        //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
+//                        CompoundTag entityTags = new CompoundTag();
+//                        ListTag listtag = new ListTag();
+//                        listtag.add(StringTag.valueOf("WanderingTrader"));
+//                        entityTags.put("Tags", listtag);
+//                        tag.put("EntityTags",entityTags);
+                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                    } else {
+                        for (int i = 1; i <= 2; i++) {
+                            BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
+                            Entity animal = animals.get(selection).spawn((ServerLevel) world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
+                            if (animal instanceof EnhancedAnimalAbstract) {
+                                EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animal;
+                                Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
+                                enhancedAnimal.setGenes(animalGenes);
+                                enhancedAnimal.setSharedGenes(animalGenes);
+                                enhancedAnimal.setInitialDefaults();
+                                enhancedAnimal.initilizeAnimalSize();
+                                enhancedAnimal.getReloadTexture();
+                                enhancedAnimal.setLeashedTo(entity, true);
+                                enhancedAnimal.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
+                            }
+                            if (animal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -721,7 +779,7 @@ public class EventSubscriber {
             Entity entity = event.getEntity();
             if (entity instanceof EnhancedPig || entity.getClass().getName().toLowerCase().contains("pig")) {
                 String name = entity.getCustomName().getString().toLowerCase();
-                if (name.equals("technoblade")) {
+                if (name.equals("technoblade") || name.equals("techno")) {
                     event.setCanceled(true);
                 }
             }

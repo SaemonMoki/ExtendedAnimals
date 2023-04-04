@@ -19,6 +19,8 @@ import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
@@ -67,6 +69,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -255,6 +258,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private String dropMeatType;
     public boolean chickenJockey;
 
+    @OnlyIn(Dist.CLIENT)
+    private ChickenModelData chickenModelData;
+
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
@@ -352,6 +358,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.entityData.define(ROOSTING, Boolean.FALSE);
     }
 
+    public void scheduleDespawn(int ticksToWait) {
+        this.scheduledToRun.put(DESPAWN_NO_PASSENGER_SCHEDULE.funcName, DESPAWN_NO_PASSENGER_SCHEDULE.function.apply(ticksToWait));
+    }
+
+    @Override
+    public void despawn() {
+        if (this.getPassengers().isEmpty()) {
+            if (this.isChickenJockey()) {
+                if (!(this.hasCustomName() || this.isLeashed() || this.isTame())) {
+                    this.discard();
+                }
+            } else {
+                super.despawn();
+            }
+        }
+    }
+
     @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_chicken";
@@ -369,6 +392,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_CHICKEN_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (this.isChickenJockey() && this.getPassengers().isEmpty()) {
+            if (hunger >= 6000 && (isFoodItem(itemStack) || item instanceof EnhancedEgg)) {
+                this.setChickenJockey(false);
+                this.setTame(true);
+            }
+        }
 
         if (item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
@@ -721,6 +755,18 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         return eggColour;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public ChickenModelData getModelData() {
+        return this.chickenModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.chickenModelData = (ChickenModelData) animalModelData;
     }
 
     @Override

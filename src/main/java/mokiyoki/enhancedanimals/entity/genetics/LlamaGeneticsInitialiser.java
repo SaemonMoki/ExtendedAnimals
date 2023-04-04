@@ -326,4 +326,5 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
 
         return new Genes(autosomalGenes);
     }
+
 }

@@ -4,6 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.TurtleModelData;
+import mokiyoki.enhancedanimals.model.modeldata.TurtlePhenotype;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -41,6 +45,8 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
     private WrappedModelPart legFrontRight;
     private WrappedModelPart legBackLeft;
     private WrappedModelPart legBackRight;
+
+    private TurtleModelData turtleModelData;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -162,6 +168,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
         this.theHead.addChild(this.eyes);
 
         this.theBody.addChild(this.body);
+        this.theBody.addChild(this.pregnantBody);
 
         this.theLegFrontLeft.addChild(this.legFrontLeft);
 
@@ -176,13 +183,10 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        TurtleModelData turtleModelData = getTurtleModelData();
-        TurtlePhenotype turtle = turtleModelData.getPhenotype();
-
-        if (turtle!=null) {
+        if (this.turtleModelData!=null && this.turtleModelData.getPhenotype() != null) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            super.renderToBuffer(this.turtleModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (turtleModelData.hasEggs) {
                 this.pregnantBody.show();
@@ -194,9 +198,9 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
             float size = ((1.0F + (turtleModelData.growthAmount * 11.0F))/12.0F) * turtleModelData.size;
 
-            if (turtleModelData.growthAmount!= 1.0F) {
-                float bh = turtleModelData.growthAmount == 1.0F ? 1.0F : (1.0F + (size*10.0F))/11.0F;
-                List<Float> babyHead = ModelHelper.createScalings(bh,0.0F, -1.52F + 1.52F/(bh), -0.08F + 0.08F/(bh));
+            if (turtleModelData.growthAmount < 1.0F) {
+                float bh = (1.0F-turtleModelData.growthAmount)*0.5F;
+                List<Float> babyHead = ModelHelper.createScalings(1.5F-(turtleModelData.growthAmount*0.5F),0.0F, bh*-0.1F, bh*-0.08F);
                 mapOfScale.put("bHead", babyHead);
             }
 
@@ -221,10 +225,9 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        TurtleModelData data = getCreateTurtleModelData(entityIn);
+        this.turtleModelData = getCreateTurtleModelData(entityIn);
 
-        if (data != null) {
+        if (this.turtleModelData != null) {
             this.theHead.setXRot((headPitch * (Mth.PI / 180F))-Mth.HALF_PI);
             this.theHead.setZRot(-netHeadYaw * (Mth.PI / 180F));
 
@@ -254,17 +257,6 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
     }
 
-    private class TurtleModelData extends AnimalModelData {
-        boolean hasEggs;
-        public TurtlePhenotype getPhenotype() {
-            return (TurtlePhenotype) this.phenotype;
-        }
-    }
-
-    private TurtleModelData getTurtleModelData() {
-        return (TurtleModelData) getAnimalModelData();
-    }
-
     private TurtleModelData getCreateTurtleModelData(T enhancedTurtle) {
         return (TurtleModelData) getCreateAnimalModelData(enhancedTurtle);
     }
@@ -281,14 +273,12 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
     }
 
     @Override
-    protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new TurtlePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
+    protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
+        ((TurtleModelData)animalModelData).hasEggs = enhancedAnimal.hasEgg();
     }
 
-    protected class TurtlePhenotype implements Phenotype {
-
-        TurtlePhenotype(int[] gene) {
-
-        }
+    @Override
+    protected Phenotype createPhenotype(T enhancedAnimal) {
+        return new TurtlePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
     }
 }

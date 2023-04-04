@@ -4,9 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotype;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.*;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
-import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -148,6 +150,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private WrappedModelPart tailShort;
     private WrappedModelPart tailMedium;
     private WrappedModelPart tailLong;
+
+    private ChickenModelData chickenModelData;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -701,12 +705,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, -2.0F, 1.0F, 1, 1, 4)
                         .texOffs(30, 0)
                         .addBox(-0.5F, -1.0F, 0.0F, 1, 4, 5),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.01F, 0.0F)
         );
         bTail.addOrReplaceChild("tailMF", CubeListBuilder.create()
                         .texOffs(48, 50)
                         .addBox(0.0F, -6.0F, 0.0F, 0, 6, 8),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.01F, 0.0F)
         );
 
         bChicken.addOrReplaceChild("collar", CubeListBuilder.create()
@@ -1083,17 +1087,16 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)  {
-        ChickenModelData data = getChickenModelData();
-        ChickenPhenotype chicken = (ChickenPhenotype) data.phenotype;
+        if (this.chickenModelData != null && this.chickenModelData.getPhenotype() != null) {
+            ChickenPhenotype chicken = (ChickenPhenotype) this.chickenModelData.phenotype;
 
-        resetCubes();
+            resetCubes();
 
-        if (chicken != null) {
-            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            super.renderToBuffer(this.chickenModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            float size = data.size;
-            float finalChickenSize = ((3.0F * size * data.growthAmount) + size) / 4.0F;
+            float size = this.chickenModelData.size;
+            float finalChickenSize = ((3.0F * size * this.chickenModelData.growthAmount) + size) / 4.0F;
 
             /**
              *      Head
@@ -1132,7 +1135,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Comb
              */
-            if (data.growthAmount <= 0.3F) {
+            if (this.chickenModelData.growthAmount <= 0.3F) {
 //                this.ears.hide();
             } else if (chicken.isCombed()){
                 this.theComb.show();
@@ -1247,7 +1250,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Crest
              */
-            if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && data.growthAmount > 0.5F)) {
+            if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && this.chickenModelData.growthAmount > 0.5F)) {
                 this.crestSmallF.show();
             } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
                 this.crestMediumF.show();
@@ -1269,8 +1272,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Legs
              */
-            if (data.offsets.containsKey("bBodyPos")) {
-                if (data.offsets.get("bBodyPos").y() < 8.0F + (15.5F - chicken.height)) {
+            if (this.chickenModelData.offsets.containsKey("bBodyPos")) {
+                if (this.chickenModelData.offsets.get("bBodyPos").y() < 8.0F + (15.5F - chicken.height)) {
                     if (chicken.creeper) {
                         if (chicken.hasLongLegs()) {
                             this.legLeftMedium.show();
@@ -1300,7 +1303,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     this.bootsLeft.show();
                     this.bootsRight.show();
                 case LEGFEATHERS:
-                    if (!data.sleeping) {
+                    if (!this.chickenModelData.sleeping) {
                         this.pantsLeft.show();
                         this.pantsRight.show();
                         if (chicken.longHockFeathers || chicken.hasLongLegs()) {
@@ -1342,19 +1345,19 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
              *      Tail
              */
             if (old) {
-                this.theTail.show(!chicken.rumpless || data.growthAmount > 0.15F);
+                this.theTail.show(!chicken.rumpless || this.chickenModelData.growthAmount > 0.15F);
                 this.tail.show();
             } else {
                 this.bloomersLeft.show();
                 this.bloomersRight.show();
-                this.theSaddle.show(!chicken.rumpless || data.growthAmount > 0.15F);
+                this.theSaddle.show(!chicken.rumpless || this.chickenModelData.growthAmount > 0.15F);
                 this.cushion.show();
                 this.tailCoverMedium.show();
                 this.tailMedium.show();
             }
 
-            if (data.growthAmount != 1.0F) {
-                mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F + ((1.0F-data.growthAmount)*0.3F), 0.0F, (1.0F-data.growthAmount)*0.1F, 0.0F));
+            if (this.chickenModelData.growthAmount != 1.0F) {
+                mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F + ((1.0F-this.chickenModelData.growthAmount)*0.3F), 0.0F, (1.0F-this.chickenModelData.growthAmount)*0.1F, 0.0F));
             }
             mapOfScale.put("collar", ModelHelper.createScalings(0.5F, 0.0F, 0.0F, 0.0F));
             mapOfScale.put("collarH", ModelHelper.createScalings(2.0F, 0.0F, 0.0F, 0.0F));
@@ -1454,19 +1457,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        ChickenModelData data = getCreateChickenModelData(entityIn);
-        if (data!= null) {
-            ChickenPhenotype chicken = data.getPhenotype();
-            readInitialAnimationValues(data, chicken);
+        this.chickenModelData = getCreateChickenModelData(entityIn);
+        if (this.chickenModelData!= null) {
+            ChickenPhenotype chicken = this.chickenModelData.getPhenotype();
+            readInitialAnimationValues(this.chickenModelData, chicken);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            if (data.sleeping && !isMoving) {
-                if (data.sleepDelay == -1) {
-                    data.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
-                } else if (data.sleepDelay <= ageInTicks+50) {
-                    if (data.sleepDelay <= ageInTicks) {
-                        data.sleepDelay = 0;
+            if (this.chickenModelData.sleeping && !isMoving) {
+                if (this.chickenModelData.sleepDelay == -1) {
+                    this.chickenModelData.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
+                } else if (this.chickenModelData.sleepDelay <= ageInTicks+50) {
+                    if (this.chickenModelData.sleepDelay <= ageInTicks) {
+                        this.chickenModelData.sleepDelay = 0;
                         layDownAnimation(9.0F + (15.5F-chicken.height),true);
                     } else {
                         layDownAnimation(9.0F + (15.5F-chicken.height),false);
@@ -1474,18 +1476,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     }
                 }
             } else {
-                if (data.sleepDelay != -1) {
-                    data.sleepDelay = -1;
+                if (this.chickenModelData.sleepDelay != -1) {
+                    this.chickenModelData.sleepDelay = -1;
                 }
 
                 boolean flag = true;
-                if (data.isEating != 0) {
-                    if (data.isEating == -1) {
-                        data.isEating = (int)ageInTicks + 140;
-                    } else if (data.isEating < ageInTicks) {
-                        data.isEating = 0;
+                if (this.chickenModelData.isEating != 0) {
+                    if (this.chickenModelData.isEating == -1) {
+                        this.chickenModelData.isEating = (int)ageInTicks + 140;
+                    } else if (this.chickenModelData.isEating < ageInTicks) {
+                        this.chickenModelData.isEating = 0;
                     }
-                    flag = grazingAnimation(data.isEating - (int)ageInTicks);
+                    flag = grazingAnimation(this.chickenModelData.isEating - (int)ageInTicks);
                 }
 
                 if (flag) {
@@ -1530,7 +1532,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
             }
 
-            saveAnimationValues(data, chicken);
+            saveAnimationValues(this.chickenModelData, chicken);
         }
     }
 
@@ -1649,17 +1651,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theWingLeft.setZRot(-flap);
         this.theWingRight.setZRot(flap);
     }
-    
-    private class ChickenModelData extends AnimalModelData {
-        boolean isFemale = true;
-        public ChickenPhenotype getPhenotype() {
-            return (ChickenPhenotype) this.phenotype;
-        }
-    }
-
-    private ChickenModelData getChickenModelData() {
-        return (ChickenModelData) getAnimalModelData();
-    }
 
     private ChickenModelData getCreateChickenModelData(T enhancedChicken) {
         return (ChickenModelData) getCreateAnimalModelData(enhancedChicken);
@@ -1675,298 +1666,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     @Override
     protected ChickenPhenotype createPhenotype(T enhancedAnimal) {
         return new ChickenPhenotype(enhancedAnimal.getSharedGenes());
-    }
-
-    protected class ChickenPhenotype implements Phenotype {
-        private Crested crestType = Crested.NONE;
-        private FootFeathers footFeatherType = FootFeathers.NONE;
-        private Comb comb = Comb.SINGLE;
-        private Beard beard;
-        private boolean butterCup = false;
-        private boolean isVultureHocked;
-        private boolean isNakedNeck;
-        private boolean earTufts;
-        private boolean rumpless;
-        private boolean longHockFeathers;
-        private boolean creeper;
-        private int longLegs = 0;
-        private int combSize = 0;
-        private int waddleSize;
-        private int bodyType;
-        private int wingSize;
-        private float wingPlacement = -5.5F;
-        private float wingAngle = 0;
-        private float bodyAngle;
-        private float tailAngle = 0;
-        private float height;
-
-        private boolean silkie;
-
-        ChickenPhenotype(Genes genes) {
-            int[] gene = genes.getAutosomalGenes();
-            this.isNakedNeck = gene[52] == 1 || gene[53] == 1;
-            this.rumpless = gene[72] == 2 || gene[73] == 2;
-            this.earTufts = gene[150] == 2 || gene[151] == 2;
-            this.isVultureHocked = gene[102] == 2 && gene[103] == 2;
-            this.creeper = gene[70] == 2 || gene[71] == 2;
-
-            if (gene[56] == 1 || gene[57] == 1) {
-                this.beard = this.isNakedNeck ? Beard.NN_BEARD : Beard.BIG_BEARD;
-            } else {
-                this.beard = Beard.NONE;
-            }
-
-            //Crest type
-            if (!(gene[54] == 3 && gene[55] == 3)) {
-                if (gene[54] == 3 || gene[55] == 3) {
-                    if (gene[54] == 1 || gene[55] == 1) {
-                        this.crestType = Crested.SMALL_CREST;
-                    } else {
-                        this.crestType = Crested.SMALL_FORWARDCREST;
-                    }
-                } else if (gene[54] != gene[55] || (gene[54] == 1 && gene[55] == 1)) {
-                    this.crestType = Crested.BIG_CREST;
-                } else {
-                    this.crestType = Crested.BIG_FORWARDCREST;
-                }
-            }
-
-            //Foot Feather Type
-            if (!(gene[60] == 3 && gene[61] == 3)) {
-                if (gene[60] == 1 || gene[61] == 1) {
-                    if (gene[58] == 2 && gene[59] == 2) {
-                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
-                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                        this.footFeatherType = FootFeathers.TOEFEATHERS;
-                    } else if (gene[58] == 1 || gene[59] == 1) {
-                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
-                    }
-                } else {
-                    if (gene[58] == 2 && gene[59] == 2) {
-                        this.footFeatherType = FootFeathers.TOEFEATHERS;
-                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
-                    } else if (gene[58] == 1 || gene[59] == 1) {
-                        this.footFeatherType = FootFeathers.LEGFEATHERS;
-                    }
-                }
-            }
-
-            if ((gene[50] == 2 || gene[51] == 2) && !(gene[50] == 1 || gene[51] == 1)) {
-                if (gene[46] == 3 && gene[47] == 3 && gene[48] == 2 && gene[49] == 2) {
-                    //v comb
-                    this.comb = Comb.V;
-                } else {
-                    if (gene[48] == 2 && gene[49] == 2) {
-                        //only waddles
-                        this.comb = Comb.NONE;
-                    }
-                }
-            } else {
-                if (gene[48] == 1 || gene[49] == 1) {
-                    if (gene[46] == 3 && gene[47] == 3) {
-                        //peacomb
-                        this.comb = Comb.PEA;
-                    } else {
-                        //walnut
-                        this.comb = Comb.WALNUT;
-                    }
-                } else {
-                    if (gene[46] == 3 && gene[47] == 3) {
-                        //single comb
-                        this.comb = Comb.SINGLE;
-                    } else if (gene[46] == 1 || gene[47] == 1) {
-                        //rose comb
-//                        if (gene[46] == 3 || gene[47] == 3) {
-//                            this.comb = Comb.HET_ROSE_ONE;
-//                        } else {
-                            this.comb = Comb.ROSE_ONE;
-//                        }
-                    } else {
-                        //rose comb2
-//                        if (gene[46] == 3 || gene[47] == 3) {
-//                            this.comb = Comb.HET_ROSE_TWO;
-//                        } else {
-                            this.comb = Comb.ROSE_TWO;
-//                        }
-                    }
-                }
-
-                if (gene[50] == 2 || gene[51] == 2) {
-                    this.butterCup = true;
-                    this.combSize = -1;
-                } else {
-                    this.butterCup = gene[50] == 3 || gene[51] == 3;
-                }
-
-            }
-
-            if ((gene[86] == 1 && gene[87] == 1) || (gene[86] == 3 && gene[87] == 3)){
-                wingPlacement = -4.5F;
-            } else if (gene[86] == 1 || gene[87] == 1){
-                wingPlacement = -5.0F;
-            }
-
-            //comb size [80 and 81 small / 82 and 83 large]
-            if (gene[80] == 2) {
-                this.combSize = this.combSize + 1;
-            }
-            if (gene[81] == 2) {
-                this.combSize = this.combSize + 1;
-            }
-            if (gene[82] == 1) {
-                this.combSize = this.combSize + 1;
-            }
-            if (gene[83] == 1) {
-                this.combSize = this.combSize + 1;
-            }
-
-            if (this.combSize < 0) {
-                this.combSize = 0;
-            }
-
-            this.waddleSize = this.combSize;
-
-            if (gene[84] == 1 && gene[85] == 1 && this.waddleSize > 0) {
-                this.waddleSize = this.waddleSize - 1;
-            }
-
-            if (gene[146] == 2 && gene[147] == 2) {
-                if (gene[148] == 2 && gene[149] == 2) {
-                    //normal body
-                    this.bodyType = 0;
-                } else {
-                    //big body
-                    this.bodyType = 1;
-                }
-            } else if (gene[148] == 2 && gene[149] == 2) {
-                if (gene[146] == 2 || gene[147] == 2) {
-                    //normal body
-                    this.bodyType = 0;
-                } else {
-                    //small body
-                    this.longHockFeathers = true;
-                    this.bodyType = -1;
-                }
-            } else {
-                //normal body
-                this.bodyType = 0;
-            }
-
-            if (gene[90] == 1 || gene[91] == 1) {
-                this.wingSize = 2;
-            } else if (gene[92] == 1 || gene[93] == 1) {
-                this.wingSize = 1;
-            }
-
-            if (gene[168] == 2) {
-                this.longLegs++;
-            }
-            if (gene[169] == 2) {
-                this.longLegs++;
-            }
-
-            //      wingAngle  [ 0 to 1.5 ]
-            if (gene[88] == 2) {
-                this.wingAngle = this.wingAngle + 0.1F;
-            } else if (gene[88] == 3) {
-                this.wingAngle = this.wingAngle + 0.15F;
-            }
-            if (gene[89] == 2) {
-                this.wingAngle = this.wingAngle + 0.1F;
-            } else if (gene[89] == 3) {
-                this.wingAngle = this.wingAngle + 0.15F;
-            }
-
-            if (gene[94] == 2 && gene[95] == 2) {
-                this.wingAngle = this.wingAngle * 1.2F;
-            } else if (gene[94] == 3 && gene[95] == 3) {
-                this.wingAngle = this.wingAngle * 1.5F;
-            } else if (gene[94] != 1 && gene[95] != 1) {
-                this.wingAngle = this.wingAngle * 1.1F;
-            }
-
-            if (gene[96] == 2 && gene[97] == 2) {
-                this.wingAngle = this.wingAngle * 1.2F;
-            } else if(gene[96] == 3 && gene[97] == 3) {
-                this.wingAngle = this.wingAngle * 1.5F;
-            } else if(gene[96] != 1 || gene[97] != 1) {
-                this.wingAngle = this.wingAngle * 1.1F;
-            }
-
-            this.wingAngle = -this.wingAngle;
-
-            float bodyAngle = 0.0F;
-            for (int i = 186; i < 196; i+=2) {
-                if (gene[i] == 2 && gene[i+1] == 2) {
-                    bodyAngle -= 0.1F;
-                }
-            }
-            this.bodyAngle = bodyAngle;
-
-            if (this.creeper) {
-                this.height = this.hasLongLegs() ? 18.5F : 19.5F;
-            } else {
-                this.height = this.hasLongLegs() ? 15.5F : 17.5F;
-            }
-
-            this.silkie = gene[106] == 1 || gene[107] == 1;
-        }
-
-        private boolean isBearded() {
-            return this.beard != Beard.NONE;
-        }
-
-        private boolean isCombed() { return this.comb != Comb.NONE && this.comb != Comb.BREDA_COMBLESS; }
-
-        private boolean hasLongLegs() { return this.longLegs != 0; }
-
-    }
-
-    private enum Crested {
-        BIG_CREST,
-        BIG_FORWARDCREST,
-        SMALL_CREST,
-        SMALL_FORWARDCREST,
-        NONE
-    }
-
-    private enum FootFeathers {
-        BIG_TOEFEATHERS,
-        TOEFEATHERS,
-        FOOTFEATHERS,
-        LEGFEATHERS,
-        NONE
-    }
-
-    private enum Comb {
-        SINGLE (false),
-        ROSE_ONE (false),
-        ROSE_TWO (false),
-        PEA (true),
-        WALNUT (true),
-        V (false),
-        HET_ROSE_ONE (false),
-        HET_ROSE_TWO (false),
-        BREDA_COMBLESS (false),
-        NONE (true);
-
-        boolean containsPeaComb;
-
-        Comb(boolean effectsWaddleSize) {
-            this.containsPeaComb = effectsWaddleSize;
-        }
-
-        public boolean hasPeaComb() {
-            return this.containsPeaComb;
-        }
-    }
-
-    private enum Beard {
-        BIG_BEARD,
-        SMALL_BEARD,
-        NN_BEARD,
-        NONE
     }
 
 }

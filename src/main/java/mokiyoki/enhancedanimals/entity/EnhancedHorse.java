@@ -10,6 +10,8 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.state.BlockState;
@@ -148,6 +150,9 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     protected boolean aiConfigured = false; //TODO move this up
     protected String motherUUID = "";
     protected GrazingGoal grazingGoal;
+
+    @OnlyIn(Dist.CLIENT)
+    private HorseModelData horseModelData;
 
     @Override
     protected void registerGoals() {
@@ -358,6 +363,18 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
             ItemStack leatherStack = new ItemStack(Items.LEATHER, leatherDrop);
             this.spawnAtLocation(leatherStack);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public HorseModelData getModelData() {
+        return this.horseModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.horseModelData = (HorseModelData) animalModelData;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,41 +1,34 @@
 package mokiyoki.enhancedanimals.blocks;
 
-import com.mojang.serialization.Codec;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SmallDripleafBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 
@@ -43,12 +36,14 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty HATCH = BlockStateProperties.HATCH;
     public static final IntegerProperty EGGS = BlockStateProperties.EGGS;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
-    public static final IntegerProperty PLANT_TYPE = BlockStateProperties.BITES;
+    private static final VoxelShape TOP = Block.box(1.0D, 8.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+    private static final VoxelShape NORTH = Block.box(0.0D, 1.0D, 1.0D, 8.0D, 15.0D, 15.0D);
 
     public EnhancedAxolotlEggBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(true)).setValue(HATCH, Integer.valueOf(0)).setValue(EGGS, Integer.valueOf(1)).setValue(PLANT_TYPE, Integer.valueOf(0)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(true)).setValue(HATCH, Integer.valueOf(0)).setValue(EGGS, Integer.valueOf(1)).setValue(FACING, Direction.UP));
     }
 
     @Override
@@ -146,7 +141,7 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED, HATCH, EGGS, PLANT_TYPE);
+        builder.add(WATERLOGGED, HATCH, EGGS, FACING);
     }
 
     @Override

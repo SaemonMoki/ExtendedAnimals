@@ -54,7 +54,7 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
     @Override
     public EggHolder removeEggFromNest(BlockPos blockPos) {
         List<EggHolder> eggsInNest = this.eggsInNests.get(blockPos);
-        if (eggsInNest.isEmpty()) {
+        if (eggsInNest==null || eggsInNest.isEmpty()) {
             return new EggHolder(null, null, null, false);
         }
         return eggsInNest.remove(0);

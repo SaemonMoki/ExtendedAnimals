@@ -22,6 +22,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.UUID;
+
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOBLOOM;
 
@@ -30,14 +32,6 @@ import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
     private static final EntityDataAccessor<String> MOOBLOOM_TYPE = SynchedEntityData.defineId(EnhancedMoobloom.class, EntityDataSerializers.STRING);
-
-    private static final String[] COW_TEXTURES_RED = new String[] {
-            "", "r_solid.png", "r_shaded.png"
-    };
-
-    private static final String[] COW_TEXTURES_BLACK = new String[] {
-            "", "b_shoulders.png", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
-    };
 
     private static final String[] MOOBLOOM_FLOWER = new String[] {
             "yellow_flower.png"
@@ -49,6 +43,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(MOOBLOOM_TYPE, "yellow");
     }
 
     @Override
@@ -127,10 +122,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.initilizeAnimalSize();
-            enhancedcow.setAge(this.age);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
-            enhancedcow.setMooshroomUUID(this.getStringUUID());
+            enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {

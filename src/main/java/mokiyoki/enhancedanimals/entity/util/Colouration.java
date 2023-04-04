@@ -217,6 +217,11 @@ public class Colouration {
         return HSBAtoABGR(hue,saturation,brightness, 0.5F);
     }
 
+    public static int HSBtoARGB(float hue, float saturation, float brightness) {
+        int[] color = getRGBFromHSB(hue, saturation, brightness);
+        return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
+    }
+
     public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
         int[] rgb = getRGBFromHSB(hue, saturation, brightness);
 

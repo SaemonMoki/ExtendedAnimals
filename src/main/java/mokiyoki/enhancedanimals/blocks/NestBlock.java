@@ -111,17 +111,18 @@ public abstract class NestBlock extends Block {
 
     public static void spawnAsGeneticItemEntity(Level worldIn, BlockPos pos, ItemStack stack) {
         if (!worldIn.isClientSide && !stack.isEmpty() && worldIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !worldIn.restoringBlockSnapshots) {
-            float f = 0.5F;
             double d0 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d2 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             EggHolder eggHolder = worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
-            stack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(eggHolder.getGenes()), eggHolder.getSire(), eggHolder.getDam());
-            if (stack.getItem() instanceof EnhancedEgg) {
-                ((EnhancedEgg)stack.getItem()).setHasParents(stack, eggHolder.getGenes()!=null);
+            if (eggHolder.getGenes() != null) {
+                stack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(eggHolder.getGenes()), eggHolder.getSire(), eggHolder.getDam());
+                if (stack.getItem() instanceof EnhancedEgg) {
+                    ((EnhancedEgg)stack.getItem()).setHasParents(stack, eggHolder.getGenes()!=null);
+                }
+                CompoundTag nbtTagCompound = stack.serializeNBT();
+                stack.deserializeNBT(nbtTagCompound);
             }
-            CompoundTag nbtTagCompound = stack.serializeNBT();
-            stack.deserializeNBT(nbtTagCompound);
             ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
             itementity.setDefaultPickUpDelay();
             worldIn.addFreshEntity(itementity);

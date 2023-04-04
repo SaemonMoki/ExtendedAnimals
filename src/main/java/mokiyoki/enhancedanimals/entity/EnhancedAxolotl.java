@@ -2,19 +2,18 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
-import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
-import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -35,6 +34,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -68,12 +68,17 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -81,16 +86,16 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 
@@ -236,6 +241,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             "cheeks.png", "cheeks_white.png", "cheeks_lightgrey.png", "cheeks_grey.png", "cheeks_black.png", "cheeks_brown.png", "cheeks_pink.png", "cheeks_red.png", "cheeks_orange.png", "cheeks_yellow.png", "cheeks_lime.png", "cheeks_green.png", "cheeks_cyan.png", "cheeks_lightblue.png", "cheeks_blue.png", "cheeks_purple.png", "cheeks_magenta.png",
     };
 
+    @OnlyIn(Dist.CLIENT)
+    private AxolotlModelData axolotlModelData;
+
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
         super(type, worldIn, 2, Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
@@ -257,12 +265,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void customServerAiStep() {
-        this.level.getProfiler().push("axolotlBrain");
         this.getBrain().tick((ServerLevel)this.level, this);
-        this.level.getProfiler().pop();
-        this.level.getProfiler().push("axolotlActivityUpdate");
         AxolotlBrain.updateActivity(this);
-        this.level.getProfiler().pop();
         if (!this.isNoAi()) {
             Optional<Integer> optional = this.getBrain().getMemory(MemoryModuleType.PLAY_DEAD_TICKS);
             this.setPlayingDead(optional.isPresent() && optional.get() > 0);
@@ -282,7 +286,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
-        float nbSize = 0.1F;
+        float nbSize = 0.25F;
         return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
     }
 
@@ -319,7 +323,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         return this.entityData.get(HAS_EGG) || this.pregnant;
     }
 
-    private void setHasEgg(boolean hasEgg) {
+    public void setHasEgg(boolean hasEgg) {
         this.entityData.set(HAS_EGG, hasEgg);
     }
 
@@ -351,7 +355,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() { return 24000;}
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeAxolotl.get();}
 
     @Override
     protected int gestationConfig() {
@@ -360,7 +364,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void incrementHunger() {
-
     }
 
     @Override
@@ -409,12 +412,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level world) {
-//        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(this.level);
-//        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-//        defaultCreateAndSpawn(enhancedAxolotl, world, babyGenes, -this.getAdultAge());
-//        this.level.addFreshEntity(enhancedAxolotl);
-    }
+    protected void createAndSpawnEnhancedChild(Level world) {}
 
     public int getHungerRestored(ItemStack stack) {
         return 8000;
@@ -499,6 +497,28 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         }
         super.playStepSound(pos, blockIn);
     }
+    @Override
+    protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
+        if (itemStack.getItem() instanceof MobBucketItem) {
+            if (!player.isCreative()) {
+                player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+            }
+        } else {
+            super.usePlayerItem(player, hand, itemStack);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AxolotlModelData getModelData() {
+        return this.axolotlModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.axolotlModelData = (AxolotlModelData) animalModelData;
+    }
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
@@ -581,10 +601,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
             parentGroup.addGrouping(bodyGroup);
 
-            TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
-            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
-            parentGroup.addGrouping(cheekGroup);
+            if (gene[44] == 2 || gene[45] == 2) {
+                TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
+                addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
+                parentGroup.addGrouping(cheekGroup);
+            }
 
             TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
@@ -616,7 +638,18 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 float eyeSaturation = 0.5F;
                 float eyeBrightness = 0.25F;
 
-                if (gene[20] != 1 && gene[21] != 1) {
+                if (gene[20] == 1 && gene[21] == 1) {
+                    if (gene[0] == 2 && gene[1] == 2) {
+                        if (gene[2] == 2 && gene[3] == 2) {
+                            eyeHue = 0.95F;
+                            eyeBrightness = 0.8F;
+                        } else {
+                            eyeHue = 0.09F;
+                            eyeSaturation = 0.75F;
+                            eyeBrightness = 0.8F;
+                        }
+                    }
+                } else {
                     if (gene[20] == 4 || gene[21] == 4) {
                         int genenum = gene[20] == 4 ? 21 : 20;
                         //light eyes
@@ -653,13 +686,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                                 eyeBrightness = 0.5F;
                             } else if (gene[21] == 5) {
                                 //dark-pastel eyes
-                                eyeSaturation = 0.5F;
                                 eyeBrightness = 0.4F;
                             } else {
                                 //dark-glow eyes
                                 //dark eyes
                                 eyeSaturation = 1.0F;
-                                eyeBrightness = 0.25F;
                             }
                         } else if (gene[20] == 3 || gene[20] == 6) {
                             //glow eyes
@@ -676,18 +707,13 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                             }
                         } else {
                             //pastel eyes
-                            eyeSaturation = 0.5F;
                             eyeBrightness = 0.75F;
                         }
                     }
-                } else if (gene[0] == 2 && gene[1] == 2) {
-                    eyeHue = 0.96F;
-                    eyeSaturation = 0.6F;
-                    eyeBrightness = 0.7F;
                 }
 
-                this.colouration.setLeftEyeColour(Colouration.HSBtoABGR(eyeHue, eyeSaturation, eyeBrightness));
-                this.colouration.setRightEyeColour(Colouration.HSBtoABGR(eyeHue, eyeSaturation, eyeBrightness));
+                this.colouration.setLeftEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
+                this.colouration.setRightEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
             }
         }
 
@@ -833,6 +859,13 @@ NBT read/write
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_AXOLOTL_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
         return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
     }
 
@@ -844,10 +877,8 @@ NBT read/write
             EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
-            EnhancedAxolotlBucket.setIsFemale(stack, this.getOrSetIsFemale());
-            if (this.mateGenetics != null) {
-                EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
-                EnhancedAxolotlBucket.setMateIsFemale(stack, this.mateGender);
+            if (this.hasEgg() && this.mateGenetics != null) {
+                EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
@@ -1092,21 +1123,30 @@ NBT read/write
             if (this.axolotl.isInWater() && this.isReachedTarget()) {
                 if (this.axolotl.eggLayingTimer == -1) {
                     this.axolotl.eggLayingTimer = 0;
-                } else if (this.axolotl.eggLayingTimer > 200) {
-                    Level world = this.axolotl.level;
-                    world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                    int numberOfEggs = this.axolotl.random.nextInt(4) + 1;
-                    BlockPos pos = this.blockPos.above();
-                    String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
-                    String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
-                    for (int i = 0; i < numberOfEggs;i++) {
-                        Genes eggGenes = new Genes(this.axolotl.getGenes()).makeChild(true, true, this.axolotl.mateGenetics);
-                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
+                } else if (this.axolotl.eggLayingTimer >= 200) {
+                    if (this.axolotl.eggLayingTimer == 200) {
+                        this.axolotl.eggLayingTimer = 200 + (this.axolotl.random.nextInt(4) * 40);
                     }
-                    world.setBlock(pos, ModBlocks.AXOLOTL_EGG.get().defaultBlockState().setValue(EnhancedAxolotlEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
-                    this.axolotl.setHasEgg(false);
-                    this.axolotl.pregnant = false;
-                    this.axolotl.eggLayingTimer = -1;
+
+                    if (this.axolotl.eggLayingTimer%40 == 0) {
+                        Level level = this.axolotl.getLevel();
+                        BlockPos pos = this.blockPos;
+                        String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
+                        String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
+                        level.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + level.random.nextFloat() * 0.2F);
+                        Genes eggGenes = new Genes(this.axolotl.getGenes()).makeChild(true, true, this.axolotl.mateGenetics);
+                        EnhancedAxolotlEgg egg = ENHANCED_AXOLOTL_EGG.get().create(level);
+                        egg.setParentNames(mateName, name);
+                        egg.setGenes(eggGenes);
+                        egg.moveTo(pos.getX()+0.125D+(ThreadLocalRandom.current().nextFloat()*0.75F), axolotl.getY(), pos.getZ()+0.125D+(ThreadLocalRandom.current().nextFloat()*0.75F), ThreadLocalRandom.current().nextInt(4)* (Mth.HALF_PI*0.5F), 0.0F);
+                        level.addFreshEntity(egg);
+                    }
+
+                    if (this.axolotl.eggLayingTimer > 320) {
+                        this.axolotl.setHasEgg(false);
+                        this.axolotl.pregnant = false;
+                        this.axolotl.eggLayingTimer = -1;
+                    }
 //                    this.axolotl.setInLove(600);
                 }
 
@@ -1121,7 +1161,16 @@ NBT read/write
          * Return true to set given position as destination
          */
         protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
-            return EnhancedAxolotlEggBlock.isProperHabitat(worldIn, pos);
+            if (worldIn.isWaterAt(pos.above())) {
+                return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
+            } else {
+                if (worldIn.isWaterAt(pos)) {
+                    Block block = worldIn.getBlockState(pos).getBlock();
+                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) ||
+                            Blocks.SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock()) || Blocks.TALL_SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock());
+                }
+            }
+            return false;
         }
     }
 

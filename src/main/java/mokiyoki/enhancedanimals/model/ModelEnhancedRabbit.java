@@ -4,6 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.RabbitModelData;
+import mokiyoki.enhancedanimals.model.modeldata.RabbitPhenotype;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -78,6 +82,8 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
     private WrappedModelPart tail;
 
+    private RabbitModelData rabbitModelData;
+
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
@@ -112,9 +118,9 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
                         .texOffs(0, 16)
-                        .addBox(2.0F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F))
+                        .addBox(2.5F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F))
                         .texOffs(0, 20)
-                        .addBox(-3.0F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F)),
+                        .addBox(-3.5F, 0.0F, 0.0F, 1, 2, 2, new CubeDeformation(0.01F)),
                 PartPose.offset(0.0F, 2.0F, -5.0F)
         );
 
@@ -424,13 +430,12 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        RabbitModelData rabbitModelData = getRabbitModelData();
-        RabbitPhenotype rabbit = rabbitModelData.getPhenotype();
+        if (this.rabbitModelData !=null && this.rabbitModelData.getPhenotype() != null) {
+            RabbitPhenotype rabbit = this.rabbitModelData.getPhenotype();
 
-        resetCubes();
+            resetCubes();
 
-        if (rabbit!=null) {
-            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            super.renderToBuffer(this.rabbitModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
 
@@ -552,18 +557,17 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.currentAnimal = entityIn.getId();
-        RabbitModelData data = getCreateRabbitModelData(entityIn);
+        this.rabbitModelData = getCreateRabbitModelData(entityIn);
 
-        if (data != null) {
-            RabbitPhenotype rabbit = data.getPhenotype();
-            readInitialAnimationValues(data, rabbit);
+        if (this.rabbitModelData != null) {
+            RabbitPhenotype rabbit =this. rabbitModelData.getPhenotype();
+            readInitialAnimationValues(this.rabbitModelData, rabbit);
 
             this.theNeck.setXRot(headPitch * 0.017453292F * 0.5F);
             this.theNeck.setYRot(netHeadYaw * 0.017453292F * 0.5F);
             this.theHead.setXRot(headPitch * 0.017453292F * 0.5F);
             this.theHead.setYRot(netHeadYaw * 0.017453292F * 0.5F);
-            this.nose.setY(1.6F+data.noseTwitch);
+            this.nose.setY(1.6F+ this.rabbitModelData.noseTwitch);
 
             boolean fallState = entityIn.getY() < entityIn.yOld;
             float health = entityIn.getHealth()/entityIn.getMaxHealth();
@@ -571,7 +575,7 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
             animateHop((float) Math.sin(entityIn.getJumpCompletion(ageInTicks-(int)ageInTicks) * Mth.PI));
 
-            saveAnimationValues(data);
+            saveAnimationValues(this.rabbitModelData);
         }
 
     }
@@ -713,18 +717,6 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         }
     }
 
-    private class RabbitModelData extends AnimalModelData {
-        float noseTwitch;
-        int coatLength;
-        public RabbitPhenotype getPhenotype() {
-            return (RabbitPhenotype) this.phenotype;
-        }
-    }
-
-    private RabbitModelData getRabbitModelData() {
-        return (RabbitModelData) getAnimalModelData();
-    }
-
     private RabbitModelData getCreateRabbitModelData(T enhancedRabbit) {
         return (RabbitModelData) getCreateAnimalModelData(enhancedRabbit);
     }
@@ -746,82 +738,5 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         return new RabbitPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(6));
     }
 
-    protected class RabbitPhenotype implements Phenotype {
-        private float lopL = 0.0F;
-        private float lopR;
-        private boolean[] lop;
-        private boolean dwarf;
 
-        private LionsMane lionsMane = LionsMane.NONE;
-
-        RabbitPhenotype(int[] gene, char uuid) {
-
-            if (gene[36] == 3 && gene[37] == 3) {
-                this.lopL = 0.25F;
-            } else {
-                if (gene[36] == 2) {
-                    this.lopL = 0.1F;
-                }
-                if (gene[37] == 2) {
-                    this.lopL = 0.1F;
-                }
-            }
-            if (gene[38] == 2 && gene[39] == 2) {
-                this.lopL *= 4.0F;
-            }
-
-            this.lopL += (gene[40] - 1) * 0.1F;
-            this.lopL += (gene[41] - 1) * 0.1F;
-
-            if (gene[42] == 3 && gene[43] == 3) {
-                this.lopL += 0.1F;
-            }
-
-            if (lopL > 1.0F) {
-                this.lopL = 1.0F;
-            }
-
-            this.lop = getLop(this.lopL, uuid);
-
-            this.lopR = this.lop[1] ? this.lopL : this.lopL*0.75F;
-            this.lopL = this.lop[0] ? this.lopL : this.lopL*0.75F;
-
-            this.dwarf = gene[34] == 2 || gene[35] == 2;
-
-            if (gene[24] == 2 || gene[25] == 2) {
-                this.lionsMane = gene[24] == gene[25] ? LionsMane.DOUBLE : LionsMane.SINGLE;
-            }
-        }
-
-        private boolean[] getLop(float val, char uuid) {
-            if (val > 0.5F) {
-                if (val >= 0.75F) {
-                    return new boolean[] {true, true};
-                } else {
-                    switch (uuid) {
-                        case '0', '1', '2', '3', '4' -> {
-                            return new boolean[] {true, false};
-                        }
-                        case  '5', '6', '7', '8', '9' -> {
-                            return new boolean[] {false, true};
-                        }
-                        case 'a', 'b', 'c', 'd', 'e', 'f' -> {
-                            return new boolean[] {true, true};
-                        }
-                        default -> {
-                            return new boolean[] {false, false};
-                        }
-                    }
-                }
-            }
-
-            return new boolean[] {false, false};
-        }
-    }
-
-    private enum LionsMane {
-        DOUBLE,
-        SINGLE,
-        NONE
-    }
 }

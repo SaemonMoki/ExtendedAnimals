@@ -12,11 +12,14 @@ import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerBlock;
@@ -75,6 +78,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.mateMushroomType = Type.RED;
     }
 
+    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> entityType, LevelAccessor level, MobSpawnType reason, BlockPos blockPos, Random random) {
+        return level.getBlockState(blockPos.below()).is(BlockTags.MOOSHROOMS_SPAWNABLE_ON) && isBrightEnoughToSpawn(level, blockPos);
     public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> p_218105_, LevelAccessor p_218106_, MobSpawnType p_218107_, BlockPos p_218108_, RandomSource p_218109_) {
         return p_218106_.getBlockState(p_218108_.below()).is(Blocks.MYCELIUM) && p_218106_.getRawBrightness(p_218108_, 0) > 8;
     }
@@ -139,7 +144,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemstack = entityPlayer.getItemInHand(hand);
-        if (itemstack.getItem() == Items.BOWL && !this.isBaby() && !entityPlayer.getAbilities().instabuild && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+
+        if (itemstack.getItem() == ModItems.ENHANCED_MOOSHROOM_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+        if (itemstack.getItem() == Items.BOWL && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 //TODO commented version might be better, pls test
@@ -294,8 +303,14 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
         if (!this.level.isClientSide) {
+            Entity leashedEntity = null;
+            if (this.isLeashed()) {
+                leashedEntity = this.getLeashHolder();
+                this.dropLeash(false, false);
+            }
             this.remove(RemovalReason.DISCARDED);
             EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+            enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
@@ -304,16 +319,17 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.initilizeAnimalSize();
-            enhancedcow.setAge(this.age);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
-            enhancedcow.setMooshroomUUID(this.getStringUUID());
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
             }
             this.level.addFreshEntity(enhancedcow);
+            if (leashedEntity != null) {
+                enhancedcow.setLeashedTo(leashedEntity, true);
+            }
             if (this.getMooshroomType() == Type.RED) {
                 for(int i = 0; i < 5; ++i) {
                     ret.add(new ItemStack(Blocks.RED_MUSHROOM));

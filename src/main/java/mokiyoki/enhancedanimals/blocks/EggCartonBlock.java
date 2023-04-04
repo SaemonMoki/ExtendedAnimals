@@ -1,15 +1,12 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
-import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModTileEntities;
-import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
+import mokiyoki.enhancedanimals.util.tileentity.EggCartonTileEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.material.PushReaction;
@@ -58,8 +55,6 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class EggCartonBlock extends BaseEntityBlock {
 

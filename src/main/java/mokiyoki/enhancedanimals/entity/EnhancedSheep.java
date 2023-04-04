@@ -17,6 +17,8 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -89,11 +91,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_GREY = new String[] {
-            "", "c_grey.png"
+            "", "grey_0.png", "grey_1.png", "grey_2.png", "grey_3.png", "grey_4.png"
     };
 
     private static final String[] SHEEP_TEXTURES_SPOTS = new String[] {
-            "", "c_pibald.png"
+            "", "spot_pied.png"
     };
 
     private static final String[] SHEEP_TEXTURES_BLAZE = new String[] {
@@ -134,6 +136,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
+
+    @OnlyIn(Dist.CLIENT)
+    public SheepModelData sheepModelData;
 
     protected float maxBagSize;
     private int currentBagSize;
@@ -294,6 +299,15 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.23D);
+    }
+
+    @Override
+    protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
+        if (itemStack.is(Items.WATER_BUCKET) && this.getFleeceDyeColour() != DyeColor.WHITE) {
+            player.setItemInHand(hand, new ItemStack(Items.BUCKET));
+        } else {
+            super.usePlayerItem(player, hand, itemStack);
+        }
     }
 
     @Override
@@ -891,6 +905,18 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
+    public SheepModelData getModelData() {
+        return this.sheepModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.sheepModelData = (SheepModelData) animalModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public String getTexture() {
         if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
@@ -936,50 +962,122 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             char[] uuidArry = getStringUUID().toCharArray();
 
-            if (gene[4] == 1 || gene[5] ==1){
+            if (gene[4] == 1 || gene[5] == 1){
                 //black sheep
                 pattern1 = 14;
-            }else if (gene[0] != 1 && gene[1] != 1) {
-                if (gene[0] == 2 || gene[1] == 2) {
-                    grey = 1;
-                    pattern1 = gene[0] == 2 ? 14 : 0;
-                    pattern2 = gene[1] == 2 ? 14 : 0;
-                }
-                if (pattern1 == 0 || pattern2 == 0) {
-                    if (pattern1 == 0) {
-                        pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
-                        if (pattern1 > 3) {
-                            pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
+            } else if (gene[0] != 1 && gene[1] != 1) {
+                if (gene[0] == 6 && gene[1] == 6) {
+                    pattern1 = 14;
+                } else {
+                    if (gene[0] == 2 || gene[1] == 2) {
+                        int maxCoatLength = 0;
+
+                        if (gene[20] == 2) {
+                            maxCoatLength = 1;
                         }
-                    }
-                    if (pattern2 == 0) {
-                        pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
-                        if (pattern2 > 3) {
-                            pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
+                        if (gene[21] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
                         }
-                    }
-                    if (pattern1 == 14 && pattern2 != 14) {
-                        pattern1 = pattern2;
-                        pattern2 = 0;
-                    } else if (pattern2 == 14 && pattern1!=14) {
-                        pattern2 = 0;
+                        if (gene[22] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[23] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[24] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[25] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[26] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[27] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[28] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[29] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[30] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[31] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[32] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[33] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+                        if (gene[34] == 2 && gene[35] == 2) {
+                            maxCoatLength = maxCoatLength + 1;
+                        }
+
+                        int faceWool = 0;
+                        if (gene[42] == 1 || gene[43] == 1) {
+                            if (gene[40] == 1) {
+                                faceWool++;
+                            }
+                            if (gene[41] == 1) {
+                                faceWool++;
+                            }
+                            if (gene[38] == 1 || gene[39] == 1) {
+                                faceWool++;
+                            } else if (gene[38] == 3 && gene[39] == 3) {
+                                faceWool--;
+                            }
+                        }
+
+                        grey = maxCoatLength < 3 ? 0 : 1+faceWool;
+                        pattern1 = gene[0] == 2 ? 14 : 0;
+                        pattern2 = gene[1] == 2 ? 14 : 0;
                     }
 
-                    pattern2 = pattern1 == pattern2 ? 0 : pattern2;
+                    if (gene[0] == 6) {
+                        pattern1 = 14;
+                    } else if (gene[1] == 6) {
+                        pattern2 = 14;
+                    }
 
-                    if (gene[90] == 1 || gene[91] == 1) {
-                        mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                    if (pattern1 == 0 || pattern2 == 0) {
+                        if (pattern1 == 0) {
+                            pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
+                            if (pattern1 > 3) {
+                                pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
+                            }
+                        }
+                        if (pattern2 == 0) {
+                            pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
+                            if (pattern2 > 3) {
+                                pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
+                            }
+                        }
+
+                        if (gene[90] == 1 || gene[91] == 1) {
+                            mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                        }
+                    }
+
+                    if (gene[0] == 6) {
+                        pattern1 = 0;
+                    } else if (gene[1] == 6) {
+                        pattern2 = 0;
                     }
                 }
             }
 
             //basic spots
             if (gene[8] == 2 && gene[9] == 2){
-                if (Character.isDigit(uuidArry[1])){
-                    spots = 2;
-                }else {
+//                if (Character.isDigit(uuidArry[1])){
+//                    spots = 2;
+//                }else {
                     spots = 1;
-                }
+//                }
             }
 
             //pigmented head
@@ -1030,18 +1128,21 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
             parentGroup.addGrouping(foundationGroup);
 
-            TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
-            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
-            parentGroup.addGrouping(patternAverageGroup);
+            if (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) {
+                TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
+                addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
+                parentGroup.addGrouping(patternAverageGroup);
+            }
 
-            if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0) {
+            if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0 || spots!=0) {
                 boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
                 TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.ALPHA_GROUP : TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked ? 1 : 0, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
                 parentGroup.addGrouping(whiteSpotGroup);
             }
@@ -1193,6 +1294,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
+        if (item == ModItems.ENHANCED_SHEEP_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
         if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET.get() || item == ModItems.ONETHIRD_MILK_BUCKET.get() || item == ModItems.HALF_MILK_BUCKET.get() || item == ModItems.TWOTHIRDS_MILK_BUCKET.get() || item == ModItems.FIVESIXTHS_MILK_BUCKET.get() || item == ModItems.HALF_MILK_BOTTLE.get() || item == Items.GLASS_BOTTLE) && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
@@ -1298,8 +1403,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         onSheared(entityPlayer, ItemStack.EMPTY, this.level, blockPosition(), 0);
                 }
 
-            } else if (item == Items.WATER_BUCKET) {
+            } else if (item == Items.WATER_BUCKET && this.getFleeceDyeColour() != DyeColor.WHITE) {
                 this.setFleeceDyeColour(DyeColor.WHITE);
+                entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
             } else if (item instanceof DyeItem) {
                 DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {

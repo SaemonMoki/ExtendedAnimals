@@ -89,7 +89,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //Dilute [ wildtype, simmental dilute, charolais dilute]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(3) + 1);
             autosomalGenes[3] = (1);
 
         } else {
@@ -107,7 +107,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
          */
         //Agouti [ Dark Agouti, Wildtype+, white-bellied agouti, brindle, fawn, recessive black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             if (wildType == 1){
@@ -117,7 +117,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             if (wildType == 1){
@@ -267,7 +267,6 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
             autosomalGenes[27] = (2);
-
         } else {
             autosomalGenes[26] = (2);
             autosomalGenes[27] = (2);

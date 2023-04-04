@@ -17,18 +17,21 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
+import mokiyoki.enhancedanimals.util.scheduling.AnimalScheduledFunction;
+import mokiyoki.enhancedanimals.util.scheduling.Schedules;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LerpingModel;
+import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -82,6 +85,9 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RESIZE_AND_REFRESH_TEXTURE_SCHEDULE;
 
 public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel {
 
@@ -173,11 +179,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //Size
     private int reloadSizeTime = 0;
 
+    public boolean updateColouration = true;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
 
-    List<AnimalScheduledFunction> scheduledToRun = new ArrayList<>();
+    Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
 
     /*
     Entity Construction
@@ -189,7 +197,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGender = false;
         this.bottleFeedable = bottleFeedable;
-
         initInventory();
     }
 
@@ -257,7 +264,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     //returns if the animal is still growing
-    protected boolean isGrowing() {
+    public boolean isGrowing() {
         return this.getEnhancedAnimalAge()<(float)this.getFullSizeAge();
     }
 
@@ -383,6 +390,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.entityData.get(BIRTH_TIME);
     }
 
+
+
 //    private void setParent(String motherUUID) {
 //        if (this.isChild()) {
 //            List<EnhancedAnimalAbstract> list = this.world.getEntitiesWithinAABB(this.getClass(), this.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
@@ -429,13 +438,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.entityData.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
-        if (this.isInWaterRainOrBubble()) {
-            return false;
-        } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
-            return false;
-        } else {
-            return this.entityData.get(SLEEPING);
+        if (this.level.dimensionType().bedWorks()) {
+            if (this.isInWaterRainOrBubble()) {
+                return false;
+            } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
+                return false;
+            } else {
+                return this.entityData.get(SLEEPING);
+            }
         }
+        return false;
     }
 
     public void awaken() {
@@ -669,21 +681,21 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         Entity entity = this.getLeashHolder();
         if (entity != null && entity.level == this.level) {
             this.restrictTo(new BlockPos(entity.blockPosition()), 5);
-            float f = this.distanceTo(entity);
+            float distanceToEntity = this.distanceTo(entity);
 
-            this.onLeashDistance(f);
-            if (f > 10.0F) {
+            this.onLeashDistance(distanceToEntity);
+            if (distanceToEntity > 10.0F) {
                 this.dropLeash(true, true);
                 this.goalSelector.disableControlFlag(Goal.Flag.MOVE);
-            } else if (f > 6.0F) {
-                double d0 = (entity.getX() - this.getX()) / (double)f;
-                double d1 = (entity.getY() - this.getY()) / (double)f;
-                double d2 = (entity.getZ() - this.getZ()) / (double)f;
-                this.setDeltaMovement(this.getDeltaMovement().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
-            } else if (!ableToMoveWhileLeashed()){
+            } else if (distanceToEntity > 6.0F) {
+                double deltaX = (entity.getX() - this.getX()) / (double)distanceToEntity;
+                double deltaY = (entity.getY() - this.getY()) / (double)distanceToEntity;
+                double deltaZ = (entity.getZ() - this.getZ()) / (double)distanceToEntity;
+                this.setDeltaMovement(this.getDeltaMovement().add(Math.copySign(deltaX * deltaX * 0.4D, deltaX), Math.copySign(deltaY * deltaY * 0.4D, deltaY), Math.copySign(deltaZ * deltaZ * 0.4D, deltaZ)));
+            } else if (!ableToMoveWhileLeashed()) {
                 this.goalSelector.enableControlFlag(Goal.Flag.MOVE);
-                Vec3 vec3d = (new Vec3(entity.getX() - this.getX(), entity.getY() - this.getY(), entity.getZ() - this.getZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
-                this.getNavigation().moveTo(this.getX() + vec3d.x, this.getY() + vec3d.y, this.getZ() + vec3d.z, this.followLeashSpeed());
+                Vec3 direction = entity.position().subtract(this.position()).normalize().scale((double)Math.max(distanceToEntity - 2.0F, 0.0F));
+                this.getNavigation().moveTo(this.getX() + direction.x, this.getY() + direction.y, this.getZ() + direction.z, this.followLeashSpeed());
             }
         }
     }
@@ -701,14 +713,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         super.aiStep();
 
         if (!scheduledToRun.isEmpty()) {
-            scheduledToRun.forEach(scheduledFunction -> {
+            scheduledToRun.values().forEach(scheduledFunction -> {
                 scheduledFunction.tick();
                 if (scheduledFunction.getTicksToWait() <= 0) {
                     scheduledFunction.runFunction(this);
                     scheduledFunction.runRepeatCondition(this);
                 }
             });
-            scheduledToRun.removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
+            scheduledToRun.values().removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
         }
 
         //run client-sided tick stuff
@@ -885,15 +897,15 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));
             } else if (!isChild && isBreedingItem(itemStack)) {
-                if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
+                if (this.hunger >= 4000 || (!this.pregnant && this.canFallInLove())) {
                     decreaseHunger(getHungerRestored(itemStack));
-                    shrinkItemStack(entityPlayer, itemStack);
+                    this.usePlayerItem(entityPlayer, hand, itemStack);
+                    if (!this.pregnant && this.canFallInLove()) {
+                        this.setInLove(entityPlayer);
+                    }
+                    return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
-                }
-                if (!this.level.isClientSide && !isChild && this.canFallInLove()) {
-                    this.setInLove(entityPlayer);
-                    return InteractionResult.SUCCESS;
                 }
             } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
@@ -924,6 +936,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                         }
                         shrinkItemStack(entityPlayer, itemStack);
                     }
+                    return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
                 }
@@ -931,10 +944,15 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 if (hunger >= 4000) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
+                    return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.PASS;
                 }
             }
+        }
+
+        if (this.level.isClientSide) {
+            return InteractionResult.CONSUME;
         }
 
         return InteractionResult.PASS;
@@ -1023,6 +1041,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
         writeInventory(compound);
+
+        writeScheduling(compound);
     }
 
     protected void writeInventory(CompoundTag compound) {
@@ -1126,6 +1146,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.toggleReloadTexture();
 
         readInventory(compound);
+
+        readScheduling(compound);
     }
 
     protected void resetGrowingAgeToAge() {
@@ -1182,6 +1204,31 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
 
         this.updateInventorySlots();
+    }
+
+    private void writeScheduling(CompoundTag compound) {
+        if (!this.scheduledToRun.isEmpty()) {
+            CompoundTag schedulesTag = new CompoundTag();
+
+            this.scheduledToRun.keySet().forEach(schedule -> schedulesTag.putIntArray(schedule, this.scheduledToRun.get(schedule).getTickState()));
+
+            compound.put("Schedules", schedulesTag);
+        }
+    }
+
+    private void readScheduling(CompoundTag compound) {
+        if (compound.contains("Schedules")) {
+            CompoundTag schedules = compound.getCompound("Schedules");
+
+            schedules.getAllKeys().forEach(scheduleTag -> {
+                int[] tickStates = schedules.getIntArray(scheduleTag);
+                AnimalScheduledFunction scheduleFunction = Schedules.getScheduledFunction(scheduleTag, tickStates[0]);
+                if (tickStates.length > 1) {
+                    scheduleFunction.setInitialTicks(tickStates[1]);
+                }
+                this.scheduledToRun.put(scheduleTag, scheduleFunction);
+            });
+        }
     }
 
     protected void writeNBTGenes(String name, CompoundTag compound, Genes genetics) {
@@ -1517,16 +1564,24 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
-            this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
-                if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
-                    eaa.refreshDimensions();
-                }
-            }, (eaa) -> eaa.isGrowing()));
+            this.scheduledToRun.put(RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.funcName, RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.function.apply(50));
         }
 
         super.onSyncedDataUpdated(key);
     }
 
+    public void scheduleDespawn(int ticksToWait) {
+        this.scheduledToRun.put(DESPAWN_SCHEDULE.funcName, DESPAWN_SCHEDULE.function.apply(ticksToWait));
+    }
+
+    public void despawn() {
+        if (this.isLeashed()) {
+            if (this.getLeashHolder() instanceof WanderingTrader && !this.hasCustomName()) {
+                this.dropLeash(true, false);
+                this.discard();
+            }
+        }
+    }
 
     /*
     Client Sided Work
@@ -1748,7 +1803,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @OnlyIn(Dist.CLIENT)
     public TextureGrouping getTextureGrouping() {
         TextureGrouping compiledGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        if (this.enhancedAnimalTextureGrouping != null) {
+            compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        }
         for (Equipment equipmentKey : this.enhancedAnimalEquipmentGrouping.keySet()) {
             compiledGroup.addGrouping(this.enhancedAnimalEquipmentGrouping.get(equipmentKey));
         }
@@ -1763,17 +1820,24 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected String getCompiledTextures(String eanimal) {
         if (this.compiledTexture == null) {
-            this.compiledTexture = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
+            this.compiledTexture = String.join("", texturesIndexes) + eanimal + "/";
         }
 
         if (this.compiledAlphaTexture == null) {
-            this.compiledAlphaTexture = this.enhancedAnimalAlphaTextures.stream().collect(Collectors.joining("/"));
+            this.compiledAlphaTexture = String.join("/", enhancedAnimalAlphaTextures) + "/";
         }
 
         if (this.compiledEquipmentTexture == null) {
-            this.compiledEquipmentTexture = this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
+            StringBuilder sb = new StringBuilder();
+            for (List<String> textures : this.equipmentTextures.values()) {
+                for (String texture : textures) {
+                    sb.append(texture).append("/");
+                }
+            }
+            this.compiledEquipmentTexture = sb.toString();
         }
-        return this.compiledTexture + compiledAlphaTexture + compiledEquipmentTexture;
+
+        return this.compiledTexture + this.compiledAlphaTexture + this.compiledEquipmentTexture;
     }
 
     protected void geneFixer() {
@@ -1918,6 +1982,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         animal.getAttribute(Attributes.MAX_HEALTH).setBaseValue((double)health);
         animal.heal(animal.getMaxHealth() - animal.getHealth());
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public AnimalModelData getModelData() {
+        return null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setModelData(AnimalModelData animalModelData) {}
 
     public static class GroupData implements SpawnGroupData {
         public Genes groupGenes;

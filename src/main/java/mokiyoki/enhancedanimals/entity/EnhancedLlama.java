@@ -75,7 +75,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
@@ -612,7 +614,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     public void makeTraderLlama() {
         this.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
         this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(Component.literal("Trader's Blanket"));
         traderBlanket.getOrCreateTagElement("tradersblanket");
         this.animalInventory.setItem(4, traderBlanket);
         this.setStrengthAndInventory();

@@ -78,10 +78,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.mateMushroomType = Type.RED;
     }
 
-    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> entityType, LevelAccessor level, MobSpawnType reason, BlockPos blockPos, Random random) {
+    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> entityType, LevelAccessor level, MobSpawnType reason, BlockPos blockPos, RandomSource random) {
         return level.getBlockState(blockPos.below()).is(BlockTags.MOOSHROOMS_SPAWNABLE_ON) && isBrightEnoughToSpawn(level, blockPos);
-    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> p_218105_, LevelAccessor p_218106_, MobSpawnType p_218107_, BlockPos p_218108_, RandomSource p_218109_) {
-        return p_218106_.getBlockState(p_218108_.below()).is(Blocks.MYCELIUM) && p_218106_.getRawBrightness(p_218108_, 0) > 8;
     }
 
     @Override

@@ -1122,32 +1122,34 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
+            TextureGrouping hairGroup = new TextureGrouping(TexturingType.DYE_GROUP);
             TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_RED, "r_solid_white.png");
-            addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
-            parentGroup.addGrouping(foundationGroup);
+            addTextureToAnimalTextureGrouping(foundationGroup, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
+            hairGroup.addGrouping(foundationGroup);
 
             if (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) {
                 TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
                 addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
                 addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
-                parentGroup.addGrouping(patternAverageGroup);
+                hairGroup.addGrouping(patternAverageGroup);
             }
 
             if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0 || spots!=0) {
                 boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
                 TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.ALPHA_GROUP : TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked ? 1 : 0, l -> l != 0);
-                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
-                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
-                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
-                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
-                addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
-                parentGroup.addGrouping(whiteSpotGroup);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
+                hairGroup.addGrouping(whiteSpotGroup);
             }
+            addTextureToAnimalTextureGrouping(hairGroup, SHEEP_TEXTURES_GREY, grey, l -> l != 0);
+            parentGroup.addGrouping(hairGroup);
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_GREY, grey, l -> l != 0);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_FUR, fur, null);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_SKIN, skin, null);
             addTextureToAnimalTextureGrouping(detailGroup, "hooves_black.png");

@@ -46,19 +46,24 @@ public class TextureGrouping {
 
     private NativeImage applyGroupMerging(List<NativeImage> groupImages, Colouration colouration) {
         if (!groupImages.isEmpty()) {
-            NativeImage baseImage = groupImages.get(0);
-            groupImages.remove(0);
+            NativeImage baseImage = groupImages.remove(0);
 
             switch(texturingType) {
                 case MERGE_GROUP -> layerGroups(baseImage, groupImages);
                 case ALPHA_GROUP -> maskAlpha(baseImage, groupImages);
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
+                case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
             }
 
             return baseImage;
         }
 
         return null;
+    }
+
+    private void blendGroupDye(NativeImage baseImage, List<NativeImage> groupImages, int dyeColour) {
+        layerGroups(baseImage, groupImages);
+        applyBGRBlend(baseImage, dyeColour);
     }
 
     private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages) {

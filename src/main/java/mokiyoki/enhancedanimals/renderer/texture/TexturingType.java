@@ -7,6 +7,7 @@ public enum TexturingType {
     MERGE_GROUP, //the default for groups, simply merges each image into each other via pixel blending
     ALPHA_GROUP, //the grouping used for alpha masking layering. The first image(grouped images) in the group is treated as the mask the other group will be applied against it
     AVERAGE_GROUP, //this grouping will average the individual pixels for all textures in the group
+    DYE_GROUP,
 
     /*******/
 

@@ -731,7 +731,7 @@ public class EnhancedTurtle extends EnhancedAnimalAbstract {
         public void tick() {
             super.tick();
             BlockPos blockpos = this.turtle.blockPosition();
-            if (!this.turtle.isInWater() && this.isReachedTarget()) {
+            if (!this.turtle.isInWater() && this.isReachedTarget() && this.turtle.hasEgg()) {
                 if (this.turtle.isDigging < 1) {
                     this.turtle.setDigging(true);
                 } else if (this.turtle.isDigging > 200) {
@@ -748,7 +748,8 @@ public class EnhancedTurtle extends EnhancedAnimalAbstract {
                     world.setBlock(pos, ModBlocks.TURTLE_EGG.get().defaultBlockState().setValue(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.turtle.setHasEgg(false);
                     this.turtle.setDigging(false);
-//                    this.turtle.setInLove(600);
+                    this.turtle.isDigging = 1;
+                    this.turtle.setInLoveTime(600);
                 }
 
                 if (this.turtle.isDigging()) {

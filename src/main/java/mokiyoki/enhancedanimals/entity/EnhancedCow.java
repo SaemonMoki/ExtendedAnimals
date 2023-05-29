@@ -91,7 +91,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
-        this.timeUntilNextMilk = this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
+        this.timeUntilNextMilk = (int)((double)(this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300)/ getMilkModifier());
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -332,7 +332,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         if (milk < (30*(getAnimalSize()/1.5F))*(this.maxBagSize/1.5F)) {
                             milk++;
                             setMilkAmount(milk);
-                            this.timeUntilNextMilk = this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300;
+                            this.timeUntilNextMilk = (int)((double)(this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300)/ getMilkModifier());
 
                             //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
                             float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
@@ -355,6 +355,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
         }
+    }
+
+    protected Double getMilkModifier() {
+        return EanimodCommonConfig.COMMON.milkMultiplier.get();
     }
 
     @Override

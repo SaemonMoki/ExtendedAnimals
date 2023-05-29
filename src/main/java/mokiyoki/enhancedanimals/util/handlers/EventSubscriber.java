@@ -824,7 +824,7 @@ public class EventSubscriber {
 //    }
 
     private BlockPos nearbySpawn(Level world, BlockPos blockPosOfEntity) {
-        BlockPos blockpos = null;
+        BlockPos blockpos = blockPosOfEntity;
 
         for(int i = 0; i < 10; ++i) {
             int j = blockPosOfEntity.getX() + world.random.nextInt(4 * 2) - 4;

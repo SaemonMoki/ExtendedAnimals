@@ -182,6 +182,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public boolean updateColouration = true;
 
+    //PhotoMode
+    public boolean isInPhotoMode = false;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
@@ -699,6 +702,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 this.getNavigation().moveTo(this.getX() + direction.x, this.getY() + direction.y, this.getZ() + direction.z, this.followLeashSpeed());
             }
         }
+    }
+
+    @Nullable
+    public Entity getLeashHolder() {
+        if (!this.isInPhotoMode) {
+            return super.getLeashHolder();
+        }
+        return null;
     }
 
     protected boolean ableToMoveWhileLeashed() {

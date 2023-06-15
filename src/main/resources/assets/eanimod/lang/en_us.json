@@ -409,5 +409,8 @@
   "eanimod.animalinfocontainer.weeks" : "weeks",
   "eanimod.animalinfocontainer.months" : "months",
   "eanimod.animalinfocontainer.years" : "years",
-  "eanimod.animalinfocontainer.ancient" : "ancient"
+  "eanimod.animalinfocontainer.ancient" : "ancient",
+  "eanimod.animalinfocontainer.photomode.background" : "Select Backgrounds",
+  "eanimod.animalinfocontainer.photomode.rgb" : "Select RGB Background",
+  "eanimod.animalinfocontainer.photomode.transparent" : "Enable Transparent Mode For Photo"
 }

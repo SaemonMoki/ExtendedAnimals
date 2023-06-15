@@ -139,7 +139,7 @@ public class EanimodCommonConfig {
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             omnigenders = builder
-                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young. False results in gendered animals. Visually nothing changes.")
+                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young, False results in gendered animals, Visually nothing changes")
                     .define("Allow Omnigenders:", false);
             feedGrowth = builder
                     .define("Allow feeding to age/grow animals:", false);
@@ -210,11 +210,11 @@ public class EanimodCommonConfig {
             spawnGeneticPigs = builder
                 .define("Allow Genetic Pigs to continue to spawn/exist:", true);
             spawnWeightPigs = builder
-                    .defineInRange("How highly pig spawning is weighted, larger numbers spawn more. Default is 6", 6, 1, 20);
+                    .defineInRange("How highly pig spawning is weighted, larger numbers spawn more, Default is 6", 6, 1, 20);
             minimumPigGroup = builder
-                    .defineInRange("The minimum number of pigs you want to find in a group at spawn. Default is 2", 2, 1, 60);
+                    .defineInRange("The minimum number of pigs you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumPigGroup = builder
-                    .defineInRange("The maximum number of pigs you want to find in a group at spawn. Default is 3", 3, 1, 60);
+                    .defineInRange("The maximum number of pigs you want to find in a group at spawn, Default is 3", 3, 1, 60);
             builder.pop();
 
             builder.push("cow");
@@ -227,13 +227,13 @@ public class EanimodCommonConfig {
             spawnGeneticCows = builder
                 .define("Allow Genetic Cows to continue to spawn/exist:", true);
             spawnWeightCows = builder
-                    .defineInRange("How highly cow spawning is weighted, larger numbers spawn more. Default is 8", 8, 1, 20);
+                    .defineInRange("How highly cow spawning is weighted, larger numbers spawn more, Default is 8", 8, 1, 20);
             minimumCowGroup = builder
-                    .defineInRange("The minimum number of cows you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of cows you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumCowGroup = builder
-                    .defineInRange("The maximum number of cows you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of cows you want to find in a group at spawn, Default is 4", 4, 1, 60);
             milkMultiplier = builder
-                    .defineInRange("This number multiplies how fast a cow regains milk. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a cow regains milk, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("mooshroom");
@@ -246,13 +246,13 @@ public class EanimodCommonConfig {
             spawnGeneticMooshroom = builder
                     .define("Allow Genetic Mooshrooms to continue to spawn/exist:", true);
             spawnWeightMooshrooms = builder
-                    .defineInRange("How highly Mooshroom spawning is weighted, larger numbers spawn more. Default is 8", 8, 1, 20);
+                    .defineInRange("How highly Mooshroom spawning is weighted, larger numbers spawn more, Default is 8", 8, 1, 20);
             minimumMooshroomGroup = builder
-                    .defineInRange("The minimum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Mooshrooms you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumMooshroomGroup = builder
-                    .defineInRange("The maximum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Mooshrooms you want to find in a group at spawn, Default is 4", 4, 1, 60);
             mushroomStewMultiplier = builder
-                    .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("moobloom");
@@ -274,13 +274,13 @@ public class EanimodCommonConfig {
             adultAgeLlama = builder
                     .defineInRange("How many ticks it takes for a llama to become an adult, 24000 = 1 Minecraft Day:", 120000, 1, Integer.MAX_VALUE);
             spawnWeightLlamas = builder
-                    .defineInRange("How highly llama spawning is weighted, larger numbers spawn more. Default is 4", 4, 1, 20);
+                    .defineInRange("How highly llama spawning is weighted, larger numbers spawn more, Default is 4", 4, 1, 20);
             minimumLlamaGroup = builder
-                    .defineInRange("The minimum number of llamas you want to find in a group at spawn. Default is 2", 2, 1, 60);
+                    .defineInRange("The minimum number of llamas you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumLlamaGroup = builder
-                    .defineInRange("The maximum number of llamas you want to find in a group at spawn. Default is 3", 3, 1, 60);
+                    .defineInRange("The maximum number of llamas you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierLlama = builder
-                    .defineInRange("This number multiplies how fast a llama regains its wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a llama regains its wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("sheep");
@@ -293,13 +293,13 @@ public class EanimodCommonConfig {
             spawnGeneticSheep = builder
                     .define("Allow Genetic Sheep to continue to spawn/exist:", true);
             spawnWeightSheep = builder
-                    .defineInRange("How highly Sheep spawning is weighted, larger numbers spawn more. Default is 12", 12, 1, 20);
+                    .defineInRange("How highly Sheep spawning is weighted, larger numbers spawn more, Default is 12", 12, 1, 20);
             minimumSheepGroup = builder
-                    .defineInRange("The minimum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Sheep you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumSheepGroup = builder
-                    .defineInRange("The maximum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Sheep you want to find in a group at spawn, Default is 4", 4, 1, 60);
             woolMultiplierSheep = builder
-                    .defineInRange("This number multiplies how fast a llama regains it's wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a llama regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("chicken");
@@ -312,13 +312,13 @@ public class EanimodCommonConfig {
             adultAgeChicken = builder
                     .defineInRange("How many ticks it takes for a Chicken to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
             spawnWeightChickens = builder
-                    .defineInRange("How highly Chicken spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
+                    .defineInRange("How highly Chicken spawning is weighted, larger numbers spawn more, Default is 10", 10, 1, 20);
             minimumChickenGroup = builder
-                    .defineInRange("The minimum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumChickenGroup = builder
-                    .defineInRange("The maximum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The maximum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
             eggMultiplier = builder
-                    .defineInRange("This number multiplies how fast a chicken prepares to lay an egg. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("rabbit");
@@ -331,13 +331,13 @@ public class EanimodCommonConfig {
             spawnGeneticRabbits = builder
                     .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
             spawnWeightRabbits = builder
-                    .defineInRange("How highly Rabbit spawning is weighted, larger numbers spawn more. Default is 4", 4, 1, 20);
+                    .defineInRange("How highly Rabbit spawning is weighted, larger numbers spawn more, Default is 4", 4, 1, 20);
             minimumRabbitGroup = builder
-                    .defineInRange("The minimum number of Rabbit you want to find in a group at spawn. Default is 2", 2, 1, 60);
+                    .defineInRange("The minimum number of Rabbit you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumRabbitGroup = builder
-                    .defineInRange("The maximum number of Rabbit you want to find in a group at spawn. Default is 3", 3, 1, 60);
+                    .defineInRange("The maximum number of Rabbit you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierRabbit = builder
-                    .defineInRange("This number multiplies how fast a rabbit with wool regains it's wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
+                    .defineInRange("This number multiplies how fast a rabbit with wool regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("turtle");
@@ -350,11 +350,11 @@ public class EanimodCommonConfig {
             turtleScuteDropAge = builder
                     .defineInRange("How many ticks it takes for a Turtle to drop its scute, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
             spawnWeightTurtles = builder
-                    .defineInRange("How highly Turtle spawning is weighted, larger numbers spawn more. Default is 6", 6, 1, 20);
+                    .defineInRange("How highly Turtle spawning is weighted, larger numbers spawn more, Default is 6", 6, 1, 20);
             minimumTurtleGroup = builder
-                    .defineInRange("The minimum number of Turtle you want to find in a group at spawn. Default is 1", 1, 1, 60);
+                    .defineInRange("The minimum number of Turtle you want to find in a group at spawn, Default is 1", 1, 1, 60);
             maximumTurtleGroup = builder
-                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn. Default is 5", 5, 1, 60);
+                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 5, 1, 60);
             builder.pop();
 
             builder.push("horse");
@@ -376,15 +376,15 @@ public class EanimodCommonConfig {
             adultAgeAxolotl = builder
                     .defineInRange("How many ticks it takes for an Axolotl to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
             axolotlHatchTime = builder
-                    .defineInRange("How long int ticks it takes an axolotl egg to hatch in temperate biomes. Default is 24000", 24000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How long int ticks it takes an axolotl egg to hatch in temperate biomes, Default is 24000", 24000, 1, Integer.MAX_VALUE);
             axolotlHatchTemperatureImportance = builder
-                    .defineInRange("How important temperature is to the hatching of axolotl eggs. A value of 0 means they will never hatch unless they are in a temperate or warmer environment. Currently not used", 1.0D, 0.0D, 100.0D);
+                    .defineInRange("How important temperature is to the hatching of axolotl eggs, A value of 0 means they will never hatch unless they are in a temperate or warmer environment, Currently not used", 1.0D, 0.0D, 100.0D);
             spawnWeightAxolotls = builder
-                    .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more. Default is 10", 10, 1, 20);
+                    .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more, Default is 10", 10, 1, 20);
             minimumAxolotlGroup = builder
-                    .defineInRange("The minimum number of Axolotls you want to find in a group at spawn. Default is 4", 4, 1, 60);
+                    .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
-                    .defineInRange("The maximum number of Axolotls you want to find in a group at spawn. Default is 6", 6, 1, 60);
+                    .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
             builder.pop();
         }
     }

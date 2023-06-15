@@ -53,7 +53,6 @@ import static mokiyoki.enhancedanimals.init.ModBlocks.UNBOUNDHAY_BLOCK;
 /**
  * Created by moki on 24/08/2018.
  */
-//@ObjectHolder(Reference.MODID)
 public class ModItems {
 
     private static final DeferredRegister<Item> ITEMS_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);

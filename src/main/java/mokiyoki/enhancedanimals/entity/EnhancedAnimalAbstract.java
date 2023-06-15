@@ -1739,6 +1739,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, boolean hasTexture) {
+        if (hasTexture) textureGroup.addTextureLayers(new TextureLayer(texture));
+        this.texturesIndexes.add(String.valueOf(hasTexture?0:1));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
     public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texture));
         this.texturesIndexes.add(String.valueOf(0));
@@ -1788,8 +1793,12 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName) {
-        textureGroup.addTextureLayers(new TextureLayer(texture));
-        this.texturesIndexes.add(String.valueOf(textureName));
+        if (textureName.isEmpty()) {
+            this.texturesIndexes.add(String.valueOf(0));
+        } else {
+            textureGroup.addTextureLayers(new TextureLayer(texture));
+            this.texturesIndexes.add(String.valueOf(textureName));
+        }
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 

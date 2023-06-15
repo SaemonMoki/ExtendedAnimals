@@ -31,65 +31,335 @@ public class ChickenTexture {
             String autosomalRed = "";
             String ground = "";
             boolean mottled = gene[22] != 1 && gene[23] != 1;
+            boolean charcoal = gene[100] == 2 && gene[101] == 2;
+            boolean femFeathers = isFemale || (gene[197]==2||gene[198]==2); //TODO roosters can be het for henny feather and express an intermediate form.
 
             if (gene[20] == 1 || gene[21] == 1) {
-                if (isFemale) {
-                    if (gene[24]==5 || gene[25]==5) {
-                        pattern = "solid";
-                        autosomalRed = "duckwing_female";
-                    } else if (gene[24]==1 || gene[25]==1) {
-                        pattern = isNakedNeck? "nakedneck_birchen_female":"birchen_female";
-                        autosomalRed = "duckwing_female";
-                    } else if (gene[24]==2 || gene[25]==2) {
-                        //duckwing
-                        ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female";
-                        pattern = ground;
-                        autosomalRed = "duckwing_female";
-                    } else if (gene[24]==3 || gene[25]==3) {
-                        //wheaten
-                        ground = isNakedNeck?"nakedneck_wheaten_female":"wheaten_female";
-                        pattern = "wheaten_female";
-                        autosomalRed = ground;
-                    } else {
-                        //partridge
-                        if (gene[26] == 2 || gene[27] == 2) {
-                            //pattern gene
-                            if (gene[30]==1 || gene[31]==1) {
-                                //melanized gene
-                                if (gene[28]==1 || gene[29]==1) {
-                                    pattern = "singlelace_female";
+                int patternGene = 4-(gene[26]+gene[27]);
+                int columbian = 4-(gene[28]+gene[29]);
+                int darkbrown = 4-(gene[98]+gene[99]);
+                int melanized = 4-(gene[30]+gene[31]);
+                int extension = Math.max(gene[24],gene[25])==5? 5 : Math.min(gene[24],gene[25]);
+                //this is for het extension but that's for later
+//                if (gene[24]!=gene[25]) {
+//                extension*=10;
+//                    extension+=extension==50? Math.min(gene[24],gene[25]) : Math.max(gene[24],gene[25]);
+//                }
+
+                if (patternGene == 0) {
+                    if (columbian == 0) {
+                        if (darkbrown == 0) {
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_female":"birchen_female"; autosomalRed = "duckwing_female";}
+                                        case 2 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern = ground; autosomalRed = "duckwing_female";}
+                                        case 3 -> {ground = isNakedNeck?"nakedneck_wheaten_female":"wheaten_female"; pattern = "wheaten_female"; autosomalRed = ground;}
+                                        case 4 -> {pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female"; autosomalRed = pattern;}
+                                    }
                                 } else {
-                                    pattern = isNakedNeck ? "nakedneck_doublelace_female" : "doublelace_female";
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_male":"birchen_male"; autosomalRed = "duckwing_male";}
+                                        case 2,4 -> {pattern ="duckwing_male"; autosomalRed = pattern;}
+                                        case 3 -> {pattern = "duckwing_male"; autosomalRed = "wheaten_male";}
+                                    }
                                 }
-                                autosomalRed = "brown_female";
                             } else {
-                                //TODO concentric penciled
-                                pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female";
-                                autosomalRed = pattern;
+                                //melanized gene //TODO het melanized forms
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5,1 -> {pattern = "solid"; autosomalRed = "duckwing_female";}
+                                        case 2 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern = isNakedNeck? "nakedneck_ml2duckwing_female" : "ml2duckwing_female"; autosomalRed = "brown_female";} //TODO quail pattern
+                                        case 3 -> {ground = isNakedNeck?"nakedneck_wheaten_female":"wheaten_female"; pattern = isNakedNeck?"nakedneck_ml2wheaten_female":"ml2wheaten_female"; autosomalRed = ground;} //TODO furnace wheaten
+                                        case 4 -> {pattern = isNakedNeck ? "nakedneck_ml2brown_female" : "ml2brown_female"; autosomalRed = isNakedNeck ? "nakedneck_brown_female" : "brown_female";} //TODO melanized birchen
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> pattern=isNakedNeck? "nakedneck_ml2birchen_male":"ml2birchen_male";
+                                        case 2,4 -> {autosomalRed = "duckwing_male"; pattern="ml2duckwing_male";}
+                                        case 3 -> {pattern = "ml2duckwing_male"; autosomalRed = "wheaten_male";}
+                                    }
+                                }
                             }
                         } else {
-                            pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female";
-                            autosomalRed = pattern;
+                            //dark brown //TODO het dark brown forms
+                            if (melanized==0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern = "solid"; autosomalRed = "duckwing_female";} //TODO leaky black
+                                        case 1 -> {pattern = isNakedNeck?"nakedneck_ml2duckwing_female" : "ml2duckwing_female"; autosomalRed = "brown_female";} //TODO birchen quail
+                                        case 2,3,4 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern = "blacktail"; autosomalRed = "duckwing_female";} //TODO
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid"; //TODO should be a leaky black.
+                                        case 1,2,3,4 -> pattern = "blacktail"; //TODO investigate how this should actually look
+                                    }
+                                }
+                            } else {
+                                //melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";//TODO leaky black
+                                        case 1,2,4 -> {pattern = isNakedNeck?"nakedneck_ml2duckwing_female" : "ml2duckwing_female"; autosomalRed = "brown_female";} //TODO dark birchen quail
+                                        case 3 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern = "blacktail"; autosomalRed = "duckwing_female";} //TODO
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid"; //TODO should be a leaky black.
+                                        case 1,2,3,4 -> {pattern = "blacktail"; autosomalRed="duckwing_male";} //TODO investigate how this should actually look
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        //columbian
+                        if (darkbrown == 0) {
+                            if (melanized == 0) {
+                                if (charcoal) {
+                                    if (femFeathers) {
+                                        switch (extension) {
+                                            case 5,1 -> pattern = "solid";
+                                            case 2 -> {pattern = "quail_female"; autosomalRed="duckwing_female";}
+                                            case 3 -> pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female";
+                                            case 4 -> pattern = "lakenvelder_female";
+                                        }
+                                    } else {
+                                        switch (extension) {
+                                            case 5,1 -> pattern = "solid";
+                                            case 2 -> pattern = "quail";
+                                            case 3 -> pattern = "blacktail";
+                                            case 4 -> pattern = "lakenvelder_male";
+                                        }
+                                    }
+                                } else {
+                                    if (femFeathers) {
+                                        switch (extension) {
+                                            case 5 -> {
+                                                pattern = "solid";
+                                                autosomalRed = "duckwing_female";
+                                            }
+                                            case 1 -> {
+                                                pattern = isNakedNeck ? "nakedneck_birchen_female" : "birchen_female";
+                                                autosomalRed = "duckwing_female";
+                                            }
+                                            case 2, 3, 4 -> pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female";
+                                        }
+                                    } else {
+                                        switch (extension) {
+                                            case 5 -> pattern = "solid";
+                                            case 1 -> {
+                                                pattern = isNakedNeck ? "nakedneck_birchen_male" : "birchen_male";
+                                                autosomalRed = "duckwing_male";
+                                            }
+                                            case 2, 3, 4 -> {
+                                                pattern = "blacktail";
+                                                autosomalRed = "duckwing_male";
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                //melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern = "solid"; autosomalRed = "duckwing_female";}
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_female":"birchen_female"; autosomalRed = "duckwing_female";}
+                                        case 2,3,4 -> pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female";
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_male":"birchen_male"; autosomalRed = "duckwing_male";}
+                                        case 2,3,4 -> {pattern = "blacktail"; autosomalRed="duckwing_male";}
+                                    }
+                                }
+                            }
+                        } else {
+                            //columbian + darkbrown
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern = "solid";}
+                                        case 1,2,4 -> {pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female"; autosomalRed="solid";}
+                                        case 3 -> {pattern=""; autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> {pattern = "solid";}
+                                        case 1,2,4 -> {pattern = "blacktail"; autosomalRed="solid";}
+                                        case 3 -> {pattern=""; autosomalRed="solid";}
+                                    }
+                                }
+                            } else {
+                                //columbian + darkbrown + melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 1,5 -> pattern = "solid";
+                                        case 2 -> {pattern="co2db2ml2duckwing_female"; ground="duckwing_female";autosomalRed="duckwing_female";}
+                                        case 3 -> {pattern="co2db2ml2duckwing_female"; ground="wheaten_female";autosomalRed="wheaten_female";}
+                                        case 4 -> {pattern="co2db2ml2duckwing_female"; ground="duckwing_female";autosomalRed="brown_female";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 1,5 -> pattern = "solid";
+                                        case 2,3,4 -> pattern = "quail";
+                                    }
+                                }
+                            }
                         }
                     }
                 } else {
-                    if (gene[24]==5 || gene[25]==5) {
-                        pattern="solid";
-                    } else if (gene[24]==1 || gene[25]==1) {
-                        pattern=isNakedNeck? "nakedneck_birchen_male":"birchen_male";
-                    } else if (gene[24]==2 || gene[25]==2) {
-                        pattern="duckwing_male";
-                        autosomalRed = pattern;
-                    } else if (gene[24]==3 || gene[25]==3) {
-                        //wheaten
-                        pattern="duckwing_male";
-                        autosomalRed = "wheaten_male";
+                    //pattern gene
+                    if (columbian == 0) {
+                        if (darkbrown == 0) {
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_female":"birchen_female"; autosomalRed = "duckwing_female";}
+                                        case 2 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern = ground; autosomalRed = "duckwing_female";}
+                                        case 3 -> {ground = isNakedNeck?"nakedneck_wheaten_female":"wheaten_female"; pattern = "wheaten_female"; autosomalRed = ground;}
+                                        case 4 -> {pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female"; autosomalRed = pattern;}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> pattern = "solid";
+                                        case 1 -> {
+                                            pattern = isNakedNeck ? "nakedneck_birchen_male" : "birchen_male";
+                                            autosomalRed = "duckwing_male";
+                                        }
+                                        case 2, 4 -> {
+                                            pattern = "duckwing_male";
+                                            autosomalRed = pattern;
+                                        }
+                                        case 3 -> {
+                                            pattern = "duckwing_male";
+                                            autosomalRed = "wheaten_male";
+                                        }
+                                    }
+                                }
+                            } else {
+                                //pattern gene + melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5,1 -> pattern = "solid";
+                                        case 2 -> {ground = isNakedNeck? "nakedneck_duckwing_female" : "duckwing_female"; pattern=isNakedNeck?"nakedneck_doublelace_female":"doublelace_female"; autosomalRed = "duckwing_female";}
+                                        case 3 -> {ground = isNakedNeck?"nakedneck_wheaten_female":"wheaten_female"; pattern=isNakedNeck?"nakedneck_doublelace_female":"doublelace_female"; autosomalRed = ground;}
+                                        case 4 -> {pattern=isNakedNeck?"nakedneck_doublelace_female":"doublelace_female"; autosomalRed = "solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5,1 -> pattern = "solid";
+                                        case 2, 3, 4 -> {pattern = "doublelace_male";autosomalRed = "duckwing_male";}
+                                    }
+                                }
+                            }
+                        } else {
+                            //pattern gene + darkbrown
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1,2,4 -> {pattern=isNakedNeck?"nakedneck_autosomalbarred_female":"autosomalbarred_female";ground="duckwing_female";autosomalRed="solid";}
+                                        case 3 -> {pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female"; autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern="autosomalbarred_male";ground="duckwing_male";autosomalRed="duckwing_male";}
+                                        case 2,4 -> {pattern="pg2db2duckwing_male";autosomalRed="duckwing_male";} //TODO seems to be a penciled tail only
+                                        case 3 -> {pattern="blacktail";autosomalRed="solid";}
+                                    }
+                                }
+                            } else {
+                                //pattern gene + darkbrown + melanized
+                                switch (extension) {
+                                    case 5 -> {pattern="solid";}
+                                    case 1,2,3,4 -> {pattern=femFeathers?"spangled_female":(isNakedNeck?"nakedneck_spangled_male":"spangled_male");autosomalRed=femFeathers?"solid":"duckwing_male";}
+                                }
+                            }
+                        }
                     } else {
-                        //partridge
-                        pattern="duckwing_male";
-                        autosomalRed = pattern;
+                        if (darkbrown == 0) {
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    //pattern gene + columbian
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_female":"birchen_female"; autosomalRed = "duckwing_female";}
+                                        case 2,3,4 -> {pattern = isNakedNeck?"nakedneck_columbian_female":"columbian_female"; autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern = isNakedNeck? "nakedneck_birchen_male":"birchen_male"; autosomalRed = "duckwing_male";}
+                                        case 2,3,4 -> {pattern= isNakedNeck?"nakedneck_columbian_male":"columbian_male";autosomalRed="duckwing_male";}
+                                    }
+                                }
+                            } else {
+                                //pattern gene + columbian + melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5,1 -> {pattern="solid";}
+                                        case 2,3,4 -> {pattern="singlelace_female";autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5,1 -> {pattern="solid";}
+                                        case 2,3,4 -> {pattern="singlelace_male";autosomalRed="solid";}
+                                    }
+                                }
+                            }
+                        } else {
+                            //pattern gene + columbian + darkbrown
+                            if (melanized == 0) {
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern="autosomalbarred_female";ground="duckwing_female";autosomalRed="solid";}
+                                        case 2,4 -> {pattern="blacktail";autosomalRed="solid";}
+                                        case 3 -> {pattern="";autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern="autosomalbarred_male";ground="duckwing_male";autosomalRed="duckwing_male";}
+                                        case 2,4 -> {pattern="blacktail";autosomalRed="duckwing_male";}
+                                        case 3 -> {pattern="";autosomalRed="solid";}
+                                    }
+                                }
+                            } else {
+                                //pattern gene + columbian + darkbrown + melanized
+                                if (femFeathers) {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern="singlelacebirchen_female";autosomalRed="solid";}
+                                        case 2,3,4 -> {pattern="spangled_female";autosomalRed="solid";}
+                                    }
+                                } else {
+                                    switch (extension) {
+                                        case 5 -> {pattern="solid";}
+                                        case 1 -> {pattern="singlelacebirchen_male";autosomalRed="solid";}
+                                        case 2,3,4 -> {pattern=isNakedNeck?"nakedneck_spangled_male":"spangled_male";autosomalRed="solid";}
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                if (isNakedNeck) {
+                    if (ground.startsWith("duckwing")) {
+                        ground = "nakedneck_" + ground;
+                    }
+                    if (!femFeathers && !autosomalRed.equals("solid")) {
+                        autosomalRed = autosomalRed.startsWith("wheaten")?"nakedneck_wheaten_male":"nakedneck_duckwing_male";
+                    }
+                }
+
             }
 
             if (isFemale || (gene[196] == 2 || gene[197] == 2)) {
@@ -99,6 +369,7 @@ public class ChickenTexture {
                 tailSickle = "0";
             }
 
+            TextureGrouping featherGenerator = new TextureGrouping(TexturingType.SHADE_FEATHERS);
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping featherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
             TextureGrouping featherMask = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -109,9 +380,11 @@ public class ChickenTexture {
                 featherMask.addGrouping(featherCutout);
             }
             chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/feathers.png");
-            chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tail_" + tailType + ".png");
+            chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tail_" + tailType + ".png", tailType);
             if (!tailSickle.isEmpty()) {
                 chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tailsickle_" + tailSickle + ".png", tailSickle);
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherMask,"", false);
             }
             featherGroup.addGrouping(featherMask);
             TextureGrouping baseFeatherColour = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -130,25 +403,26 @@ public class ChickenTexture {
                 }
             }
             featherGroup.addGrouping(baseFeatherColour);
-                if (!pattern.isEmpty() || mottled) {
+            if (gene[20] == 1 || gene[21] == 1) {
+                if (!pattern.isEmpty() || mottled || charcoal) {
                     TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                     TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    if (mottled) {
-                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles.png");
-                    }
-                    if (!pattern.isEmpty()) {
-                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles.png", mottled);
+                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                    if (charcoal) {
+                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/charcoal_" + (femFeathers?"female":"male") + ".png", femFeathers?"f":"m");
+                    } else {
+                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup,"", false);
                     }
                     patternFeatherGroup.addGrouping(patternCutOutGroup);
                     calculatePatternRGB(chicken, patternFeatherGroup, sGene, gene, isFemale, mottled, isNakedNeck);
                     featherGroup.addGrouping(patternFeatherGroup);
                 }
-                if (mottled) {
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles.png");
-                }
-                if (isFemale ? gene[6]==2 : gene[6]==2||gene[7]==2) {
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/barred.png");
-                }
+                chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles.png", mottled);
+                chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/barred.png", isFemale ? gene[6] == 2 : gene[6] == 2 || gene[7] == 2);
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherGroup,"", false);
+            }
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/feather_noise.png");
             parentGroup.addGrouping(featherGroup);
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -158,8 +432,15 @@ public class ChickenTexture {
             //            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_DYE, "ear.png");
             //            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "ear.png");
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale));
+
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, "map/bars.png");
+
             parentGroup.addGrouping(detailGroup);
-            chicken.setTextureGrouping(parentGroup);
+
+            featherGenerator.addGrouping(parentGroup);
+            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feather_map.png");
+            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feathers/feather_0.png");
+            chicken.setTextureGrouping(featherGenerator);
         }
     }
 

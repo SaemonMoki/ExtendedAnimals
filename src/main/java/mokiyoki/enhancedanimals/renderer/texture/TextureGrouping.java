@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static mokiyoki.enhancedanimals.renderer.texture.TexturingUtils.*;
@@ -55,12 +56,105 @@ public class TextureGrouping {
                 case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
                 case APPLY_SHADING -> applyShading(baseImage, groupImages);
                 case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
+                case SHADE_FEATHERS -> shadeFeathers(baseImage, groupImages);
             }
 
             return baseImage;
         }
 
         return null;
+    }
+
+    private void shadeFeathers(NativeImage baseImage, List<NativeImage> groupImages) {
+        if (groupImages.size() > 1) {
+            int[][] map = getFeatherColour(groupImages.remove(0));
+            int[][] featherColour = getFeatherColour(baseImage);
+
+            int[][] colourMap = new int[256][256];
+            for (int[] i:colourMap) {
+                Arrays.fill(i,16711935);
+            }
+
+            for (int y=0; y < 25; y++) {
+                for (int x=0; x < 128; x++) {
+                    int colour = map[x][y];
+                    int red = colour & 255;
+                    int green = colour >> 8 & 255;
+                    int blue = colour >> 16 & 255;
+                    colourMap[green][red!=0?0:blue] = featherColour[x][y];
+                }
+            }
+
+            boolean cleared = true;
+            for (int x=0; x < 256;x++) {
+                for (int y=0; y < 256;y++) {
+                    int colour = colourMap[x][y];
+                    if (colour!=16711935) {
+                        if (y > 0) {
+                            int val = colourMap[x][y-1];
+                            if (val==16711935) {
+                                colourMap[x][y-1] = colour;
+                            }
+                            if (x > 0) {
+                                val = colourMap[x-1][y-1];
+                                if (val==16711935) {
+                                    colourMap[x-1][y-1] = colour;
+                                }
+                            }
+                        }
+                        if (x > 0) {
+                            int val = colourMap[x-1][y];
+                            if (val==16711935) {
+                                colourMap[x-1][y] = colour;
+                            }
+                        }
+                        if (y < 255) {
+                            int val = colourMap[x][y+1];
+                            if (val==16711935) {
+                                colourMap[x][y+1] = colour;
+                            }
+                            if (x < 255) {
+                                val = colourMap[x+1][y+1];
+                                if (val==16711935) {
+                                    colourMap[x+1][y+1] = colour;
+                                }
+                            }
+                        }
+                        if (x < 255) {
+                            int val = colourMap[x+1][y];
+                            if (val==16711935) {
+                                colourMap[x+1][y] = colour;
+                            }
+                        }
+                    } else {
+                        if (cleared) cleared = false;
+                    }
+                    if (x==255 && y==255) {
+                        if (!cleared) {
+                            x=0;
+                            y=0;
+                        }
+                    }
+                }
+            }
+
+            NativeImage feathers = groupImages.remove(0);
+            layerGroups(feathers, groupImages);
+
+            int w = baseImage.getWidth();
+            int h = baseImage.getWidth();
+            for (int x=0; x < w; x++) {
+                for (int y=0; y < h; y++) {
+                    int coords = feathers.getPixelRGBA(x, y);
+                    if (coords!=0) {
+                        int colour = colourMap[coords >> 8 & 255][coords >> 16 & 25];
+                        if (colour!=0) {
+                            baseImage.setPixelRGBA(x, y, colour);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void blendGroupDye(NativeImage baseImage, List<NativeImage> groupImages, int dyeColour) {

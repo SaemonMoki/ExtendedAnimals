@@ -1605,6 +1605,42 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[198] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[199] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
+        //paint spot quantity modifier 1
+        autosomalGenes[200] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+        autosomalGenes[201] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+
+        //paint spot quantity modifier 2
+        autosomalGenes[202] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+        autosomalGenes[203] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+
+        //paint spot size modifier 1
+        autosomalGenes[204] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+        autosomalGenes[205] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+
+        //paint spot size modifier 2
+        autosomalGenes[206] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+        autosomalGenes[207] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+
+        //paint spot distribution modifier 2
+        autosomalGenes[208] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+        autosomalGenes[209] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(4) + 1) : 1;
+
+        //paint spot head restriction modifier
+        autosomalGenes[210] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[211] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //paint spot tail restriction modifier
+        autosomalGenes[212] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[213] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //paint spot body restriction modifier
+        autosomalGenes[214] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[215] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //paint spot limbs restriction modifier
+        autosomalGenes[216] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[217] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
         return new Genes(sexlinkedGenes, autosomalGenes);
 
     }

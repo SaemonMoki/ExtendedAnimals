@@ -376,80 +376,29 @@ public class TexturingUtils {
     }
 
     protected static void processFeathers(NativeImage baseImage, NativeImage feathers, int[][] map, int[][] featherColour) {
-        int h = feathers.getHeight();
-        int w = feathers.getWidth();
+        int h = baseImage.getHeight();
+        int w = baseImage.getWidth();
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 int colour = feathers.getPixelRGBA(x, y);
                 if (colour!=0) {
                     int blue = colour >> 16 & 255;
-                    int green = colour >> 8 & 255;
+                    int green = Math.min(Math.round((colour >> 8 & 255) * 0.5F), 127);
                     int red = colour & 255;
+                    colour = 0;
                     if (red > 0) {
-                        if (red == 255) {
-                            colour = featherColour[green/2][0];
-                        } else {
-                            float dif = colour/255F;
-                            colour = Math.round((dif*featherColour[green/2][0]) + ((1.0F-dif)*featherColour[green/2][1]));
-                        }
+                        colour = featherColour[green][0];
                     } else {
-                        int map_x = 0;
-                        int map_y = 0;
-                        int testColour;
-                        while (map_x < 128) {
-                            while (map_y < 25) {
-                                testColour = map[map_x][map_y];
-                                if (map_y==0 && (testColour & 255) > 0) {
-                                    map_y++;
-                                    continue;
-                                }
-
-                                int test = testColour >> 8 & 255;
-                                int blueValue = testColour >> 16 & 255;
-
-                                if (test==green && blueValue==blue) {
-                                    colour = featherColour[map_x][map_y];
-                                    map_x=128;
-                                    map_y=25;
-                                } else {
-                                    test = Math.abs(test-green) + Math.abs(blueValue-blue);
-
-                                    int testRight = map_x==127?0:map[map_x+1][map_y];
-                                    int testDownRight = map_x==127||map_y==24?0:map[map_x+1][map_y+1];
-                                    int testDown = map_y==24?0:map[map_x][map_y+1];
-
-                                    testRight = testRight==0?511:Math.abs((testRight >> 8 & 255)-green) + Math.abs((testRight >> 16 & 255)-blue);
-                                    testDownRight = testDownRight==0?511:Math.abs((testDownRight >> 8 & 255)-green) + Math.abs((testDownRight >> 16 & 255)-blue);
-                                    testDown = testDown==0?511:Math.abs((testDown >> 8 & 255)-green) + Math.abs((testDown >> 16 & 255)-blue);
-
-                                    if (test < testRight) {
-                                        if (test < testDownRight) {
-                                            if (test < testDown) {
-                                                colour = featherColour[map_x][map_y];
-                                                map_x=128;
-                                                map_y=25;
-                                            } else {
-                                                map_y++;
-                                            }
-                                        } else if (testDownRight < testDown) {
-                                            map_x++;
-                                            map_y++;
-                                        } else {
-                                            map_y++;
-                                        }
-                                    } else if (testRight < testDownRight) {
-                                        if (testRight < testDown) {
-                                            map_x++;
-                                        } else {
-                                            map_y++;
-                                        }
-                                    } else if (testDownRight < testDown) {
-                                        map_x++;
-                                        map_y++;
-                                    } else {
-                                        map_y++;
-                                    }
-                                }
+                        for (int map_y = 0; map_y < 25; map_y++) {
+                            int value = map[green][map_y] >> 16 & 255;
+                            int nextValue = map_y == 24?0:(map[green][map_y+1] >> 16 & 255);
+                            if (blue == value || nextValue == 0) {
+                                colour = featherColour[green][map_y];
+                            } else if (blue > value && blue < nextValue) {
+                                colour = featherColour[green][map_y];
+                            }
+                            if (colour!=0) {
+                                break;
                             }
                         }
                     }

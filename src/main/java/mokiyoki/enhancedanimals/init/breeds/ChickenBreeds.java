@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 import java.util.ArrayList;
@@ -192,6 +193,8 @@ public final class ChickenBreeds {
     public static final Breed BLUE_SALMON_FAVEROLLE = new Breed(FAVEROLLE, new Breed.Properties().setData("bluesalmonfaverolle", Biomes.FLOWER_FOREST, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(0,"2").add(4, "1","1","_","1","1"), new GeneSketch().add(24, "3").add(34, "1").add(40, "1|2").add(58, "1").add(64, "2","1","1").add(80, "2","2","1","2","1").add(170, "1","2").add(178, "2|3","1|2","1|2")));
 
+    public static final Breed BUTTERCUP = new Breed(new Breed.Properties().setData("buttercup", Biomes.THE_VOID, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.CRESTLESS, GeneSet.BUTTERCUP).get()));
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(
 //                    createVarientList(GeneSet.FLATROSE.with(GeneSet.BEARDED).with(GeneSet.CRESTLESS).with(GeneSet.CLEANLEGS).get(),
@@ -220,6 +223,7 @@ public final class ChickenBreeds {
         BARRED(new GeneSketch().add(6, "2"), "empty"),
         SINGLE("empty", new GeneSketch().add(46, "3", "2", "1")),
         V("empty", new GeneSketch().add(46, "3", "2", "2")),
+        BUTTERCUP("empty", new GeneSketch().add(46, "3", "2", "3")),
         POINTEDROSE("empty", new GeneSketch().add(46, "1", "2", "1")),
         FLATROSE("empty", new GeneSketch().add(46, "2", "2", "1")),
         PEA("empty", new GeneSketch().add(46, "3", "1", "1")),

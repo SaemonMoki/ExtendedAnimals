@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModSounds;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
@@ -245,6 +246,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
+
+    private int soundOffset = -1;
 
     public float wingRotation;
     public float destPos;
@@ -567,6 +570,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
+    @Override
+    public void playAmbientSound() {
+        if (!this.getOrSetIsFemale() && this.soundOffset <= 0) {
+            this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
+            this.soundOffset = this.random.nextInt(10);
+        } else {
+            if (this.soundOffset>0) this.soundOffset--;
+            super.playAmbientSound();
+        }
+    }
+
+    @Override
+    public float getVoicePitch() {
+        float pitch = 1.0F + (1.0F-this.getAnimalSize());
+        if (this.isGrowing()) pitch*=(1.0F+((1.0F-this.growthAmount())*0.5F));
+        return this.getOrSetIsFemale()?pitch*0.95F:pitch*1.05F;
+    }
 
     @Override
     protected SoundEvent getAmbientSound() {

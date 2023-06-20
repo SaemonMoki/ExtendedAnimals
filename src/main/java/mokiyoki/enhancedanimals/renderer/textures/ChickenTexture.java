@@ -433,13 +433,13 @@ public class ChickenTexture {
             //            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "ear.png");
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale));
 
-            chicken.addTextureToAnimalTextureGrouping(detailGroup, "map/bars.png");
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, "map/single_lace.png");
 
             parentGroup.addGrouping(detailGroup);
 
             featherGenerator.addGrouping(parentGroup);
             chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feather_map.png");
-            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feathers/feather_0.png");
+            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feathers/male_sickle_thin_long.png");
             chicken.setTextureGrouping(featherGenerator);
         }
     }
@@ -448,7 +448,7 @@ public class ChickenTexture {
         if (gene[20]==3&&gene[21]==3) {
             return 14560322;
         } else {
-            return 0;
+            return sGene[2] == 2 && (isFemale || sGene[3] == 2) ? 2100488 : 0;
         }
     }
 

@@ -206,6 +206,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
+    protected Double getMilkModifier() {
+        return EanimodCommonConfig.COMMON.mushroomStewMultiplier.get();
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putString("Type", this.getMooshroomType().name);

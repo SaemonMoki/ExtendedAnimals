@@ -361,7 +361,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             if (this.currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && this.timeForGrowth >= 24000) {
                 this.timeForGrowth = 0;
                 this.currentCoatLength = maxcoat >= 2 ? this.random.nextInt(maxcoat/2) : 0;
-            } else if (this.timeForGrowth >= (24000 / maxcoat)) {
+            } else if (this.timeForGrowth >= ((int)(24000 / maxcoat)/EanimodCommonConfig.COMMON.woolMultiplierSheep.get())) {
                 this.timeForGrowth = 0;
                 if (maxcoat > this.currentCoatLength) {
                     this.currentCoatLength++;

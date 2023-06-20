@@ -128,6 +128,14 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
         public final ForgeConfigSpec.IntValue adultAgeHorse;
 
+        //Multipliers
+        public final ForgeConfigSpec.DoubleValue milkMultiplier;
+        public final ForgeConfigSpec.DoubleValue mushroomStewMultiplier;
+        public final ForgeConfigSpec.DoubleValue woolMultiplierLlama;
+        public final ForgeConfigSpec.DoubleValue woolMultiplierSheep;
+        public final ForgeConfigSpec.DoubleValue woolMultiplierRabbit;
+        public final ForgeConfigSpec.DoubleValue eggMultiplier;
+
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             omnigenders = builder
@@ -224,6 +232,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of cows you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumCowGroup = builder
                     .defineInRange("The maximum number of cows you want to find in a group at spawn. Default is 4", 4, 1, 60);
+            milkMultiplier = builder
+                    .defineInRange("This number multiplies how fast a cow regains milk. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("mooshroom");
@@ -241,6 +251,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumMooshroomGroup = builder
                     .defineInRange("The maximum number of Mooshrooms you want to find in a group at spawn. Default is 4", 4, 1, 60);
+            mushroomStewMultiplier = builder
+                    .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("moobloom");
@@ -267,6 +279,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of llamas you want to find in a group at spawn. Default is 2", 2, 1, 60);
             maximumLlamaGroup = builder
                     .defineInRange("The maximum number of llamas you want to find in a group at spawn. Default is 3", 3, 1, 60);
+            woolMultiplierLlama = builder
+                    .defineInRange("This number multiplies how fast a llama regains its wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("sheep");
@@ -284,6 +298,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumSheepGroup = builder
                     .defineInRange("The maximum number of Sheep you want to find in a group at spawn. Default is 4", 4, 1, 60);
+            woolMultiplierSheep = builder
+                    .defineInRange("This number multiplies how fast a llama regains it's wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("chicken");
@@ -301,6 +317,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
             maximumChickenGroup = builder
                     .defineInRange("The maximum number of Chicken you want to find in a group at spawn. Default is 4", 4, 1, 60);
+            eggMultiplier = builder
+                    .defineInRange("This number multiplies how fast a chicken prepares to lay an egg. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("rabbit");
@@ -318,6 +336,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Rabbit you want to find in a group at spawn. Default is 2", 2, 1, 60);
             maximumRabbitGroup = builder
                     .defineInRange("The maximum number of Rabbit you want to find in a group at spawn. Default is 3", 3, 1, 60);
+            woolMultiplierRabbit = builder
+                    .defineInRange("This number multiplies how fast a rabbit with wool regains it's wool. Default is 1 for 1x speed.", 1.0, 0.0001, 1000.0);
             builder.pop();
 
             builder.push("turtle");

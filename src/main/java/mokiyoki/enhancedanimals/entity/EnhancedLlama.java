@@ -146,6 +146,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private int despawnDelay = -1;
     private boolean resetTexture = true;
 
+    private static final int woolRegenTimer = (int)(24000/EanimodCommonConfig.COMMON.woolMultiplierLlama.get());
+
     private GrazingGoal grazingGoal;
 
     @Nullable
@@ -357,7 +359,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         if (hunger <= 36000) {
             timeForGrowth++;
         }
-        if (timeForGrowth >= 24000) {
+        if (timeForGrowth >= woolRegenTimer) {
             timeForGrowth = 0;
 
             int age = this.getEnhancedAnimalAge(); //overloaded version of getAge

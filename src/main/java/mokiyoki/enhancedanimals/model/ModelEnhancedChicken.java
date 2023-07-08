@@ -1470,10 +1470,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 /**
                  *      Tail
                  */
-                this.tailNub.hide();
+
                 this.cushion.show();
-                this.tailCoverMedium.show();
-                this.tailFeathers.show();
+                this.theTailCoverts.show();
+                this.tailNub.hide();
             } else {
                 this.headFeathers.hide();
                 this.neck.show();
@@ -1490,7 +1490,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             if (this.chickenModelData.growthAmount != 1.0F) {
                 mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F + ((1.0F-this.chickenModelData.growthAmount)*0.3F), 0.0F, (1.0F-this.chickenModelData.growthAmount)*0.1F, 0.0F));
             }
-            mapOfScale.put("collar", ModelHelper.createScalings(0.5F, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("collar", ModelHelper.createScalings(chicken.isScaleless||chicken.nakedNeckType==NakedNeckType.NAKED_NECK?0.25F:0.5F, 0.0F, 0.0F, 0.0F));
             mapOfScale.put("collarH", ModelHelper.createScalings(2.0F, 0.0F, 0.0F, 0.0F));
 
             poseStack.pushPose();

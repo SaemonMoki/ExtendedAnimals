@@ -1320,7 +1320,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //ear size 4 and whitener [reducer, nuetral, adds size, adds white, adds white+ and size]
+        //ear size 4 and whitener [reducer, neutral, adds size, adds white, adds white+ and size]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[158] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
@@ -1641,6 +1641,21 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //paint spot limbs restriction modifier
         autosomalGenes[216] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[217] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        autosomalGenes[218] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+        autosomalGenes[219] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+
+        autosomalGenes[220] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+        autosomalGenes[221] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+
+        autosomalGenes[222] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[223] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        autosomalGenes[224] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[225] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        autosomalGenes[226] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[227] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         return new Genes(sexlinkedGenes, autosomalGenes);
 

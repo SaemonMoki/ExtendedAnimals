@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.EarType;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.NakedNeckType;
 import mokiyoki.enhancedanimals.util.Genes;
 
@@ -11,6 +12,8 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
 public class ChickenPhenotype implements Phenotype {
     public Crested crestType = Crested.NONE;
     public FootFeathers footFeatherType = FootFeathers.NONE;
+    public EarType ear = EarType.NONE;
+    public int earSize = 0;
     public Comb comb = Comb.SINGLE;
     public Beard beard;
     public boolean butterCup = false;
@@ -31,10 +34,9 @@ public class ChickenPhenotype implements Phenotype {
     public float bodyAngle;
     public float tailAngle = 0;
     public float height;
-
     private boolean silkie;
 
-    public ChickenPhenotype(Genes genes) {
+    public ChickenPhenotype(Genes genes, boolean isFemale) {
         int[] gene = genes.getAutosomalGenes();
         this.isScaleless = gene[108] == 2 && gene[109] == 2;
         this.nakedNeckType = gene[52] == 1 || gene[53] == 1 ? (gene[52]==gene[53]?NakedNeckType.NAKED_NECK:NakedNeckType.BOWTIE_NECK):NakedNeckType.NONE;
@@ -142,26 +144,92 @@ public class ChickenPhenotype implements Phenotype {
 
         //comb size [80 and 81 small / 82 and 83 large]
         if (gene[80] == 2) {
-            this.combSize = this.combSize + 1;
+            this.combSize++;
         }
         if (gene[81] == 2) {
-            this.combSize = this.combSize + 1;
+            this.combSize++;
         }
         if (gene[82] == 1) {
-            this.combSize = this.combSize + 1;
+            this.combSize++;
         }
         if (gene[83] == 1) {
-            this.combSize = this.combSize + 1;
+            this.combSize++;
         }
 
-        if (this.combSize < 0) {
-            this.combSize = 0;
-        }
+        if (this.combSize < 0) this.combSize = 0;
 
         this.waddleSize = this.combSize;
 
         if (gene[84] == 1 && gene[85] == 1 && this.waddleSize > 0) {
             this.waddleSize = this.waddleSize - 1;
+        }
+
+        int[] sGene = genes.getSexlinkedGenes();
+        int ear = this.combSize;
+
+        ear+=isFemale?sGene[4]-1:Math.min(sGene[4],sGene[5]);
+
+        if (gene[152] <= 4 || gene[153] <= 4) {
+            ear--;
+        } else if (gene[152] > 8 && gene[153] > 8) {
+            ear++;
+        }
+
+        if (gene[154] <= 4 || gene[155] <= 4) {
+            if (ear!=-1) ear--;
+        } else if (gene[154] > 8 && gene[155] > 8) {
+            ear++;
+        }
+
+        if (gene[156] <= 4 || gene[157] <= 4) {
+            if (ear!=-1) ear--;
+        } else if (gene[156] > 5 && gene[157] > 5) {
+            ear++;
+            if (gene[156]==gene[157] && gene[156] >= 10) {
+                ear++;
+            }
+        }
+
+        if (gene[158] == 1 || gene[159] == 1) {
+            ear--;
+        } else if (gene[158] > 2 && gene[159] > 2) {
+            if (gene[158] == 3 || gene[159] == 3) {
+                ear++;
+            } else if (gene[158] == 5 && gene[159] == 5) {
+                ear++;
+            }
+        }
+
+        if (gene[160] <= 4 || gene[161] <= 4) {
+            if (ear!=-1) ear--;
+        } else if (gene[160] > 5 && gene[161] > 5) {
+            ear++;
+            if (gene[160]==gene[161] && gene[160] >= 10) {
+                ear++;
+            }
+        }
+
+        if (gene[162] <= 4 || gene[163] <= 4) {
+            if (ear!=-1) ear--;
+        } else if (gene[162] > 5 && gene[163] > 5) {
+            ear++;
+            if (gene[162]==gene[163] && gene[162] >= 10) {
+                ear++;
+            }
+        }
+
+        if (sGene[18]!=1 && (isFemale || sGene[19]!=1)) {
+            earSize*= sGene[18] == 2 && (isFemale || sGene[19] == 2) ? 0.75 : 0.5F;
+        }
+
+        if (ear>=0) {
+            if (ear>15) ear=15;
+            this.earSize = ear;
+            ear = 0;
+            for (int i = 152; i < 163; i++) {
+                if (i < 158 || i > 159) ear+= gene[i] % 2 == 0 ? 1 : -1;
+            }
+            this.ear = ear>0 ? EarType.ROUND : EarType.LONG;
         }
 
         if (gene[146] == 2 && gene[147] == 2) {

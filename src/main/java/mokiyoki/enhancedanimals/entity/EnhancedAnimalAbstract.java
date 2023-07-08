@@ -1808,12 +1808,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, int textureID) {
-        textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
-        this.texturesIndexes.add(String.valueOf(textureID));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.enhancedAnimalTextures.isEmpty()) {

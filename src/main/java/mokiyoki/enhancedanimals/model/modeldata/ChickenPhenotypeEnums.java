@@ -41,6 +41,12 @@ public enum Comb {
     }
 }
 
+public enum EarType {
+    ROUND,
+    LONG,
+    NONE;
+}
+
 public enum Beard {
     BIG_BEARD,
     SMALL_BEARD,

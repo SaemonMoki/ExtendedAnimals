@@ -205,7 +205,11 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 }
             }
         } else if (block instanceof SweetBerryBushBlock) {
-            world.setBlock(blockpos, blockstate.setValue(SweetBerryBushBlock.AGE, integer - 1), 2);
+            if (integer>0) {
+                world.setBlock(blockpos, blockstate.setValue(SweetBerryBushBlock.AGE, integer - 1), 2);
+            } else {
+                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 2);
+            }
         } else if (block instanceof BushBlock) {
             if (block instanceof FlowerBlock) {
                 if (block == Blocks.ALLIUM) {

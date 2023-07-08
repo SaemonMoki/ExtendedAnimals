@@ -266,7 +266,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = this.random.nextInt(this.random.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
+        this.timeUntilNextEgg = (int) (this.random.nextInt(this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get()); //TODO make some genes to alter these numbers
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
@@ -515,7 +515,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
-                this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
+                this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
             }
         }
     }
@@ -544,7 +544,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
             }
             this.spawnAtLocation(eggItem, 1);
-            this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
+            this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
         }
     }
 

@@ -539,39 +539,32 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
         if (maxcoat == 1){
-            if (timeForGrowth >= 48000) {
-                timeForGrowth = 0;
-                if (maxcoat > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
-                }
+            if (timeForGrowth >= 48000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+                resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 2){
-            if (timeForGrowth >= 24000) {
-                timeForGrowth = 0;
-                if (maxcoat > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
-                }
+            if (timeForGrowth >= 24000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+                resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 3){
-            if (timeForGrowth >= 16000) {
-                timeForGrowth = 0;
-                if (maxcoat > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
-                }
+            if (timeForGrowth >= 16000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+                resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 4){
-            if (timeForGrowth >= 12000) {
-                timeForGrowth = 0;
-                if (maxcoat > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
-                }
+            if (timeForGrowth >= 12000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+                resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }
     }
+
+    private void resetTimeForGrowthAndCheckCoatGrowth(int maxcoat) {
+        timeForGrowth = 0;
+        if (maxcoat > currentCoatLength) {
+            currentCoatLength++;
+            setCoatLength(currentCoatLength);
+        }
+    }
+
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);

@@ -1218,10 +1218,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Comb
              */
-            if (chicken.isCombed()){
+            if (chicken.isCombed() && chickenModelData.growthAmount>0.25F){
                 this.theComb.show();
-
-//                mapOfScale.put("bComb", ModelHelper.createScalings(0.5F, 0.1F, 0.1F, 0.0F, -0.1F, -1.7F));
 
                 if (chicken.waddleSize >= 2) {
                     if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
@@ -1355,8 +1353,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
             }
 
-            if (!chicken.rumpless && this.chickenModelData.growthAmount > 0.15F) {
+            if (!chicken.rumpless) {
                 this.theSaddle.show();
+                this.theTailCoverts.show(this.chickenModelData.growthAmount>0.25F);
+                this.theTail.show(this.chickenModelData.growthAmount>0.4F);
             } else {
                 this.theSaddle.hide();
             }
@@ -1722,12 +1722,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private void headLookingAnimation(float netHeadYaw, float headPitch, float bodyAngle) {
         float xRot = (headPitch * 0.017453292F)*0.5F;
         float yRot = (netHeadYaw * 0.017453292F)*0.5F;
-        this.theHead.setXRot(xRot);
-        this.theHead.setYRot(yRot);
-        this.theNeck.setXRot(xRot - bodyAngle);
-        this.theNeck.setYRot(yRot);
-//        this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -5.0F));
-//        this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -2.75F));
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), xRot));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), yRot));
+        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), xRot - bodyAngle));
+        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), yRot));
+        this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -2.5F));
+        this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -3.5F));
     }
 
     private void moveHeadAnimation(float h, float bodyAngle) {
@@ -1737,16 +1737,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             if (h+bodyAngle < Mth.HALF_PI * 0.5F) {
                 this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
             }
-//            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -5.0F));
-//            this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -2.75F));
+            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -2.5F));
+            this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -3.5F));
         } else {
             this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), -bodyAngle));
             this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
+            this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         }
     }
 
     private boolean grazingAnimation(float ticks) {
         this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         if (ticks < 50) {
             this.theLegLeft.setXRot(this.lerpTo(this.theLegLeft.getXRot(), 0.0F));
             this.theLegRight.setXRot(this.lerpTo(this.theLegRight.getXRot(), 0.0F));
@@ -1792,6 +1794,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private void standUpAnimation(float bodyAngle) {
         this.theBody.setY(this.lerpTo(this.theBody.getY(),2.0F));
         this.theBody.setXRot(this.lerpTo(this.theBody.getXRot(), bodyAngle));
+        this.bloomersLeft.setY(this.lerpTo(this.bloomersLeft.getY(), 0.0F));
     }
 
     private void layDownAnimation(float height, boolean asleep) {
@@ -1807,12 +1810,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
             if (Math.abs(this.theNeck.getYRot()) > Mth.HALF_PI) {
                 this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI));
-//                this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -3.75F));
+                this.theNeck.setZ(this.lerpTo(this.theNeck.getZ(), -3.75F));
             }
-//            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -7.01F));
+            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -6.01F));
         }
         this.theBody.setY(this.lerpTo(this.theBody.getY(), height));
         this.theBody.setXRot(this.lerpTo(this.theBody.getXRot(), 0.0F));
+        this.bloomersLeft.setY(this.lerpTo(this.bloomersLeft.getY(), (height + 2.0F)*0.25F));
         standingLegsAnimation();
     }
 

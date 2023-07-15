@@ -31,7 +31,6 @@ public class TexturingUtils {
             NativeImage image = NativeImage.read(iresource.getInputStream());
             if (image.getWidth() != x || image.getHeight() != y) {
                 NativeImage image1 = new NativeImage(x, y, true);
-                image1.downloadTexture(0, true);
                 int xb = image.getWidth();
                 int yb = image.getHeight();
                 if (xb >= x && yb >= y) {

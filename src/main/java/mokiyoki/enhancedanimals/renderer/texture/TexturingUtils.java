@@ -363,6 +363,31 @@ public class TexturingUtils {
         }
     }
 
+    private static void shadeFeather(NativeImage baseImage) {
+        int x = baseImage.getWidth();
+        int y = baseImage.getHeight();
+        int x2 = 0;
+        int y2 = 0;
+        for (int i=0;i < baseImage.getWidth(); i++) {
+            for (int j = 0; j < baseImage.getHeight(); j++) {
+                if (baseImage.getPixelRGBA(i, j) != 0) {
+                    if (x > i) x = i;
+                    if (y < j) y = j;
+                    if (x2 < i) x2 = i;
+                    if (y2 < j) y2 = j;
+                }
+            }
+        }
+
+
+
+        // arc_width = distance between start and end point of the feather
+        // arc_height = arc_width ??? arc_height
+        // radius = (arc_height/2) + (pow(arc_width,2)/(8*arc_height))
+        // ??? profit
+
+    }
+
     protected static int[][] getFeatherColour(NativeImage baseImage) {
         int[][] featherColour = new int[128][25];
         for (int y = 0; y < 25; y++) {

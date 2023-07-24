@@ -572,11 +572,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public void playAmbientSound() {
-        if (!this.getOrSetIsFemale() && this.soundOffset <= 0) {
+        if (!this.getOrSetIsFemale() && this.growthAmount()==1.0F && this.soundOffset <= 0) {
             this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
             this.soundOffset = this.random.nextInt(10);
         } else {
-            if (this.soundOffset>0) this.soundOffset--;
+            if (this.soundOffset>0 && !this.sleeping) this.soundOffset--;
             super.playAmbientSound();
         }
     }
@@ -690,26 +690,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             //darkens egg if already brown shade
             if (genes[68] == 1 || genes[69] == 1) {
                 if (eggColour != 0) {
-                    shade = +1;
+                    shade +=1;
                 }
             }
 
             if (genes[172] == 2 || genes[173] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade +=1;
             }
 
             if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade +=1;
             }
 
             if (genes[176] == 3 || genes[177] == 3) {
                 //darkens egg by 1
-                shade = +1;
+                shade += 1;
             } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade += 1;
             }
 
             if (genes[178] == 2 || genes[179] == 2) {
@@ -724,7 +724,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (markings == 1) {
                     markings = 2;
                 } else {
-                    shade = +1;
+                    shade += 1;
                 }
             }
 
@@ -732,7 +732,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (markings == 1) {
                     markings = 3;
                 } else if (markings == 2) {
-                    shade = +1;
+                    shade += 1;
                 }
             }
 
@@ -793,7 +793,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public String getTexture() {
         if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
-        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
+        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.25F)) {
             this.reload = false;
             this.reloadTextures();
         }

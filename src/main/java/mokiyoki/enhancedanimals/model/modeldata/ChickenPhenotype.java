@@ -9,6 +9,8 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.FootFeathe
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class ChickenPhenotype implements Phenotype {
     public Crested crestType = Crested.NONE;
     public FootFeathers footFeatherType = FootFeathers.NONE;
@@ -32,9 +34,14 @@ public class ChickenPhenotype implements Phenotype {
     public float wingPlacement = -5.5F;
     public float wingAngle = 0;
     public float bodyAngle;
-    public float tailAngle = 0;
+    public float bodyY;
+    public float bodyZ;
+    public float tailAngle;
     public float height;
     private boolean silkie;
+
+    public float fluffiness;
+    public float meatiness;
 
     public ChickenPhenotype(Genes genes, boolean isFemale) {
         int[] gene = genes.getAutosomalGenes();
@@ -300,10 +307,13 @@ public class ChickenPhenotype implements Phenotype {
         float bodyAngle = 0.0F;
         for (int i = 186; i < 196; i+=2) {
             if (gene[i] == 2 && gene[i+1] == 2) {
-                bodyAngle -= 0.1F;
+                bodyAngle -= 0.3F;
             }
         }
+
         this.bodyAngle = bodyAngle;
+        this.bodyY = bodyAngle * 2.9F;
+        this.bodyZ = bodyAngle;
 
         if (this.creeper) {
             this.height = this.hasLongLegs() ? 18.5F : 19.5F;
@@ -312,6 +322,14 @@ public class ChickenPhenotype implements Phenotype {
         }
 
         this.silkie = gene[106] == 1 || gene[107] == 1;
+
+        //fluffiness
+        this.fluffiness = ThreadLocalRandom.current().nextFloat() * 2.0F;
+
+        //meatiness
+        this.meatiness = ThreadLocalRandom.current().nextFloat();
+
+        this.tailAngle = ThreadLocalRandom.current().nextFloat();
     }
 
     public boolean isBearded() {

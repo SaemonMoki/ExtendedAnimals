@@ -379,8 +379,6 @@ public class TexturingUtils {
             }
         }
 
-
-
         // arc_width = distance between start and end point of the feather
         // arc_height = arc_width ??? arc_height
         // radius = (arc_height/2) + (pow(arc_width,2)/(8*arc_height))

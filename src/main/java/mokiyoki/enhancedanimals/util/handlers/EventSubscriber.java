@@ -303,10 +303,13 @@ public class EventSubscriber {
                                         enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
                                     }
                                     enhancedChicken.setChickenJockey(true);
-//                                    enhancedChicken.scheduleDespawn();
                                     for (Entity rider : riders) {
                                         rider.startRiding(enhancedChicken);
                                     }
+                                }
+                                entity.remove(Entity.RemovalReason.DISCARDED);
+                            } else {
+                                if (!entity.hasCustomName()) {
                                     entity.remove(Entity.RemovalReason.DISCARDED);
                                 }
                             }

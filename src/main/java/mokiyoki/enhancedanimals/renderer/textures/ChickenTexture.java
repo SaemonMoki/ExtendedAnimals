@@ -844,8 +844,9 @@ public class ChickenTexture {
         chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/feathers.png");
 
             if (!tailType.isEmpty()) {
+                boolean tail = ThreadLocalRandom.current().nextBoolean();
             for (int i = 0; i <= 6; i++) {
-                chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/0/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+(tail?"orpington":"0")+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
             }
 //            chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tail_" + tailType + ".png", tailType);
 //            if (!tailSickle.isEmpty()) {
@@ -1078,7 +1079,7 @@ public class ChickenTexture {
         if (gene[36]== 2 && gene[37]==2) {
             //Lavender
             patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F))*0.25F;
-            patternValue += (1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation,0.5F))));
+            patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation,0.5F)))));
             iridescenceAlpha = 0.0F;
         }
 
@@ -1155,7 +1156,7 @@ public class ChickenTexture {
             int g = colour >> 8 & 255;
             int b = colour & 255;
 
-            b -= (b * 0.2F);
+            b -= (int) (b * 0.2F);
 
             colour = r << 16 | g << 8 | b;
         }

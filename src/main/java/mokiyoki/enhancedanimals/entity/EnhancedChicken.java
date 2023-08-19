@@ -835,29 +835,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getEnhancedAnimalAge();
-        int bodyType;
+        int bodyType = 0;
         int meatSize;
         int featherCount = random.nextInt(4+looting)-1;
 
         if (genes[146] == 2 && genes[147] == 2) {
-            if (genes[148] == 2 && genes[149] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
+            if (genes[148] != 2 || genes[149] != 2) {
                 //big body
                 bodyType = 1;
             }
         } else if (genes[148] == 2 && genes[149] == 2) {
-            if (genes[146] == 2 || genes[147] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
+            if (genes[146] != 2 && genes[147] != 2) {
                 //small body
                 bodyType = -1;
             }
-        } else {
-            //normal body
-            bodyType = 0;
         }
 
         if (age < 60000) {

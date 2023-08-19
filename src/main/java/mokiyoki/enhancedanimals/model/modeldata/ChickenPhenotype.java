@@ -33,13 +33,13 @@ public class ChickenPhenotype implements Phenotype {
     public int wingSize;
     public float wingPlacement = -5.5F;
     public float wingAngle = 0;
+    public float neckAngle;
     public float bodyAngle;
     public float bodyY;
     public float bodyZ;
     public float tailAngle;
     public float height;
     private boolean silkie;
-
     public float fluffiness;
     public float meatiness;
 
@@ -311,9 +311,13 @@ public class ChickenPhenotype implements Phenotype {
             }
         }
 
+        bodyAngle = -1.5F;
+
         this.bodyAngle = bodyAngle;
         this.bodyY = bodyAngle * 2.9F;
         this.bodyZ = bodyAngle;
+
+        this.neckAngle = 1.0F;
 
         if (this.creeper) {
             this.height = this.hasLongLegs() ? 18.5F : 19.5F;
@@ -323,11 +327,20 @@ public class ChickenPhenotype implements Phenotype {
 
         this.silkie = gene[106] == 1 || gene[107] == 1;
 
-        //fluffiness
         this.fluffiness = ThreadLocalRandom.current().nextFloat() * 2.0F;
 
-        //meatiness
-        this.meatiness = ThreadLocalRandom.current().nextFloat();
+        this.meatiness = 0.5F;
+        if (gene[146] == 2 && gene[147] == 2) {
+            if (gene[148] != 2 || gene[149] != 2) {
+                //big body
+                this.meatiness = 1.0F;
+            }
+        } else if (gene[148] == 2 && gene[149] == 2) {
+            if (gene[146] != 2 && gene[147] != 2) {
+                //small body
+                this.meatiness = 0.0F;
+            }
+        }
 
         this.tailAngle = ThreadLocalRandom.current().nextFloat();
     }

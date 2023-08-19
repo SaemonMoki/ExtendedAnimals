@@ -1,0 +1,6 @@
+{
+  "parent": "eanimod:block/chicken_nest/egg_5",
+  "textures": {
+    "texture": "eanimod:block/chicken_nest/spot_egg"
+  }
+}

@@ -43,24 +43,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLPaths;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoMode.BACKGROUND;
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoMode.RGB;
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoMode.TRANSPARENCY;
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoPose.STANDARD_POSE;
-import static net.minecraftforge.client.gui.GuiUtils.drawTexturedModalRect;
 
 @OnlyIn(Dist.CLIENT)
 public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimalContainer> {
@@ -86,12 +80,28 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     int selectedBackground = 0;
     int maxBackgrounds = 0;
 
-    int currentBackgroundColour = -16777216;
-    int xRot = 0;
-    int yRot = 0;
+    boolean previousSelectionWasFile = false;
+
+    boolean prepareForTransparentScreenshot = false;
+
+    int currentBackgroundColour = -16777216; // default as black
+    int greenScreenColour = -16711936;
+    int transparentColour = 0;
+
+    double xPos = 0;
+    int yPos = 0;
+
+    boolean dragCamera = false;
+    float dragOriginX = 0.0f;
+    float dragOriginY = 0.0f;
+    float dragOffsetX = 0.0f;
+    float dragOffsetY = 0.0f;
 
     int photoWidth = 302;
     int photoHeight = 166;
+
+    int backgroundWidth = 0;
+    int backgroundHeight = 0;
 
     PhotoMode currentMode = RGB;
 
@@ -121,7 +131,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
 
         public int getY() {
-            return x;
+            return y;
         }
     }
 
@@ -161,6 +171,17 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
             RenderSystem.setShaderTexture(0, PHOTO_MODE_GUI_TEXTURE);
 
+            //Take Photo Button
+            this.blit(matrixStack, photoI+26, photoJ+40, 0, 335, 112, 28, 31, 384, 256);
+
+            //Direction Buttons
+            this.blit(matrixStack, photoI+304, photoJ+236, 0, 323, 168, 18, 18, 384, 256); //left
+            this.blit(matrixStack, photoI+322, photoJ+218, 0, 342, 149, 18, 18, 384, 256); //up
+            this.blit(matrixStack, photoI+340, photoJ+236, 0, 361, 168, 18, 18, 384, 256); //right
+            this.blit(matrixStack, photoI+322, photoJ+254, 0, 342, 187, 18, 18, 384, 256); //down
+            this.blit(matrixStack, photoI+325, photoJ+239, 0, 345, 171, 12, 12, 384, 256); //middle
+
+            //highlight tab
             if (this.currentMode == RGB ) {
                 //Background Button
                 this.blit(matrixStack, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
@@ -182,12 +203,51 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
                 RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-                drawTexturedModalRect(matrixStack,(width - photoWidth) / 2, (height - photoHeight) / 2, 0, 0, photoWidth, photoHeight, 0);
+
+                // Start drawing the image at position (x, y) and stretch it to 300x200
+                int x = (width - photoWidth) / 2;
+                int y = (height - photoHeight) / 2;
+                drawScaledImage(x, y, 1, 1);
+
+            } else if (this.currentMode == TRANSPARENCY) {
+                //Background Button
+                this.blit(matrixStack, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
+                //RGB Button
+                this.blit(matrixStack, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
+                //Transparency Button
+                this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
+                if (this.prepareForTransparentScreenshot) {
+                    int tempColourHolder = this.currentBackgroundColour;
+                    this.currentBackgroundColour = this.greenScreenColour;
+                    renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
+                    this.currentBackgroundColour = tempColourHolder;
+                }
             }
 
-
             renderEntityPhotoMode(photoI + 170, photoJ + 200, 70, (float)(photoI + currentPose.x), (float)(photoJ + currentPose.y), this.menu.getAnimal());
+
+            if (this.prepareForTransparentScreenshot) {
+                screenshotAnimal((animalScreenshotComponent) -> {
+                    this.minecraft.execute(() -> {
+                        this.minecraft.gui.getChat().addMessage(animalScreenshotComponent);
+                    });
+                });
+                this.prepareForTransparentScreenshot = false;
+            }
         }
+    }
+
+    private void drawScaledImage(int x, int y, float scaleX, float scaleY) {
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
+        buffer.vertex(x, y + photoHeight, 0).uv(0, scaleY).endVertex();
+        buffer.vertex(x + photoWidth, y + photoHeight, 0).uv(scaleX, scaleY).endVertex();
+        buffer.vertex(x + photoWidth, y, 0).uv(scaleX, 0).endVertex();
+        buffer.vertex(x, y, 0).uv(0, 0).endVertex();
+
+        tesselator.end();
     }
 
     public void renderCameraBackground(PoseStack matrixStack, int startX, int startY, int p_93147_, float p_93148_, float p_93149_, int width, int height, int textureXWidth, int textureYWidth) {
@@ -336,6 +396,24 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
 
         if (this.photoModeEnabled) {
+            //Take screenshot
+            d0 = p_mouseClicked_1_ - (double) (i - 33);
+            d1 = p_mouseClicked_3_ - (double) (j - 24);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 23.0D) {
+                if (this.currentMode == TRANSPARENCY) {
+                    this.prepareForTransparentScreenshot = true;
+                    return true;
+                }
+
+                screenshotAnimal((animalScreenshotComponent) -> {
+                    this.minecraft.execute(() -> {
+                        this.minecraft.gui.getChat().addMessage(animalScreenshotComponent);
+                    });
+                });
+                return true;
+            }
+
+            //Modes
             d0 = p_mouseClicked_1_ - (double) (i - 106);
             d1 = p_mouseClicked_3_ - (double) (j + 12);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 23.0D) {
@@ -354,12 +432,82 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
 
             d0 = p_mouseClicked_1_ - (double) (i - 106);
-            d1 = p_mouseClicked_3_ - (double) (j - 83);
+            d1 = p_mouseClicked_3_ - (double) (j + 83);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 23.0D) {
                 this.currentMode = TRANSPARENCY;
                 this.selectedBackground = 0;
                 return true;
             }
+            //-------------
+
+            //Mode Functions
+
+            //Background arrows
+            if (this.currentMode == BACKGROUND) {
+                //Left Arrow
+                d0 = p_mouseClicked_1_ - (double) (i - 77.5);
+                d1 = p_mouseClicked_3_ - (double) (j + 24.5);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 4.3D && d1 < 5.5D) {
+                    if (this.selectedBackground > 0) {
+                        this.selectedBackground -= 1;
+                        initialiseBackgrounds();
+                    }
+                    return true;
+                }
+                //Right Arrow
+                d0 = p_mouseClicked_1_ - (double) (i - 71);
+                d1 = p_mouseClicked_3_ - (double) (j + 24.5);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 4.0D && d1 < 5.5D) {
+                    if (this.selectedBackground < this.maxBackgrounds) {
+                        this.selectedBackground += 1;
+                        initialiseBackgrounds();
+                    }
+                    return true;
+                }
+            }
+
+            //Angle Rotation Arrows
+            //Left Arrow
+            d0 = p_mouseClicked_1_ - (double) (i + 243);
+            d1 = p_mouseClicked_3_ - (double) (j + 171);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 15.5D && d1 < 15.5D) {
+                xPos -= 1;
+                return true;
+            }
+
+            //Right Arrow
+            d0 = p_mouseClicked_1_ - (double) (i + 278);
+            d1 = p_mouseClicked_3_ - (double) (j + 171);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 15.5D && d1 < 15.5D) {
+                xPos += 1;
+                return true;
+            }
+
+            //Up Arrow
+            d0 = p_mouseClicked_1_ - (double) (i + 260);
+            d1 = p_mouseClicked_3_ - (double) (j + 151);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 15.5D && d1 < 15.5D) {
+                yPos -= 1;
+                return true;
+            }
+
+            //Down Arrow
+            d0 = p_mouseClicked_1_ - (double) (i + 260);
+            d1 = p_mouseClicked_3_ - (double) (j + 191);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 15.5D && d1 < 15.5D) {
+                yPos += 1;
+                return true;
+            }
+
+            //Centre Reset
+            d0 = p_mouseClicked_1_ - (double) (i + 263);
+            d1 = p_mouseClicked_3_ - (double) (j + 171);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 10.5D && d1 < 10.5D) {
+                xPos = 0;
+                yPos = 0;
+                return true;
+            }
+
         }
 
         if (!this.photoModeEnabled) {
@@ -374,32 +522,95 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
         }
 
+        this.dragCamera = true;
+        this.dragOriginX = (float)p_mouseClicked_1_;
+        this.dragOriginY = (float)p_mouseClicked_3_;
+
 
         return super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
     }
 
+    public boolean mouseReleased(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+        if (p_mouseClicked_5_ == 0) {
+            this.dragCamera = false;
+        }
+
+        return super.mouseReleased(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+    }
+
+    public boolean mouseDragged(double p_98535_, double p_98536_, int p_98537_, double p_98538_, double p_98539_) {
+        if (this.dragCamera) {
+            this.dragOffsetX = -(this.dragOriginX-((float)p_98535_));
+            this.dragOffsetY = (this.dragOriginY-((float)p_98536_));
+            return true;
+        } else {
+            return super.mouseDragged(p_98535_, p_98536_, p_98537_, p_98538_, p_98539_);
+        }
+    }
+
     private void initialiseBackgrounds() {
         File configDirectory = new File(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + "photo_backgrounds");
+
         if (configDirectory.exists() || configDirectory.mkdirs()) {
             File[] files = configDirectory.listFiles();
 
             if (files != null) {
+                List<Object> combinedList = new ArrayList<>();
                 List<File> fileList = Arrays.asList(files);
-                fileList.sort(Comparator.comparing(File::getName));
+//                fileList.sort(Comparator.comparing(File::getName));
 
-                this.maxBackgrounds = fileList.size();
+                combinedList.addAll(fileList);
 
                 try {
-                    File selectedImage = fileList.get(this.selectedBackground);
+                    Collection<ResourceLocation> backgroundResources = Minecraft.getInstance().getResourceManager().listResources("textures/gui/photo_backgrounds", (pic) -> {
+                        String[] possibleSuffixes = { ".jpeg", ".jpg", ".png" };
+                        return Arrays.stream(possibleSuffixes)
+                                .anyMatch(pic::endsWith);
+                    });
 
-                    Minecraft.getInstance().getTextureManager().release(BACKGROUND_TEXTURE);
+                    combinedList.addAll(backgroundResources);
 
-                    InputStream inputStream = Files.newInputStream(selectedImage.toPath());
+                    this.maxBackgrounds = combinedList.size()-1;
 
-                    NativeImage nativeImage = NativeImage.read(inputStream);
+                    combinedList.sort(Comparator.comparing(o -> {
+                        if (o instanceof File) {
+                            return ((File) o).getName();
+                        } else if (o instanceof ResourceLocation) {
+                            return ((ResourceLocation) o).getPath();
+                        }
+                        return "";
+                    }));
 
-                    DynamicTexture dynamicTexture = new DynamicTexture(nativeImage);
-                    BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(selectedImage.getName(), dynamicTexture);
+
+                    Object selectedImage = combinedList.get(this.selectedBackground);
+
+                    if (previousSelectionWasFile) {
+                        //This is to unload the file from memory rather than keeping it loaded and re-registering it everytime
+                        Minecraft.getInstance().getTextureManager().release(BACKGROUND_TEXTURE);
+                    }
+
+                    if (selectedImage instanceof File) {
+                        previousSelectionWasFile = true;
+                        InputStream inputStream = Files.newInputStream(((File)selectedImage).toPath());
+
+                        NativeImage nativeImage = NativeImage.read(inputStream);
+
+                        this.backgroundWidth = nativeImage.getWidth();
+                        this.backgroundHeight = nativeImage.getHeight();
+
+                        DynamicTexture dynamicTexture = new DynamicTexture(nativeImage);
+                        BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(((File)selectedImage).getName(), dynamicTexture);
+
+                    } else if (selectedImage instanceof ResourceLocation) {
+                        previousSelectionWasFile = false;
+                        BACKGROUND_TEXTURE = (ResourceLocation) selectedImage;
+                        NativeImage resourceBackgroundAsNative = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(BACKGROUND_TEXTURE) .getInputStream());
+
+                        this.backgroundWidth = resourceBackgroundAsNative.getWidth();
+                        this.backgroundHeight = resourceBackgroundAsNative.getHeight();
+                    }
+
+
                 } catch (Exception e) {
                 }
 
@@ -409,7 +620,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
     }
 
-    private void screenshotAnimal() {
+    private void screenshotAnimal(Consumer<Component> uiMessage) {
         NativeImage nativeimage = takeScreenshot(this.minecraft.getMainRenderTarget());
 
         File file1 = new File(this.minecraft.gameDirectory, "screenshots");
@@ -418,7 +629,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
         net.minecraftforge.client.event.ScreenshotEvent event = net.minecraftforge.client.ForgeHooksClient.onScreenshot(nativeimage, file2);
         if (event.isCanceled()) {
-//            p_92311_.accept(event.getCancelMessage());
+            uiMessage.accept(event.getCancelMessage());
             return;
         }
         final File target = event.getScreenshotFile();
@@ -429,19 +640,17 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 Component component = (new TextComponent(file2.getName())).withStyle(ChatFormatting.UNDERLINE).withStyle((p_168608_) -> {
                     return p_168608_.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, target.getAbsolutePath()));
                 });
-//                if (event.getResultMessage() != null)
-//                    p_92311_.accept(event.getResultMessage());
-//                else
-//                    p_92311_.accept(new TranslatableComponent("screenshot.success", component));
+                if (event.getResultMessage() != null)
+                    uiMessage.accept(event.getResultMessage());
+                else
+                    uiMessage.accept(new TranslatableComponent("screenshot.success", component));
             } catch (Exception exception) {
                 System.out.print("Couldn't save screenshot: " + (Throwable)exception);
-//                p_92311_.accept(new TranslatableComponent("screenshot.failure", exception.getMessage()));
+                uiMessage.accept(new TranslatableComponent("screenshot.failure", exception.getMessage()));
             } finally {
                 nativeimage.close();
             }
-
         });
-
     }
 
     public NativeImage takeScreenshot(RenderTarget renderTarget) {
@@ -462,7 +671,12 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
         for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
             for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
-                selectedPhotoArea.setPixelRGBA(j, i, wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset());
+                int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
+                if (this.currentMode == TRANSPARENCY && pixel == greenScreenColour) {
+                    selectedPhotoArea.setPixelRGBA(j, i, transparentColour);
+                } else {
+                    selectedPhotoArea.setPixelRGBA(j, i, pixel);
+                }
             }
         }
         return selectedPhotoArea;
@@ -802,20 +1016,22 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
     }
 
-    public static void renderEntityPhotoMode(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity entity) {
+    public void renderEntityPhotoMode(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity entity) {
         float f = (float)Math.atan((facingDirectionX / 40.0F));
         float f1 = (float)Math.atan((facingDirectionY / 40.0F));
         PoseStack posestack = RenderSystem.getModelViewStack();
         posestack.pushPose();
-        posestack.translate(xPos, yPose, 1050.0D);
+        posestack.translate(xPos+ this.xPos, yPose+ yPos, 1050.0D);
         posestack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
         PoseStack posestack1 = new PoseStack();
         posestack1.translate(0.0D, 0.0D, 1000.0D);
         posestack1.scale((float)scale, (float)scale, (float)scale);
         Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
-        Quaternion quaternion1 = Vector3f.XP.rotationDegrees(f1 * 20.0F);
+        Quaternion quaternion1 = Vector3f.XP.rotationDegrees(f1 * 20.0F + dragOffsetY);
+        Quaternion quaternion2 = Vector3f.YP.rotationDegrees(f1 * 20.0F + dragOffsetX);
         quaternion.mul(quaternion1);
+        quaternion.mul(quaternion2);
         posestack1.mulPose(quaternion);
         float originalYBodyRot = entity.yBodyRot;
         float originalYRot = entity.getYRot();

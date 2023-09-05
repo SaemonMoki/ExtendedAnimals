@@ -4,7 +4,7 @@ package mokiyoki.enhancedanimals.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
-import mokiyoki.enhancedanimals.util.tileentity.EggCartonTileEntity;
+import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;

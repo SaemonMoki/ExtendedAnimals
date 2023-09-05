@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.util.tileentity;
+package mokiyoki.enhancedanimals.tileentity;
 
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
@@ -223,12 +223,10 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
         if (id == 1) {
             this.openCount = type;
             if (type == 0) {
-//                this.animationStatus = ShulkerBoxTileEntity.AnimationStatus.CLOSING;
                 this.doNeighborUpdates();
             }
 
             if (type == 1) {
-//                this.animationStatus = ShulkerBoxTileEntity.AnimationStatus.OPENING;
                 this.doNeighborUpdates();
             }
 

@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
-import mokiyoki.enhancedanimals.util.tileentity.EggCartonTileEntity;
+import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;

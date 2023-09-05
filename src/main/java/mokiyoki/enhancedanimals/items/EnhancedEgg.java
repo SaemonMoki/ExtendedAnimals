@@ -22,7 +22,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  */
 public class EnhancedEgg extends Item {
 
-    public EnhancedEgg(Properties properties) { super(properties); }
+    private final int colour;
+
+    public EnhancedEgg(Properties properties, int colour) {
+        super(properties);
+        this.colour = colour;
+    }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand){
         ItemStack itemstack = player.getItemInHand(hand);
@@ -66,5 +71,9 @@ public class EnhancedEgg extends Item {
     public boolean getHasParents(ItemStack stack) {
         CompoundTag compoundnbt = stack.getTagElement("display");
         return compoundnbt != null && compoundnbt.contains("hasParents", 99) && compoundnbt.getBoolean("hasParents");
+    }
+
+    public int getColour() {
+        return this.colour;
     }
 }

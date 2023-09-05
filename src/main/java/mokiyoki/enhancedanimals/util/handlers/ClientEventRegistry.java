@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
-import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -15,6 +14,7 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.model.ModelEnhancedRabbit;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
+import mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
 import mokiyoki.enhancedanimals.renderer.ModelLayers;
@@ -50,6 +50,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.*;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_PLAIN_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPECKLE_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPATTER_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPOT_TEXTURE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
@@ -62,6 +67,10 @@ public class ClientEventRegistry {
     public static void onStitchEvent(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(EGG_CARTON_TEXTURE);
+            event.addSprite(EGG_PLAIN_TEXTURE);
+            event.addSprite(EGG_SPECKLE_TEXTURE);
+            event.addSprite(EGG_SPATTER_TEXTURE);
+            event.addSprite(EGG_SPOT_TEXTURE);
         }
     }
 
@@ -73,7 +82,6 @@ public class ClientEventRegistry {
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHICKEN_NEST.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ALLIUM.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET.get(), RenderType.cutout());
@@ -93,6 +101,7 @@ public class ClientEventRegistry {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_JUNGLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_OAK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_SPRUCE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHICKEN_NEST.get(), RenderType.cutout());
     }
 
     @SubscribeEvent
@@ -147,6 +156,7 @@ public class ClientEventRegistry {
         event.registerEntityRenderer(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntityRenderer::new);
+        event.registerBlockEntityRenderer(CHICKEN_NEST_TILE_ENTITY.get(), ChickenNestTileEntityRenderer::new);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -164,6 +174,7 @@ public class ClientEventRegistry {
         event.registerLayerDefinition(RenderEnhancedLlama.LLAMA_LAYER, ModelEnhancedLlama::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedTurtle.TURTLE_LAYER, ModelEnhancedTurtle::createBodyLayer);
         event.registerLayerDefinition(EggCartonTileEntityRenderer.EGG_CARTON, EggCartonTileEntityRenderer::createBodyLayer);
+        event.registerLayerDefinition(ChickenNestTileEntityRenderer.CHICKEN_NEST, ChickenNestTileEntityRenderer::createBodyLayer);
         event.registerLayerDefinition(ModelLayers.AXOLOTL_BUCKET_LAYER, EnhancedAxolotlBucketModel::createLayer);
     }
 

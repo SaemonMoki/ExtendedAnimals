@@ -17,18 +17,22 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModSounds;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -84,6 +88,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final EntityDataAccessor<Boolean> ROOSTING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> BROODING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> NEST_POS = SynchedEntityData.defineId(EnhancedChicken.class, EntityDataSerializers.BLOCK_POS);
+
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -243,21 +250,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 "ear_mottledmoorish1.png", "ear_mottledmoorish2.png", "ear_mottledmoorish3.png", "ear_mottledmoorish4.png", "ear_mottledmoorish5.png", "ear_mottledmoorish6.png", "ear_mottledmoorish7.png", "ear_mottledmoorish8.png", "ear_mottledmoorish9.png", "ear_mottledmoorish10.png",
 
     };
-    private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
-        "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
-    };
 
     private int soundOffset = -1;
-
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
     public float oFlap;
     private float wingRotDelta = 1.0F;
     private int timeUntilNextEgg;
+    private float currentNestScore;
     protected GrazingGoal grazingGoal;
-
-    private String dropMeatType;
     public boolean chickenJockey;
 
     @OnlyIn(Dist.CLIENT)
@@ -358,6 +360,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(ROOSTING, Boolean.FALSE);
+        this.entityData.define(BROODING, Boolean.FALSE);
+        this.entityData.define(NEST_POS, BlockPos.ZERO);
     }
 
     public void scheduleDespawn(int ticksToWait) {
@@ -389,6 +393,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     }
+
+    protected int eggLayingTime() { return (int)(6000*EanimodCommonConfig.COMMON.eggMultiplier.get());}
 
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
@@ -431,6 +437,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     public void setRoosting(boolean isRoosting) {
         this.entityData.set(ROOSTING, isRoosting);
+    }
+
+    public boolean isBrooding() {
+        return this.entityData.get(BROODING);
+    }
+
+    public void setBrooding(boolean isBrooding) {
+        this.entityData.set(BROODING, isBrooding);
+    }
+
+    public void setNest(BlockPos position) {
+        this.entityData.set(NEST_POS, position);
+    }
+
+    private BlockPos getNest() {
+        return this.entityData.get(NEST_POS);
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
@@ -515,14 +537,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
-                this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
+                this.timeUntilNextEgg = eggLayingTime();
             }
         }
     }
 
     @Override
     protected void runPregnancyTick() {
-        if (!this.isBaby() && this.timeUntilNextEgg <= 0) {
+        if (!this.isBaby() && this.timeUntilNextEgg <= 0 && !this.isAnimalSleeping()) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
@@ -543,8 +565,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     }
                 }
             }
-            this.spawnAtLocation(eggItem, 1);
-            this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
+            if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                nestEntity.addEggToNest(eggItem);
+            } else {
+                this.spawnAtLocation(eggItem, 1);
+            }
+            float eggTimeVariance = 0.1F; //TODO egg time variation genetics?
+            this.timeUntilNextEgg = (int) (eggLayingTime()*(1.0F-eggTimeVariance) + this.random.nextInt((int) (eggLayingTime()*(eggTimeVariance*2))));
         }
     }
 
@@ -884,14 +911,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKSMALL.get(), 1 + looting);
                     }
                 } else if (meatSize == 2) {
-                    dropMeatType = "rawchicken_darkbig";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKBIG.get(), 1 + looting);
                     }
                 } else {
-                    dropMeatType = "rawchicken_dark";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARK.get(), 1 + looting);
                     } else {
@@ -900,21 +925,18 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
             } else {
                 if (meatSize == 1) {
-                    dropMeatType = "rawchicken_palesmall";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALESMALL.get(), 1 + looting);
                     }
                 } else if (meatSize == 2) {
-                    dropMeatType = "rawchicken";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALE.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALE.get(), 1 + looting);
                     }
                 } else {
-                    dropMeatType = "rawchicken_pale";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(Items.COOKED_CHICKEN, 1 + looting);
                     }
@@ -968,6 +990,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.addAdditionalSaveData(compound);
 
         compound.putBoolean("IsChickenJockey", this.isChickenJockey());
+        compound.putFloat("NestQuality", this.currentNestScore);
 
     }
 
@@ -978,6 +1001,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.readAdditionalSaveData(compound);
 
         setChickenJockey(compound.getBoolean("IsChickenJockey"));
+        this.currentNestScore = compound.getFloat("NestQuality");
 
     }
 
@@ -1693,5 +1717,81 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.gestationTimer = 96000;
     }
 
+    public boolean isGoodNestSite(BlockPos pos) {
+        ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level.getBlockEntity(pos.above());
+        if (nestTileEntity!=null) {
+            return !nestTileEntity.isFull();
+        } else {
+            if (!this.level.isEmptyBlock(pos) && this.level.isEmptyBlock(pos.above())) {
+                int blocked = 0;
+                int notblocked = 0;
+                if (this.level.isEmptyBlock(pos.north())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.east())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.south())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.west())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.above().above())) {
+                    return blocked >= 3;
+                } else {
+                    return notblocked >= 1 && blocked >= 2;
+                }
+            }
+        }
+        return false;
+    }
+    static class LayEggGoal extends MoveToBlockGoal {
+
+        private final EnhancedChicken chicken;
+
+        LayEggGoal(EnhancedChicken chicken, double speed) {
+            super(chicken, speed, 16);
+            this.chicken = chicken;
+        }
+
+        public boolean canUse() {
+            if (chicken.getNest()==BlockPos.ZERO) return false;
+            if (!(EanimodCommonConfig.COMMON.omnigenders.get() || chicken.getOrSetIsFemale())) return false;
+            return this.chicken.timeUntilNextEgg < 800;
+        }
+
+        public boolean canContinueToUse() {
+            return chicken.getNest()!=BlockPos.ZERO && this.chicken.timeUntilNextEgg < 800;
+        }
+
+        public void tick() {
+            super.tick();
+            BlockPos blockPos = this.chicken.blockPosition();
+            if (this.isReachedTarget()) {
+                if (chicken.isGoodNestSite(blockPos)) {
+                    Level world = chicken.level;
+                    if (world.isEmptyBlock(blockPos.above())) {
+                        world.setBlock(blockPos.above(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                    }
+                } else {
+                    chicken.setNest(BlockPos.ZERO);
+                }
+            }
+        }
+
+        @Override
+        protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
+            return worldIn.isEmptyBlock(pos.above()) || worldIn.getBlockEntity(pos.above()) instanceof ChickenNestTileEntity;
+        }
+    }
 }
 

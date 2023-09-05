@@ -36,6 +36,19 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag nbt) {
+        load(nbt);
+        super.handleUpdateTag(nbt);
+    }
+
+    @Override
     public int getContainerSize() {
         return 12;
     }
@@ -66,6 +79,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     @Override
     public ItemStack removeItem(int slot, int count) {
         ItemStack stack = slot < getContainerSize() && !this.items.get(slot).isEmpty() ? this.items.get(slot).split(count) : ItemStack.EMPTY;
+        this.setChanged();
         return stack;
     }
 
@@ -101,9 +115,11 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         for (int i=0; i<getContainerSize();i++) {
             if (this.items.get(i).isEmpty()) {
                 this.items.set(i, itemStack);
+                this.setChanged();
                 return;
             }
         }
+        this.setChanged();
     }
 
 

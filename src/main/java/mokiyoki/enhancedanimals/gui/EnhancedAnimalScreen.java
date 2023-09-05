@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -42,6 +43,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.InputStream;
@@ -87,6 +89,10 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     int currentBackgroundColour = -16777216; // default as black
     int greenScreenColour = -16711936;
     int transparentColour = 0;
+
+    private EditBox rBox;
+    private EditBox gBox;
+    private EditBox bBox;
 
     double xPos = 0;
     int yPos = 0;
@@ -153,12 +159,36 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
         super.render(matrixStack, mouseX, mouseY, p_render_3_);
-        renderCameraMode(matrixStack);
+        renderCameraMode(matrixStack, mouseX, mouseY, p_render_3_);
         this.renderTooltip(matrixStack, mouseX, mouseY);
         this.renderInfoToolTip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderCameraMode(PoseStack matrixStack) {
+    protected void init() {
+        this.rBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 60, 80, 9, new TranslatableComponent("photomode.rBox"));
+        this.rBox.setMaxLength(3);
+        this.rBox.setBordered(false);
+        this.rBox.setVisible(false);
+        this.rBox.setTextColor(16777215);
+        this.addWidget(this.rBox);
+
+        this.gBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 80, 80, 9, new TranslatableComponent("photomode.gBox"));
+        this.gBox.setMaxLength(3);
+        this.gBox.setBordered(false);
+        this.gBox.setVisible(false);
+        this.gBox.setTextColor(16777215);
+        this.addWidget(this.gBox);
+
+        this.bBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 100, 80, 9, new TranslatableComponent("photomode.bBox"));
+        this.bBox.setMaxLength(3);
+        this.bBox.setBordered(false);
+        this.bBox.setVisible(false);
+        this.bBox.setTextColor(16777215);
+        this.addWidget(this.bBox);
+    }
+
+
+    private void renderCameraMode(PoseStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
         if (this.photoModeEnabled) {
             int photoI = (this.width - photoWidth) / 2;
             int photoJ = (this.height - photoWidth) / 2;
@@ -191,6 +221,21 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
                 renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
+
+                //RGB Box Backgrounds
+                this.blit(matrixStack, photoI-35, photoJ+170, 0, 0, 28, 167, 181, 384, 256);
+                this.blit(matrixStack, photoI-35, photoJ+190, 0, 0, 28, 167, 181, 384, 256);
+                this.blit(matrixStack, photoI-35, photoJ+210, 0, 0, 28, 167, 181, 384, 256);
+
+                //RGB Boxes
+                this.rBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.rBox.setFocus(true);
+                this.gBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.bBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.rBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.gBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.bBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+
             } else if (this.currentMode == BACKGROUND) {
                 //Background Button
                 this.blit(matrixStack, photoI-46, photoJ+78, 0, 335, 16, 28, 31, 384, 256);
@@ -427,6 +472,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             d1 = p_mouseClicked_3_ - (double) (j + 48);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 23.0D) {
                 this.currentMode = RGB;
+                this.rBox.setVisible(true);
+                this.gBox.setVisible(true);
+                this.bBox.setVisible(true);
                 this.selectedBackground = 0;
                 return true;
             }
@@ -687,7 +735,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         int i = 1;
 
         while(true) {
-            File file1 = new File(p_92288_, this.enhancedAnimalInfo.name + "_" + s + (i == 1 ? "" : "_" + i) + ".png");
+            File file1 = new File(p_92288_, getAnimalName() + "_" + s + (i == 1 ? "" : "_" + i) + ".png");
             if (!file1.exists()) {
                 return file1;
             }
@@ -735,56 +783,49 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
      */
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         if (!this.photoModeEnabled) {
-            Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
-            int collarSlot = getCollarSlot(retrievedInventory);
-            String name = enhancedAnimalInfo.name;
-            boolean flag = true;
-
-            if (collarSlot != 0) {
-                ItemStack collarStack = retrievedInventory.getItem(collarSlot);
-                String collarName = ((CustomizableCollar)collarStack.getItem()).getCollarName(collarStack);
-                if (!collarName.equals("")) {
-                    name = collarName;
-                    flag = false;
-                }
-            }
-
-            if (flag && name.startsWith("entity.eanimod")) {
-                name = I18n.get(name);
-            }
-
-            if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
-                String age = enhancedAnimalInfo.agePrefix;
-                if (age.equals("YOUNG")) {
-                    age = new TranslatableComponent("eanimod.animalinfocontainer.young").getString();
-                } else if (age.equals("BABY")) {
-                    age = new TranslatableComponent("eanimod.animalinfocontainer.baby").getString();
-                } else {
-                    age = new TranslatableComponent("eanimod.animalinfocontainer.newborn").getString();
-                }
-                name = age+" "+name;
-            }
-
-            if (name.length() > 20) {
-                name = name.substring(0, 20);
-            }
-
+            String name = getAnimalName();
             this.font.draw(matrixStack, name, 8.0F, (float)(this.imageHeight - 160), 4210752);
             //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
             this.font.draw(matrixStack, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752);
-
-            //(health points / max health points * 10) + "/" + "10"
-            /**
-             * hunger needs a buffer
-             */
-            //(hunger points / max hunger points * 10) + "/" + "10"
-            /**
-             * taming points are out of how much an animal can be tamed.
-             */
-            //(taming level / 10 )
-            //birth parent (the mother basically)
-            //contributing parent (the father basically)
         }
+    }
+
+    @NotNull
+    private String getAnimalName() {
+        Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
+        int collarSlot = getCollarSlot(retrievedInventory);
+        String name = enhancedAnimalInfo.name;
+        boolean flag = true;
+
+        if (collarSlot != 0) {
+            ItemStack collarStack = retrievedInventory.getItem(collarSlot);
+            String collarName = ((CustomizableCollar)collarStack.getItem()).getCollarName(collarStack);
+            if (!collarName.equals("")) {
+                name = collarName;
+                flag = false;
+            }
+        }
+
+        if (flag && name.startsWith("entity.eanimod")) {
+            name = I18n.get(name);
+        }
+
+        if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
+            String age = enhancedAnimalInfo.agePrefix;
+            if (age.equals("YOUNG")) {
+                age = new TranslatableComponent("eanimod.animalinfocontainer.young").getString();
+            } else if (age.equals("BABY")) {
+                age = new TranslatableComponent("eanimod.animalinfocontainer.baby").getString();
+            } else {
+                age = new TranslatableComponent("eanimod.animalinfocontainer.newborn").getString();
+            }
+            name = age+" "+name;
+        }
+
+        if (name.length() > 20) {
+            name = name.substring(0, 20);
+        }
+        return name;
     }
 
     @Override

@@ -27,6 +27,8 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(PigBreeds.LARGEBLACK);
         this.breeds.add(PigBreeds.PROTESTPIG);
         this.breeds.add(PigBreeds.TAMWORTH);
+        this.breeds.add(PigBreeds.MANGALITSA);
+        this.breeds.add(PigBreeds.HEREFORDPIG);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -76,28 +78,28 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[1] = (2);
         }
 
-        //Agouti [ Black Enhancer, brown, wildtype? ]
+        //Agouti [ Black Enhancer, brown, wildtype?, swallowbelly ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
+            autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             autosomalGenes[2] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
+            autosomalGenes[3] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             autosomalGenes[3] = (3);
         }
 
         //Chinchilla [ chinchilla, wildtype ]
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//        } else {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
             autosomalGenes[4] = (2);
-//        }
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        }
+        //if (ThreadLocalRandom.current().nextInt(100) > WTC) {
 //            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
 //
 //        } else {
@@ -156,7 +158,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
          */
 
-        //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3, White-Head]
+        //KIT [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(6) + 1);
             if (autosomalGenes[12]>=6) autosomalGenes[12]+=2;
@@ -176,9 +178,10 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Berkshire spots [ Wildtype+, tuxedo, berkshire, hereford ]
+        //white points [ Wildtype+, tuxedo, legacy-whitepoints, Whitehead ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(1) + 1);
+            if (autosomalGenes[14]>=3) autosomalGenes[14]+=1;
             autosomalGenes[15] = (1);
 
         } else {
@@ -186,7 +189,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[15] = (1);
         }
 
-        //White Extension [ Over marked, Medium, undermarked+ ]
+        //White Extension [ Undermarked+, medium, over marked ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -281,7 +284,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[37] = (2);
         }
 
-        //wooly [ wooly, wildtype ]
+        //wooly [ wooly, wildtype, thick wool ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -509,12 +512,72 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[78] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
         autosomalGenes[79] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
 
+        //ear size [xsmall, small, medium, large, xlarge]
         for (int i = 80; i < 120; i++) {
             autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(4)+1 : 1;
         }
 
-        //ear size [xsmall, small, medium, large, xlarge]
-
+        
+        //desaturation [wildtype, brighter, duller, duller, dullest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[120] = ThreadLocalRandom.current().nextInt(5) + 1;
+        } 
+        else {
+            autosomalGenes[120] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[121] = ThreadLocalRandom.current().nextInt(5) + 1;
+        } 
+        else {
+            autosomalGenes[121] = 1;
+        }
+        
+        //rufousing [122-131: -red; 132-141: +red]
+        for (int i = 122; i < 142; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+        
+        //darkness
+        for (int i = 142; i < 150; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+        
+        //swallowbelly color [cream, red]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[150] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } 
+        else {
+            autosomalGenes[150] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[151] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } 
+        else {
+            autosomalGenes[151] = 1;
+        }
+        
+        //silver-brown [no dilute, silver-brown]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[152] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } 
+        else {
+            autosomalGenes[152] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[153] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } 
+        else {
+            autosomalGenes[153] = 1;
+        }
+        
         return new Genes(autosomalGenes);
     }
 }

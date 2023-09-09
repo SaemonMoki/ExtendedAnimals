@@ -9,7 +9,6 @@ import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -58,5 +57,10 @@ public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelE
         }
 
         return resourcelocation;
+    }
+
+    protected boolean shouldShowName(EnhancedMoobloom entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
     }
 }

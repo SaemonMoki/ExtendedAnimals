@@ -64,4 +64,9 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
 
         return resourcelocation;
     }
+
+    protected boolean shouldShowName(EnhancedAxolotl entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
 }

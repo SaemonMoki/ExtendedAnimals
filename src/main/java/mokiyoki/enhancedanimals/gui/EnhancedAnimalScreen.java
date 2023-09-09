@@ -52,6 +52,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoMode.BACKGROUND;
 import static mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen.PhotoMode.RGB;
@@ -165,26 +166,52 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     }
 
     protected void init() {
-        this.rBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 60, 80, 9, new TranslatableComponent("photomode.rBox"));
+        int photoI = (this.width - photoWidth) / 2;
+        int photoJ = (this.height - photoWidth) / 2;
+
+        Predicate<String> isValidInput = str -> {
+            if (str == null) {
+                return false;
+            }
+
+            if (str.equals("")) {
+                return true;
+            }
+
+            try {
+                int num = Integer.parseInt(str);
+                return num >= 0 && num <= 255;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        };
+
+
+        this.rBox = new EditBox(this.font, photoI-44, photoJ+193, 20, 9, new TranslatableComponent("photomode.rBox"));
         this.rBox.setMaxLength(3);
         this.rBox.setBordered(false);
-        this.rBox.setVisible(false);
-        this.rBox.setTextColor(16777215);
+        this.rBox.setVisible(true);
+        this.rBox.setValue("0");
+        this.rBox.setTextColor(16711680);
+        this.rBox.setFilter(isValidInput);
         this.addWidget(this.rBox);
 
-        this.gBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 80, 80, 9, new TranslatableComponent("photomode.gBox"));
+        this.gBox = new EditBox(this.font, photoI-44, photoJ+213, 20, 9, new TranslatableComponent("photomode.gBox"));
         this.gBox.setMaxLength(3);
         this.gBox.setBordered(false);
-        this.gBox.setVisible(false);
-        this.gBox.setTextColor(16777215);
+        this.gBox.setVisible(true);
+        this.gBox.setTextColor(65280);
+        this.gBox.setValue("0");
         this.addWidget(this.gBox);
 
-        this.bBox = new EditBox(this.font, this.leftPos + 60, this.topPos + 100, 80, 9, new TranslatableComponent("photomode.bBox"));
+        this.bBox = new EditBox(this.font, photoI-44, photoJ+233, 20, 9, new TranslatableComponent("photomode.bBox"));
         this.bBox.setMaxLength(3);
         this.bBox.setBordered(false);
-        this.bBox.setVisible(false);
-        this.bBox.setTextColor(16777215);
+        this.bBox.setVisible(true);
+        this.bBox.setTextColor(255);
+        this.bBox.setValue("0");
         this.addWidget(this.bBox);
+        super.init();
     }
 
 
@@ -223,18 +250,17 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
 
                 //RGB Box Backgrounds
-                this.blit(matrixStack, photoI-35, photoJ+170, 0, 0, 28, 167, 181, 384, 256);
-                this.blit(matrixStack, photoI-35, photoJ+190, 0, 0, 28, 167, 181, 384, 256);
-                this.blit(matrixStack, photoI-35, photoJ+210, 0, 0, 28, 167, 181, 384, 256);
+                this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);
+                this.blit(matrixStack, photoI-46, photoJ+210, 0, 0, 167, 28, 14, 384, 256);
+                this.blit(matrixStack, photoI-46, photoJ+230, 0, 0, 167, 28, 14, 384, 256);
 
                 //RGB Boxes
                 this.rBox.render(matrixStack, mouseX, mouseY, p_render_3_);
                 this.rBox.setFocus(true);
                 this.gBox.render(matrixStack, mouseX, mouseY, p_render_3_);
                 this.bBox.render(matrixStack, mouseX, mouseY, p_render_3_);
-                this.rBox.render(matrixStack, mouseX, mouseY, p_render_3_);
-                this.gBox.render(matrixStack, mouseX, mouseY, p_render_3_);
-                this.bBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+
+                this.currentBackgroundColour = convertToBackground();
 
             } else if (this.currentMode == BACKGROUND) {
                 //Background Button
@@ -280,6 +306,24 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.prepareForTransparentScreenshot = false;
             }
         }
+    }
+
+    private int convertToBackground() {
+        int r;
+        int g;
+        int b;
+
+        if(this.rBox.getValue().equals("")) {
+            r = 0;
+        } else { r = Integer.parseInt(this.rBox.getValue()); }
+        if(this.gBox.getValue().equals("")) {
+            g = 0;
+        } else { g = Integer.parseInt(this.gBox.getValue()); }
+        if(this.bBox.getValue().equals("")) {
+            b = 0;
+        } else { b = Integer.parseInt(this.bBox.getValue()); }
+
+        return 255 << 24 | r << 16 | g << 8 | b;
     }
 
     private void drawScaledImage(int x, int y, float scaleX, float scaleY) {
@@ -363,6 +407,15 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
             if (this.isHoveringPhotoMode(-106, 83, 27, 23, (double)mouseX, (double)mouseY)) {
                 this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.transparent"), mouseX, mouseY);
+            }
+            if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 123, 27, 14, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.red"), mouseX, mouseY);
+            }
+            if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 143, 27, 14, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.green"), mouseX, mouseY);
+            }
+            if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 163, 27, 14, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.blue"), mouseX, mouseY);
             }
         }
     }
@@ -472,9 +525,6 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             d1 = p_mouseClicked_3_ - (double) (j + 48);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 23.0D) {
                 this.currentMode = RGB;
-                this.rBox.setVisible(true);
-                this.gBox.setVisible(true);
-                this.bBox.setVisible(true);
                 this.selectedBackground = 0;
                 return true;
             }

@@ -8,11 +8,9 @@ import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -78,4 +76,10 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         return resourcelocation;
     }
+
+    protected boolean shouldShowName(EnhancedChicken entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
+
 }

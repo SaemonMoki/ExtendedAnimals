@@ -120,19 +120,19 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[7] = (1);
         }
 
-        //Blue Dilute [ Dilute, wildtype+ ]
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                autosomalGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-        autosomalGenes[8] = (1);
-//            }
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                autosomalGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-        autosomalGenes[9] = (1);
-//            }
+        //TYRP1 [no dilute, silver-brown, chocolate]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[8] = ThreadLocalRandom.current().nextInt(3) + 1;
+        }
+        else {
+            autosomalGenes[8] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[9] = ThreadLocalRandom.current().nextInt(3) + 1;
+        }
+        else {
+            autosomalGenes[9] = 1;
+        }
 
         //White Spots [ Wildtype+, spotted, roanSpots ]
 //        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -156,9 +156,12 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    5 : I^Rn Roan/dilute : grey, white and coloured hairs mixed : Large White, Landrace, Belgian Landrace
          *    6 : I^2  Dominant White : Large White, Belgian Landrace, Landrace
          *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
+         *    8 : I^Be2 Large Belt : Swabian Hall
+         *    9 : I^N1* White Spots 1* : Probably Hereford
+         *    10: I^N2  White Spots 2 : Collar/produces tux with white points
          */
 
-        //KIT [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3 ]
+        //KIT [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3, Belted2, WhiteSpots1*, WhiteSpots2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(6) + 1);
             if (autosomalGenes[12]>=6) autosomalGenes[12]+=2;
@@ -178,7 +181,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //white points [ Wildtype+, tuxedo, legacy-whitepoints, Whitehead ]
+        //white points [ Wildtype+, tuxedo, legacy-whitepoints, white points ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(1) + 1);
             if (autosomalGenes[14]>=3) autosomalGenes[14]+=1;
@@ -464,7 +467,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *  incomplete dominant at best if E^P homozygous, negated by tamsworth mutation
          *  makes fur white
          */
-        //Oops All Spots gene [wildtype, allspots]
+        //KITLG aka Oops All Spots gene [wildtype, allspots]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[64] = ThreadLocalRandom.current().nextInt(2) + 1;
         } else {
@@ -562,20 +565,6 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         } 
         else {
             autosomalGenes[151] = 1;
-        }
-        
-        //silver-brown [no dilute, silver-brown]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[152] = ThreadLocalRandom.current().nextInt(2) + 1;
-        } 
-        else {
-            autosomalGenes[152] = 1;
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[153] = ThreadLocalRandom.current().nextInt(2) + 1;
-        } 
-        else {
-            autosomalGenes[153] = 1;
         }
         
         return new Genes(autosomalGenes);

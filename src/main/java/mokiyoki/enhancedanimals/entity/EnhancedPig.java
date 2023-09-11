@@ -94,8 +94,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "", "skin_pink.png", "skin_belt.png", "skin_patchy.png", "skin_roan.png",
                 "skin_bluebuttbelt.png", "skin_bluebuttbelt", "skin_bluebuttbelt.png", "huge_belt_skin.png",
                 "brindlepatch_skin_1.png", "brindlepatch_skin_2.png", "brindlepatch_skin_3.png",
-                "brindlepatch_med_skin_1.png", "brindlepatch_med_skin_2.png", "brindlepatch_med_skin_3.png", "brindlepatch_med_skin_4.png"
-
+                "brindlepatch_med_skin_1.png", "brindlepatch_med_skin_2.png", "brindlepatch_med_skin_3.png", "brindlepatch_med_skin_4.png",
+                "patch_skin_1.png", "patch_skin_2.png", "patch_skin_3.png", "patch_skin_4.png", "patch_skin_5.png",
+                "spotted_patch_coat_1.png", "spotted_patch_coat_2.png", "spotted_patch_coat_3.png", "spotted_patch_coat_4.png", "spotted_patch_coat_5.png",
+                "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
+                "tuxedo_coat_1.png"
+    };
+    
+    private static final String[] PIG_TEXTURES_COATWHITE = new String[] {
+            "pigbase.png", "solid_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png", "spot_patchyhetred.png", "spot_patchyhetsilver.png", "huge_belt_coat.png",
+            "brindlepatch_coat_1.png", "brindlepatch_coat_2.png", "brindlepatch_coat_3.png",
+            "brindlepatch_med_coat_1.png", "brindlepatch_med_coat_2.png", "brindlepatch_med_coat_3.png", "brindlepatch_med_coat_4.png",
+            "patch_coat_1.png", "patch_coat_2.png", "patch_coat_3.png", "patch_coat_4.png", "patch_coat_5.png",
+            "spotted_patch_coat_1.png", "spotted_patch_coat_2.png", "spotted_patch_coat_3.png", "spotted_patch_coat_4.png", "spotted_patch_coat_5.png",
+            "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
+            "tuxedo_coat_1.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
@@ -109,7 +122,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
     		"pigbase.png", "solid_white.png", "black_wildtype.png", "black_berkshirebrindle.png", "black_oopsallspots.png", "black_brindle.png", "black_brindlesmall.png", 
     		"brindle_coat_1.png", "brindle_coat_2.png", "brindle_coat_3.png", "brindle_coat_4.png", "brindle_coat_5.png",
-    		"brindle_med_coat_1.png", "brindle_med_coat_2.png", "brindle_med_coat_3.png", "brindle_med_coat_4.png",
+    		"brindle_med_coat_1.png", "brindle_med_coat_2.png", "brindle_med_coat_3.png", "brindle_med_coat_4.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_SPOTS = new String[] {
@@ -161,12 +174,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "", "pattern_swallowbelly.png"
     };
 
-    private static final String[] PIG_TEXTURES_COATWHITE = new String[] {
-            "pigbase.png", "solid_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png", "spot_patchyhetred.png", "spot_patchyhetsilver.png", "huge_belt_coat.png",
-            "brindlepatch_coat_1.png", "brindlepatch_coat_2.png", "brindlepatch_coat_3.png",
-            "brindlepatch_med_coat_1.png", "brindlepatch_med_coat_2.png", "brindlepatch_med_coat_3.png", "brindlepatch_med_coat_4.png"
-    };
-    
     private float[] swallowbellyColor = {0.0F, 0.0F, 0.0F};
     
     private static final int SEXLINKED_GENES_LENGTH = 2;
@@ -740,15 +747,28 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int skin = 0;
             int hooves = 0;
             int swallowbelly = 0;
-            int whiteheadLevel = 0;
-            int whiteheadFace = 0;
-            int whiteheadBelly = 0;
-            int whiteheadLeg = 0;
+            int whitePointsFace = 0;
+            int whitePointsLeg = 0;
             int whiteExtension = 0;
             int white = 0;
             boolean tusks = false;
 
             char[] uuidArry = getStringUUID().toCharArray();
+
+            // check white points locus first since it affects some white patterns
+            if (genesForText[14] == 4 || genesForText[15] == 4) {
+                //white points
+                whitePointsFace = 1;
+            }
+            else if (genesForText[14] != 1 && genesForText[15] != 1){
+                if (genesForText[14] == 2 || genesForText[15] == 2){
+                    //tuxedo
+                    berk = 1;
+                } else {
+                    //berkshire
+                    berk = 2;
+                }
+            }
 
             if (genesForText[0] == 1 || genesForText[1] == 1 || genesForText[0] == 5 || genesForText[1] == 5){
                 //solid black
@@ -805,18 +825,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 swallowbelly = 1;
             }
 
-            if (genesForText[4] == 1 || genesForText[5] == 1){
-                // reduce red in coat colour
-                red = red - 2;
-            }
-
-//TODO change this one
-
-//            if (genesForText[8] == 1 || genesForText[9] == 1){
-//                //turns black to blue/roan blue
-//
-//            }
-
             if (genesForText[10] != 1 && genesForText[11] != 1) {
                 if (genesForText[10] == 2 || genesForText[11] == 2){
                     //spotted
@@ -842,12 +850,14 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         	} 
             //patchy
             else if (genesForText[12] == 4 || genesForText[13] == 4) {
-                
                 if (genesForText[12] != 5 && genesForText[13] != 5) {
                 	//patch seems to override the brindle spotting pattern
-                	
+
+                    // i dont think allspots patch does anything
+                    if (black == 3) {
+                    }
                 	//het allspots patch
-                	if (black == 4) {
+                	else if (black == 4) {
                 		brindleSkin = 0;
                 		black = 1;
                 		white = 12;
@@ -858,31 +868,29 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     	black = 1; 
                     	white = 9;
                     }
+                    else {
+                        white = 16;
+                    }
                 }
-            } else if (genesForText[12] == 5 || genesForText[13] == 5) {
-                //roan
+            }
+            //roan
+            else if (genesForText[12] == 5 || genesForText[13] == 5) {
             	white = 4;
             }
-            
-            
-            //for now Whitehead works separately of other stuff on the allele due to being incomplete dom
-            //There may be other interactions we need to account for
-            if (genesForText[14] == 4 && genesForText[15] == 4) {
-                //white head
-            	whiteheadLevel = 2;
-//            	whiteheadBelly = 1;
-            }
-            else if (genesForText[14] == 4 || genesForText[15] == 4) {
-            	whiteheadLevel = 1;
-            }
-            else if (genesForText[14] != 1 && genesForText[15] != 1){
-                if (genesForText[14] == 2 || genesForText[15] == 2){
-                    //tuxedo
-                    berk = 1;
-                } else {
-                    //berkshire
-                    berk = 2;
+            //white spots 1*
+            else if (genesForText[12] == 9 || genesForText[13] == 9) {
+                //produce hereford when combined with white points
+                if (whitePointsFace == 1) {
+                    white = 26;
                 }
+                else {
+                    whitePointsFace = 12;
+                }
+            }
+            //white spots 2
+            else if (genesForText[12] == 10 || genesForText[13] == 10) {
+                //produce hereford when combined with white points
+                white = 31;
             }
 
             //TODO make textures for this
@@ -899,10 +907,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         		whiteExtension = 1;
         	} else if (genesForText[16] == 3 && genesForText[17] == 3) {
             	whiteExtension = 2;
-        		//expand the belt
-        		if (white == 2) {
-        			white = 8;
-        		}
         	}
             
             //random brindle
@@ -917,6 +921,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	black = 12 + d;
             	brindleSkin = 8 + d;
             }
+            //random patch + white points aka spotted
+            else if (white == 16 && whitePointsFace == 1) {
+                whitePointsFace = 0;
+                int d = uuidArry[1] % 5;
+                white = 21 + d;
+            }
+            //random patch
+            else if (white == 16) {
+                int d = uuidArry[1] % 5;
+                white = 16 + d;
+            }
             //random patch brindle
             else if (white == 9) {
             	int d = uuidArry[1] % 3;
@@ -927,34 +942,36 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	int d = uuidArry[1] % 4;
             	white = 12 + d;
             }
-            
-            //random whitehead
-            if ( whiteheadLevel > 0 ) {
+
+            //random hereford/whitehead
+            if (white == 26) {
+                int d1 = uuidArry[1] % 5;
+                int d2 = uuidArry[2] % 5;
+                whitePointsFace = 12 + d1;
+                white = 26 + d2;
+                whitePointsLeg = 5;
+            }
+            else if ( whitePointsFace == 12 ) {
+                int d1 = uuidArry[1] % 5;
+                whitePointsFace = 12 + d1;
+            }
+            //random white points
+            else if ( whitePointsFace == 1 ) {
             	int d1 = uuidArry[2];
-           		int d2 = uuidArry[3];
-           		
-            	whiteheadLevel += whiteExtension;
-            	switch (whiteheadLevel) {
+           		//int d2 = uuidArry[3];
+            	switch (whiteExtension) {
+	                case 0 -> {
+	                	whitePointsFace = 1 + (d1 % 4);
+	                	whitePointsLeg = 1 + (d1 % 2);
+	                }
 	                case 1 -> {
-	                	whiteheadFace = 1 + (d1 % 6);
-	                	whiteheadLeg = 1 + (d1 % 2);
+	                	whitePointsFace = 3 + (d1 % 4);
+	                	whitePointsLeg = 2 + (d1 % 2);
 	                }
 	                case 2 -> {
-	                	whiteheadFace = 7 + (d1 % 5);
-	                	whiteheadBelly = 0 + (d2 % 5);
-	                	whiteheadBelly = 1 + (d2 % 4);
-	                	whiteheadLeg = 1 + (d1 % 3);
-	                }
-	                case 3 -> {
-	                	whiteheadFace = 7 + (d1 % 5);
-	                	whiteheadBelly = 1 + (d2 % 4);
-	                	whiteheadLeg = 2 + (d1 % 3);
-	                }
-	                case 4 -> {
-	                	whiteheadFace = 12 + (d1 % 6);
-	                	whiteheadBelly = 5 + (d2 % 8);
-	                	whiteheadLeg = 5;
-	                }
+                        whitePointsFace = 7 + (d1 % 5);
+                        whitePointsLeg = 2 + (d1 % 3);
+                    }
                 }
         	}
             
@@ -970,7 +987,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             } else if (genesForText[12] == 5 && genesForText[13] == 5 ) {
             	//grey skin
                 skin = 2;
-            } else if (genesForText[4] == 1 || genesForText[5] == 1 || genesForText[152] == 2 || genesForText[153] == 2) {
+            } else if (genesForText[4] == 1 || genesForText[5] == 1 || genesForText[8] == 2 || genesForText[9] == 2) {
             	//chinchilla and silver-brown also turn black skin gray
                 skin = 2;
             } else if (black == 1 || black == 2) {
@@ -1013,12 +1030,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
 	        TextureGrouping whiteSkinGroup = new TextureGrouping(TexturingType.ALPHA_GROUP); //MASK_GROUP
 	        
-            if (whiteheadFace != 0 || white != 0) {
+            if (whitePointsFace != 0 || white != 0) {
 		    	
 		        TextureGrouping whiteSkinMask = new TextureGrouping(TexturingType.MERGE_GROUP);
-		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_FACE, whiteheadFace, b -> b != 0);
-		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_BELLY, whiteheadBelly, b -> b != 0);
-		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_LEG, whiteheadLeg, b -> b != 0);
+		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_FACE, whitePointsFace, b -> b != 0);
+		    	//addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, b -> b != 0);
+		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_LEG, whitePointsLeg, b -> b != 0);
 	        	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
 		    	whiteSkinGroup.addGrouping(whiteSkinMask);
 		    	TextureGrouping whSkinTex = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1072,9 +1089,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }*/
     			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BERKSHIRE, berk, (berk != 0));
     			
-    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_FACE, whiteheadFace, (whiteheadFace != 0));
-    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whiteheadBelly, (whiteheadBelly != 0));
-    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_LEG, whiteheadLeg, (whiteheadLeg != 0));
+    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_FACE, whitePointsFace, (whitePointsFace != 0));
+    			//addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
+    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_LEG, whitePointsLeg, (whitePointsLeg != 0));
 
             	addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_COAT, coat_texture, true);
         		parentGroup.addGrouping(hairGroup);
@@ -1093,37 +1110,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setAlphaTexturePaths() {
-        /*Genes genes = getSharedGenes();
-        if (genes!=null) {
-            int[] gene = genes.getAutosomalGenes();
-            if (gene != null) {
-                int coat = 0;
-
-                if (gene[36] != 1 && gene[37] != 1) {
-                    if ((gene[34] == 1 || gene[35] == 1) && (gene[34] != 3 && gene[35] != 3)) {
-                        //furry
-                        coat = 3;
-                    } else if (gene[34] == 2 || gene[35] == 2) {
-                        //normal
-                        coat = 2;
-                    } else {
-                        //sparse
-                        coat = 1;
-                    }
-
-                    if (gene[38] == 1 || gene[39] == 1) {
-                        coat = coat + 1;
-                    }
-                }
-
-                //todo do the alpha textures
-
-                if (coat != 0) {
-                    this.enhancedAnimalAlphaTextures.add(PIG_TEXTURES_ALPHA[coat]);
-                }
-
-            }
-        }*/
     }
 
     //TODO put item interactable stuff here like saddling pigs
@@ -1299,10 +1285,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         // black: {0.036F, 0.5F, 0.071F};
-        // chocblack: {0.033F, 0.51F, 0.114F};
-        // chocblack difference: {-0.003F, 0.01F, 0.043F};
-        // chocred: {0.086F, 0.534F, 0.69F}
-        // chocred difference: {0.037F, -0.149F, 0.132F}
+        // diluteblack: {0.033F, 0.51F, 0.114F};
+        // diluteblack difference: {-0.003F, 0.01F, 0.043F};
+        // dilutered: {0.086F, 0.534F, 0.69F}
+        // dilutered difference: {0.037F, -0.149F, 0.132F}
         /*
         	pheomelanin[0] = 0.061F;
     		pheomelanin[1] = 0.627F;
@@ -1379,12 +1365,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             // chinchilla dilute
             if (gene[4] == 1 || gene[5] == 1) {
-            	melanin[0] += -0.003F;
+            	melanin[0] += 0.003F;
             	melanin[1] += 0.034F;
-            	melanin[2] += 0.132F;
+            	melanin[2] += 0.092F;
             	pheomelanin[0] += 0.034F;
-            	pheomelanin[1] += -0.425F;
-            	pheomelanin[2] += 0.330F;
+            	pheomelanin[1] += -0.585F;
+            	pheomelanin[2] += 0.385F;
             	this.swallowbellyColor[0] += 0.034F;
             	this.swallowbellyColor[1] += -0.425F;
             	this.swallowbellyColor[2] += 0.330F;
@@ -1392,26 +1378,31 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             // subtle dilute
             if (gene[6] == 2 && gene[7] == 2) {
-            	melanin[0] += -0.003F;
+            	melanin[0] += 0.003F;
             	melanin[1] += 0.015F;
             	melanin[2] += 0.045F;
-            	pheomelanin[0] += 0.037F;
-            	pheomelanin[1] += -0.149F;
-            	pheomelanin[2] += 0.132F;
+            	pheomelanin[0] += 0.032F;
+            	pheomelanin[1] += -0.129F;
+            	pheomelanin[2] += 0.120F;
             	this.swallowbellyColor[0] += 0.037F;
             	this.swallowbellyColor[1] += -0.149F;
             	this.swallowbellyColor[2] += 0.132F;
             }
             
             // silver-brown
-            if (gene[152] == 2 && gene[153] == 2) {
+            if (gene[8] == 2 && gene[9] == 2) {
             	melanin[0] += -0.003F;
             	melanin[1] += -0.255F;
             	melanin[2] += 0.445F;
-            } else if (gene[152] == 2 || gene[153] == 2) {
-            	melanin[0] += -0.003F;
+            } else if (gene[8] == 2 || gene[9] == 2) {
+            	melanin[0] += -0.002F;
             	melanin[1] += -0.155F;
             	melanin[2] += 0.345F;
+            //chocolate
+            } else if (gene[8] == 3 && gene[9] == 3) {
+                melanin[0] += 0.002F;
+                melanin[1] += 0.084F;
+                melanin[2] += 0.245F;
             }
             
             int saturation = getSaturation(gene[120]) + getSaturation(gene[121]);

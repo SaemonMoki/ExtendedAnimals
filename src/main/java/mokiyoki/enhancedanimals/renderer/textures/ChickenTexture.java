@@ -84,7 +84,7 @@ public class ChickenTexture {
                 chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/feather_noise.png");
                 parentGroup.addGrouping(featherGroup);
             } else {
-                boolean femFeathers = isFemale || (gene[197] == 2 || gene[198] == 2); //TODO roosters can be het for henny feather and express an intermediate form.
+                boolean femFeathers = isFemale || (gene[196] == 2 || gene[197] == 2); //TODO roosters can be het for henny feather and express an intermediate form.
                 String tailType = "";
                 String tailSickle = "";
 
@@ -845,9 +845,16 @@ public class ChickenTexture {
 
             if (!tailType.isEmpty()) {
                 boolean tail = ThreadLocalRandom.current().nextBoolean();
-            for (int i = 0; i <= 6; i++) {
-                chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+(tail?"orpington":"0")+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
-            }
+
+                int tailLength = 1;
+                if (gene[198]==2&&gene[199]==2) tailLength +=1;
+                if (gene[180]==2&&gene[181]==2) tailLength +=1;
+                if (gene[182]==2&&gene[183]==2) tailLength -=1;
+
+                int tailNumber = gene[278]==1||gene[279]==1?6:(gene[278]==2||gene[279]==2?7:8);
+                for (int i = 0; i <= tailNumber; i++) {
+                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                }
 //            chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tail_" + tailType + ".png", tailType);
 //            if (!tailSickle.isEmpty()) {
 //                chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tailsickle_" + tailSickle + ".png", tailSickle);

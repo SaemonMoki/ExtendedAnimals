@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public enum Schedules {
                 eaa.refreshDimensions();
                 eaa.updateColouration = true;
             }
-        }, (eaa) -> eaa.isGrowing())
+        }, EnhancedAnimalAbstract::isGrowing)
     ),
 
     DESPAWN_SCHEDULE("DespawnSchedule", (ticks) -> new AnimalScheduledFunction(ticks, EnhancedAnimalAbstract::despawn)),
@@ -29,15 +30,19 @@ public enum Schedules {
         new AnimalScheduledFunction(ticks, (eaa) -> eaa.despawn(), (eaa) -> !eaa.getPassengers().isEmpty())),
 
     LOOK_FOR_NEST_SCHEDULE("LookForNestSchedule", (ticks) ->
-            new AnimalScheduledFunction(ticks, (eaa) -> {
+            new AnimalScheduledFunction(12000, (eaa) -> {
                 if (eaa instanceof EnhancedChicken chicken) {
                     for (int x = -1; x < 1; x++) {
                         for (int z = -1; z < 1; z++) {
                             BlockPos pos = eaa.blockPosition().offset(x, 0, z);
-                            BlockState state = eaa.level.getBlockState(pos);
-                            if (eaa.level.getBlockEntity(pos) instanceof ChickenNestTileEntity) {
-
+                            if (eaa.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
+                                if (nestTileEntity.isFull()) {
+                                    continue;
+                                }
+                                chicken.rateNest(nestTileEntity, pos, false);
                             }
+
+                            BlockState state = eaa.level.getBlockState(pos);
                             if (state.isAir()) {
                                 if (eaa.level.isEmptyBlock(pos.below())) {
                                     pos = pos.below();
@@ -47,12 +52,14 @@ public enum Schedules {
                                     pos = pos.above();
                                 }
                             }
-                            chicken.isGoodNestSite(pos);
+                            if (chicken.isGoodNestSite(pos)) {
+                                chicken.rateChickenNestSite(pos);
+                            }
                         }
                     }
                 }
-            })
-            )
+            }, LivingEntity::isAlive)
+        )
     ;
 
     public final Function<Integer, AnimalScheduledFunction> function;

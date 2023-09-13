@@ -174,10 +174,12 @@ public class EventSubscriber {
                 if (leashHolder instanceof WanderingTrader) {
                     ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
                 }
-            } else if (entity instanceof EnhancedChicken) {
+            }
+            if (entity instanceof EnhancedChicken) {
                 if (((EnhancedChicken) entity).isChickenJockey()) {
                     ((EnhancedChicken) entity).scheduleDespawn(4000);
                 }
+                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(12000));
             }
         }
     }

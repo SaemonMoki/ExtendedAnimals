@@ -259,7 +259,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
          */
 
         for (int i = 0; i < 20; i++) {
-            autosomalGenes[i] = 1;
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;;
         }
 
         /**
@@ -1656,6 +1656,30 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         autosomalGenes[226] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[227] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        for (int i = 228; i < 248; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
+        for (int i = 248; i < 258; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
+        for (int i = 258; i < 278; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
+        //Extra tail feathers
+        autosomalGenes[278] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+        autosomalGenes[279] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(3) + 1) : 1;
+
+        //"non molting gene"
+        autosomalGenes[280] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[281] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //short tailfeather gene
+        autosomalGenes[282] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[283] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         return new Genes(sexlinkedGenes, autosomalGenes);
 

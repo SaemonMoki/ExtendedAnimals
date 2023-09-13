@@ -304,20 +304,30 @@ public class ChickenPhenotype implements Phenotype {
 
         this.wingAngle = -this.wingAngle;
 
-        float bodyAngle = 0.0F;
+        float bodyAngle = 1.5F;
         for (int i = 186; i < 196; i+=2) {
             if (gene[i] == 2 && gene[i+1] == 2) {
                 bodyAngle -= 0.3F;
             }
         }
 
-        bodyAngle = -1.5F;
+        for (int i = 248; i<258; i++) {
+            if (gene[i]==2) bodyAngle *= 0.9F;
+        }
+
+        bodyAngle = -1.5F+bodyAngle;
 
         this.bodyAngle = bodyAngle;
         this.bodyY = bodyAngle * 2.9F;
         this.bodyZ = bodyAngle;
 
-        this.neckAngle = 1.0F;
+        float neckAngle = 1.0F;
+
+        for (int i = 10; i<20; i++) {
+            if (gene[i]==2) neckAngle *= 0.8F;
+        }
+
+        this.neckAngle = neckAngle;
 
         if (this.creeper) {
             this.height = this.hasLongLegs() ? 18.5F : 19.5F;
@@ -327,22 +337,42 @@ public class ChickenPhenotype implements Phenotype {
 
         this.silkie = gene[106] == 1 || gene[107] == 1;
 
-        this.fluffiness = ThreadLocalRandom.current().nextFloat() * 2.0F;
+        float fluffiness = 0.0F;
+        for (int i = 228; i<248; i++) {
+            if (gene[i]==2) fluffiness += 0.1F;
+        }
 
-        this.meatiness = 0.5F;
+        this.fluffiness = fluffiness;
+
+        float meatiness = 0.5F;
         if (gene[146] == 2 && gene[147] == 2) {
             if (gene[148] != 2 || gene[149] != 2) {
                 //big body
-                this.meatiness = 1.0F;
+                meatiness = 1.0F;
             }
         } else if (gene[148] == 2 && gene[149] == 2) {
             if (gene[146] != 2 && gene[147] != 2) {
                 //small body
-                this.meatiness = 0.0F;
+                meatiness = 0.0F;
             }
         }
 
-        this.tailAngle = ThreadLocalRandom.current().nextFloat();
+        for (int i = 0; i<10; i++) {
+            if (gene[i]==2) meatiness *= 0.93F;
+        }
+
+        this.meatiness = meatiness;
+
+        float tailAngle = 0.5F;
+        for (int i = 258; i<268; i++) {
+            if (gene[i]==2) tailAngle -= 0.05F;
+        }
+
+        for (int i = 268; i<278; i++) {
+            if (gene[i]==2) tailAngle += 0.05F;
+        }
+
+        this.tailAngle = tailAngle;
     }
 
     public boolean isBearded() {

@@ -192,18 +192,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[15] = (1);
         }
 
-        //White Extension [ Undermarked+, medium, over marked ]
+        //White Extension [ Undermarked, medium+, over marked ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            autosomalGenes[16] = (3);
+            autosomalGenes[16] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            autosomalGenes[17] = (3);
+            autosomalGenes[17] = (2);
         }
 
         //face squash genes 1 [ Wildtype+, long, medium, short, squashed ]
@@ -566,7 +566,21 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         else {
             autosomalGenes[151] = 1;
         }
-        
+
+        //heterochromia [ Wildtype+, blue eye(s) ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[152] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[152] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[153] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[153] = (1);
+        }
+
         return new Genes(autosomalGenes);
     }
 }

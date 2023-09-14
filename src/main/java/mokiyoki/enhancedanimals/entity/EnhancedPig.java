@@ -73,10 +73,10 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
 
 public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
-    //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    //avalible UUID spaces : [ S X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
     private boolean resetTexture = true;
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
-            "", "skin_pink.png", "skin_grey.png", "skin_black.png", "skin_brown.png"
+            "", "skin_pink.png", "skin_grey.png", "skin_black.png", "skin_brown.png", "skin_chocolate.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_SPOTS = new String[] {
@@ -92,23 +92,27 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_WHITE = new String[] {
             "", "skin_pink.png", "skin_belt.png", "skin_patchy.png", "skin_roan.png",
-                "skin_bluebuttbelt.png", "skin_bluebuttbelt", "skin_bluebuttbelt.png", "huge_belt_skin.png",
-                "brindlepatch_skin_1.png", "brindlepatch_skin_2.png", "brindlepatch_skin_3.png",
-                "brindlepatch_med_skin_1.png", "brindlepatch_med_skin_2.png", "brindlepatch_med_skin_3.png", "brindlepatch_med_skin_4.png",
-                "patch_skin_1.png", "patch_skin_2.png", "patch_skin_3.png", "patch_skin_4.png", "patch_skin_5.png",
-                "spotted_patch_coat_1.png", "spotted_patch_coat_2.png", "spotted_patch_coat_3.png", "spotted_patch_coat_4.png", "spotted_patch_coat_5.png",
-                "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
-                "tuxedo_coat_1.png"
+            "skin_bluebuttbelt.png", "skin_bluebuttbelt", "skin_bluebuttbelt.png", "huge_belt_skin.png",
+            "brindlepatch_skin_1.png", "brindlepatch_skin_2.png", "brindlepatch_skin_3.png",
+            "brindlepatch_med_skin_1.png", "brindlepatch_med_skin_2.png", "brindlepatch_med_skin_3.png", "brindlepatch_med_skin_4.png",
+            "patch_coat_1.png", "patch_coat_2.png", "patch_coat_3.png", "patch_coat_4.png", "patch_coat_5.png", "patch_coat_6.png", "patch_coat_7.png", "patch_coat_8.png", "patch_coat_9.png", "patch_coat_10.png",
+            "spotted_patch_coat_1.png", "spotted_patch_coat_2.png", "spotted_patch_coat_3.png", "spotted_patch_coat_4.png", "spotted_patch_coat_5.png",
+            "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
+            "tux_min_1.png", "tux_min_2.png", "tux_min_3.png",
+            "tux_med_1.png", "tux_med_2.png", "tux_med_3.png", "tux_med_4.png", "tux_med_5.png", "tux_med_6.png",
+            "tux_high_1.png", "tux_high_2.png", "tux_high_3.png", "tux_high_4.png",
     };
     
     private static final String[] PIG_TEXTURES_COATWHITE = new String[] {
             "pigbase.png", "solid_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png", "spot_patchyhetred.png", "spot_patchyhetsilver.png", "huge_belt_coat.png",
             "brindlepatch_coat_1.png", "brindlepatch_coat_2.png", "brindlepatch_coat_3.png",
             "brindlepatch_med_coat_1.png", "brindlepatch_med_coat_2.png", "brindlepatch_med_coat_3.png", "brindlepatch_med_coat_4.png",
-            "patch_coat_1.png", "patch_coat_2.png", "patch_coat_3.png", "patch_coat_4.png", "patch_coat_5.png",
+            "patch_coat_1.png", "patch_coat_2.png", "patch_coat_3.png", "patch_coat_4.png", "patch_coat_5.png", "patch_coat_6.png", "patch_coat_7.png", "patch_coat_8.png", "patch_coat_9.png", "patch_coat_10.png",
             "spotted_patch_coat_1.png", "spotted_patch_coat_2.png", "spotted_patch_coat_3.png", "spotted_patch_coat_4.png", "spotted_patch_coat_5.png",
             "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
-            "tuxedo_coat_1.png"
+            "tux_min_1.png", "tux_min_2.png", "tux_min_3.png",
+            "tux_med_1.png", "tux_med_2.png", "tux_med_3.png", "tux_med_4.png", "tux_med_5.png", "tux_med_6.png",
+            "tux_high_1.png", "tux_high_2.png", "tux_high_3.png", "tux_high_4.png",
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
@@ -134,10 +138,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire.png"
     };
     
-    private static final String[] PIG_TEXTURES_WHITEHEAD_FACE = new String[] {
+    private static final String[] PIG_TEXTURES_WHITE_FACE = new String[] {
             "", "whitehead_face_small_1.png", "whitehead_face_small_2.png", "whitehead_face_small_3.png", "whitehead_face_small_4.png", "whitehead_face_small_5.png", "whitehead_face_small_6.png",
             "whitehead_face_med_1.png", "whitehead_face_med_2.png", "whitehead_face_med_3.png", "whitehead_face_med_4.png", "whitehead_face_med_5.png",
-            "whitehead_face_large_1.png", "whitehead_face_large_2.png", "whitehead_face_large_3.png", "whitehead_face_large_4.png", "whitehead_face_large_5.png", "whitehead_face_large_6.png"         
+            "whitehead_face_large_1.png", "whitehead_face_large_2.png", "whitehead_face_large_3.png", "whitehead_face_large_4.png", "whitehead_face_large_5.png", "whitehead_face_large_6.png",
+            "tux_face_min_1.png", "tux_face_min_2.png", "tux_face_min_3.png",
+            "tux_face_med_1.png", "tux_face_med_2.png", "tux_face_med_3.png", "tux_face_med_4.png", "tux_face_med_5.png", "tux_face_med_6.png",
+            "tux_face_high_1.png", "tux_face_high_2.png", "tux_face_high_3.png", "tux_face_high_4.png",
     };
     
     private static final String[] PIG_TEXTURES_WHITEHEAD_BELLY = new String[] {
@@ -146,7 +153,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "whitehead_belly_large_1.png", "whitehead_belly_large_2.png", "whitehead_belly_large_3.png", "whitehead_belly_large_4.png", "whitehead_belly_large_5.png",
     };
     
-    private static final String[] PIG_TEXTURES_WHITEHEAD_LEG = new String[] {
+    private static final String[] PIG_TEXTURES_WHITE_LEG = new String[] {
             "", "whitehead_leg_1.png", "whitehead_leg_2.png", "whitehead_leg_3.png", "whitehead_leg_4.png", "whitehead_leg_5.png"
     };
     
@@ -155,7 +162,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_EYES = new String[] {
-            "eyes_black.png", "eyes_brown.png", "eyes_blue.png"
+            "eyes_black.png", "eyes_brown.png", "eyes_blue.png", "eyes_blue_left.png", "eyes_blue_right.png"
     };
 
     private static final String[] PIG_TEXTURES_HOOVES = new String[] {
@@ -881,16 +888,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             else if (genesForText[12] == 9 || genesForText[13] == 9) {
                 //produce hereford when combined with white points
                 if (whitePointsFace == 1) {
-                    white = 26;
+                    white = 31;
                 }
                 else {
                     whitePointsFace = 12;
                 }
             }
-            //white spots 2
+            //white spots 2 aka tux
             else if (genesForText[12] == 10 || genesForText[13] == 10) {
-                //produce hereford when combined with white points
-                white = 31;
+                //produce tuxedo when combined with white points
+                white = 36;
+                whitePointsFace = 18;
             }
 
             //TODO make textures for this
@@ -911,66 +919,90 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             //random brindle
             if (black == 5) {
-            	int d = uuidArry[1] % 5;
+            	int d = uuidArry[3] % 5;
             	black = 7 + d;
             	brindleSkin = 3 + d;
             }
             //random big brindle
             else if (black == 4) {
-            	int d = uuidArry[1] % 4;
+            	int d = uuidArry[3] % 4;
             	black = 12 + d;
             	brindleSkin = 8 + d;
             }
             //random patch + white points aka spotted
             else if (white == 16 && whitePointsFace == 1) {
                 whitePointsFace = 0;
-                int d = uuidArry[1] % 5;
-                white = 21 + d;
+                int d = uuidArry[3] % 5;
+                white = 26 + d;
             }
             //random patch
             else if (white == 16) {
-                int d = uuidArry[1] % 5;
+                int d = uuidArry[3] % 10;
                 white = 16 + d;
             }
             //random patch brindle
             else if (white == 9) {
-            	int d = uuidArry[1] % 3;
+            	int d = uuidArry[3] % 3;
             	white = 9 + d;
             }
             //random patch big brindle
             else if (white == 12) {
-            	int d = uuidArry[1] % 4;
+            	int d = uuidArry[3] % 4;
             	white = 12 + d;
             }
+            //random tux
+            else if (white == 36) {
+                switch (whiteExtension) {
+                    case 0 -> {
+                        int d3 = uuidArry[3] % 3;
+                        int d2 = uuidArry[2] % 3;
+                        white = 36 + d3;
+                        whitePointsFace = 18 + d2;
+                    }
+                    case 1 -> {
+                        int d3 = uuidArry[3] % 6;
+                        int d2 = uuidArry[2] % 6;
+                        white = 39 + d3;
+                        whitePointsFace = 21 + d2;
+                    }
+                    case 2 -> {
+                        int d3 = uuidArry[3] % 4;
+                        int d2 = uuidArry[2] % 4;
+                        white = 45 + d3;
+                        whitePointsFace = 27 + d2;
+                    }
+                }
+            }
 
-            //random hereford/whitehead
-            if (white == 26) {
-                int d1 = uuidArry[1] % 5;
+            //random hereford
+            if (white == 31) {
+                int d3 = uuidArry[3] % 5;
                 int d2 = uuidArry[2] % 5;
-                whitePointsFace = 12 + d1;
-                white = 26 + d2;
+                whitePointsFace = 12 + d2;
+                white = 31 + d3;
                 whitePointsLeg = 5;
             }
+            //random whitehead (no body)
             else if ( whitePointsFace == 12 ) {
-                int d1 = uuidArry[1] % 5;
-                whitePointsFace = 12 + d1;
+                int d2 = uuidArry[2] % 5;
+                whitePointsFace = 12 + d2;
             }
             //random white points
             else if ( whitePointsFace == 1 ) {
-            	int d1 = uuidArry[2];
+            	int d2 = uuidArry[2];
            		//int d2 = uuidArry[3];
             	switch (whiteExtension) {
 	                case 0 -> {
-	                	whitePointsFace = 1 + (d1 % 4);
-	                	whitePointsLeg = 1 + (d1 % 2);
+	                	whitePointsFace = 1 + (d2 % 4);
+	                	whitePointsLeg = 1 + (d2 % 2);
 	                }
 	                case 1 -> {
-	                	whitePointsFace = 3 + (d1 % 4);
-	                	whitePointsLeg = 2 + (d1 % 2);
+	                	whitePointsFace = 5 + (d2 % 5);
+	                	whitePointsLeg = 2 + (d2 % 2);
 	                }
 	                case 2 -> {
-                        whitePointsFace = 7 + (d1 % 5);
-                        whitePointsLeg = 2 + (d1 % 3);
+                        whitePointsFace = 7 + (d2 % 5);
+                        whitePointsLeg = 2 + (d2 % 3);
                     }
                 }
         	}
@@ -988,14 +1020,24 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	//grey skin
                 skin = 2;
             } else if (genesForText[4] == 1 || genesForText[5] == 1 || genesForText[8] == 2 || genesForText[9] == 2) {
-            	//chinchilla and silver-brown also turn black skin gray
-                skin = 2;
+            	//chinchilla and silver-brown dilute skin
+                skin = 5;
             } else if (black == 1 || black == 2) {
             	//black
                 skin = 3;
             } else {
             	//grey
                 skin = 2;
+            }
+
+            if (genesForText[152] == 2 && genesForText[153] == 2) {
+                if (white == 1) {
+                    eyes = 2;
+                }
+                else {
+                    int d4 = uuidArry[4] % 2;
+                    eyes = (d4 == 1) ? 3 : 4;
+                }
             }
 
             if (!isBaby()) {
@@ -1033,9 +1075,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (whitePointsFace != 0 || white != 0) {
 		    	
 		        TextureGrouping whiteSkinMask = new TextureGrouping(TexturingType.MERGE_GROUP);
-		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_FACE, whitePointsFace, b -> b != 0);
+		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_FACE, whitePointsFace, b -> b != 0);
 		    	//addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, b -> b != 0);
-		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITEHEAD_LEG, whitePointsLeg, b -> b != 0);
+		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_LEG, whitePointsLeg, b -> b != 0);
 	        	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
 		    	whiteSkinGroup.addGrouping(whiteSkinMask);
 		    	TextureGrouping whSkinTex = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1089,9 +1131,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }*/
     			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BERKSHIRE, berk, (berk != 0));
     			
-    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_FACE, whitePointsFace, (whitePointsFace != 0));
+    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITE_FACE, whitePointsFace, (whitePointsFace != 0));
     			//addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
-    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_LEG, whitePointsLeg, (whitePointsLeg != 0));
+    			addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITE_LEG, whitePointsLeg, (whitePointsLeg != 0));
 
             	addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_COAT, coat_texture, true);
         		parentGroup.addGrouping(hairGroup);
@@ -1391,13 +1433,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             // silver-brown
             if (gene[8] == 2 && gene[9] == 2) {
-            	melanin[0] += -0.003F;
-            	melanin[1] += -0.255F;
-            	melanin[2] += 0.445F;
+            	melanin[0] += 0.003F;
+            	melanin[1] += -0.275F;
+            	melanin[2] += 0.825F;
             } else if (gene[8] == 2 || gene[9] == 2) {
-            	melanin[0] += -0.002F;
-            	melanin[1] += -0.155F;
-            	melanin[2] += 0.345F;
+                melanin[0] += 0.002F;
+                melanin[1] += -0.245F;
+                melanin[2] += 0.555F;
             //chocolate
             } else if (gene[8] == 3 && gene[9] == 3) {
                 melanin[0] += 0.002F;

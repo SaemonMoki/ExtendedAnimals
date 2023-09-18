@@ -666,6 +666,17 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.butt7.show(pig.shape == 3);
             this.butt8.show(pig.shape == 4);
 
+            float shoulderScaling = 1.0F + (pig.muscle*0.05F) + (pig.fat*0.04F);
+            float buttScaling = 1.0F + (pig.muscle*0.075F) + (pig.fat*0.08F);
+            float muscleWidth = (pig.muscle*0.025F);
+            float bodyScaling = 1.0F + (pig.fat*0.15F) - (pig.muscle*0.05F);
+            float bodyLength = (pig.muscle*0.1F);
+            float shoulderHeight = (pig.muscle*0.0F);
+            float tummyHeight = -(pig.fat*0.08F);
+            float buttHeight = -(pig.fat*0.025F);
+            float legForward = -(pig.muscle*0.15F);
+            float headHeight = (pig.muscle*0.025F);
+
             if (pigModelData.saddle != SaddleType.NONE) {
                 if (pigModelData.saddle == SaddleType.ENGLISH) {
                     mapOfScale.put("saddlePad", ModelHelper.createScalings(1.125F, 1.125F, 1.125F, 0.0F, -1.125F * 0.01F, (1.125F - 1.0F) * 0.04F));
@@ -674,6 +685,14 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             }
 
             float finalPigSize = ((3.0F * pigModelData.size * pigModelData.growthAmount) + pigModelData.size) / 4.0F;
+
+            mapOfScale.put("neckS", ModelHelper.createScalings(shoulderScaling + muscleWidth, shoulderScaling, shoulderScaling, 0.0F, 0.0F, shoulderHeight));
+            mapOfScale.put("butt6", ModelHelper.createScalings(buttScaling + muscleWidth, buttScaling, buttScaling, 0.0F, 0.0F, buttHeight));
+            mapOfScale.put("body13", ModelHelper.createScalings(bodyScaling, bodyScaling, bodyScaling, 0.0F, 0.0F, tummyHeight));
+            mapOfScale.put("legFL", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, legForward));
+            mapOfScale.put("legFR", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, legForward));
+            mapOfScale.put("bHead", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, headHeight));
+
             poseStack.pushPose();
             poseStack.scale(finalPigSize, finalPigSize, finalPigSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalPigSize, 0.0F);

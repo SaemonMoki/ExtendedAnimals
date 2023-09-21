@@ -128,6 +128,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String damName = "???";
     protected Boolean isFemale;
 
+    protected Boolean breedable = true;
+
     //Hunger
     protected float hunger = 0F;
     protected int healTicks = 0;
@@ -181,6 +183,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     private int reloadSizeTime = 0;
 
     public boolean updateColouration = true;
+
+    //PhotoMode
+    public boolean isInPhotoMode = false;
 
     //Overrides
     @Nullable
@@ -701,6 +706,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
     }
 
+    @Nullable
+    public Entity getLeashHolder() {
+        if (!this.isInPhotoMode) {
+            return super.getLeashHolder();
+        }
+        return null;
+    }
+
     protected boolean ableToMoveWhileLeashed() {
         return !(this.getLeashHolder() instanceof LivingEntity);
     }
@@ -1013,6 +1026,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.writeNBTGenes("Genetics", compound, this.genetics);
         this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
+        compound.putBoolean("Breedable", this.breedable);
+
         compound.putFloat("Hunger", hunger);
 
         compound.putString("Status", getEntityStatus());
@@ -1096,6 +1111,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
+
+        this.breedable = compound.getBoolean("Breedable");
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1294,7 +1311,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean canBreed() {
-        if (this.getEnhancedAnimalAge() < this.getAdultAge()) {
+        if (this.getEnhancedAnimalAge() < this.getAdultAge() || !this.breedable) {
             return false;
         } else {
             return super.canBreed();

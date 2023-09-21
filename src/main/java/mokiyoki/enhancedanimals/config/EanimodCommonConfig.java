@@ -139,7 +139,7 @@ public class EanimodCommonConfig {
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             omnigenders = builder
-                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young. False results in gendered animals. Visually nothing changes.")
+                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young, False results in gendered animals, Visually nothing changes")
                     .define("Allow Omnigenders:", false);
             feedGrowth = builder
                     .define("Allow feeding to age/grow animals:", false);
@@ -378,7 +378,7 @@ public class EanimodCommonConfig {
             axolotlHatchTime = builder
                     .defineInRange("How long int ticks it takes an axolotl egg to hatch in temperate biomes, Default is 24000", 24000, 1, Integer.MAX_VALUE);
             axolotlHatchTemperatureImportance = builder
-                    .defineInRange("How important temperature is to the hatching of axolotl eggs, a value of 0 means they will never hatch unless they are in a temperate or warmer environment. Currently not used", 1.0D, 0.0D, 100.0D);
+                    .defineInRange("How important temperature is to the hatching of axolotl eggs, a value of 0 means they will never hatch unless they are in a temperate or warmer environment, Currently not used", 1.0D, 0.0D, 100.0D);
             spawnWeightAxolotls = builder
                     .defineInRange("How highly Axolotl spawning is weighted, larger numbers spawn more, Default is 10", 10, 1, 20);
             minimumAxolotlGroup = builder

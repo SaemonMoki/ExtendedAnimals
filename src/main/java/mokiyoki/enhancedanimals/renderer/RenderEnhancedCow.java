@@ -61,4 +61,9 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
         }
         return resourcelocation;
     }
+
+    protected boolean shouldShowName(EnhancedCow entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
 }

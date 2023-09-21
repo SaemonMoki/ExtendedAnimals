@@ -2,14 +2,12 @@ package mokiyoki.enhancedanimals.renderer;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -63,5 +61,10 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
         }
 
         return resourcelocation;
+    }
+
+    protected boolean shouldShowName(EnhancedLlama entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
     }
 }

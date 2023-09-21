@@ -24,7 +24,7 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         this.breeds.add(LlamaBreeds.BROWN);
         this.breeds.add(LlamaBreeds.SANDY);
         this.breeds.add(LlamaBreeds.TUXEDO);
-        this.breeds.add(LlamaBreeds.WOOLY);
+        this.breeds.add(LlamaBreeds.WOOLLY);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

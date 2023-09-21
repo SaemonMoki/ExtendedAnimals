@@ -17,17 +17,26 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModSounds;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -69,7 +78,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.LOOK_FOR_NEST_SCHEDULE;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -82,6 +93,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final EntityDataAccessor<Boolean> ROOSTING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> BROODING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> NEST_POS = SynchedEntityData.defineId(EnhancedChicken.class, EntityDataSerializers.BLOCK_POS);
+
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -241,19 +255,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 "ear_mottledmoorish1.png", "ear_mottledmoorish2.png", "ear_mottledmoorish3.png", "ear_mottledmoorish4.png", "ear_mottledmoorish5.png", "ear_mottledmoorish6.png", "ear_mottledmoorish7.png", "ear_mottledmoorish8.png", "ear_mottledmoorish9.png", "ear_mottledmoorish10.png",
 
     };
-    private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
-        "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
-    };
 
+    private int soundOffset = -1;
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
     public float oFlap;
     private float wingRotDelta = 1.0F;
     private int timeUntilNextEgg;
+    private float currentNestScore;
     protected GrazingGoal grazingGoal;
-
-    private String dropMeatType;
     public boolean chickenJockey;
 
     @OnlyIn(Dist.CLIENT)
@@ -313,7 +324,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
+//        this.goalSelector.addGoal(5, new LayEggGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
+//        this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new ECRoost(this));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
         this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
@@ -354,10 +367,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(ROOSTING, Boolean.FALSE);
+        this.entityData.define(BROODING, Boolean.FALSE);
+        this.entityData.define(NEST_POS, BlockPos.ZERO);
     }
 
     public void scheduleDespawn(int ticksToWait) {
         this.scheduledToRun.put(DESPAWN_NO_PASSENGER_SCHEDULE.funcName, DESPAWN_NO_PASSENGER_SCHEDULE.function.apply(ticksToWait));
+    }
+
+    public void scheduleLookForNest(int ticksToWait) {
+        this.scheduledToRun.put(LOOK_FOR_NEST_SCHEDULE.funcName, LOOK_FOR_NEST_SCHEDULE.function.apply(ticksToWait));
     }
 
     @Override
@@ -385,6 +404,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     }
+
+    protected int eggLayingTime() { return (int)(6000*EanimodCommonConfig.COMMON.eggMultiplier.get());}
 
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
@@ -427,6 +448,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     public void setRoosting(boolean isRoosting) {
         this.entityData.set(ROOSTING, isRoosting);
+    }
+
+    public boolean isBrooding() {
+        return this.entityData.get(BROODING);
+    }
+
+    public void setBrooding(boolean isBrooding) {
+        this.entityData.set(BROODING, isBrooding);
+    }
+
+    public void setNest(BlockPos position) {
+        this.entityData.set(NEST_POS, position);
+    }
+
+    public void setNest(int x, int y, int z) {
+        setNest(new BlockPos(x, y, z));
+    }
+
+    private BlockPos getNest() {
+        return this.entityData.get(NEST_POS);
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
@@ -511,14 +552,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
-                this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
+                this.timeUntilNextEgg = eggLayingTime();
             }
         }
     }
 
     @Override
     protected void runPregnancyTick() {
-        if (!this.isBaby() && this.timeUntilNextEgg <= 0) {
+        if (!this.isBaby() && this.timeUntilNextEgg <= 0 && !this.isAnimalSleeping()) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
@@ -539,8 +580,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     }
                 }
             }
-            this.spawnAtLocation(eggItem, 1);
-            this.timeUntilNextEgg = (int) ((this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get());
+            if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                if (this.blockPosition()!=this.getNest()) {
+                    this.rateNest(nestEntity, this.blockPosition(), true);
+                } else if (this.currentNestScore<0.0F){
+                    this.currentNestScore = -this.currentNestScore;
+                }
+                nestEntity.addEggToNest(eggItem);
+            } else {
+                this.spawnAtLocation(eggItem, 1);
+            }
+            if (this.isBrooding()) {
+                this.setBrooding(false);
+            }
+            float eggTimeVariance = 0.1F; //TODO egg time variation genetics?
+            this.timeUntilNextEgg = (int) (eggLayingTime()*(1.0F-eggTimeVariance) + this.random.nextInt((int) (eggLayingTime()*(eggTimeVariance*2))));
         }
     }
 
@@ -566,6 +620,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
+    @Override
+    public void playAmbientSound() {
+        if (!this.getOrSetIsFemale() && this.growthAmount()==1.0F && this.soundOffset <= 0) {
+            this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
+            this.soundOffset = this.random.nextInt(10);
+        } else {
+            if (this.soundOffset>0 && !this.sleeping) this.soundOffset--;
+            super.playAmbientSound();
+        }
+    }
+
+    @Override
+    public float getVoicePitch() {
+        float pitch = 1.0F + (1.0F-this.getAnimalSize());
+        if (this.isGrowing()) pitch*=(1.0F+((1.0F-this.growthAmount())*0.5F));
+        return this.getOrSetIsFemale()?pitch*0.95F:pitch*1.05F;
+    }
 
     @Override
     protected SoundEvent getAmbientSound() {
@@ -669,26 +740,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             //darkens egg if already brown shade
             if (genes[68] == 1 || genes[69] == 1) {
                 if (eggColour != 0) {
-                    shade = +1;
+                    shade +=1;
                 }
             }
 
             if (genes[172] == 2 || genes[173] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade +=1;
             }
 
             if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade +=1;
             }
 
             if (genes[176] == 3 || genes[177] == 3) {
                 //darkens egg by 1
-                shade = +1;
+                shade += 1;
             } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
                 //darkens egg by 1
-                shade = +1;
+                shade += 1;
             }
 
             if (genes[178] == 2 || genes[179] == 2) {
@@ -703,7 +774,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (markings == 1) {
                     markings = 2;
                 } else {
-                    shade = +1;
+                    shade += 1;
                 }
             }
 
@@ -711,7 +782,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (markings == 1) {
                     markings = 3;
                 } else if (markings == 2) {
-                    shade = +1;
+                    shade += 1;
                 }
             }
 
@@ -770,9 +841,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
-        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
+        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.25F)) {
             this.reload = false;
             this.reloadTextures();
         }
@@ -782,1585 +853,19 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
+    }
+
+    @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if(this.getSharedGenes()!=null) {
-            int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
-            int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
-            boolean isFemale = this.getOrSetIsFemale();
-            if (this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.333F)) {
-                int ground = 0;
-                int pattern = 0;
-                int moorhead = 0;
-                int white = 0;
-                int mottles = 0;
-                int shanks = 3;
-                int comb = 2;
-                int eyes = 1;
-                int ptrncolours = 10; //number of pattern colours
-
-                int moorheadtoggle = 0;
-                int melanin = 0;
-
-                int face = 0;
-                int ears = 0;
-                int earsW = 0;
-
-                //TODO fix up columbian type patterns to look more varried
-                //TODO add in heterozygous pattern variations
-                //TODO redo ground colours to use autosomal red and more fleshed out
-
-                boolean isAlbino = false;
-
-                if (autosomalGenes[20] != 1 && autosomalGenes[21] != 1) {                                                                       //checks if not wildtype
-                    if (autosomalGenes[20] == 2 || autosomalGenes[21] == 2) {                                                                   //sets recessive white or albino
-                        //recessive white
-                        ground = 15;
-                        pattern = 361;
-                    } else {
-                        //albino
-                        ground = 15;
-                        pattern = 361;
-                        white = 0;
-                        shanks = 6;
-                        comb = 2;
-                        eyes = 0;
-                        isAlbino = true;
-                    }
-                } else {
-                    if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
-                        //extended black tree
-                        if (autosomalGenes[24] == 5 && autosomalGenes[25] == 5) {
-                            if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1 && autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
-                                //xtradark birchen
-                                pattern = 17;
-                                ground = 0;
-                            } else {
-                                //solid black
-                                pattern = 0;
-                                ground = 15;
-                            }
-                        } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
-                            //xtradark birchen
-                            pattern = 17;
-                            ground = 0;
-                        } else {
-                            if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1 && autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
-                                //leaky black
-                                pattern = 18;
-                                ground = 0;
-                            } else {
-                                //xtradark birchen
-                                pattern = 17;
-                                ground = 0;
-                            }
-                        }
-                    } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
-                        //birchen tree
-                        if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1) {
-                            if (autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 && autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //xtra dark birchen single lace
-                                            pattern = 19;
-                                            ground = 15;
-                                        } else {
-                                            //birchen single laced
-                                            pattern = 11;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        //extended patterned columbian
-                                        pattern = 5;
-                                        ground = 15;
-                                    }
-                                } else if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //moorhead doublehalfspangled
-                                            pattern = 20;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //doublehalfspangle
-                                            pattern = 20;
-                                            ground = 15;
-                                        }
-
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //overly dark columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        } else {
-                                            //moorheaded columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        }
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //moorhead doublehalfspangled
-                                            pattern = 20;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //doublehalfspangle
-                                            pattern = 20;
-                                            ground = 15;
-                                        }
-
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //moorhead transverse penciled
-                                            pattern = 34;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //transverse penciled
-                                            pattern = 10;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            } else if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        //dark doublehalfspangle
-                                        pattern = 21;
-                                        ground = 15;
-                                    } else {
-                                        //dark messy quail
-                                        pattern = 22;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //dark transverse penciled
-                                            //TODO what are the different qualities of transverse penciled
-                                            pattern = 34;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            //incomplete penciled
-                                            //TODO make incomplete transverse penciled
-                                            pattern = 10;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        //dark quail mealy
-                                        pattern = 23;
-                                        ground = 5;
-                                    }
-
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[100] == 2 || autosomalGenes[101] == 2) {
-                                        //solid black
-                                        pattern = 0;
-                                        ground = 15;
-                                    } else {
-                                        // leaky black
-                                        pattern = 18;
-                                        ground = 0;
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 1 && autosomalGenes[101] == 1) {
-                                        //leaky black
-                                        pattern = 18;
-                                        ground = 5;
-                                    } else {
-                                        //birchen
-                                        pattern = 1;
-                                        ground = 5;
-                                    }
-                                }
-                            }
-                        } else if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended patterned halfspangle
-                                            //TODO what is this pattern really?
-                                            pattern = 16;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //halfspangle
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        //incomplete columbian
-                                        pattern = 6;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended patterned transverse penciled
-                                            pattern = 34;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // transverse penciled
-                                            pattern = 10;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        // columbian
-                                        pattern = 5;
-                                        ground = 15;
-
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        //solid black
-                                        pattern = 0;
-                                        ground = 15;
-                                    } else {
-                                        //leaky black
-                                        pattern = 18;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        //leaky black
-                                        pattern = 18;
-                                        ground = 15;
-                                    } else {
-                                        //birchen
-                                        pattern = 1;
-                                        ground = 0;
-                                    }
-                                }
-                            }
-                        } else {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended patterned spangled
-                                            pattern = 14;
-                                            ground = 15;
-                                        } else {
-                                            // spangled
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended patterned incomplete quail
-                                            pattern = 24;
-                                            ground = 15;
-                                        } else {
-                                            // incomplete quail
-                                            pattern = 29;
-                                            ground = 5;
-                                        }
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended traverse penciled
-                                            pattern = 34;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //traverse penciled
-                                            pattern = 10;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //extended patterned incomplete quail
-                                            pattern = 24;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            // incomplete quail
-                                            pattern = 29;
-                                            ground = 5;
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    //solid black
-                                    pattern = 0;
-                                    ground = 15;
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        //leaky black
-                                        pattern = 18;
-                                        ground = 5;
-                                    } else {
-                                        //birchen
-                                        pattern = 1;
-                                        ground = 5;
-                                    }
-                                }
-                            }
-                        }
-
-                    } else if (autosomalGenes[24] == 2 || autosomalGenes[25] == 2) {
-                        //duckwing tree
-                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned halfspangled
-                                            pattern = 16;
-                                            ground = 0;
-                                        } else {
-                                            //  halfspangled
-                                            pattern = 25;
-                                            ground = 0;
-                                        }
-                                    } else {
-                                        //  incomplete quail
-                                        pattern = 29;
-                                        ground = 10;
-
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        //  moorhead columbian w/ less hackle markings
-                                        pattern = 6;
-                                        ground = 0;
-                                        moorhead = 1;
-                                    } else {
-                                        //  columbian w/ less hackle markings
-                                        pattern = 6;
-                                        ground = 0;
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete laced
-                                            pattern = 27;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            //  incomplete laced
-                                            pattern = 27;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        //  quail
-                                        pattern = 4;
-                                        ground = 5;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete laced?
-                                            pattern = 27;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            //  columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //  incomplete quail
-                                            pattern = 29;
-                                            ground = 15;
-                                        } else {
-                                            //  columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned spangled
-                                            pattern = 14;
-                                            ground = 15;
-                                        } else {
-                                            //  spangled
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        //  incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned transverse pencilled
-                                            pattern = 34;
-                                            ground = 5;
-                                        } else {
-                                            //  transverse pencilled
-                                            pattern = 10;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //  incomplete quail
-                                            pattern = 29;
-                                            ground = 15;
-                                        } else {
-                                            //  incomplete columbian w/ less hackle markings
-                                            pattern = 30;
-                                            ground = 15;
-
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete doublelaced
-                                            pattern = 21;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            //  incomplete doublelaced
-                                            pattern = 21;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        //  incomplete quail
-                                        pattern = 29;
-                                        ground = 5;
-
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned multiple laced duckwing
-                                            pattern = 26;
-                                            ground = 0;
-                                            moorhead = 1;
-                                        } else {
-                                            //  multiple laced duckwing
-                                            pattern = 15;
-                                            ground = 0;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            //  incomplete quail
-                                            pattern = 29;
-                                            ground = 0;
-                                        } else {
-                                            // duckwing
-                                            pattern = 2;
-                                            ground = 0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-
-                    } else if (autosomalGenes[24] == 3 || autosomalGenes[25] == 3) {
-                        //wheaten tree
-                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned halfspangled
-                                            pattern = 25;
-                                            ground = 5;
-                                        } else {
-                                            //  halfspangled
-                                            pattern = 25;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        // extended patterened incomplete columbian w/ less hackle markings
-                                        pattern = 30;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // moorhead incomplete columbian w/ less hackle markings
-                                            pattern = 361;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // nearly buff
-                                            pattern = 9;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // moorhead incomplete columbian w/ less hackle markings
-                                            pattern = 8;
-                                            ground = 15;
-                                        } else {
-                                            // buff
-                                            pattern = 361;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete laced
-                                            pattern = 20;
-                                            ground = 5;
-                                        } else {
-                                            //  incomplete laced
-                                            pattern = 27;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        //  quail
-                                        pattern = 4;
-                                        ground = 5;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete laced
-                                            pattern = 20;
-                                            ground = 5;
-                                        } else {
-                                            //  columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned spangled
-                                            pattern = 14;
-                                            ground = 15;
-                                        } else {
-                                            // spangled
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        // extended patterned incomplete columbian w/ less hackle markings
-                                        pattern = 31;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        // extended patterned incomplete columbian w/ less hackle markings
-                                        pattern = 30;
-                                        ground = 15;
-                                    } else {
-                                        // incomplete columbian w/ less hackle markings
-                                        pattern = 3;
-                                        ground = 15;
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned doublelaced
-                                            pattern = 13;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // double laced
-                                            pattern = 13;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        // extended patterned wheaten
-                                        pattern = 28;
-                                        ground = 10;
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        // extended patterned wheaten
-                                        pattern = 28;
-                                        ground = 10;
-                                    } else {
-                                        // wheaten
-                                        pattern = 3;
-                                        ground = 10;
-                                    }
-                                }
-                            }
-                        }
-
-                    } else if (autosomalGenes[24] == 4 || autosomalGenes[25] == 4) {
-                        //partidge tree
-                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterened halfspangled
-                                            pattern = 16;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // halfspangled
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        // extended patterened incomplete quail
-                                        pattern = 24;
-                                        ground = 5;
-                                    }
-                                } else {
-                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                        // moorhead
-                                        pattern = 8;
-                                        ground = 15;
-                                    } else {
-                                        // incomplete columbian w/ less hackle markings
-                                        pattern = 30;
-                                        ground = 15;
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned single laced
-                                            pattern = 33;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // single laced
-                                            pattern = 12;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        // quail
-                                        pattern = 4;
-                                        ground = 5;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned incomplete single laced
-                                            pattern = 32;
-                                            ground = 15;
-                                        } else {
-                                            // columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // lakenvelder
-                                            pattern = 7;
-                                            ground = 15;
-                                        } else {
-                                            // columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned spangled
-                                            pattern = 14;
-                                            ground = 15;
-                                        } else {
-                                            // spangled
-                                            pattern = 16;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        // incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned transverse penciled
-                                            pattern = 34;
-                                            ground = 5;
-                                        } else {
-                                            // transverse penciled
-                                            pattern = 10;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // incomplete quail
-                                            pattern = 29;
-                                            ground = 15;
-
-                                        } else {
-                                            // incomplete columbian w/ less hackle markings
-                                            pattern = 30;
-                                            ground = 15;
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned doublelaced
-                                            pattern = 13;
-                                            ground = 15;
-                                            moorhead = 1;
-                                        } else {
-                                            // doublelaced
-                                            pattern = 13;
-                                            ground = 15;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned partridge/brown halfspangled/laced? but darker head?
-                                            pattern = 20;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            // extended patterned partridge/brown halfspangled/laced?
-                                            pattern = 20;
-                                            ground = 5;
-                                        }
-                                    }
-                                } else {
-                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned multiple laced partridge
-                                            pattern = 26;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            // multiple laced partridge
-                                            pattern = 15;
-                                            ground = 5;
-                                        }
-                                    } else {
-                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                            // extended patterned partridge
-                                            pattern = 35;
-                                            ground = 5;
-                                            moorhead = 1;
-                                        } else {
-                                            // partridge
-                                            pattern = 35;
-                                            ground = 5;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    } else {
-                        eyes = 0;
-                    }
-
-
-                    int groundMod = 0;
-                    //ground colour tint
-                    if (isFemale) {
-                        if (sexlinkedGenes[0] == 1){
-                            //gold
-                            groundMod = groundMod + 2;
-                        }
-                    } else {
-                        if (sexlinkedGenes[0] == 1 && sexlinkedGenes[1] == 1) {
-                            //gold
-                            groundMod = groundMod + 2;
-                        } else if (sexlinkedGenes[0] == 1 || sexlinkedGenes[1] == 1) {
-                            //lemon
-                            groundMod = groundMod + 1;
-                        }
-                    }
-                    if (groundMod != 0 && (autosomalGenes[32] == 3 && autosomalGenes[33] == 3)) {
-                        //lemon or cream but backwards
-                        groundMod = groundMod + 1;
-                    }
-                    if (autosomalGenes[34] == 1 || autosomalGenes[35] == 1) {
-                        //mahogany or lemon cream counter
-                        groundMod = groundMod + 1;
-                    }
-                    if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
-                        groundMod = groundMod - 1;
-                    }
-
-                    if (groundMod < 0) {
-                        groundMod = 0;
-                    } else if (groundMod > 4) {
-                        groundMod = 4;
-                    }
-
-                    ground = ground + groundMod;
-
-                    if (pattern <= 340) {
-                        if (moorhead == 1) {
-                            moorheadtoggle = 1;
-                        }
-                        //black pattern shade genes
-                        //sets pattern to correct positioning pre:variation
-                        pattern = (pattern * ptrncolours);
-                        if (autosomalGenes[38] == 1 && autosomalGenes[39] == 1) {
-                            //domwhite
-                            pattern = pattern + 7;
-                            moorhead = 8;
-                        } else if (autosomalGenes[38] == 1 || autosomalGenes[39] == 1) {
-                            // spotted domwhite
-                            pattern = pattern + 7;
-                            moorhead = 8;
-                        } else {
-                            //if chocolate
-                            if (sexlinkedGenes[2] == 2 && (getOrSetIsFemale() || sexlinkedGenes[3] == 2)) {
-                                //if lavender
-                                if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
-                                    //is a dun variety
-                                    //if it is splash
-                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
-                                        //splash dun
-                                        pattern = pattern + 4;
-                                        moorhead = 5;
-                                    } else {
-                                        //dun
-                                        pattern = pattern + 8;
-                                        moorhead = 9;
-                                    }
-                                } else {
-                                    //is a chocolate variety
-                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
-                                        //splash choc
-                                        pattern = pattern + 5;
-                                        moorhead = 6;
-                                    } else if (autosomalGenes[40] != 1 || autosomalGenes[41] != 1) {
-                                        //dun
-                                        pattern = pattern + 8;
-                                        moorhead = 9;
-                                    } else {
-                                        //chocolate
-                                        pattern = pattern + 9;
-                                        moorhead = 10;
-                                    }
-                                }
-                            } else {
-                                //if lavender
-                                if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
-                                    //is a lavender variety
-                                    //if it is splash
-                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
-                                        //splash lavender
-                                        pattern = pattern + 3;
-                                        moorhead = 4;
-                                    } else {
-                                        //lavender
-                                        pattern = pattern + 6;
-                                        moorhead = 7;
-                                    }
-                                } else {
-                                    //is a black variety
-                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
-                                        //splash
-                                        pattern = pattern + 2;
-                                        moorhead = 3;
-                                    } else if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
-                                        //blue
-                                        if ((autosomalGenes[26] == 1 || autosomalGenes[27] == 1) && (autosomalGenes[24] == 5 || autosomalGenes[25] == 5)) {
-                                            //blue laced ... super special genes combo for blue andalusian type pattern
-                                            pattern = 360;
-                                            if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
-                                                    moorhead = 1;
-                                                }
-                                            } else {
-                                                moorhead = 2;
-                                            }
-                                        } else {
-                                            //blue
-                                            pattern = pattern + 1;
-                                            moorhead = 2;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    mottles = moorhead == 0 ? 1 : moorhead;
-                    if (moorheadtoggle == 0) {
-                        moorhead = 0;
-                    }
-                }
-
-                //white marking autosomalGenes
-                if (!this.getOrSetIsFemale() && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
-                    //Light Barred
-                    white = 2;
-                } else if ((this.getOrSetIsFemale() && sexlinkedGenes[6] == 2) || (!this.getOrSetIsFemale() && (sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2))) {
-                    //Dark Barred
-                    white = 1;
-                } else {
-                    if (autosomalGenes[22] >= 2 && autosomalGenes[23] >= 2) {
-                        if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
-                            //mottled
-                            white = 4;
-                        } else if (autosomalGenes[22] == 3 && autosomalGenes[23] == 3) {
-                            //white crest
-                            white = 3;
-                        } else {
-                            //mottled and white crest
-                            white = 5;
-                        }
-                    }
-                }
-
-                // figures out the shank, comb, and skin colour if its not albino
-                if (!isAlbino) {
-                    //gets comb colour
-                    if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
-                        //comb and shanks are fibro black
-                        comb = -1;
-                        shanks = 6;
-                    } else {
-                        comb = 5;
-                    }
-                    if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
-                        shanks = 5;
-//                        if (comb != 0) {
-//                            comb = 5;
-//                        }
-//                        // makes mulbery comb
-//                        if (autosomalGenes[30] == 2) {
-//                            comb = comb + 1;
-//                        }
-                    } else if (autosomalGenes[24] == 1 && autosomalGenes[25] == 1) {
-                        shanks = 5;
-//                        if (comb != 0) {
-//                            comb = 5;
-//                        }
-                    } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
-                        shanks = 5;
-//                        if (comb != 0) {
-//                            comb = 5;
-//                        }
-                    }
-                    //shanks starts at 3 btw
-
-                    if (shanks > 2) {
-                        // if splash or blue lighten by 1 shade
-                        if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
-                            shanks--;
-                        }
-                    }
-                    if (shanks > 2) {
-                        //if barred or mottled lighten by 1 shade
-                        if ((autosomalGenes[22] == 2 && autosomalGenes[23] == 2) || (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2))) {
-                            shanks--;
-                        }
-                    }
-                    if (shanks > 2) {
-                        //if lavender lighten by 1 shade
-                        if ((autosomalGenes[36] == 1 && autosomalGenes[37] == 1)) {
-                            shanks--;
-                        }
-                    }
-
-                    // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                    if ((autosomalGenes[24] != 5 && autosomalGenes[25] != 5) && (autosomalGenes[32] == 1 || autosomalGenes[33] == 1)) {
-                        shanks--;
-                    }
-
-                    // if dominant white lighten by 1 shade
-                    if (autosomalGenes[38] == 1 && autosomalGenes[39] == 1) {
-                        shanks--;
-                        if (comb != 2) {
-                            comb++;
-                        }
-                    }
-
-                    //if its charcoal
-                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
-                        shanks++;
-                        if (comb != 3)
-                        comb--;
-                    }
-
-                    //lightens comb to mulberry if lightness is extreme enough
-                    if (shanks < 4 && comb != 2) {
-                        comb = comb + 1;
-                    }
-
-                    if (autosomalGenes[166] == 2 && autosomalGenes[167] == 2) {
-                        //ressesive dark shanks
-                        shanks = shanks + 2;
-                    }
-
-                    //makes sure its not off the chart
-                    if (shanks < 0) {
-                        shanks = 0;
-                    } else if (shanks > 5) {
-                        shanks = 5;
-                    }
-
-
-
-                    if (comb > 5) {
-                        comb = 5;
-                    } else if (comb < 0) {
-                        comb = 0;
-                    }
-
-                    //makes the shanks and beak their white or yellow varient
-                    if (autosomalGenes[44] == 3 && autosomalGenes[45] == 3) {
-                        shanks = shanks + 11;
-                    } else if (autosomalGenes[44] != 1 && autosomalGenes[45] != 1) {
-                        shanks = shanks + 5;
-                    }
-
-                }
-
-                //face and ear size stuff
-                if (isFemale) {
-                    if (sexlinkedGenes[4] >= 2) {
-                        ears = 1;
-                    } else {
-                        ears = -1;
-                    }
-                } else {
-                    if (sexlinkedGenes[4] >= 2 && sexlinkedGenes[5] >= 2) {
-                        ears = 1;
-                    } else {
-                        ears = -1;
-                    }
-                }
-
-                if (autosomalGenes[162] == 163){
-                    if (autosomalGenes[162] >= 9 && autosomalGenes[162] <=16) {
-                        ears = ears +1;
-                    } else if (autosomalGenes[162] >= 17 && autosomalGenes[162] <=24) {
-                        ears = ears + 2;
-                    }
-                    if ((autosomalGenes[162] & 1) == 0) {
-                        earsW = earsW + 2;
-                    }
-                } else {
-//                    ears = ears - 1;
-                    if ((autosomalGenes[162] & 1) == 0) {
-                        if ((autosomalGenes[163] & 1) == 0) {
-                            earsW = earsW + 1;
-                        }
-                    } else if ((autosomalGenes[163] & 1) != 0) {
-                        earsW = earsW - 1;
-                    }
-                }
-
-                if (autosomalGenes[152] <= 4 || autosomalGenes[153] <= 4) {
-//                    ears = ears - 1;
-                } else {
-                    if (autosomalGenes[152] == autosomalGenes[153]) {
-                        if (autosomalGenes[152] >= 9 || autosomalGenes[153] >= 9) {
-                            ears = ears + 1;
-                        }
-                    } else {
-//                        ears = ears - 1;
-                    }
-
-                    if ((autosomalGenes[152] & 1) == 0) {
-                        earsW = earsW + 1;
-                    }
-                }
-
-                if (autosomalGenes[160] == autosomalGenes[161]) {
-                    if (autosomalGenes[160] >= 9) {
-                        if (autosomalGenes[160] >= 17) {
-                            ears = ears + 2;
-                        } else {
-                            ears = ears + 1;
-                        }
-                        earsW = earsW + 1;
-                    }
-                }
-
-                if (((autosomalGenes[160] & 1) == 0) && ((autosomalGenes[161] & 1) == 0)) {
-                    if (autosomalGenes[160] == autosomalGenes[161]) {
-                        earsW = earsW + 2;
-                    } else {
-                        earsW = earsW + 1;
-                    }
-                }
-
-                if (autosomalGenes[82] == 1) {
-                    ears = ears + 1;
-                }
-                if (autosomalGenes[83] == 1) {
-                    ears = ears + 1;
-                }
-
-                if (autosomalGenes[48] == 1) {
-                    ears = ears - 3;
-                }
-                if (autosomalGenes[49] == 1) {
-                    ears = ears - 3;
-                }
-
-                if (autosomalGenes[56] == 1 || autosomalGenes[57] == 1) {
-                    ears = ears - 2;
-                }
-
-                if (autosomalGenes[80] == 1 || autosomalGenes[81] == 1) {
-                    ears = ears - 1;
-                }
-
-                if (autosomalGenes[158] == 1 || autosomalGenes[159] == 1) {
-//                    ears = ears - 1;
-                    earsW = earsW - 1;
-                } else if (autosomalGenes[158] == 2 || autosomalGenes[159] == 2) {
-//                    ears = ears - 1;
-                } else if (autosomalGenes[158] == 3 || autosomalGenes[159] == 3) {
-                    if (autosomalGenes[158] == 4 || autosomalGenes[159] == 4) {
-                        ears = ears + 1;
-                        earsW = earsW + 1;
-                    } else {
-                        ears = ears + 1;
-                    }
-                } else if (autosomalGenes[158] == 4 || autosomalGenes[159] == 4) {
-                    earsW = earsW + 1;
-                } else {
-                    ears = ears + 1;
-                    earsW = earsW + 1;
-                }
-
-
-                //at max adds 2 if less than 8
-                if (autosomalGenes[154] <= 3 || autosomalGenes[155] <= 3) {
-                    ears = ears - 1;
-                } else if (autosomalGenes[154] == autosomalGenes[155]) {
-                    if (autosomalGenes[154] >= 7) {
-                        if (autosomalGenes[154] >= 10) {
-                            if (ears <= 7) {
-                                ears = ears + 2;
-                            } else {
-                                ears = ears + 1;
-                            }
-                        } else {
-                            ears = ears + 1;
-                        }
-                    }
-                }
-
-
-
-                //at max adds 2 if less than 8
-                if (!(autosomalGenes[156] <= 3 || autosomalGenes[157] <= 3) && (autosomalGenes[156] == autosomalGenes[157])) {
-                    if (autosomalGenes[156] >= 6) {
-                        if (autosomalGenes[156] >= 10) {
-                            if (ears <= 7) {
-                                ears = ears + 2;
-                            } else {
-                                ears = ears + 1;
-                            }
-                        } else {
-                            ears = ears + 1;
-                        }
-                    }
-                }
-
-                if (autosomalGenes[84] == 1 || autosomalGenes[85] == 1) {
-                    ears = ears/2;
-                }
-
-
-                if ((autosomalGenes[154] & 1) == 0 && (autosomalGenes[155]) == 0) {
-                    earsW = earsW + 1;
-                } else if ((autosomalGenes[154] & 1) != 0 && (autosomalGenes[155]) != 0) {
-                    earsW = earsW - 1;
-                }
-
-                if (autosomalGenes[164] == 1 || autosomalGenes[165] == 1) {
-                    earsW = earsW - 3;
-                } else if (autosomalGenes[164] == 2 || autosomalGenes[165] == 2) {
-                    if (autosomalGenes[164] >= 4 || autosomalGenes[165] >= 4) {
-                        earsW = earsW - 1;
-                    }
-                } else if (autosomalGenes[164] == 4 || autosomalGenes[165] == 4) {
-                    if (autosomalGenes[164] >= 5 || autosomalGenes[165] >= 5) {
-                        earsW = earsW + 1;
-                    }
-                } else if (autosomalGenes[164] == autosomalGenes[165]) {
-                    earsW = earsW + 2;
-                }
-
-                if (sexlinkedGenes[18] == 2 || (!isFemale && sexlinkedGenes[19] == 2)) {
-                    earsW = earsW/2;
-                }
-
-                if (isFemale) {
-                    if (sexlinkedGenes[12] == 5) {
-                        if (earsW <= 3) {
-                            earsW = earsW + 1;
-                        } else if (earsW >= 5) {
-                            earsW = earsW - 1;
-                        }
-                    } else if (sexlinkedGenes[12] == 6) {
-                        earsW = earsW + 1;
-                    }
-                } else {
-                    if (sexlinkedGenes[12] >= 5 && sexlinkedGenes[13] >= 5) {
-                        earsW = earsW + 1;
-                    } else if (sexlinkedGenes[12] >= 4 && sexlinkedGenes[13] >= 4) {
-                        if (earsW <= 3) {
-                            earsW = earsW + 1;
-                        } else if (earsW >= 5) {
-                            earsW = earsW - 1;
-                        }
-                    }
-                }
-
-                // this sets ear whiteness to actual value
-                if (earsW <= 2) {
-                    earsW = 0;
-                    //red
-                } else if (earsW >= 6) {
-                    earsW = 2;
-                    //white
-                } else {
-                    earsW = 1;
-                    //mottled
-                }
-
-                //ear size fixer
-                if (ears < 0) {
-                    ears = 0;
-                } else if (ears > 9) {
-                    ears = 9;
-                }
-
-                //ear colour calculation
-                if (ears != 0) {
-                    if (comb == 0) {
-                        //face is fibro
-                        if (ears >= 3) {
-                            face = 7;
-                        }
-                        if (earsW == 2) {
-                            //blue
-                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
-                                //green
-                                ears = ears + 110;
-                            } else {
-                                //blue
-                                ears = ears + 80;
-                            }
-                        } else if (earsW == 1) {
-                            //mottled black
-                            ears = ears + 50;
-                        } else {
-                            //black
-                            ears = ears + 20;
-                        }
-                    } else if (comb == 3) {
-                        //face is moorish
-                        face = 7;
-                        if (earsW == 2) {
-                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
-                                //yellow
-                                ears = ears + 90;
-                            } else {
-                                //white ears
-                                ears = ears + 60;
-                            }
-                        } else if (earsW == 1) {
-                            //mottled moorish ears (black and white)
-                            ears = ears + 120;
-                        } else {
-                                //black
-                                ears = ears + 20;
-                            }
-                    } else if (comb == 1 || comb == 4) {
-                        //face is mulberry based
-                        face = 4;
-                        if (earsW == 2) {
-                            //ear is white
-                            if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
-                                if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
-                                    //light green
-                                    ears = ears + 100;
-                                } else {
-                                    //ear is light blue
-                                    ears = ears + 70;
-                                }
-                            } else {
-                                if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
-                                    //yellow
-                                    ears = ears + 90;
-                                } else {
-                                    //white ears
-                                    ears = ears + 60;
-                                }
-                            }
-                        } else if (earsW == 1) {
-                            ears = ears + 40;
-                        } else {
-                            //ears mulberry
-                            ears = ears + 10;
-                        }
-                    } else {
-                        //face is red
-                        face = 1;
-                        if (earsW == 2) {
-                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
-                                //yellow
-                                ears = ears + 90;
-                            } else {
-                                //white ears
-                                ears = ears + 60;
-                            }
-                        } else if (earsW == 1) {
-                            //mottled red ears
-                            ears = ears + 30;
-                        }
-                    }
-                }
-
-                if (autosomalGenes[0] == 2) {
-                    eyes = 2;
-                }
-
-                if (!(white == 3 || white == 5) || (autosomalGenes[106] == 2 && autosomalGenes[107] == 2)) {
-                    mottles = 0;
-                }
-
-                //after finished autosomalGenes
-//                addTextureToAnimal("new_ground.png");
-//                addTextureToAnimal("new_lace.png");
-//                addTextureToAnimal("new_mottles.png");
-                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
-                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
-
-                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);
-                addTextureToAnimal(CHICKEN_TEXTURES_EARS, ears, e -> e >= 1);
-                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
-
-            }else{
-                int shanks = 4;
-                int comb = 2;
-                int eyes = 1;
-                int downBase = 1;
-                int red = 0;
-                int black = 0;
-                int white = 0;
-
-
-                boolean isAlbino = false;
-
-                if (autosomalGenes[20] != 1 && autosomalGenes[21] != 1) {
-                    downBase = 0;
-                    if (autosomalGenes[20] == 3 && autosomalGenes[21] == 3) {
-                        //albino
-                        shanks = 6;
-                        comb = 2;
-                        eyes = 0;
-                        isAlbino = true;
-                    }
-                }
-
-                // figures out the shank, comb, and skin colour if its not albino
-                if (!isAlbino) {
-                    //gets comb colour
-                    if (autosomalGenes[24] == 1 && autosomalGenes[25] == 1) {
-                        shanks = 3;
-                        // makes mulbery comb
-                        if (autosomalGenes[30] == 2) {
-                            comb = 1;
-                        }
-                    }
-                    if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
-                        //comb and shanks are black
-                        comb = 0;
-                        shanks = 3;
-                    }
-                    //shanks starts at 3 btw
-                    // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                    if ((autosomalGenes[24] != 1 && autosomalGenes[25] != 1) && (autosomalGenes[32] == 1 || autosomalGenes[33] == 1)) {
-                        shanks--;
-                    }
-
-                    //if barred or mottled lighten by 1 shade
-                    if ((autosomalGenes[22] == 2 && autosomalGenes[23] == 2) || (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2))) {
-                        shanks--;
-                    }
-
-                    // if dominant white or lavender lighten by 1 shade
-                    if ((autosomalGenes[38] == 1 && autosomalGenes[39] == 1) || (autosomalGenes[36] == 1 && autosomalGenes[37] == 1)) {
-                        shanks--;
-                    }
-
-                    // if splash or blue lighten by 1 shade
-                    if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
-                        shanks--;
-                    }
-
-                    //if its melanized
-//                    if (Melanin == 2) {
-//                        shanks++;
-//                    }
-
-                    if (autosomalGenes[166] == 2 && autosomalGenes[167] == 2) {
-                        shanks++;
-                    }
-
-                    //makes sure its not off the chart
-                    if (shanks < 0) {
-                        shanks = 0;
-                    } else if (shanks > 3) {
-                        shanks = 3;
-                    }
-
-                    //lightens comb to mulberry if lightness is extreme enough
-                    if (shanks < 2 && comb == 0) {
-                        comb = 1;
-                    }
-
-                    //makes the shanks and beak their white or yellow varient
-                    if (autosomalGenes[44] != 1 && autosomalGenes[45] != 1) {
-                        shanks = shanks + 5;
-                    }
-
-                    if (downBase != 0) {
-
-                        if (sexlinkedGenes[0] == 2 && (isFemale || (!isFemale && sexlinkedGenes[1] == 2))) {
-                            downBase = 0;
-                        }
-
-                        if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
-                            // is black
-                            if ((autosomalGenes[30] == 1 || autosomalGenes[31] == 1) && (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) && (autosomalGenes[28] != 1 && autosomalGenes[28] != 1)) {
-                                black = 13;
-                            } else {
-                                black = 7;
-                            }
-
-                        } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
-                            //is birchen
-                            if (((autosomalGenes[30] == 1 || autosomalGenes[31] == 1) || (autosomalGenes[100] == 2 && autosomalGenes[101] == 2)) && (autosomalGenes[28] != 1 && autosomalGenes[28] != 1)) {
-                                black = 13;
-                            } else {
-                                black = 7;
-                            }
-                        } else if (autosomalGenes[24] == 2 || autosomalGenes[25] == 2) {
-                            //is duckwing
-                            red = 3;
-                            black = 1;
-                        } else if (autosomalGenes[24] == 3 || autosomalGenes[25] == 3) {
-                            //is wheaten
-                            if (autosomalGenes[34] == 1 && autosomalGenes[35] == 1) {
-                                red = 1;
-                            } else if (autosomalGenes[34] == 1 || autosomalGenes[35] == 1) {
-                                red = 2;
-                            }
-                        } else {
-                            //is partridge
-                            red = 2;
-                            black = 1;
-                        }
-
-                        //white marking genes
-                        if (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2)) {
-                            //Barred
-                            white = 2;
-                            if (!isFemale && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
-                                white = 2;
-                            }
-                        } else {
-                            if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
-                                //mottled
-                                white = 1;
-                            }
-                        }
-
-                        if (black != 0) {
-                            if ((autosomalGenes[38] == 1 || autosomalGenes[39] == 1) || (autosomalGenes[40] == 2 && autosomalGenes[41] == 2)) {
-                                //white or splash
-                                black = black + 1;
-                            } else if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
-                                if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
-                                    //dun
-                                    black = black + 5;
-                                } else {
-                                    //lav
-                                    black = black + 2;
-                                }
-                            } else if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
-                                if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
-                                    //dun
-                                    black = black + 5;
-                                } else {
-                                    //blue
-                                    black = black + 3;
-                                }
-                            } else if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
-                                //choc
-                                black = black + 4;
-                            }
-
-                        }
-                    }
-                }
-
-                if (autosomalGenes[0] == 2) {
-                    eyes = 2;
-                }
-
-                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBASE, downBase, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_CHICKRED, red, r -> r != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBLACK, black, b -> b != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_CHICKWHITE, white, w -> w != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
-            }
-        }
+        calculateChickenTextures(this);
     }
 
     @Override
@@ -2380,29 +885,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getEnhancedAnimalAge();
-        int bodyType;
+        int bodyType = 0;
         int meatSize;
         int featherCount = random.nextInt(4+looting)-1;
 
         if (genes[146] == 2 && genes[147] == 2) {
-            if (genes[148] == 2 && genes[149] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
+            if (genes[148] != 2 || genes[149] != 2) {
                 //big body
                 bodyType = 1;
             }
         } else if (genes[148] == 2 && genes[149] == 2) {
-            if (genes[146] == 2 || genes[147] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
+            if (genes[146] != 2 && genes[147] != 2) {
                 //small body
                 bodyType = -1;
             }
-        } else {
-            //normal body
-            bodyType = 0;
         }
 
         if (age < 60000) {
@@ -2438,14 +934,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKSMALL.get(), 1 + looting);
                     }
                 } else if (meatSize == 2) {
-                    dropMeatType = "rawchicken_darkbig";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKBIG.get(), 1 + looting);
                     }
                 } else {
-                    dropMeatType = "rawchicken_dark";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARK.get(), 1 + looting);
                     } else {
@@ -2454,21 +948,18 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
             } else {
                 if (meatSize == 1) {
-                    dropMeatType = "rawchicken_palesmall";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALESMALL.get(), 1 + looting);
                     }
                 } else if (meatSize == 2) {
-                    dropMeatType = "rawchicken";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALE.get(), 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALE.get(), 1 + looting);
                     }
                 } else {
-                    dropMeatType = "rawchicken_pale";
                     if (this.isOnFire()) {
                         meatStack = new ItemStack(Items.COOKED_CHICKEN, 1 + looting);
                     }
@@ -2522,6 +1013,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.addAdditionalSaveData(compound);
 
         compound.putBoolean("IsChickenJockey", this.isChickenJockey());
+        compound.putFloat("NestQuality", this.currentNestScore);
+        compound.putInt("NestPosX", this.getNest().getX());
+        compound.putInt("NestPosY", this.getNest().getY());
+        compound.putInt("NestPosZ", this.getNest().getZ());
 
     }
 
@@ -2532,7 +1027,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.readAdditionalSaveData(compound);
 
         setChickenJockey(compound.getBoolean("IsChickenJockey"));
-
+        this.currentNestScore = compound.getFloat("NestQuality");
+        this.setNest(compound.getInt("NestPosX"), compound.getInt("NestPosY"), compound.getInt("NestPosZ"));
     }
 
     @Nullable
@@ -3247,5 +1743,244 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.gestationTimer = 96000;
     }
 
+    public boolean isGoodNestSite(BlockPos pos) {
+        ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level.getBlockEntity(pos);
+        if (nestTileEntity!=null) {
+            return !nestTileEntity.isFull();
+        } else {
+            if (!this.level.isEmptyBlock(pos) && this.level.isEmptyBlock(pos.above())) {
+                int blocked = 0;
+                int notblocked = 0;
+                if (this.level.isEmptyBlock(pos.north())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.east())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.south())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.west())) {
+                    notblocked++;
+                } else {
+                    blocked++;
+                }
+                if (this.level.isEmptyBlock(pos.above().above())) {
+                    return blocked >= 3;
+                } else {
+                    return notblocked >= 1 && blocked >= 2;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void rateNest(ChickenNestTileEntity nestTileEntity, BlockPos pos, boolean force) {
+        float score;
+        int blocked = 0;
+        if (!this.level.isEmptyBlock(pos.north())) {
+            blocked++;
+        }
+        if (!this.level.isEmptyBlock(pos.east())) {
+            blocked++;
+        }
+        if (!this.level.isEmptyBlock(pos.south())) {
+            blocked++;
+        }
+        if (!this.level.isEmptyBlock(pos.west())) {
+            blocked++;
+        }
+        if (this.level.isEmptyBlock(pos.above())) {
+            score = (blocked*0.1F)+(nestTileEntity.isEmpty()||nestTileEntity.isFull()?0.0F:0.4F);
+        } else {
+            score = blocked==4?0.0F:((blocked+1)*0.1F)+(nestTileEntity.isEmpty()||nestTileEntity.isFull()?0.0F:0.4F)+0.1F;
+        }
+
+        if (force) {
+            this.currentNestScore = score;
+            this.setNest(pos);
+        } else {
+            if (this.currentNestScore <= 0.0F) {
+                if (-score < this.currentNestScore) {
+                    this.currentNestScore = -score;
+                    this.setNest(pos);
+                }
+            } else if ((this.currentNestScore + ((1.0F - this.currentNestScore) * 0.1F)) < score) {
+                this.currentNestScore = -score;
+                this.setNest(pos);
+            }
+        }
+    }
+
+    public void rateChickenNestSite(BlockPos pos) {
+        if (this.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
+            rateNest(nestTileEntity, pos, false);
+        } else {
+            float score;
+            int blocked = 0;
+            if (!this.level.isEmptyBlock(pos.north())) {
+                blocked++;
+            }
+            if (!this.level.isEmptyBlock(pos.east())) {
+                blocked++;
+            }
+            if (!this.level.isEmptyBlock(pos.south())) {
+                blocked++;
+            }
+            if (!this.level.isEmptyBlock(pos.west())) {
+                blocked++;
+            }
+
+            if (this.level.isEmptyBlock(pos.above())) {
+                score = (blocked * 0.1F);
+            } else {
+                score = blocked == 4 ? 0.0F : ((blocked + 1) * 0.1F) + 0.1F;
+            }
+
+            if (this.currentNestScore <= 0.0F) {
+                if (-score < this.currentNestScore) {
+                    this.currentNestScore = -score;
+                    this.setNest(pos);
+                }
+            } else if ((this.currentNestScore + ((1.0F - this.currentNestScore) * 0.1F)) < score) {
+                this.currentNestScore = -score;
+                this.setNest(pos);
+            }
+        }
+    }
+
+    static class GoToNestGoal extends Goal {
+        private final EnhancedChicken chicken;
+        private final double speed;
+        private boolean stuck;
+        private int closeToHomeTryTicks;
+
+        GoToNestGoal(EnhancedChicken turtle, double speedIn) {
+            this.chicken = turtle;
+            this.speed = speedIn;
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean canUse() {
+            if (this.chicken.isSleeping()) {
+                return false;
+            } else if (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) {
+                return true;
+            } else {
+                return !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 64.0D);
+            }
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void start() {
+            this.stuck = false;
+            this.closeToHomeTryTicks = 0;
+        }
+
+        /**
+         * Reset the task's internal state. Called when this task is interrupted by another one
+         */
+        public void stop() {
+
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean canContinueToUse() {
+            return !chicken.isSleeping() && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) && !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 2.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            BlockPos blockpos = this.chicken.getNest();
+            boolean flag = blockpos.closerToCenterThan(this.chicken.position(), 16.0D);
+            if (flag) {
+                ++this.closeToHomeTryTicks;
+            }
+
+            if (this.chicken.getNavigation().isDone()) {
+                Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
+                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                if (vec31 == null) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.chicken, 8, 7, vec3, (double)((float)Math.PI / 2F));
+                }
+
+                if (vec31 != null && !flag && !this.chicken.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 5, vec3, (double)((float)Math.PI / 2F));
+                }
+
+                if (vec31 == null) {
+                    this.stuck = true;
+                    return;
+                }
+
+                this.chicken.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
+            }
+
+        }
+    }
+
+    static class LayEggGoal extends MoveToBlockGoal {
+
+        private final EnhancedChicken chicken;
+
+        LayEggGoal(EnhancedChicken chicken, double speed) {
+            super(chicken, speed, 16);
+            this.chicken = chicken;
+        }
+
+        @Override
+        public double acceptedDistance() {
+            return 1.0D;
+        }
+
+        public boolean canUse() {
+            if (chicken.isSleeping()) return false;
+            if (chicken.getNest()==BlockPos.ZERO) return false;
+            if (!(EanimodCommonConfig.COMMON.omnigenders.get() || chicken.getOrSetIsFemale())) return false;
+            return this.chicken.timeUntilNextEgg < 800;
+        }
+
+        public boolean canContinueToUse() {
+            return !chicken.isSleeping() && chicken.getNest()!=BlockPos.ZERO && this.chicken.timeUntilNextEgg < 800;
+        }
+
+        public void tick() {
+            super.tick();
+            BlockPos blockPos = this.chicken.blockPosition();
+            if (this.isReachedTarget()) {
+                if (chicken.isGoodNestSite(blockPos)) {
+                    if (!this.chicken.isBrooding()) chicken.setBrooding(true);
+                    Level world = chicken.level;
+                    if (world.isEmptyBlock(blockPos)) {
+                        world.setBlock(blockPos, ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                    } else {
+                        this.chicken.moveTo(this.chicken.getNest().getX()+0.5D,this.chicken.getNest().getY(), this.chicken.getNest().getZ()+0.5D, 0.0F, 0.0F);
+                    }
+                } else {
+                    chicken.setNest(BlockPos.ZERO);
+                }
+            }
+        }
+
+        @Override
+        protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
+            return worldIn.getBlockEntity(pos) instanceof ChickenNestTileEntity || worldIn.isEmptyBlock(pos);
+        }
+    }
 }
 

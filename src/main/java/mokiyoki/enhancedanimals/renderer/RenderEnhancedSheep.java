@@ -55,7 +55,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_SHEEP_TEXTURE_LOCATION, textureGrouping, colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_SHEEP_TEXTURE_LOCATION, textureGrouping, colourRGB, 128, 64));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

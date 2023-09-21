@@ -409,5 +409,6 @@
   "eanimod.animalinfocontainer.weeks" : "weeks",
   "eanimod.animalinfocontainer.months" : "months",
   "eanimod.animalinfocontainer.years" : "years",
-  "eanimod.animalinfocontainer.ancient" : "ancient"
+  "eanimod.animalinfocontainer.ancient" : "ancient",
+  "eanimod.subtitle.rooster_crow" : "Rooster crowing"
 }

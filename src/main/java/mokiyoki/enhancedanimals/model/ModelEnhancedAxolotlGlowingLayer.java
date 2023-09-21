@@ -60,7 +60,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                EnhancedLayeredTexturer layeredTexture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration);
+                EnhancedLayeredTexturer layeredTexture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration, 64, 64);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, layeredTexture);
                 DrawnTexture texture = new DrawnTexture("eanimod:textures/entities/axolotl/blank.png", layeredTexture, getGlowingParts(genes));
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);

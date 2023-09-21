@@ -1739,9 +1739,32 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, boolean hasTexture) {
+        if (hasTexture) textureGroup.addTextureLayers(new TextureLayer(texture));
+        this.texturesIndexes.add(String.valueOf(hasTexture?0:1));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texture));
         this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addIndividualTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, Integer RGB) {
+        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
+        textureLayer.setRGB(RGB);
+        textureGroup.addTextureLayers(textureLayer);
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(String.valueOf(RGB));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, String textureID, Integer RGB) {
+        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
+        textureLayer.setRGB(RGB);
+        textureGroup.addTextureLayers(textureLayer);
+        this.texturesIndexes.add(textureID);
+        this.texturesIndexes.add(String.valueOf(RGB));
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
@@ -1769,7 +1792,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName) {
+        if (textureName.isEmpty()) {
+            this.texturesIndexes.add(String.valueOf(0));
+        } else {
+            textureGroup.addTextureLayers(new TextureLayer(texture));
+            this.texturesIndexes.add(String.valueOf(textureName));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
         this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);

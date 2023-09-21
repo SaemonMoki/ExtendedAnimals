@@ -32,8 +32,6 @@ public class EggCartonContainer extends AbstractContainerMenu {
         checkContainerSize(p_i50066_3_, 16);
         this.inventory = p_i50066_3_;
         p_i50066_3_.startOpen(playerInventoryIn.player);
-        int i = 2;
-        int j = 8;
 
         for(int k = 0; k < 2; ++k) {
             for(int l = 0; l < 8; ++l) {

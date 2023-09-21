@@ -447,10 +447,6 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         double d0;
         double d1;
 
-        System.out.println("MouseX: " + p_mouseClicked_1_ + " i = " + i);
-        System.out.println("MouseY: " + p_mouseClicked_3_+ " j = " + j);
-
-
         if (this.menu.enhancedAnimal.canHaveChest()) {
             if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
                 d0 = p_mouseClicked_1_ - (double) (i + 140);
@@ -743,7 +739,6 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 else
                     uiMessage.accept(new TranslatableComponent("screenshot.success", component));
             } catch (Exception exception) {
-                System.out.print("Couldn't save screenshot: " + (Throwable)exception);
                 uiMessage.accept(new TranslatableComponent("screenshot.failure", exception.getMessage()));
             } finally {
                 nativeimage.close();

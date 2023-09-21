@@ -8,7 +8,7 @@ public class PigBreeds {
     public static final Breed LARGEWHITE = new Breed(new Breed.Properties().setData("LargeWhite", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","3").add(12, "1","1").add(18, "2").add(32, "2","2","2","2").add(68, "3","3","1","3","3","3")));
     public static final Breed DUROC = new Breed(new Breed.Properties().setData("Duroc", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","4").add(10, "1","3","1").add(32, "2","2", "2","2").add(130, "1", "2", "2", "2", "2", "2").add(142, "2", "2").add(150, "2")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","4").add(10, "1","3","1").add(32, "2","2", "2","2").add(134, "1", "2", "2", "2", "2", "2").add(142, "2", "2").add(150, "2")));
     public static final Breed HAMPSHIRE = new Breed(new Breed.Properties().setData("Hampshire", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "5","1").add(12, "2","1").add(32, "2","1","2","2").add(68, "3","3","1","3","3","3")));
     public static final Breed BERKSHIRE = new Breed(new Breed.Properties().setData("Berkshire", Biomes.FOREST, Breed.Rarity.ORDINARY)
@@ -29,7 +29,7 @@ public class PigBreeds {
     public static final Breed TAMWORTH = new Breed(new Breed.Properties().setData("Tamworth", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3").add(12, "3","1").add(32, "2","1","2","2").add(62, "2","1")));
     public static final Breed MANGALITSA = new Breed(new Breed.Properties().setData("Mangalitsa", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1", "4").add(12, "3","1").add(32, "2","1","2","3").add(62, "1","1")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2", "4").add(12, "3","1").add(32, "2","1","2","3").add(62, "1","1")));
     public static final Breed HEREFORDPIG = new Breed(new Breed.Properties().setData("HerefordPig", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4").add(12, "9","3","3").add(32, "2","1","2","2").add(62, "1","1")));
 

@@ -666,16 +666,21 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.butt7.show(pig.shape == 3);
             this.butt8.show(pig.shape == 4);
 
-            float shoulderScaling = 1.0F + (pig.muscle*0.05F) + (pig.fat*0.04F);
-            float buttScaling = 1.0F + (pig.muscle*0.075F) + (pig.fat*0.08F);
-            float muscleWidth = (pig.muscle*0.025F);
-            float bodyScaling = 1.0F + (pig.fat*0.15F) - (pig.muscle*0.05F);
+            float woolThickness = pig.wool * 0.1F;
+            float shoulderScaling = 1.0F + (pig.muscle*0.05F) + (pig.fat*0.05F) + (woolThickness*0.7F);
+            float buttScaling = 1.0F + (pig.muscle*0.075F) + (pig.fat*0.08F) + (woolThickness*0.7F);
+            float bodyScaling = 1.0F + (pig.fat*0.15F) - (pig.muscle*0.05F) + (woolThickness*0.7F);
+            float shoulderWidth = (pig.muscle*0.025F) + (pig.fat*0.025F);
+            float buttWidth = (pig.muscle*0.025F);
+            float shoulderHeight = (pig.muscle*0.02F);
             float bodyLength = (pig.muscle*0.1F);
-            float shoulderHeight = (pig.muscle*0.0F);
-            float tummyHeight = -(pig.fat*0.08F);
-            float buttHeight = -(pig.fat*0.025F);
+            float shoulderZ = (pig.muscle*0.02F);
+            float tummyZ = -(pig.fat*0.08F);
+            float buttZ = -(pig.fat*0.025F);
             float legForward = -(pig.muscle*0.15F);
+            legForward = 0.0F;
             float headHeight = (pig.muscle*0.025F);
+            float cheekFat = (pig.fat*0.01F);
 
             if (pigModelData.saddle != SaddleType.NONE) {
                 if (pigModelData.saddle == SaddleType.ENGLISH) {
@@ -686,12 +691,15 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
             float finalPigSize = ((3.0F * pigModelData.size * pigModelData.growthAmount) + pigModelData.size) / 4.0F;
 
-            mapOfScale.put("neckS", ModelHelper.createScalings(shoulderScaling + muscleWidth, shoulderScaling, shoulderScaling, 0.0F, 0.0F, shoulderHeight));
-            mapOfScale.put("butt6", ModelHelper.createScalings(buttScaling + muscleWidth, buttScaling, buttScaling, 0.0F, 0.0F, buttHeight));
-            mapOfScale.put("body13", ModelHelper.createScalings(bodyScaling, bodyScaling, bodyScaling, 0.0F, 0.0F, tummyHeight));
+            mapOfScale.put("neckS", ModelHelper.createScalings(shoulderScaling + shoulderWidth, shoulderScaling, shoulderScaling+shoulderHeight, 0.0F, 0.0F, shoulderZ));
+            mapOfScale.put("butt6", ModelHelper.createScalings(buttScaling + buttWidth, buttScaling, buttScaling, 0.0F, 0.0F, buttZ));
+            mapOfScale.put("body13", ModelHelper.createScalings(bodyScaling, bodyScaling, bodyScaling, 0.0F, 0.0F, tummyZ));
+            mapOfScale.put("cheeks", ModelHelper.createScalings(1+woolThickness+cheekFat, 1+woolThickness+cheekFat, 1+woolThickness+cheekFat, 0.0F, 0.0F, 0.0F));
             mapOfScale.put("legFL", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, legForward));
             mapOfScale.put("legFR", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, legForward));
             mapOfScale.put("bHead", ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, headHeight));
+            mapOfScale.put("bEarL", ModelHelper.createScalings(1+woolThickness, 1+woolThickness, 1+woolThickness, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("bEarR", ModelHelper.createScalings(1+woolThickness, 1+woolThickness, 1+woolThickness, 0.0F, 0.0F, 0.0F));
 
             poseStack.pushPose();
             poseStack.scale(finalPigSize, finalPigSize, finalPigSize);

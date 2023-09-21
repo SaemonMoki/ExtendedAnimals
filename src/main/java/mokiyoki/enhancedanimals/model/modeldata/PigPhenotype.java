@@ -9,15 +9,32 @@ public class PigPhenotype implements Phenotype {
     public float tailCurlAmount;
     public int shape;
 
-    public float muscle;
-    public float fat;
+    public float muscle = 0.0F;
+    public float fat = 0.0F;
+    public float wool = 0.0F;
 
     public PigPhenotype(int[] gene,char uuid) {
         this.tailCurl = Character.isLetter(uuid);
 
         float earSize = 0.0F;
         float earFlop = 1.0F;
-        this.muscle = 0.0F;
+        for (int i = 166; i < 170; i++) {
+            if (gene[i] == 2) {
+                muscle += 0.125;
+            }
+            else if (gene[i] == 3) {
+                muscle += 0.25;
+            }
+        }
+        for (int i = 170; i < 174; i++) {
+            if (gene[i] == 2) {
+                fat += 0.125;
+            }
+            else if (gene[i] == 3) {
+                fat += 0.25;
+            }
+        }
+
         /*
         //muscle test
         if (gene[154] == 2 || gene[155] == 2) {
@@ -30,7 +47,16 @@ public class PigPhenotype implements Phenotype {
         if (gene[156] == 2 || gene[157] == 2) {
             fat = 1.0F;
         }*/
-
+        if (gene[36] != 1 && gene[37] != 1) {
+            if (gene[38] == 3 || gene[39] == 3) {
+                if (gene[40] == 1 && gene[41] == 1) {
+                    this.wool = 1.0F;
+                }
+                else if (gene[40] == 1 || gene[41] == 1) {
+                    this.wool = 0.7F;
+                }
+            }
+        }
         //SSC1
         if (gene[68] == 2 || gene[69] == 2) {
             earSize = earSize + 0.12F;

@@ -135,6 +135,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "brindle_med_coat_1.png", "brindle_med_coat_2.png", "brindle_med_coat_3.png", "brindle_med_coat_4.png",
             "brindle_het_med_1.png", "brindle_het_med_2.png", "brindle_het_med_3.png", "brindle_het_med_4.png", "brindle_het_med_5.png",
     };
+    private final int idx_brindle = 7;
+    private final int idx_brindle_med = 12;
+    private final int idx_brindle_het_med = 16;
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
     		"pigbase.png", "solid_white.png", "agouti_base.png", "black_berkshirebrindle.png", "black_oopsallspots.png", "black_brindle.png", "black_brindlesmall.png",
     		"brindle_coat_1.png", "brindle_coat_2.png", "brindle_coat_3.png", "brindle_coat_4.png", "brindle_coat_5.png",
@@ -201,11 +204,14 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_SWALLOWBELLY = new String[] {
-            "", "pattern_swallowbelly.png"
+            "", "pattern_swallowbelly.png", "pattern_swallowbelly_wideband.png",
     };
 
-    private float[] swallowbellyColor = {0.0F, 0.0F, 0.0F};
-    
+    private static final String[] PIG_TEXTURES_WHITEBELLY = new String[] {
+            "", "pattern_whitebelly.png", "pattern_whitebelly.png",
+    };
+    private float[] swallowbellyColor = {-1,-1,-1};
+
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     private UUID angerTargetUUID;
@@ -461,6 +467,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             pigletRange = 3;
         } else if (genes[58] == 2 || genes[59] == 2) {
             pigletAverage = 8;
+        }
+
+        //hypertrophy reduces fertility
+        if (genes[172] == 1 || genes[173] == 1) {
+            pigletAverage = (pigletAverage*2)/3;
         }
 
         if (age < 108000) {
@@ -777,6 +788,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int skin = 0;
             int hooves = 0;
             int swallowbelly = 0;
+            int whitebelly = 0;
             int whitePointsFace = 0;
             int whitePointsLeg = 0;
             int whiteExtension = 0;
@@ -784,7 +796,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             boolean tusks = false;
             boolean agouti = true;
             boolean agoutiBlack = false;
-            boolean isSwallowbellyRed = false;
 
             char[] uuidArry = getStringUUID().toCharArray();
 
@@ -810,15 +821,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }else if (genesForText[0] == 2 || genesForText[1] == 2){
                 //black = 2;
                 agoutiBlack = true;
-                if (genesForText[164] == 2 && genesForText[165] == 2 && agouti) {
-                    //wideband
-                }
-                else {
-                    black = 1;
-                }
+                black = 1;
             } else if (genesForText[0] == 3 || genesForText[1] == 3) {
                 //brindle
-                isSwallowbellyRed = true;
                 // if negative, tamworth; if positive, kitlg/allspots
                 int spotPower = (genesForText[64] + genesForText[65]) - (genesForText[62] + genesForText[63]);
                 if (genesForText[0] == 3 && genesForText[1] == 3) {
@@ -858,7 +863,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
             else if (genesForText[0] == 4 && genesForText[1] == 4) {
                 black = 0;
-                isSwallowbellyRed = true;
             }
 
             //A locus
@@ -867,6 +871,15 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
             else if (genesForText[2] == 2 || genesForText[3] == 2) {
             }
+            else if (genesForText[2] == 5 || genesForText[3] == 5) {
+                //whitebelly
+                if (genesForText[164] == 2 && genesForText[165] == 2) {
+                    whitebelly = 2;
+                }
+                else {
+                    whitebelly = 1;
+                }
+            }
             else if (genesForText[2] == 3 || genesForText[3] == 3) {
                 // non-agouti
                 red = 1;
@@ -874,7 +887,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
             else if (genesForText[2] == 4 && genesForText[3] == 4 && agouti) {
                 //swallowbelly
-                swallowbelly = 1;
+                if (genesForText[164] == 2 && genesForText[165] == 2) {
+                    swallowbelly = 2;
+                }
+                else {
+                    swallowbelly = 1;
+                }
             }
 
 
@@ -1122,7 +1140,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            TextureGrouping hairGroup = new TextureGrouping(TexturingType.ALPHA_GROUP); //MASK_GROUP
+            TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
 
             addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINBASE, skin, true);
             addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_SPOTS, spot, (spot == 1));
@@ -1139,7 +1157,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             if (brindleSkin != 0) {
                 TextureGrouping blackSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                TextureGrouping blackSkinAlpha = new TextureGrouping(TexturingType.ALPHA_GROUP);
+                TextureGrouping blackSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP);
                 addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBRINDLE_SPOTS, brindleSkin, brindleSkin != 0);
                 addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, 3, brindleSkin != 0);
                 blackSkinGroup.addGrouping(blackSkinAlpha);
@@ -1148,7 +1166,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             if (whitePointsFace != 0 || white != 0) {
                 TextureGrouping whiteSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                TextureGrouping whiteSkinAlpha = new TextureGrouping(TexturingType.ALPHA_GROUP); //MASK_GROUP
+                TextureGrouping whiteSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
                 TextureGrouping whiteSkinMask = new TextureGrouping(TexturingType.MERGE_GROUP);
 		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_FACE, whitePointsFace, b -> b != 0);
 		    	addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_LEG, whitePointsLeg, b -> b != 0);
@@ -1191,34 +1209,42 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RED, PIG_TEXTURES_COATRED, red, l -> true);
                 hairTexGroup.addGrouping(redGroup);
 
-
-                if (swallowbelly != 0 && isSwallowbellyRed) {
-                    TextureGrouping redSwallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    //addTextureToAnimalTextureGrouping(hairGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", Colouration.HSBtoARGB(this.swallowbellyColor[0], this.swallowbellyColor[1], this.swallowbellyColor[2]));
-                    addTextureToAnimalTextureGrouping(redSwallowbellyGroup, TexturingType.APPLY_RED, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> l != 0);
-                    hairTexGroup.addGrouping(redSwallowbellyGroup);
+                TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                if (whitebelly != 0) {
+                    addTextureToAnimalTextureGrouping(whitebellyGroup,  PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
+                }
+                else if (swallowbelly != 0) {
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", Colouration.HSBtoARGB(this.swallowbellyColor[0], this.swallowbellyColor[1], this.swallowbellyColor[2]));
                 }
 
-                if (black != 0 || (swallowbelly != 0 && !isSwallowbellyRed)) {
-                    TextureGrouping blackGroup = new TextureGrouping(TexturingType.ALPHA_GROUP);
+                if (!agoutiBlack) {
+                    hairTexGroup.addGrouping(swallowbellyGroup);
+                    hairTexGroup.addGrouping(whitebellyGroup);
+                }
+
+                if (black != 0) {
+                    TextureGrouping blackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                     TextureGrouping blackAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    if (swallowbelly != 0 && !isSwallowbellyRed) {
-                        addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> l != 0);
-                    }
-                    else {
-                        addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
-                    }
+                    addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                     TextureGrouping agoutiGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI, agoutiBlack ? 1 : 0, l -> true);
-                    addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI_DARK, agoutiBlack ? 1 : 0, l -> l != 0);
-                    addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI_LIGHT, agoutiBlack ? 1 : 0, l -> l != 0);
+                    if (genesForText[164] != 2 || genesForText[165] != 2) {
+                        addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI_DARK, agoutiBlack ? 1 : 0, l -> l != 0);
+                    }
+                    addTextureToAnimalTextureGrouping(agoutiGroup, PIG_TEXTURES_AGOUTI_LIGHT, agoutiBlack ? 1 : 0, l -> l != 0);
                     blackGroup.addGrouping(blackAlphaGroup);
                     blackGroup.addGrouping(agoutiGroup);
                     hairTexGroup.addGrouping(blackGroup);
                 }
 
+                if (agoutiBlack) {
+                    hairTexGroup.addGrouping(swallowbellyGroup);
+                    hairTexGroup.addGrouping(whitebellyGroup);
+                }
+
                 if (whitePointsFace != 0 || white != 0) {
-                    TextureGrouping whiteGroup = new TextureGrouping(TexturingType.ALPHA_GROUP);
+                    TextureGrouping whiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                     TextureGrouping whiteAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, white, p -> p != 0);
                     addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_FACE, whitePointsFace, (whitePointsFace != 0));
@@ -1396,6 +1422,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             size = size * 1.075F;
         }
 
+
         if (size > 0.8F) {
             size = 0.8F;
         }
@@ -1431,7 +1458,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     
     @Override
     public Colouration getRgb() {
-    	boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getSharedGenes()!=null;
+    	boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1 || this.swallowbellyColor[0] == -1) && getSharedGenes()!=null;
         this.colouration = super.getRgb();
 
         if(this.colouration == null) {
@@ -1460,6 +1487,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //dom black
             if (gene[0] == 1 || gene[1] == 1 || gene[0] == 5 || gene[1] == 5) {
+                agouti = false;
+            }
+
+            if (gene[2] == 3 && gene[3] == 3) {
                 agouti = false;
             }
 
@@ -1510,9 +1541,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	pheomelanin[0] += 0.034F;
             	pheomelanin[1] += -0.585F;
             	pheomelanin[2] += 0.385F;
-            	this.swallowbellyColor[0] += 0.034F;
-            	this.swallowbellyColor[1] += -0.425F;
-            	this.swallowbellyColor[2] += 0.330F;
             }
 
             //blonde
@@ -1535,9 +1563,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	pheomelanin[0] += 0.032F;
             	pheomelanin[1] += -0.129F;
             	pheomelanin[2] += 0.120F;
-            	this.swallowbellyColor[0] += 0.037F;
-            	this.swallowbellyColor[1] += -0.149F;
-            	this.swallowbellyColor[2] += 0.132F;
             }
             
             // silver-brown
@@ -1560,7 +1585,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //wide band increases saturation
             if (gene[164] == 2 && gene[165] == 2) {
-                saturation += 1;
+                saturation += 0.7F;
             }
 
             int r = 0;
@@ -1579,14 +1604,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             
             if (saturation != 0) {
             	pheomelanin[1] += (0.02F * saturation);
-            	this.swallowbellyColor[1] += (0.015F * saturation);
             }
             
             if (r != 0) {
             	pheomelanin[0] += (0.0027F * -r);
             	pheomelanin[2] += (0.008F * -r);
-            	this.swallowbellyColor[0] += (0.001F * -r);
-            	this.swallowbellyColor[2] += (0.005F * -r);
+
             }
             
             if (darkness != 0) {
@@ -1594,7 +1617,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             	pheomelanin[0] -= (0.002F * darkness);
             	pheomelanin[1] += (0.005F * darkness);
             	pheomelanin[2] -= (0.03F * darkness);
-            	//this.swallowbellyColor[2] -= (0.01F * darkness);
             }
 
             //check hue range
@@ -1605,12 +1627,37 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
 
             if (agouti) {
-                // mix some red into the black for non-wideband agouti
-                if (gene[164] != 2 || gene[165] != 2) {
+                if (gene[2] == 4 && gene[3] == 4) {
+                    //swallowbelly
+                }
+                else if (gene[164] != 2 || gene[165] != 2) {
+                    /*// mix some red into the black for non-wideband agouti
                     for (int i = 0; i <= 2; i++) {
                         melanin[i] = (melanin[i] * 0.9F) + (pheomelanin[i] * 0.1F);
+                    }*/
+                }
+                else if (gene[0] == 2 || gene[1] == 2) {
+                    for (int i = 0; i <= 2; i++) {
+                        melanin[i] = (melanin[i] * 0.1F) + (pheomelanin[i] * 0.9F);
                     }
                 }
+            }
+
+            if (gene[164] == 2 && gene[165] == 2) {
+                this.swallowbellyColor[0] = pheomelanin[0] + 0.01F;
+                this.swallowbellyColor[1] = pheomelanin[1] - 0.02F;
+                this.swallowbellyColor[2] = pheomelanin[2] + 0.09F;
+            } else {
+                this.swallowbellyColor[0] = pheomelanin[0] + 0.02F;
+                this.swallowbellyColor[1] = pheomelanin[1] - 0.15F;
+                this.swallowbellyColor[2] = pheomelanin[2] + 0.23F;
+            }
+
+            //check hue range
+            if (swallowbellyColor[0] > maxYellow) {
+                swallowbellyColor[0] = maxYellow;
+            } else if (swallowbellyColor[0] < maxRed) {
+                swallowbellyColor[0] = maxRed;
             }
 
             //checks that numbers are within the valid range

@@ -18,22 +18,27 @@ public class PigPhenotype implements Phenotype {
 
         float earSize = 0.0F;
         float earFlop = 1.0F;
-        for (int i = 166; i < 170; i++) {
+        for (int i = 166; i < 172; i++) {
             if (gene[i] == 2) {
-                muscle += 0.125;
+                muscle += 0.1F;
             }
             else if (gene[i] == 3) {
-                muscle += 0.25;
+                muscle += 0.15F;
             }
         }
-        for (int i = 170; i < 174; i++) {
+        if (gene[172] == 1 || gene[173] == 1) {
+            muscle += 0.2F;
+        }
+
+        for (int i = 174; i < 178; i++) {
             if (gene[i] == 2) {
-                fat += 0.125;
+                fat += 0.1F;
             }
             else if (gene[i] == 3) {
-                fat += 0.25;
+                fat += 0.15F;
             }
         }
+
 
         /*
         //muscle test

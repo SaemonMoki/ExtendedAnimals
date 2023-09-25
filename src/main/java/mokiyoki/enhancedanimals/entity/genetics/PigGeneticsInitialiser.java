@@ -153,16 +153,17 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    1 : I^1  Legacy Dominant White : Large White, Belgian Landrace, Landrace
          *    2 : I^Be Belted : white belt over front legs : Hampshire, Cinta Senese
          *    3 : i+   wildtype :
-         *    4 : I^P  Patch : black? spots on white background : Pietrain, Large White, Landrace, Belgian Landrace
+         *    4 : I^P  Legacy Patch : erroneously functions as a dilute
          *    5 : I^Rn Roan/dilute : grey, white and coloured hairs mixed : Large White, Landrace, Belgian Landrace
          *    6 : I^2  Dominant White : Large White, Belgian Landrace, Landrace
          *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
          *    8 : I^Be2 Large Belt : Swabian Hall
          *    9 : Hereford. Recessive
          *    10: I^N2  White Spots 2 : AKA Tuxedo
+         *    11: I^P  Patch : black? spots on white background :  Pietrain, Large White, Landrace, Belgian Landrace
          */
 
-        //KIT [ Legacy-Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3, Belted2, hereford, WhiteSpots2 ]
+        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White2, Dom.White3, Belted2, hereford, WhiteSpots2, Patch ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(9) + 1);
             if (autosomalGenes[12]>=7) autosomalGenes[12]+=1;
@@ -530,15 +531,15 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //desaturation [wildtype, duller, duller, duller, dullest]
+        //desaturation [wildtype, duller, duller, ...]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[148] = ThreadLocalRandom.current().nextInt(5) + 1;
+            autosomalGenes[148] = ThreadLocalRandom.current().nextInt(10) + 1;
         }
         else {
             autosomalGenes[148] = 1;
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[149] = ThreadLocalRandom.current().nextInt(5) + 1;
+            autosomalGenes[149] = ThreadLocalRandom.current().nextInt(10) + 1;
         }
         else {
             autosomalGenes[149] = 1;

@@ -11,7 +11,13 @@ public class PigPhenotype implements Phenotype {
 
     public float muscle = 0.0F;
     public float fat = 0.0F;
+
+    public int bodyLength;
+    public float lengthScaling;
+    public float buttTranslation; //also used for legs
     public float wool = 0.0F;
+
+    public float wildBody = 0.0F;
 
     public PigPhenotype(int[] gene,char uuid) {
         this.tailCurl = Character.isLetter(uuid);
@@ -19,39 +25,35 @@ public class PigPhenotype implements Phenotype {
         float earSize = 0.0F;
         float earFlop = 1.0F;
         for (int i = 166; i < 172; i++) {
-            if (gene[i] == 2) {
-                muscle += 0.1F;
-            }
-            else if (gene[i] == 3) {
-                muscle += 0.15F;
+            if (gene[i] != 1) {
+                muscle += (gene[i] / 80.0F);
             }
         }
-        if (gene[172] == 1 || gene[173] == 1) {
-            muscle += 0.2F;
+        if (gene[172] == 2 || gene[173] == 2) {
+            muscle += 0.25F;
         }
 
-        for (int i = 174; i < 178; i++) {
-            if (gene[i] == 2) {
-                fat += 0.1F;
-            }
-            else if (gene[i] == 3) {
-                fat += 0.15F;
+        for (int i = 174; i < 182; i++) {
+            if (gene[i] != 1) {
+                fat += (gene[i] / 80.0F);
             }
         }
 
+        int length = gene[182] + gene[183] + gene[184] + gene[185] + gene[186] + gene[187] + gene[188] + gene[189];
 
-        /*
-        //muscle test
-        if (gene[154] == 2 || gene[155] == 2) {
-            muscle = 0.5F;
+        this.bodyLength = 13;
+        if (length > 60) {
+            this.bodyLength = 14;
         }
-        else if (gene[154] == 3 || gene[155] == 3) {
-            muscle = 1.0F;
+        else if (length <= 20) {
+            this.bodyLength = 12;
         }
-        //fat test
-        if (gene[156] == 2 || gene[157] == 2) {
-            fat = 1.0F;
-        }*/
+
+        this.lengthScaling = ((length-30)/40.0F)*0.22F;
+
+        this.buttTranslation = ((bodyLength)*this.lengthScaling);
+        //this.buttTranslation = 0.5F;
+
         if (gene[36] != 1 && gene[37] != 1) {
             if (gene[38] == 3 || gene[39] == 3) {
                 if (gene[40] == 1 && gene[41] == 1) {

@@ -161,9 +161,10 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    9 : Hereford. Recessive
          *    10: I^N2  White Spots 2 : AKA Tuxedo
          *    11: I^P  Patch : black? spots on white background :  Pietrain, Large White, Landrace, Belgian Landrace
+         *    12  I^L  Lethal : Homozygous Lethal
          */
 
-        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White2, Dom.White3, Belted2, hereford, WhiteSpots2, Patch ]
+        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White2, Dom.White3, Belted2, hereford, WhiteSpots2, Patch, Lethal ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(9) + 1);
             if (autosomalGenes[12]>=7) autosomalGenes[12]+=1;
@@ -568,7 +569,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[159] = 1;
         }
 
-        //heterochromia 1 [ Wildtype+, blue eye(s) ]
+        //heterochromia [ Wildtype+, blue eye(s) ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[160] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -582,18 +583,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[161] = (1);
         }
         //heterochromia enhancer [ Wildtype+, bilateral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[162] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+        //if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        //    autosomalGenes[162] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //
+        //} else {
             autosomalGenes[162] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[163] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+        //}
+        //if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        //    autosomalGenes[163] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //
+        //} else {
             autosomalGenes[163] = (1);
-        }
+        //}
 
         //wideband [normal, wideband]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -609,38 +610,38 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[165] = (1);
         }
 
-        //muscle adder [ normal, more, most ]
+        //muscle adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[166] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[166] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[166] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[167] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[167] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[167] = (1);
         }
 
-        //muscle adder [ normal, more, most ]
+        //muscle adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[168] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[168] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[168] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[169] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[169] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[169] = (1);
         }
 
-        //muscle adder [ normal, more ]
+        //muscle adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[170] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[170] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[170] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[171] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[171] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[171] = (1);
         }
@@ -649,54 +650,99 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[172] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            autosomalGenes[172] = (2);
+            autosomalGenes[172] = (1);
         }
-        autosomalGenes[173] = (2);
+        autosomalGenes[173] = (1);
 
-        //fat adder [ normal, more, most ]
+        //fat adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[174] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[174] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[174] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[175] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[175] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[175] = (1);
         }
 
-        //fat adder [ normal, more, most ]
+        //fat adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[176] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[176] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[176] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[177] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            autosomalGenes[177] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[177] = (1);
         }
-        //fat adder [ normal, more ]
+        //fat adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[174] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[178] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[174] = (1);
+            autosomalGenes[178] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[175] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[179] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[175] = (1);
+            autosomalGenes[179] = (1);
         }
-        //fat adder [ normal, more ]
+        //fat adder [ normal, more... ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[176] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[180] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[176] = (1);
+            autosomalGenes[180] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[177] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[181] = (ThreadLocalRandom.current().nextInt(10 ) + 1);
         } else {
-            autosomalGenes[177] = (1);
+            autosomalGenes[181] = (1);
+        }
+
+        //body length 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[182] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[182] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[183] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[183] = (2);
+        }
+        //body length 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[184] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[184] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[185] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[185] = (2);
+        }
+        //body length 3
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[186] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[186] = (4);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[187] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[187] = (4);
+        }
+        //body length 4
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[188] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[188] = (4);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[189] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        } else {
+            autosomalGenes[189] = (4);
         }
         return new Genes(autosomalGenes);
     }

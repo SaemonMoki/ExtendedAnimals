@@ -1234,7 +1234,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 	//plain brindle patch
                 	else if (black == idx_brindle) {
                     	black = 1;
-                        if (whiteExtension == 2) {
+                        if (whiteExtension >= 2) {
                             white = idx_brindlepatch_ext;
                         } else {
                             white = idx_brindlepatch;
@@ -1781,11 +1781,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         // 0.7F <= size <= 1.5F
         this.setAnimalSize(size);
     }
-
-    @Override
-    public Colouration getRgb() {
-        return this.colouration;
-    }
     
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -1797,5 +1792,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);
         this.setTexturePaths();
+    }
+
+    @Override
+    protected void geneFixer() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        for (int i = 174; i < 182; i++) {
+            if (genes[i] <= 0) {
+                genes[i] = 4;
+            }
+        }
+        for (int i = 182; i < 190; i++) {
+            if (genes[i] <= 0) {
+                genes[i] = 4;
+            }
+        }
+        super.geneFixer();
     }
 }

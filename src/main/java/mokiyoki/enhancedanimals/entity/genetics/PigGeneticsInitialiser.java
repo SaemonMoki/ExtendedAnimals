@@ -28,7 +28,8 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(PigBreeds.PROTESTPIG);
         this.breeds.add(PigBreeds.TAMWORTH);
         this.breeds.add(PigBreeds.MANGALITSA);
-        this.breeds.add(PigBreeds.HEREFORDPIG);
+        this.breeds.add(PigBreeds.HEREFORDHOG);
+        this.breeds.add(PigBreeds.GLOUCESTERSHIRE);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -646,7 +647,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[171] = (1);
         }
 
-        //hypertrophy [Hypertrophy, wildtype+]
+        //hypertrophy [wildtype+, Hypertrophy]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[172] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -726,23 +727,23 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[186] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[186] = (4);
+            autosomalGenes[186] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[187] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[187] = (4);
+            autosomalGenes[187] = (3);
         }
         //body length 4
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[188] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[188] = (4);
+            autosomalGenes[188] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[189] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
-            autosomalGenes[189] = (4);
+            autosomalGenes[189] = (3);
         }
         return new Genes(autosomalGenes);
     }

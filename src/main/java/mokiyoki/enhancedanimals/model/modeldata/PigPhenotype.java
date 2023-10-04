@@ -12,8 +12,10 @@ public class PigPhenotype implements Phenotype {
     public float muscle = 0.0F;
     public float fat = 0.0F;
 
-    public int bodyLength;
+    public int bodyLength; //in pixels
     public float lengthScaling;
+    public float bodyScale;
+    public float buttScale;
     public float buttTranslation; //also used for legs
     public float wool = 0.0F;
 
@@ -35,9 +37,10 @@ public class PigPhenotype implements Phenotype {
 
         for (int i = 174; i < 182; i++) {
             if (gene[i] != 1) {
-                fat += (gene[i] / 80.0F);
+                fat += gene[i];
             }
         }
+        fat = (fat - 32.0F)/40.0F;
 
         int length = gene[182] + gene[183] + gene[184] + gene[185] + gene[186] + gene[187] + gene[188] + gene[189];
 
@@ -49,21 +52,25 @@ public class PigPhenotype implements Phenotype {
             this.bodyLength = 12;
         }
 
-        this.lengthScaling = ((length-30)/40.0F)*0.22F;
-
+        this.lengthScaling = ((length-32)/40.0F)*0.22F;
         this.buttTranslation = ((bodyLength)*this.lengthScaling);
-        //this.buttTranslation = 0.5F;
+        this.bodyScale = 1.0F + (this.fat*0.15F) + (this.wool*0.7F) - (this.muscle*0.02F) - (this.wildBody*0.03F);
+        this.buttScale = 1.0F + (this.muscle*0.07F) + (this.fat*0.08F) + (this.wool*0.7F) - (this.wildBody*0.03F);
+
 
         if (gene[36] != 1 && gene[37] != 1) {
             if (gene[38] == 3 || gene[39] == 3) {
                 if (gene[40] == 1 && gene[41] == 1) {
-                    this.wool = 1.0F;
+                    this.wool = 0.1F;
                 }
                 else if (gene[40] == 1 || gene[41] == 1) {
-                    this.wool = 0.7F;
+                    this.wool = 0.07F;
                 }
             }
         }
+
+
+
         //SSC1
         if (gene[68] == 2 || gene[69] == 2) {
             earSize = earSize + 0.12F;

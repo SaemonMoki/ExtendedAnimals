@@ -103,7 +103,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_ROAN = new String[]{
-        "", "spot_roan.png",
+        "", "roan.png", "roan_piglet.png"
     };
     private final int idx_brindlepatch = 8;
     private final int idx_brindlepatch_med = 13;
@@ -137,27 +137,26 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "", "skin_tux.png", "skin_berkshire.png"
     };
 
-    /*private static final String[] PIG_TEXTURES_COATRED = new String[] {
-    		"coat_base.png", "agouti_base.png", "agouti_base_wideband.png"
-    };*/
     private static final String[] PIG_TEXTURES_SKINBRINDLE_SPOTS = new String[] {
             "", "", "", "black_berkshirebrindle.png",
             "brindle_coat_1.png", "brindle_coat_2.png", "brindle_coat_3.png", "brindle_coat_4.png", "brindle_coat_5.png",
             "brindle_het_1.png", "brindle_het_2.png", "brindle_het_3.png", "brindle_het_4.png", "brindle_het_5.png", "brindle_het_6.png",
             "brindle_med_coat_1.png", "brindle_med_coat_2.png", "brindle_med_coat_3.png", "brindle_med_coat_4.png",
             "brindle_het_med_1.png", "brindle_het_med_2.png", "brindle_het_med_3.png", "brindle_het_med_4.png", "brindle_het_med_5.png",
+            "brindle_berkshire_1.png", "brindle_berkshire_2.png", "brindle_berkshire_3.png", "brindle_berkshire_4.png",
     };
-    private final int idx_brindle_berkshire = 3;
     private final int idx_brindle = 4;
     private final int idx_brindle_het = 9;
     private final int idx_brindle_med = 15;
     private final int idx_brindle_het_med = 19;
+    private final int idx_brindle_berkshire = 24;
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
     		"pigbase.png", "solid_white.png", "agouti_base.png", "black_berkshirebrindle.png",
     		"brindle_coat_1.png", "brindle_coat_2.png", "brindle_coat_3.png", "brindle_coat_4.png", "brindle_coat_5.png",
             "brindle_het_1.png", "brindle_het_2.png", "brindle_het_3.png", "brindle_het_4.png", "brindle_het_5.png", "brindle_het_6.png",
     		"brindle_med_coat_1.png", "brindle_med_coat_2.png", "brindle_med_coat_3.png", "brindle_med_coat_4.png",
             "brindle_het_med_1.png", "brindle_het_med_2.png", "brindle_het_med_3.png", "brindle_het_med_4.png", "brindle_het_med_5.png",
+            "brindle_berkshire_1.png", "brindle_berkshire_2.png", "brindle_berkshire_3.png", "brindle_berkshire_4.png",
     };
 
     private static final String[] PIG_TEXTURES_SPOT_SPOTS = new String[] {
@@ -194,7 +193,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "coat_base.png", "agouti_base.png", "agouti_base_wideband.png"
     };
     private static final String[] PIG_TEXTURES_AGOUTI_DARK = new String[]{
-            "", "agouti_dark.png"
+            "", "agouti_dark.png", "piglet_camo_dark.png"
     };
 
     private static final String[] PIG_TEXTURES_AGOUTI_LIGHT = new String[]{
@@ -633,21 +632,40 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int size = (int)((this.getAnimalSize()-0.7F)*10);
+        float size = (this.getAnimalSize()-0.7F)*1.25F; // 0 to 1
         int age = this.getEnhancedAnimalAge();
         int meatDrop;
         int meatChanceMod;
+        float muscle = 0.0F; // 0 to 1
+        float fat = 0.0F; // 0 to 1
+        float length = 0.0F; // 0 to 1
+        for (int i = 166; i < 172; i++) {
+            muscle += (genes[i] / 80.0F);
+        }
+        if (genes[172] == 2 || genes[173] == 2) {
+            muscle += 0.25F;
+        }
+        for (int i = 174; i < 182; i++) {
+            fat += (genes[i] / 80.0F);
+        }
 
-        // max of 4
-        meatDrop = size/2;
+        for (int i = 182; i < 190; i++) {
+            length += (genes[i] / 80.0F);
+        }
+
+        // max of 4 meat from size
+        meatDrop = (int)((size*4.1));
 
         if (genes[44] != 3 && genes[45] != 3) {
-            meatChanceMod = (genes[56] + genes[57]) - 6;
-            if (meatChanceMod > 4) {
-                if (meatChanceMod == 8) {
+            meatChanceMod = (int)((length*4.1)+(fat*4.1)+(muscle*1.1));
+            if (meatChanceMod >= 4) {
+                if (meatChanceMod >= 9) {
+                    //100% chance to +2
+                    meatDrop += 2;
+                } else if (meatChanceMod == 8) {
                     //100% chance to + 1
                     if (this.random.nextInt(4) == 0) {
-                        // 25% chance to + 1
+                        // 25% chance to +1 additionally
                         meatDrop = meatDrop + 2;
                     } else {
                         meatDrop++;
@@ -666,13 +684,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     if (this.random.nextInt(2) == 0) {
                         meatDrop++;
                     }
-                } else {
+                } else if (meatChanceMod == 5) {
                     // 25% chance to + 1
                     if (this.random.nextInt(4) == 0) {
                         meatDrop++;
                     }
                 }
-            } else if (meatChanceMod < 4){
+            } else {
                 if (meatChanceMod == 3) {
                     // 25% chance to - 1
                     if (this.random.nextInt(4) == 0) {
@@ -683,16 +701,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     if (this.random.nextInt(2) == 0) {
                         meatDrop--;
                     }
-                } else if (meatChanceMod == 1) {
+                } else {
                     if (this.random.nextInt(4) != 0) {
                         //75% chance to - 1
-                        meatDrop--;
-                    }
-                } else {
-                    //100% chance to - 1
-                    meatDrop--;
-                    if (this.random.nextInt(4) == 0) {
-                        // 25% chance to - 1
                         meatDrop--;
                     }
                 }
@@ -821,6 +832,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (gene[0] == 1 || gene[1] == 1 || gene[0] == 5 || gene[1] == 5) {
                 agouti = false;
             }
+            else if (gene[0] == 2 || gene[1] == 2) {
+                agoutiBlack = true;
+            }
 
             if (gene[2] == 3 && gene[3] == 3) {
                 agouti = false;
@@ -889,9 +903,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //blonde
             if (gene[158] == 2 && gene[159] == 2) {
-                pheomelanin[0] += 0.0548F;
-                pheomelanin[1] += -0.364F;
-                pheomelanin[2] += 0.289F;
+                pheomelanin[0] += 0.0458F;
+                pheomelanin[1] += -0.381F;
+                pheomelanin[2] += 0.539F;
             }
             else if (gene[158] == 2 || gene[159] == 2) {
                 pheomelanin[0] += 0.029F;
@@ -993,11 +1007,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             //float[] lightAgoutiColor = {(melanin[0]*0.2F)+(pheomelanin[0]*0.8F), (r*0.03F)+melanin[1]-0.2F, melanin[2]+0.62F};
             float[] lightAgoutiColor = {pheomelanin[0], pheomelanin[1], pheomelanin[2]+0.25F};
             float[] darkAgoutiColor = {melanin[0], melanin[1], melanin[2]};
+            float[] darkAgoutiRedColor = {pheomelanin[0], pheomelanin[1]+0.04F, pheomelanin[2]-0.25F};
+
             if (gene[8] == 2 && gene[9] == 2) {
                 darkAgoutiColor[2] -= 0.4F;
             }
             else if (gene[8] == 2 || gene[9] == 2) {
                 darkAgoutiColor[2] -= 0.3F;
+            }
+
+            if (this.isBaby()) {
+                if (agoutiBlack && gene[2] == 4 && gene[3] == 4) {
+                    melanin[1] -= 0.5F;
+                    melanin[2] += 0.5F;
+                }
+                swallowbellyColor[1] -= 0.5F;
             }
             //float[] lightAgoutiColor = {0, 0, 1};
             //float[] darkAgoutiColor = {(melanin[0]*0.2F)+(pheomelanin[0]*0.8F), (r*0.02F)+melanin[1]+0.1F, melanin[2]-0.40F};
@@ -1018,6 +1042,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                         //wideband
                         for (int i = 0; i <= 2; i++) {
                             melanin[i] = (pheomelanin[i]);
+                            if (gene[158] == 1 || gene[159] == 1) {
+                                //not blonde
+                                darkAgoutiRedColor[i] = (darkAgoutiRedColor[i] * 0.5F) + (darkAgoutiColor[i] * 0.5F);
+                            }
                         }
                     }
                     else {
@@ -1041,6 +1069,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 } else if (pheomelanin[i] < 0.0F) {
                     pheomelanin[i] = 0.0F;
                 }
+                if (swallowbellyColor[i] > 1.0F) {
+                    swallowbellyColor[i] = 1.0F;
+                } else if (swallowbellyColor[i] < 0.0F) {
+                    swallowbellyColor[i] = 0.0F;
+                }
                 if (lightAgoutiColor[i] > 1.0F) {
                     lightAgoutiColor[i] = 1.0F;
                 } else if (lightAgoutiColor[i] < 0.0F) {
@@ -1051,11 +1084,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 } else if (darkAgoutiColor[i] < 0.0F) {
                     darkAgoutiColor[i] = 0.0F;
                 }
+                if (darkAgoutiRedColor[i] > 1.0F) {
+                    darkAgoutiRedColor[i] = 1.0F;
+                } else if (darkAgoutiRedColor[i] < 0.0F) {
+                    darkAgoutiRedColor[i] = 0.0F;
+                }
             }
 
             int swallowbellyRGB = Colouration.HSBtoARGB(swallowbellyColor[0], swallowbellyColor[1], swallowbellyColor[2]);
             int lightAgoutiRGB = Colouration.HSBtoARGB(lightAgoutiColor[0], lightAgoutiColor[1], lightAgoutiColor[2]);
             int darkAgoutiRGB = Colouration.HSBtoARGB(darkAgoutiColor[0], darkAgoutiColor[1], darkAgoutiColor[2]);
+            int darkAgoutiRedRGB = Colouration.HSBtoARGB(darkAgoutiRedColor[0], darkAgoutiRedColor[1], darkAgoutiRedColor[2]);
 
             this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 0.5F));
             this.colouration.setPheomelaninColour(Colouration.HSBAtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2], 0.5F));
@@ -1097,10 +1136,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (gene[0] == 1 || gene[1] == 1 || gene[0] == 5 || gene[1] == 5){
                 //solid black
                 black = 1;
-                agouti = false;
             }else if (gene[0] == 2 || gene[1] == 2){
                 //black = 2;
-                agoutiBlack = true;
                 black = 1;
             } else if (gene[0] == 3 || gene[1] == 3) {
                 //brindle
@@ -1281,9 +1318,36 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //roan
             if (gene[12] == 5 || gene[13] == 5) {
-                roan = 1;
+                roan = this.isBaby() ? 2 : 1;
             }
 
+
+            // base skin color
+            if (white == 1) {
+                //pink
+                skin = 1;
+            } else if ( (gene[62] == 2 || gene[63] == 2) && (gene[0] == 3 && gene[1] == 3) ) {
+                //tamworth causes pink skin
+                skin = 1;
+            } else if (gene[0] == 4  && gene[1] == 4) {
+                //rec.red causes brownish skin
+                skin = 4;
+            } else if (gene[12] == 5 && gene[13] == 5 ) {
+                //grey skin
+                skin = 2;
+            } else if (gene[4] == 1 || gene[5] == 1 || gene[8] == 2 || gene[9] == 2 || (gene[8] == 3 && gene[9] == 3)) {
+                //chinchilla, chocolate and silver-brown dilute skin
+                skin = 5;
+            } else if (black == 1 || black == 2) {
+                //black
+                skin = 3;
+            } else {
+                //grey
+                skin = 2;
+                if (black == idx_brindle_berkshire) {
+                    skin = 1;
+                }
+            }
 
             //random brindle
             if (black == idx_brindle) {
@@ -1294,6 +1358,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             else if (black == idx_brindle_med) {
                 int d = uuidArry[3] % 4;
                 black = idx_brindle_med + d;
+            }
+            //random big brindle
+            else if (black == idx_brindle_berkshire) {
+                int d = uuidArry[3] % 4;
+                black = idx_brindle_berkshire + d;
             }
             //random het brindle
             else if (black == idx_brindle_het) {
@@ -1412,32 +1481,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     }
                 }
         	}
-            
-            if (white == 1) {
-            	//pink
-                skin = 1;
-            } else if ( (gene[62] == 2 || gene[63] == 2) && (gene[0] == 3 && gene[1] == 3) ) {
-            	//tamworth causes pink skin
-            	skin = 1;
-            } else if (gene[0] == 4  && gene[1] == 4) {
-            	//rec.red causes brownish skin
-                skin = 4;
-            } else if (gene[12] == 5 && gene[13] == 5 ) {
-            	//grey skin
-                skin = 2;
-            } else if (gene[4] == 1 || gene[5] == 1 || gene[8] == 2 || gene[9] == 2 || (gene[8] == 3 && gene[9] == 3)) {
-            	//chinchilla, chocolate and silver-brown dilute skin
-                skin = 5;
-            } else if (black == 1 || black == 2) {
-            	//black
-                skin = 3;
-            } else {
-            	//grey
-                skin = 2;
-                if (black == idx_brindle_berkshire) {
-                    skin = 1;
-                }
-            }
 
             //heterochromia
             int heterochromia = 0;
@@ -1482,7 +1525,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         	//addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
 
 
-            addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, b -> b != 0);
+            //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, b -> b != 0);
 
 
             parentGroup.addGrouping(skinGroup);
@@ -1512,7 +1555,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 parentGroup.addGrouping(whiteSkinGroup);
             }
 
-            if (gene[36] != 1 && gene[37] != 1) {
+            if (gene[36] != 1 || gene[37] != 1) {
                 if ((gene[34] == 1 || gene[35] == 1) && (gene[34] != 3 && gene[35] != 3)) {
                     //furry
                     coat_alpha = 3;
@@ -1533,13 +1576,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     coat_texture = 1;
                 }
             }
-            if (gene[36] != 1 && gene[37] != 1) {
+            if (gene[36] != 1 || gene[37] != 1) {
+                int darkAgouti = this.isBaby() ? 2 : 1;
 
                 TextureGrouping hairAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(hairAlphaGroup, PIG_TEXTURES_ALPHA, coat_alpha, coat_alpha != 0);
                 TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 TextureGrouping redGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RED, PIG_TEXTURES_AGOUTI, red, l -> true);
+                if (darkAgouti == 2 && agouti && black == 0) {
+                    addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-rd", darkAgoutiRedRGB);
+                }
                 hairTexGroup.addGrouping(redGroup);
 
                 TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1569,11 +1616,14 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                     TextureGrouping agoutiGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI, agoutiTex, l -> true);
-                    if (agoutiBlack && swallowbelly == 0) {
-                        if (!wideband) {
-                            addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[1], "ag-d", darkAgoutiRGB);
+                    if (agoutiBlack && (swallowbelly == 0 || darkAgouti == 2)) {
+                        if (!wideband || darkAgouti == 2) {
+                            int camoColor = (wideband && swallowbelly == 0) ? darkAgoutiRedRGB : darkAgoutiRGB;
+                            addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-d", camoColor);
                         }
-                        addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
+                        if (!this.isBaby()) {
+                            addTextureToAnimalTextureGrouping(agoutiGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
+                        }
                     }
                     blackGroup.addGrouping(blackAlphaGroup);
                     blackGroup.addGrouping(agoutiGroup);
@@ -1809,4 +1859,43 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
         super.geneFixer();
     }
+
+/*    @Override
+    public Colouration getRgb() {
+        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getSharedGenes()!=null;
+        this.colouration = super.getRgb();
+
+        if(this.colouration == null) {
+            return null;
+        }
+
+        if (flag) {
+            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+            float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
+
+            if (this.isBaby()) {
+                //melanin[1] -= 0.15F;
+                //pheomelanin[1] -= 0.15F;
+                melanin[2] = 0.5F;
+                //pheomelanin[2] += 0.1F;
+                //checks that numbers are within the valid range
+                for (int i = 0; i <= 2; i++) {
+                    if (melanin[i] > 1.0F) {
+                        melanin[i] = 1.0F;
+                    } else if (melanin[i] < 0.0F) {
+                        melanin[i] = 0.0F;
+                    }
+                    if (pheomelanin[i] > 1.0F) {
+                        pheomelanin[i] = 1.0F;
+                    } else if (pheomelanin[i] < 0.0F) {
+                        pheomelanin[i] = 0.0F;
+                    }
+                }
+            }
+
+            this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 1.0F));
+            this.colouration.setPheomelaninColour(Colouration.HSBAtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2], 1.0F));
+        }
+        return this.colouration;
+    }*/
 }

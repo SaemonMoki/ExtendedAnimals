@@ -218,12 +218,12 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bNeck.addOrReplaceChild("waddleL", CubeListBuilder.create()
-                        .texOffs(3, 9)
+                        .texOffs(64, 57)
                         .addBox(1.5F, 0.0F, -9.0F, 2, 4, 2),
                 PartPose.offsetAndRotation(0.0F, 3.5F, -8.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
         bNeck.addOrReplaceChild("waddleR", CubeListBuilder.create()
-                        .texOffs(25,9)
+                        .texOffs(64,63)
                         .addBox(-3.5F, 0.0F, -9.0F, 2, 4, 2),
                 PartPose.offsetAndRotation(0.0F, 3.5F, -8.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );

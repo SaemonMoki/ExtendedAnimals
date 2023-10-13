@@ -151,25 +151,25 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
 //        }
 
         /**
-         *    1 : I^1  Legacy Dominant White : Large White, Belgian Landrace, Landrace
+         *    1 :  I^1  Legacy Dominant White : Large White, Belgian Landrace, Landrace
          *    2 : I^Be Belted : white belt over front legs : Hampshire, Cinta Senese
          *    3 : i+   wildtype :
-         *    4 : I^P  Legacy Patch : erroneously functions as a dilute
+         *    4 :  I^P  Legacy Patch : erroneously functions as a dilute
          *    5 : I^Rn Roan/dilute : grey, white and coloured hairs mixed : Large White, Landrace, Belgian Landrace
-         *    6 : I^2  Dominant White : Large White, Belgian Landrace, Landrace
-         *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
-         *    8 : I^Be2 Large Belt : Swabian Hall
-         *    9 : I^N?  Hereford. Recessive
+         *    6 : I^1  Dominant White : Large White, Belgian Landrace, Landrace
+         *    7 :  I^2  Dominant White : Large White, Belgian Landrace, Landrace
+         *    8 :  I^3  Dominant White : Large White, Belgian Landrace, Landrace
+         *    9 : I^Be2 Large Belt : Swabian Hall
          *    10: I^N2  Tuxedo
          *    11: I^P  Patch : black? spots on white background :  Pietrain, Large White, Landrace, Belgian Landrace
          *    12  I^L  Lethal : Homozygous Lethal
          */
 
-        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White2, Dom.White3, Belted2, hereford, WhiteSpots2, Patch, Lethal ]
+        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White, Dom.White2, Dom.White3, Belted2, WhiteSpots2, Patch, Lethal ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(8) + 2);
             if (autosomalGenes[12]>=4) autosomalGenes[12]+=1;
-            if (autosomalGenes[12]>=7) autosomalGenes[12]+=1;
+            if (autosomalGenes[12]>=7) autosomalGenes[12]+=2;
             if (wildType == 1) {
                 autosomalGenes[13] = (6);
             } else {
@@ -186,7 +186,8 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //white points [ Wildtype+, tuxedo, white points ]
+        //White points seems to function as a secondary white extension; likely adds additional copies of DUP2
+        //White Points [ Wildtype+, tuxedo, white points ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
             if (autosomalGenes[14]==2) autosomalGenes[14]+=1;
@@ -747,6 +748,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[189] = (ThreadLocalRandom.current().nextInt(10) + 1);
         } else {
             autosomalGenes[189] = (3);
+        }
+
+        //MITF [wildtype, splash?/hereford]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[190] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[190] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[191] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[191] = (1);
         }
         return new Genes(autosomalGenes);
     }

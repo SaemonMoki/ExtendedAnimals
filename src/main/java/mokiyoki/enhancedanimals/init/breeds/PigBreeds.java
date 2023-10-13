@@ -6,7 +6,7 @@ import net.minecraft.world.level.biome.Biomes;
 
 public class PigBreeds {
     public static final Breed LARGEWHITE = new Breed(new Breed.Properties().setData("LargeWhite", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","3").add(12, "6,6|5|8|10|11|12","1").add(18, "2").add(32, "2","2","2","2").add(50, "8|9","1").add(68, "3","3","1","3","3","3").add(160, "1|2").add(174, "4|5","4|5","4|5","4|5").add(182, "7-10","7-10","7-10","7-10")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","3").add(12, "6,6|5|9|10|11|12","1").add(18, "2").add(32, "2","2","2","2").add(50, "8|9","1").add(68, "3","3","1","3","3","3").add(160, "1|2").add(174, "4|5","4|5","4|5","4|5").add(182, "7-10","7-10","7-10","7-10")));
     public static final Breed DUROC = new Breed(new Breed.Properties().setData("Duroc", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","4").add(10, "1","3","1").add(18, "4").add(32, "2","2", "2","2").add(42, "3").add(50, "8","1").add(66,"3").add(68, "2","2").add(120, "1", "1", "1", "1", "1", "1", "1").add(142, "2", "2").add(150,"2","2","2").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5").add(182, "5","5","4|5","4|5")));
     public static final Breed HAMPSHIRE = new Breed(new Breed.Properties().setData("Hampshire", Biomes.FOREST, Breed.Rarity.ORDINARY)
@@ -30,6 +30,6 @@ public class PigBreeds {
     public static final Breed MANGALITSA = new Breed(new Breed.Properties().setData("Mangalitsa", Biomes.FOREST, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2", "4").add(12, "3","1").add(32, "2","1","2","3").add(50, "7","1").add(62, "1","1").add(68, "2","2").add(130, "1","1","2","2","2","2","2").add(150, "2","2","2","2").add(158, "2").add(164, "2").add(174, "6-10","6-10","6-10","6-10")));
     public static final Breed HEREFORDHOG = new Breed(new Breed.Properties().setData("HerefordHog", Biomes.FOREST, Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3").add(12, "9","3","3").add(18, "4").add(32, "2","1","2","2").add(42, "3").add(50, "6","1").add(62, "2","1").add(66,"3").add(68, "2","2","2").add(148,"1").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5").add(182, "4|5","4|5","4|5","4|5")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3").add(12, "6","3","3").add(18, "4").add(32, "2","1","2","2").add(42, "3").add(50, "6","1").add(62, "2","1").add(66,"3").add(68, "2","2","2").add(148,"1").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5").add(182, "4|5","4|5","4|5","4|5").add(190,"2")));
 
 }

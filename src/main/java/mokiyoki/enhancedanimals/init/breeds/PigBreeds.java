@@ -24,12 +24,12 @@ public class PigBreeds {
     public static final Breed PIETRAIN = new Breed(new Breed.Properties().setData("Pietrain", Biomes.FOREST, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","3").add(12, "11","1","2").add(32, "2","1", "2","2").add(50, "6","1").add(68, "3","3","1","3","3","3").add(166, "6-10", "6-10", "6-10", "2", "2-4", "2-4", "2-4", "2-4")));
     public static final Breed PROTESTPIG = new Breed(new Breed.Properties().setData("DanishProtestPigHusumRedPied", Biomes.FOREST, Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "3").add(12, "2","1").add(32, "2","1","2","2").add(50, "5","1").add(62, "2","1").add(68, "2","2","2").add(166, "3|4","3|4","3|4","1","3|4","3|4","3|4","3|4").add(182, "6-10","6-10","6-10","6-10")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "3").add(12, "2","1").add(32, "2","1","2","2").add(50, "5","1").add(62, "2","1").add(68, "2","2","2").add(120, "2", "2|1").add(166, "3|4","3|4","3|4","1","3|4","3|4","3|4","3|4").add(182, "6-10","6-10","6-10","6-10")));
     public static final Breed TAMWORTH = new Breed(new Breed.Properties().setData("Tamworth", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "3").add(12, "3","1").add(32, "2","1","2","2").add(42, "1").add(50, "5","1").add(62, "2","1","2").add(68, "3","3","1","3","1","2").add(166, "3|4","3|4","3|4","1","3|4","3|4","3|4","3|4").add(182, "6-10","6-10","6-10","6-10")));
     public static final Breed MANGALITSA = new Breed(new Breed.Properties().setData("Mangalitsa", Biomes.FOREST, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2", "4").add(12, "3","1").add(32, "2","1","2","3").add(50, "7","1").add(62, "1","1").add(68, "2","2").add(130, "1","1","2","2","2","2","2").add(150, "2","2","2","2").add(158, "2").add(164, "2").add(174, "6-10","6-10","6-10","6-10")));
     public static final Breed HEREFORDHOG = new Breed(new Breed.Properties().setData("HerefordHog", Biomes.FOREST, Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3").add(12, "6","3","3").add(18, "4").add(32, "2","1","2","2").add(42, "3").add(50, "6","1").add(62, "2","1").add(66,"3").add(68, "2","2","2").add(148,"1").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5").add(182, "4|5","4|5","4|5","4|5").add(190,"2")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "3").add(12, "3","3","3").add(18, "4").add(32, "2","1","2","2").add(42, "3").add(50, "6","1").add(62, "2","1").add(66,"3").add(68, "2","2","2").add(148,"1").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5").add(182, "4|5","4|5","4|5","4|5").add(190,"2")));
 
 }

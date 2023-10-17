@@ -274,36 +274,62 @@ public class ChickenPhenotype implements Phenotype {
             this.longLegs++;
         }
 
+        this.wingAngle = getWingAngle(gene);
+
+        this.bodyAngle = getBodyAngle(gene);
+        this.bodyY = this.bodyAngle * 2.9F;
+        this.bodyZ = this.bodyAngle;
+
+        this.neckAngle = getNeckAngle(gene);
+
+        if (this.creeper) {
+            this.height = this.hasLongLegs() ? 18.5F : 19.5F;
+        } else {
+            this.height = this.hasLongLegs() ? 15.5F : 17.5F;
+        }
+
+        this.silkie = gene[106] == 1 || gene[107] == 1;
+
+        this.fluffiness = getFluffiness(gene);
+
+        this.meatiness = getMeatiness(gene);
+
+        this.tailAngle = getTailAngle(gene);
+    }
+
+    private static float getWingAngle(int[] gene) {
         //      wingAngle  [ 0 to 1.5 ]
+        float wingAngle = 0.0F;
         if (gene[88] == 2) {
-            this.wingAngle = this.wingAngle + 0.1F;
+            wingAngle = wingAngle + 0.1F;
         } else if (gene[88] == 3) {
-            this.wingAngle = this.wingAngle + 0.15F;
+            wingAngle = wingAngle + 0.15F;
         }
         if (gene[89] == 2) {
-            this.wingAngle = this.wingAngle + 0.1F;
+            wingAngle = wingAngle + 0.1F;
         } else if (gene[89] == 3) {
-            this.wingAngle = this.wingAngle + 0.15F;
+            wingAngle = wingAngle + 0.15F;
         }
 
         if (gene[94] == 2 && gene[95] == 2) {
-            this.wingAngle = this.wingAngle * 1.2F;
+            wingAngle = wingAngle * 1.2F;
         } else if (gene[94] == 3 && gene[95] == 3) {
-            this.wingAngle = this.wingAngle * 1.5F;
+            wingAngle = wingAngle * 1.5F;
         } else if (gene[94] != 1 && gene[95] != 1) {
-            this.wingAngle = this.wingAngle * 1.1F;
+            wingAngle = wingAngle * 1.1F;
         }
 
         if (gene[96] == 2 && gene[97] == 2) {
-            this.wingAngle = this.wingAngle * 1.2F;
+            wingAngle = wingAngle * 1.2F;
         } else if(gene[96] == 3 && gene[97] == 3) {
-            this.wingAngle = this.wingAngle * 1.5F;
+            wingAngle = wingAngle * 1.5F;
         } else if(gene[96] != 1 || gene[97] != 1) {
-            this.wingAngle = this.wingAngle * 1.1F;
+            wingAngle = wingAngle * 1.1F;
         }
+        return -wingAngle;
+    }
 
-        this.wingAngle = -this.wingAngle;
-
+    private static float getBodyAngle(int[] gene) {
         float bodyAngle = 1.5F;
         for (int i = 186; i < 196; i+=2) {
             if (gene[i] == 2 && gene[i+1] == 2) {
@@ -316,34 +342,43 @@ public class ChickenPhenotype implements Phenotype {
         }
 
         bodyAngle = -1.5F+bodyAngle;
+        return bodyAngle;
+    }
 
-        this.bodyAngle = bodyAngle;
-        this.bodyY = bodyAngle * 2.9F;
-        this.bodyZ = bodyAngle;
-
+    private static float getNeckAngle(int[] gene) {
         float neckAngle = 1.0F;
 
         for (int i = 10; i<20; i++) {
             if (gene[i]==2) neckAngle *= 0.8F;
         }
+        return neckAngle;
+    }
 
-        this.neckAngle = neckAngle;
-
-        if (this.creeper) {
-            this.height = this.hasLongLegs() ? 18.5F : 19.5F;
-        } else {
-            this.height = this.hasLongLegs() ? 15.5F : 17.5F;
+    private static float getTailAngle(int[] gene) {
+        float tailAngle = 0.5F;
+        for (int i = 258; i<268; i++) {
+            if (gene[i]==2) tailAngle -= 0.05F;
         }
 
-        this.silkie = gene[106] == 1 || gene[107] == 1;
+        for (int i = 268; i<278; i++) {
+            if (gene[i]==2) tailAngle += 0.05F;
+        }
+        return tailAngle;
+    }
 
+    private static float getFluffiness(int[] gene) {
         float fluffiness = 0.0F;
         for (int i = 228; i<248; i++) {
-            if (gene[i]==2) fluffiness += 0.1F;
+            if (i<235) {
+                if (gene[i]==1) fluffiness += 0.1F;
+            } else {
+                if (gene[i]==2) fluffiness += 0.1F;
+            }
         }
+        return fluffiness;
+    }
 
-        this.fluffiness = fluffiness;
-
+    private static float getMeatiness(int[] gene) {
         float meatiness = 0.5F;
         if (gene[146] == 2 && gene[147] == 2) {
             if (gene[148] != 2 || gene[149] != 2) {
@@ -358,21 +393,14 @@ public class ChickenPhenotype implements Phenotype {
         }
 
         for (int i = 0; i<10; i++) {
-            if (gene[i]==2) meatiness *= 0.93F;
+            if (i<5) {
+                if (gene[i]==1) meatiness *= 0.93F;
+            } else {
+                if (gene[i]==2) meatiness *= 0.93F;
+            }
         }
 
-        this.meatiness = meatiness;
-
-        float tailAngle = 0.5F;
-        for (int i = 258; i<268; i++) {
-            if (gene[i]==2) tailAngle -= 0.05F;
-        }
-
-        for (int i = 268; i<278; i++) {
-            if (gene[i]==2) tailAngle += 0.05F;
-        }
-
-        this.tailAngle = tailAngle;
+        return meatiness;
     }
 
     public boolean isBearded() {

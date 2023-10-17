@@ -1714,14 +1714,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             readInitialAnimationValues(this.chickenModelData, chicken);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            if (chickenModelData.lookType==0) {
+            if (chickenModelData.lookType <= ageInTicks) {
                 if (entityIn.getRandom().nextBoolean()) {
-                    chickenModelData.lookType = entityIn.getRandom().nextInt(300)+20;
+                    chickenModelData.lookType = (int)(ageInTicks) + entityIn.getRandom().nextInt(300)+60;
                 } else {
-                    chickenModelData.lookType = -entityIn.getRandom().nextInt(600)+20;
+                    chickenModelData.lookType = (int)(ageInTicks) + entityIn.getRandom().nextInt(60);
                 }
             } else {
-                chickenModelData.lookType+=chickenModelData.lookType>0?-1:1;
+                chickenModelData.lookType--;
             }
 
             if (this.chickenModelData.sleeping && !isMoving) {
@@ -1733,9 +1733,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         layDownAnimation(24.5F-chicken.height, chicken.bodyY, true);
                     } else {
                         layDownAnimation(24.5F-chicken.height, chicken.bodyY,false);
-                        if (chickenModelData.lookType>0) {
+                        if (chickenModelData.lookType+ageInTicks>60) {
                             headBinocularLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle, chicken.neckAngle);
-                        } else if (chickenModelData.lookType<0) {
+                        } else {
                             headMonocularLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle, chicken.neckAngle);
                         }
                     }
@@ -1763,9 +1763,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     if ((netHeadYaw == 0 && headPitch == 0)) {
                         defaultHeadPosture(0, chicken.bodyAngle, chicken.neckAngle);
                     } else {
-                        if (chickenModelData.lookType>0) {
+                        if (chickenModelData.lookType+ageInTicks>60) {
                             headBinocularLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle, chicken.neckAngle);
-                        } else if (chickenModelData.lookType<0) {
+                        } else {
                             headMonocularLookingAnimation(netHeadYaw, headPitch, chicken.bodyAngle, chicken.neckAngle);
                         }
                     }
@@ -1843,18 +1843,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         float bodyMod = -bodyAngle/1.5F;
         float neckMod = 1.0F-neckAngle;
 
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), (neckAngle*xRot) + (1.5708F*bodyMod*neckAngle)));
+        this.theNeck.setXRot(this.lerpTo(0.3F, this.theNeck.getXRot(), (neckAngle*xRot) + (1.5708F*bodyMod*neckAngle)));
         if (neckMod<0.0F) neckMod = 0.0F;
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), (xRot+(xRot*neckMod)) + (1.5708F*bodyMod*(neckMod))));
+        this.theHead.setXRot(this.lerpTo(0.5F, this.theHead.getXRot(), (xRot+(xRot*neckMod)) + (1.5708F*bodyMod*(neckMod))));
 
         bodyMod = this.theNeck.getXRot()/1.5708F;
 
-        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), yRot*(1.0F-bodyMod)));
-        this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), yRot*bodyMod));
+        this.theNeck.setYRot(this.lerpTo(0.45F, this.theNeck.getYRot(), yRot*(1.0F-bodyMod)));
+        this.theNeck.setZRot(this.lerpTo(0.3F, this.theNeck.getZRot(), yRot*bodyMod));
 
         bodyMod = this.theHead.getXRot()/1.5708F;
-        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), yRot*(1.0F-bodyMod)));
-        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), yRot*bodyMod*bodyMod));
+        this.theHead.setYRot(this.lerpTo(0.5F, this.theHead.getYRot(), yRot*(1.0F-bodyMod)));
+        this.theHead.setZRot(this.lerpTo(0.5F, this.theHead.getZRot(), yRot*bodyMod*bodyMod));
     }
 
     private void headMonocularLookingAnimation(float netHeadYaw, float headPitch, float bodyAngle, float neckAngle) {
@@ -1863,13 +1863,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         float bodyMod = -bodyAngle/1.5F;
         float neckMod;
 
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), (-neckAngle*xRot) + (1.5708F*bodyMod*neckAngle)));
+        this.theNeck.setXRot(this.lerpTo(0.3F, this.theNeck.getXRot(), (-neckAngle*xRot) + (1.5708F*bodyMod*neckAngle)));
         bodyMod = this.theNeck.getXRot()/1.5708F;
-        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(),yRot*(1.0F-bodyMod)));
-        this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(),yRot*bodyMod));
+        this.theNeck.setYRot(this.lerpTo(0.45F, this.theNeck.getYRot(),yRot*(1.0F-bodyMod)));
+        this.theNeck.setZRot(this.lerpTo(0.3F, this.theNeck.getZRot(),yRot*bodyMod));
 
         neckMod = Math.abs(this.theNeck.getYRot()/1.5708F)-1.5708F;
-        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(),(yRot>0.0F?0.5F:-0.5F)*neckMod));
+        this.theHead.setZRot(this.lerpTo(0.5F, this.theHead.getZRot(),(yRot>0.0F?0.5F:-0.5F)*neckMod));
         this.theHead.setXRot(-this.theNeck.getXRot());
     }
 
@@ -1899,8 +1899,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     private boolean grazingAnimation(float ticks, float bodyY) {
-        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
-        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        this.theNeck.setYRot(this.lerpTo(0.45F, this.theNeck.getYRot(), 0.0F));
+        this.theHead.setYRot(this.lerpTo(0.45F, this.theHead.getYRot(), 0.0F));
         if (ticks < 50) {
             this.theLegLeft.setXRot(this.lerpTo(this.theLegLeft.getXRot(), 0.0F));
             this.theLegRight.setXRot(this.lerpTo(this.theLegRight.getXRot(), 0.0F));
@@ -1911,10 +1911,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             } else {
                 float loop = (float) Math.cos(ticks*0.75F);
                 if (loop > 0) {
-                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI * 0.8F));
+                    this.theNeck.setXRot(this.lerpTo(0.3F, this.theNeck.getXRot(), Mth.HALF_PI * 0.8F));
 //                    this.theNeck.setY(this.lerpTo(this.theNeck.getY(), -2.0F));
                 } else {
-                    this.theNeck.setXRot(this.lerpTo(0.08F, this.theNeck.getXRot(), Mth.HALF_PI * 1.15F));
+                    this.theNeck.setXRot(this.lerpTo(0.3F, this.theNeck.getXRot(), Mth.HALF_PI * 1.15F));
 //                    this.theNeck.setY(this.lerpTo(0.1F, this.theNeck.getY(), 0.0F));
                 }
             }
@@ -1922,7 +1922,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
             this.theBody.setXRot(this.lerpTo(this.theBody.getXRot(), 0.0F));
             this.theBody.setY(2.0F + (this.theBody.getXRot()*0.64F*bodyY));
-            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
+            this.theNeck.setXRot(this.lerpTo(0.3F, this.theNeck.getXRot(), 0.0F));
             float loop = (float) Math.cos(ticks*0.5F);
             if (loop > 0) {
                 if (this.theLegLeft.getXRot() <= 0.0F) {

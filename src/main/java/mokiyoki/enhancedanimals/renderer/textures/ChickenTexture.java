@@ -252,7 +252,7 @@ public class ChickenTexture {
                                         } else {
                                             switch (extension) {
                                                 case 5, 1 -> pattern = "solid";
-                                                case 2 -> pattern = "quail";
+                                                case 2 -> pattern = "quail_male";
                                                 case 3 -> pattern = "blacktail";
                                                 case 4 -> pattern = "lakenvelder_male";
                                             }
@@ -370,7 +370,7 @@ public class ChickenTexture {
                                     } else {
                                         switch (extension) {
                                             case 1, 5 -> pattern = "solid";
-                                            case 2, 3, 4 -> pattern = "quail";
+                                            case 2, 3, 4 -> pattern = "quail_male";
                                         }
                                     }
                                 }
@@ -926,61 +926,53 @@ public class ChickenTexture {
     }
 
     private static int calculateGroundRGB(int[] sGene, int[] gene, boolean isFemale) {
-        int colour = 16777215;
         if (gene[20] != 1 && gene[21] != 1) return 16777215;
-        if (isFemale) {
-            if (sGene[0] == 1) {
-                colour = gene[31]==1 || gene[32]==1 ? 12475671 : 14066221;
-            }
-        } else {
-            if (sGene[0] == 1 || sGene[1] == 1) {
-                if (sGene[0]==sGene[1]) {
-                    colour = gene[31]==1 || gene[32]==1 ? 12475671 : 14066221;
-                } else {
-                    colour = gene[31]==1 || gene[32]==1 ? 14066221 : 13808740;
-                }
-            }
 
-            if (gene[170]==1 || gene[171]==1) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
+        float h = 0.141F;
+        float s = 1.0F;
+        float b = isFemale? 0.9F : 1.0F;
 
-                b -= (int)(b*0.25F);
-
-                colour = r << 16 | g << 8 | Math.max(b,0);
+        if (sGene[0]==2||(!isFemale&&sGene[1]==2)) {
+            if (isFemale||sGene[0]==sGene[1]) {
+                return Colouration.HSBtoARGB(h, 0.0F, b);
+            } else {
+                s = 0.5F;
             }
         }
 
-        if (colour!=16777215) {
-            //Dilute
-            if (gene[32] != 3 || gene[33] != 3) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
-
-                b += (int) ((255 - b) * 0.1F);
-                g += (int) ((255 - g) * 0.2F);
-                r += (int) ((255 - r) * (gene[32]==1||gene[33]==1?0.2F:0.3F));
-
-                colour = Math.min(r, 255) << 16 | Math.min(g, 255) << 8 | Math.min(b, 255);
-            }
-
-            //Lavender
-            if (gene[36] == 2 && gene[37] == 2) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
-
-                b += (int) ((255 - b) * 0.65F);
-                g += (int) ((255 - g) * 0.7F);
-                r += (int) ((255 - r) * 0.7F);
-
-                colour = r << 16 | g << 8 | b;
-            }
+        //mahogany
+        if (gene[34]==1||gene[35]==1) {
+            h *= gene[34]==gene[35]?0.75F:0.8F;
+            s += (1.0F-s)*0.25F;
         }
 
-        return colour;
+        //Lavender
+        if (gene[36]==2&&gene[37]==2) {
+            s *= 0.2F;
+        }
+
+        //autosomal red
+        if (gene[170]==1||gene[171]==1) {
+            h *= gene[170]==gene[171] ? 0.92F : 0.95F;
+        }
+
+        //dilute / retired-cream
+        if (gene[32]!=3||gene[33]!=3) {
+            h += (0.141F-h)*0.5F;
+            s *= 0.7F;
+        }
+
+        if (gene[284]!=3||gene[285]!=3) {
+            s *= 0.65F;
+            b *= 0.95F;
+        }
+
+        //dominant white
+        if (gene[38]==1||gene[39]==1) {
+            s *= gene[38]==gene[39] ? 0.8F : 0.9F;
+        }
+
+        return Colouration.HSBtoARGB(h, s, b);
     }
 
     private static int calculateAutosomalRedRGB(int[] gene, boolean isFemale) {
@@ -1031,9 +1023,7 @@ public class ChickenTexture {
         boolean paint = gene[38] == 1 || gene[39] == 1;
 
         if (gene[40] == 2 || gene[41] == 2) {
-            if (gene[40] == gene[41]) {
-                splash = true;
-            }
+            if (gene[40] == gene[41]) { splash = true; }
                 //Blue
                 patternHue = 0.6F;
                 patternSaturation = 0.2F;
@@ -1044,8 +1034,8 @@ public class ChickenTexture {
         if (sGene[2] == 2 && (isFemale || sGene[3] == 2)) {
             //Choc
             patternHue = 0.05F;
-            patternSaturation += patternSaturation + ((1.0F-patternSaturation)*0.75F);
             patternValue += (patternValue + 1.0F) * 0.25F;
+            patternSaturation += /*(patternSaturation + ((1.0F-patternSaturation)*0.75F)) * patternValue*/ 0.25F;
             iridescenceAlpha = 0.5F;
             iridescenceHueShift = 0.05F;
         }

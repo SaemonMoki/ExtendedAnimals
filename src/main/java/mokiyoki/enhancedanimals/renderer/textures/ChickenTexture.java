@@ -851,7 +851,7 @@ public class ChickenTexture {
                 if (gene[180]==2&&gene[181]==2) tailLength +=1;
                 if (gene[182]==2&&gene[183]==2) tailLength -=1;
 
-                int tailNumber = gene[278]==1||gene[279]==1?6:(gene[278]==2||gene[279]==2?7:8);
+                int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
                 for (int i = 0; i <= tailNumber; i++) {
                     chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
                 }

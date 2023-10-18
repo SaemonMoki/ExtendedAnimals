@@ -32,8 +32,8 @@ public enum Schedules {
     LOOK_FOR_NEST_SCHEDULE("LookForNestSchedule", (ticks) ->
             new AnimalScheduledFunction(12000, (eaa) -> {
                 if (eaa instanceof EnhancedChicken chicken) {
-                    for (int x = -1; x < 1; x++) {
-                        for (int z = -1; z < 1; z++) {
+                    for (int x = -1; x <= 1; x++) {
+                        for (int z = -1; z <= 1; z++) {
                             BlockPos pos = eaa.blockPosition().offset(x, 0, z);
                             if (eaa.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
                                 if (nestTileEntity.isFull()) {

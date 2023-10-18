@@ -14,7 +14,7 @@ public class EnhancedWanderingGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public boolean canUse() {
-        if (enhancedAnimal.isAnimalSleeping()) {
+        if (enhancedAnimal.isAnimalSleeping() || this.enhancedAnimal.getAIStatus() == AIStatus.FOCUSED) {
             return false;
         }
         boolean superShould = super.canUse();

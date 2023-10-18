@@ -1,16 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
-import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
-import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
-import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
-import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
+import mokiyoki.enhancedanimals.ai.general.*;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
@@ -324,9 +315,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
-//        this.goalSelector.addGoal(5, new LayEggGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-//        this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
+        this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new ECRoost(this));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
         this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
@@ -1748,7 +1738,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (nestTileEntity!=null) {
             return !nestTileEntity.isFull();
         } else {
-            if (!this.level.isEmptyBlock(pos) && this.level.isEmptyBlock(pos.above())) {
+            if (!this.level.isEmptyBlock(pos.below()) && this.level.isEmptyBlock(pos)) {
                 int blocked = 0;
                 int notblocked = 0;
                 if (this.level.isEmptyBlock(pos.north())) {
@@ -1771,10 +1761,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 } else {
                     blocked++;
                 }
-                if (this.level.isEmptyBlock(pos.above().above())) {
-                    return blocked >= 3;
+                if (this.level.isEmptyBlock(pos.above())) {
+                    return blocked >= 2;
                 } else {
-                    return notblocked >= 1 && blocked >= 2;
+                    return notblocked >= 1 && blocked >= 1;
                 }
             }
         }
@@ -1861,76 +1851,83 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         private boolean stuck;
         private int closeToHomeTryTicks;
 
-        GoToNestGoal(EnhancedChicken turtle, double speedIn) {
-            this.chicken = turtle;
+        GoToNestGoal(EnhancedChicken chicken, double speedIn) {
+            this.chicken = chicken;
             this.speed = speedIn;
         }
 
-        /**
-         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-         * method as well.
-         */
         public boolean canUse() {
             if (this.chicken.isSleeping()) {
                 return false;
-            } else if (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) {
+            } else if (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()) && this.chicken.getNest() != BlockPos.ZERO) {
                 return true;
             } else {
                 return !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 64.0D);
             }
         }
 
-        /**
-         * Execute a one shot task or start executing a continuous task
-         */
         public void start() {
+            this.chicken.setAIStatus(AIStatus.FOCUSED);
             this.stuck = false;
             this.closeToHomeTryTicks = 0;
         }
 
-        /**
-         * Reset the task's internal state. Called when this task is interrupted by another one
-         */
         public void stop() {
-
+            this.chicken.setAIStatus(AIStatus.NONE);
         }
 
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
         public boolean canContinueToUse() {
-            return !chicken.isSleeping() && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) && !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 2.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
+            boolean canContinue = !chicken.isSleeping() && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) && !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 2.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
+
+            if (!canContinue) {
+                this.chicken.setAIStatus(AIStatus.NONE);
+            }
+
+            return canContinue;
         }
 
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
         public void tick() {
-            BlockPos blockpos = this.chicken.getNest();
-            boolean flag = blockpos.closerToCenterThan(this.chicken.position(), 16.0D);
-            if (flag) {
-                ++this.closeToHomeTryTicks;
+            if (!this.chicken.isBrooding()) {
+                BlockPos blockpos = this.chicken.getNest();
+
+                boolean flag = blockpos.closerToCenterThan(this.chicken.position(), 16.0D);
+                if (flag) {
+                    ++this.closeToHomeTryTicks;
+                }
+
+                if (blockpos.closerToCenterThan(this.chicken.position(), 2.0D)) {
+                    this.chicken.setPos(new Vec3(blockpos.getX()+0.5D, blockpos.getY(), blockpos.getZ()+0.5D));
+
+                    BlockPos blockPos = this.chicken.blockPosition();
+                    if (chicken.isGoodNestSite(blockPos)) {
+                        if (!this.chicken.isBrooding()) chicken.setBrooding(true);
+                        Level world = chicken.level;
+                        if (world.isEmptyBlock(blockPos)) {
+                            world.setBlock(blockPos, ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                        }
+                    } else {
+                        chicken.setNest(BlockPos.ZERO);
+                    }
+
+                } else if (this.chicken.getNavigation().isDone()) {
+                    Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
+                    Vec3 vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                    if (vec31 == null) {
+                        vec31 = DefaultRandomPos.getPosTowards(this.chicken, 8, 7, vec3, (double)((float)Math.PI / 2F));
+                    }
+
+                    if (vec31 != null && !flag && !this.chicken.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
+                        vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 5, vec3, (double)((float)Math.PI / 2F));
+                    }
+
+                    if (vec31 == null) {
+                        this.stuck = true;
+                        return;
+                    }
+
+                    this.chicken.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
+                }
             }
-
-            if (this.chicken.getNavigation().isDone()) {
-                Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
-                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 3, vec3, (double)((float)Math.PI / 10F));
-                if (vec31 == null) {
-                    vec31 = DefaultRandomPos.getPosTowards(this.chicken, 8, 7, vec3, (double)((float)Math.PI / 2F));
-                }
-
-                if (vec31 != null && !flag && !this.chicken.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
-                    vec31 = DefaultRandomPos.getPosTowards(this.chicken, 16, 5, vec3, (double)((float)Math.PI / 2F));
-                }
-
-                if (vec31 == null) {
-                    this.stuck = true;
-                    return;
-                }
-
-                this.chicken.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
-            }
-
         }
     }
 

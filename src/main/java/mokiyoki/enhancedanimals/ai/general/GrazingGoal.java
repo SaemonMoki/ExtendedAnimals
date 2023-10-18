@@ -63,7 +63,7 @@ public class GrazingGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.eanimal.isVehicle() || this.eanimal.isAnimalSleeping()) {
+        if (this.eanimal.isVehicle() || this.eanimal.isAnimalSleeping() || ((EnhancedAnimalAbstract)this.eanimal).getAIStatus() == AIStatus.FOCUSED) {
             return false;
         } else {
 

@@ -66,4 +66,9 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
         return resourcelocation;
     }
 
+    protected boolean shouldShowName(EnhancedSheep entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
+
 }

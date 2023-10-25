@@ -410,5 +410,11 @@
   "eanimod.animalinfocontainer.months" : "months",
   "eanimod.animalinfocontainer.years" : "years",
   "eanimod.animalinfocontainer.ancient" : "ancient",
+  "eanimod.animalinfocontainer.photomode.background" : "Select Backgrounds",
+  "eanimod.animalinfocontainer.photomode.rgb" : "Select RGB Background",
+  "eanimod.animalinfocontainer.photomode.transparent" : "Enable Transparent Mode For Photo",
+  "eanimod.animalinfocontainer.photomode.rgb.red" : "Red Value:",
+  "eanimod.animalinfocontainer.photomode.rgb.green" : "Green Value:",
+  "eanimod.animalinfocontainer.photomode.rgb.blue" : "Blue Value:",
   "eanimod.subtitle.rooster_crow" : "Rooster crowing"
 }

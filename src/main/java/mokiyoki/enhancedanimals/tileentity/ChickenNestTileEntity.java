@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -46,6 +47,10 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     public void handleUpdateTag(CompoundTag nbt) {
         load(nbt);
         super.handleUpdateTag(nbt);
+    }
+
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -116,10 +121,12 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
             if (this.items.get(i).isEmpty()) {
                 this.items.set(i, itemStack);
                 this.setChanged();
+                this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
                 return;
             }
         }
         this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
 

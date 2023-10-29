@@ -8,12 +8,10 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
@@ -71,6 +69,21 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     @Override
     public ItemStack getItem(int itemslot) {
         return this.items.isEmpty()?null:this.items.get(itemslot);
+    }
+
+    public int getEggCount() {
+        if (this.items.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        for (ItemStack itemStack : this.items) {
+            if (!itemStack.is(Items.AIR)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     public int getSlotWithEgg() {

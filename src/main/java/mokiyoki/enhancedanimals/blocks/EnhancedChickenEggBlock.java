@@ -222,12 +222,26 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
-    public boolean isPathfindable(BlockState p_53306_, BlockGetter p_53307_, BlockPos p_53308_, PathComputationType p_53309_) {
+    public boolean isPathfindable(BlockState blockState, BlockGetter p_53307_, BlockPos blockPos, PathComputationType p_53309_) {
         return true;
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_152917_, BlockGetter p_152918_, BlockPos p_152919_, CollisionContext p_152920_) {
+    public VoxelShape getShape(BlockState blockState, BlockGetter p_152918_, BlockPos blockPos, CollisionContext p_152920_) {
         return SHAPE;
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState blockState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+        ChickenNestTileEntity nestEntity = (ChickenNestTileEntity) level.getBlockEntity(blockPos);
+        if (nestEntity != null) {
+            return nestEntity.getEggCount();
+        }
+        return 0;
     }
 }

@@ -16,6 +16,7 @@ public class PigPhenotype implements Phenotype {
     public float lengthScaling;
     public float bodyScale;
     public float buttScale;
+    //public float legLength = 2.5F;
     public float buttTranslation; //also used for legs
     public float wool = 0.0F;
 

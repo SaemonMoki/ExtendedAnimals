@@ -100,7 +100,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "tux_high_1.png", "tux_high_2.png", "tux_high_3.png", "tux_high_4.png",
             "huge_belt_coat_1.png", "huge_belt_coat_2.png", "huge_belt_coat_3.png", "huge_belt_coat_4.png", "huge_belt_coat_5.png", "huge_belt_coat_6.png", "huge_belt_coat_7.png",
             "belt_1.png", "belt_2.png", "belt_3.png", "belt_4.png", "belt_5.png", "belt_6.png",
-            "brindlepatch_extended_1.png", "brindlepatch_extended_2.png", "brindlepatch_extended_3.png", "brindlepatch_extended_4.png", "brindlepatch_extended_5.png", "brindlepatch_extended_6.png",
+            "brindlepatch_extended_skin_1.png", "brindlepatch_extended_skin_2.png", "brindlepatch_extended_skin_3.png", "brindlepatch_extended_skin_4.png", "brindlepatch_extended_skin_5.png", "brindlepatch_extended_skin_6.png",
             "lethal_white_1.png", "lethal_white_2.png", "lethal_white_3.png", "lethal_white_4.png", "lethal_white_5.png",
             "patch_belt_1.png", "patch_belt_2.png",
             "patch_bigbelt_1.png", "patch_bigbelt_2.png", "patch_bigbelt_3.png", "patch_bigbelt_4.png",
@@ -640,6 +640,30 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected float getMovementFactorModifier() {
         float speedMod = 1.0F;
+        int[] genes = this.genetics.getAutosomalGenes();
+        float muscle = 0.0F; // 0 to 1
+        float fat = 0.0F; // 0 to 1
+
+        for (int i = 166; i < 172; i++) {
+            muscle += (genes[i] / 80.0F);
+        }
+        if (genes[172] == 2 || genes[173] == 2) {
+            muscle += 0.25F;
+        }
+        for (int i = 174; i < 182; i++) {
+            fat += (genes[i] / 80.0F);
+        }
+
+        if (fat > 0.55F) {
+            speedMod -= fat * 0.15F;
+        }
+        if (muscle > 0.55F) {
+            speedMod += 0.25F * 0.55F;
+        }
+        else {
+            speedMod += 0.25F * muscle;
+        }
+
         float size = this.getAnimalSize();
         if (size > 1.05F) {
             speedMod = speedMod/size;
@@ -682,7 +706,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         // max of 4 meat from size
-        meatDrop = (int)((size*4.1));
+        meatDrop = (int)((size*3.1)) + 1;
 
         if (genes[44] != 3 && genes[45] != 3) {
             meatChanceMod = (int)((length*4.1)+(fat*4.1)+(muscle*1.1));
@@ -833,6 +857,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int coat_alpha = 0;
             int coat_texture = 0;
             int skin = 0;
+            int skinBlack = 3;
             int hooves = 0;
             int swallowbelly = 0;
             int whitebelly = 0;
@@ -842,14 +867,19 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int whiteExtension = 0;
             int whiteSplash = 0;
             int white = 0;
+            int spotPower = 0;
             boolean roan = false;
             boolean whitePoints = false;
             boolean tusks = false;
             boolean agouti = true;
             boolean agoutiBlack = false;
             boolean wideband = false;
+            boolean brindle = false;
+
 
             //Coloration
+            float maxRed = 0.020F;
+            float maxYellow = 0.101F;
 
             int[] gene = getSharedGenes().getAutosomalGenes();
             float[] melanin = {0.036F, 0.5F, 0.071F};
@@ -971,12 +1001,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 melanin[2] += 0.245F;
             }
 
-            float saturation = (1 - ((gene[148] + gene[149])/2.0F))*1.2F;
+            //float saturation = (1 - ((gene[148] + gene[149])/2.0F))*1.2F;
+            int s = 0;
+
+            for (int i = 192; i < 202; i++) {
+                if (gene[i] == 2) {
+                    s -= 1;
+                }
+            }
 
             //wideband increases saturation
             if (wideband) {
-                saturation += 0.7F;
+                s += 5;
             }
+
+            float saturation = s*0.12F;
 
             int r = 0;
             for (int i = 120; i < 148; i++) {
@@ -992,7 +1031,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            if (saturation != 0) {
+            if (s != 0) {
+                if (saturation < 0) {
+                    maxYellow += (0.0016F * saturation);
+                    //pheomelanin[0] += (0.002F * darkness);
+                }
                 pheomelanin[1] += (0.02F * saturation);
                 melanin[1] += (0.005F * saturation);
             }
@@ -1007,8 +1050,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (darkness != 0) {
                 melanin[2] -= (0.01F * darkness);
                 pheomelanin[0] -= (0.002F * darkness);
-                pheomelanin[1] += (0.005F * darkness);
+                pheomelanin[1] += (0.0015F * darkness);
                 pheomelanin[2] -= (0.03F * darkness);
+                maxYellow -= (0.0021F * darkness);
             }
 
             if (wideband) {
@@ -1019,22 +1063,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 swallowbellyColor[0] = pheomelanin[0] + 0.02F;
                 swallowbellyColor[1] = pheomelanin[1] - 0.15F;
                 swallowbellyColor[2] = pheomelanin[2] + 0.23F;
-            }
-
-            //check hue range
-            float maxRed = 0.020F;
-            float maxYellow = 0.102F;
-
-            if (pheomelanin[0] > maxYellow) {
-                pheomelanin[0] = maxYellow;
-            } else if (pheomelanin[0] < maxRed) {
-                pheomelanin[0] = maxRed;
-            }
-
-            if (melanin[0] > maxYellow) {
-                melanin[0] = maxYellow;
-            } else if (melanin[0] < maxRed) {
-                melanin[0] = maxRed;
             }
 
             float[] lightAgoutiColor = {pheomelanin[0], pheomelanin[1], pheomelanin[2]+0.25F};
@@ -1058,11 +1086,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             //float[] lightAgoutiColor = {0, 0, 1};
             //float[] darkAgoutiColor = {(melanin[0]*0.2F)+(pheomelanin[0]*0.8F), (r*0.02F)+melanin[1]+0.1F, melanin[2]-0.40F};
 
-            if (swallowbellyColor[0] > maxYellow) {
-                swallowbellyColor[0] = maxYellow;
-            } else if (swallowbellyColor[0] < maxRed) {
-                swallowbellyColor[0] = maxRed;
-            }
 
             if (agouti) {
                 if (gene[2] == 4 && gene[3] == 4) {
@@ -1087,6 +1110,43 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                         melanin[2] = (melanin[2] + pheomelanin[2])/2.0F;
                     }
                 }
+            }
+
+            //check hue range
+            if (pheomelanin[0] > maxYellow) {
+                pheomelanin[0] = maxYellow;
+            } else if (pheomelanin[0] < maxRed) {
+                pheomelanin[0] = maxRed;
+            }
+
+            if (melanin[0] > maxYellow) {
+                melanin[0] = maxYellow;
+            } else if (melanin[0] < maxRed) {
+                melanin[0] = maxRed;
+            }
+
+            if (swallowbellyColor[0] > maxYellow) {
+                swallowbellyColor[0] = maxYellow;
+            } else if (swallowbellyColor[0] < maxRed) {
+                swallowbellyColor[0] = maxRed;
+            }
+
+            if (darkAgoutiColor[0] > maxYellow) {
+                darkAgoutiColor[0] = maxYellow;
+            } else if (darkAgoutiColor[0] < maxRed) {
+                darkAgoutiColor[0] = maxRed;
+            }
+
+            if (lightAgoutiColor[0] > maxYellow) {
+                lightAgoutiColor[0] = maxYellow;
+            } else if (lightAgoutiColor[0] < maxRed) {
+                lightAgoutiColor[0] = maxRed;
+            }
+
+            if (darkAgoutiRedColor[0] > maxYellow) {
+                darkAgoutiRedColor[0] = maxYellow;
+            } else if (darkAgoutiRedColor[0] < maxRed) {
+                darkAgoutiRedColor[0] = maxRed;
             }
 
             //checks that numbers are within the valid range
@@ -1189,8 +1249,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 black = 1;
             } else if (gene[0] == 3 || gene[1] == 3) {
                 //brindle
+                brindle = true;
                 // if negative, tamworth; if positive, kitlg/allspots
-                int spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
+                spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
                 if (gene[0] == 3 && gene[1] == 3) {
                     //homozygous brindle
                     black = idx_brindle;
@@ -1389,29 +1450,37 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (gene[12] == 5 || gene[13] == 5) {
                 roan = true;
             }
-            // base skin color
+
+            // skin color
+
+            if (gene[12] == 5 && gene[13] == 5 ) {
+                //roan causes grey skin
+                skinBlack = 2;
+            }
+            else if (gene[4] == 1 || gene[5] == 1 || gene[8] == 2 || gene[9] == 2 || (gene[8] == 3 && gene[9] == 3)) {
+                //chinchilla, chocolate and silver-brown dilute skin
+                skinBlack = 5;
+            }
+
             if (white == 1) {
                 //pink
-                skin = 1;
-            } else if ( (gene[62] == 2 || gene[63] == 2) && (gene[0] == 3 && gene[1] == 3) ) {
-                //tamworth causes pink skin
                 skin = 1;
             } else if (gene[0] == 4  && gene[1] == 4) {
                 //rec.red causes brownish skin
                 skin = 4;
-            } else if (gene[12] == 5 && gene[13] == 5 ) {
-                //grey skin
-                skin = 2;
-            } else if (gene[4] == 1 || gene[5] == 1 || gene[8] == 2 || gene[9] == 2 || (gene[8] == 3 && gene[9] == 3)) {
-                //chinchilla, chocolate and silver-brown dilute skin
-                skin = 5;
-            } else if (black == 1 || black == 2) {
-                //black
-                skin = 3;
-            } else {
+            }
+            else if (black == 1 || black == 2) {
+                //black skin
+                skin = skinBlack;
+            }
+            else if (black == idx_brindle_berkshire) {
+                skin = 1;
+            }
+            else {
                 //grey
                 skin = 2;
-                if (black == idx_brindle_berkshire) {
+                if ( spotPower < 0 ) {
+                    //tamworth causes pink skin
                     skin = 1;
                 }
             }
@@ -1641,7 +1710,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 TextureGrouping blackSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 TextureGrouping blackSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP);
                 addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBRINDLE_SPOTS, black, black != 0);
-                addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, 3, black != 0);
+                addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, skinBlack, black != 0);
                 blackSkinGroup.addGrouping(blackSkinAlpha);
                 parentGroup.addGrouping(blackSkinGroup);
             }
@@ -1704,7 +1773,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (whitebelly != 0) {
-                    addTextureToAnimalTextureGrouping(whitebellyGroup,  PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
+                    addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
                 }
                 else if (swallowbelly != 0) {
                     addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", swallowbellyRGB);
@@ -1714,12 +1783,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 if (!agoutiBlack) {
                     hairTexGroup.addGrouping(swallowbellyGroup);
                     hairTexGroup.addGrouping(whitebellyGroup);
+                    if (brindle && agouti) {
+                        agoutiTex = wideband ? 2 : 1;
+                    }
                 }
                 else {
-                    agoutiTex = 1;
-                    if (wideband) {
-                        agoutiTex = 2;
-                    }
+                    agoutiTex = wideband ? 2 : 1;
                 }
 
                 if (black != 0) {

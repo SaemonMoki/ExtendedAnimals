@@ -538,18 +538,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //desaturation [wildtype, duller, duller, ...]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[148] = ThreadLocalRandom.current().nextInt(10) + 1;
-        }
-        else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[148] = ThreadLocalRandom.current().nextInt(10) + 1;
+//        }
+//        else {
             autosomalGenes[148] = 1;
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[149] = ThreadLocalRandom.current().nextInt(10) + 1;
-        }
-        else {
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[149] = ThreadLocalRandom.current().nextInt(10) + 1;
+//        }
+//        else {
             autosomalGenes[149] = 1;
-        }
+//        }
 
         //darkness
         for (int i = 150; i < 158; i++) {
@@ -761,6 +761,16 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         } else {
             autosomalGenes[191] = (1);
         }
+
+        //desaturation genes [normal, duller]
+        for (int i = 192; i < 202; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.8F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+
         return new Genes(autosomalGenes);
     }
 }

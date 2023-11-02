@@ -9,10 +9,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
@@ -39,7 +38,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, this.items, true);
         return tag;
     }
 
@@ -72,6 +71,21 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         return this.items.isEmpty()?null:this.items.get(itemslot);
     }
 
+    public int getEggCount() {
+        if (this.items.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        for (ItemStack itemStack : this.items) {
+            if (!itemStack.is(Items.AIR)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public int getSlotWithEgg() {
         for (int i=11; i>=0;i--) {
             if (!this.items.get(i).isEmpty()) {
@@ -83,19 +97,28 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
 
     @Override
     public ItemStack removeItem(int slot, int count) {
-        ItemStack stack = slot < getContainerSize() && !this.items.get(slot).isEmpty() ? this.items.get(slot).split(count) : ItemStack.EMPTY;
+        ItemStack itemRemoved = ContainerHelper.removeItem(this.items, slot, count);
         this.setChanged();
-        return stack;
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        return itemRemoved;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int p_18951_) {
-        return null;
+        return ContainerHelper.takeItem(this.items, p_18951_);
     }
 
     @Override
     public void setItem(int p_18944_, ItemStack p_18945_) {
-
+        boolean changed = false;
+        if (p_18944_ >= 0 && p_18944_ < this.items.size()) {
+            this.items.set(p_18944_, p_18945_);
+            changed = true;
+        }
+        if (changed) {
+            this.setChanged();
+            this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        }
     }
 
     @Override
@@ -105,7 +128,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
 
     @Override
     public void clearContent() {
-
+        this.items.clear();
     }
 
     public boolean isFull() {
@@ -128,6 +151,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         this.setChanged();
         this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
+
 
 
 }

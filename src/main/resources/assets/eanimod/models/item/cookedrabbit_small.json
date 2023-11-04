@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "eanimod:items/cookedrabbit_small"
+    "layer0": "eanimod:item/cookedrabbit_small"
   }
 }

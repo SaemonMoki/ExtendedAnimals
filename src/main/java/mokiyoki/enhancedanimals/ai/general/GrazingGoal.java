@@ -141,7 +141,7 @@ public class GrazingGoal extends Goal {
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
                         mutableblockpos.set(baseBlockPos).move(i1, k - 1, j1);
-                        if (this.isEdibleBlock(this.eanimal.level, mutableblockpos)) {
+                        if (this.isEdibleBlock(this.eanimal.level(), mutableblockpos)) {
                             if(randomSelection) {
                                 allFoundPos.add(new BlockPos(mutableblockpos));
                             } else {
@@ -167,30 +167,30 @@ public class GrazingGoal extends Goal {
     }
 
     private boolean checkSquaresInFront(BlockPos eanimalBlockPos, BlockPos.MutableBlockPos mutableblockpos, Vec3 directionVec) {
-        if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move((int)(directionVec.x*2)+1, -1, (int)(directionVec.z*2)+1))) {
+        if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move((int)(directionVec.x*2)+1, -1, (int)(directionVec.z*2)+1))) {
             this.destinationBlock = mutableblockpos;
             return true;
         }
-        if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move((int)(directionVec.x*3)+1, -1, (int)(directionVec.z*3)+1))) {
+        if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move((int)(directionVec.x*3)+1, -1, (int)(directionVec.z*3)+1))) {
             this.destinationBlock = mutableblockpos;
             return true;
         }
 
         if (directionVec.x != 0) {
-            if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move((int)directionVec.x+1, -1, -1))) {
+            if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move((int)directionVec.x+1, -1, -1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
-            if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move((int)directionVec.x+1, -1, 1))) {
+            if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move((int)directionVec.x+1, -1, 1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
         } else {
-            if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move(-1, -1, (int)directionVec.z+1))) {
+            if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move(-1, -1, (int)directionVec.z+1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
-            if (isEdibleBlock(this.eanimal.level, mutableblockpos.set(eanimalBlockPos).move(1, -1, (int)directionVec.z+1))) {
+            if (isEdibleBlock(this.eanimal.level(), mutableblockpos.set(eanimalBlockPos).move(1, -1, (int)directionVec.z+1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
@@ -219,7 +219,7 @@ public class GrazingGoal extends Goal {
     }
 
     private boolean findIfNearbyHay() {
-        Set<BlockPos> hayList = eanimal.level.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
+        Set<BlockPos> hayList = eanimal.level().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
         double closestDistance = 128;
         boolean found = false;
         for (BlockPos pos : hayList) {
@@ -288,7 +288,7 @@ public class GrazingGoal extends Goal {
                     eatingSearch = false;
                     this.eanimal.decreaseHunger(hayHungerRestore);
                     this.eatingGrassTimer = 40;
-                    this.eanimal.level.broadcastEntityEvent(this.eanimal, (byte)10);
+                    this.eanimal.level().broadcastEntityEvent(this.eanimal, (byte)10);
                     this.eanimal.getNavigation().stop();
                 }
             } else if (!this.destinationBlock.above().closerToCenterThan(this.eanimal.position(), this.getGoundBlockTargetDistanceSq())) {
@@ -300,7 +300,7 @@ public class GrazingGoal extends Goal {
                 eatingSearch = false;
                 this.eanimal.decreaseHunger(otherHungerRestore);
                 this.eatingGrassTimer = 40;
-                this.eanimal.level.broadcastEntityEvent(this.eanimal, (byte)10);
+                this.eanimal.level().broadcastEntityEvent(this.eanimal, (byte)10);
                 this.eanimal.getNavigation().stop();
             }
         } else if (eating) {
@@ -315,12 +315,12 @@ public class GrazingGoal extends Goal {
         } else if (eatingHay) {
             this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
             if (this.eatingGrassTimer == 4) {
-                BlockState blockState = this.eanimal.level.getBlockState(this.destinationBlock);
+                BlockState blockState = this.eanimal.level().getBlockState(this.destinationBlock);
                 if (blockState.getBlock() instanceof UnboundHayBlock) {
-                    ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(this.eanimal.level, blockState, this.destinationBlock);
+                    ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(this.eanimal.level(), blockState, this.destinationBlock);
                 } else {
                     //clean up
-                    this.eanimal.level.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
+                    this.eanimal.level().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
                 }
             } else if (this.eatingGrassTimer == 0) {
                 eatingHay = false;
@@ -345,23 +345,23 @@ public class GrazingGoal extends Goal {
     protected void eatBlocks() {
         BlockPos blockpos = new BlockPos(this.eanimal.blockPosition());
         if (isInEdibleBlock(blockpos)) {
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                this.eanimal.level.destroyBlock(blockpos, false);
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                this.eanimal.level().destroyBlock(blockpos, false);
             }
             this.eanimal.ate();
         } else {
             BlockPos blockposDown = blockpos.below();
-            if (this.eanimal.level.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
+            if (this.eanimal.level().getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
                 }
 
                 this.eanimal.ate();
-            } else if (this.eanimal.level.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
+            } else if (this.eanimal.level().getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
                 }
 
                 this.eanimal.ate();
@@ -381,7 +381,7 @@ public class GrazingGoal extends Goal {
     }
 
     private boolean isInEdibleBlock(BlockPos blockpos) {
-        BlockState blockState = this.eanimal.level.getBlockState(blockpos);
+        BlockState blockState = this.eanimal.level().getBlockState(blockpos);
         return (IS_GRASS.test(blockState)
                 || IS_TALL_GRASS_BLOCK.test(blockState)
                 || blockState.getBlock() instanceof GrowablePlant

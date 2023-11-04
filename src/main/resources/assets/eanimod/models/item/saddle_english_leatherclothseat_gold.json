@@ -1,8 +1,8 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "eanimod:items/saddle_english_seat",
-    "layer1": "eanimod:items/saddle_english_clothseat",
-    "layer2": "eanimod:items/saddle_english_stirup_gold"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "eanimod:item/saddle_english_seat",
+        "layer1": "eanimod:item/saddle_english_clothseat",
+        "layer2": "eanimod:item/saddle_english_stirup_gold"
+    }
 }

@@ -43,7 +43,7 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockPos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.RABBIT_AUTOSOMAL_GENES_LENGTH];
         Biome biome = biomeHolder.value();
 

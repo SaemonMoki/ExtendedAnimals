@@ -40,7 +40,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockPos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
 
         int wildType = 2;

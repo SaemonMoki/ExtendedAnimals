@@ -5,12 +5,6 @@ package mokiyoki.enhancedanimals.util;
  */
 public class Reference {
 
-    public static final String MODID = "eanimod";
-    public static final String NAME = "Genetic Animals Mod";
-    public static final String VERSION = "0.9.1";
-    public static final String ACCEPTED_VERSIONS = "[1.19.2]";
-    public static final String CLIENT_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ClientProxy";
-    public static final String SERVER_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ServerProxy";
     public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 20;
     public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 196;
     public static final int PIG_AUTOSOMAL_GENES_LENGTH = 120;

@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Lists;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -122,14 +123,14 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
 
     protected void onHitEntity(EntityHitResult p_213868_1_) {
         super.onHitEntity(p_213868_1_);
-        p_213868_1_.getEntity().hurt(DamageSource.thrown(this, this.getOwner()), 0.0F);
+        p_213868_1_.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
     }
 
     /**
@@ -138,7 +139,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
-        if(this.level.isClientSide) {
+        if(this.level().isClientSide) {
             int i =0;
         }
 
@@ -147,13 +148,13 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             Genes genetics = new Genes(getGenes());
             if (genetics.isHomozygousFor(70, 2)) {
                 isCreeper = true;
-                if (this.level.isClientSide) {
-                    this.level.createFireworks(this.getX(), this.getY(), this.getZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
+                if (this.level().isClientSide) {
+                    this.level().createFireworks(this.getX(), this.getY(), this.getZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
                 }
             }
-        } else if (this.level instanceof ServerLevel && !this.hasParents) {
-            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
-            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level, this.blockPosition(), "WanderingTrader");
+        } else if (this.level() instanceof ServerLevel && !this.hasParents) {
+            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
+            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level(), this.blockPosition(), "WanderingTrader");
             enhancedchicken.setGenes(chickenGenes);
             enhancedchicken.setSharedGenesFromEntityEgg(chickenGenes.getGenesAsString());
             enhancedchicken.setGrowingAge();
@@ -162,13 +163,13 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             enhancedchicken.setSireName(getSire());
             enhancedchicken.setDamName(getDam());
-            this.level.addFreshEntity(enhancedchicken);
+            this.level().addFreshEntity(enhancedchicken);
         }
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
-                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
+                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
                     enhancedchicken.setGenes(new Genes(getGenes()));
                     enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                     enhancedchicken.setGrowingAge();
@@ -177,10 +178,10 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
                     enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                     enhancedchicken.setSireName(getSire());
                     enhancedchicken.setDamName(getDam());
-                    this.level.addFreshEntity(enhancedchicken);
+                    this.level().addFreshEntity(enhancedchicken);
                 }
             }
-            this.level.broadcastEntityEvent(this, (byte)3);
+            this.level().broadcastEntityEvent(this, (byte)3);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -247,7 +248,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

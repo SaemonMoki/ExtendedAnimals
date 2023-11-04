@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotype;
@@ -19,6 +18,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -1510,7 +1510,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
             }
 
-            if (!entityIn.isOnGround()) {
+            if (!entityIn.onGround()) {
                 animateFalling(ageInTicks);
             } else {
                 if (this.theWingLeft.getZRot() > 0.001F) {

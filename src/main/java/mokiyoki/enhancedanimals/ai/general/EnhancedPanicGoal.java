@@ -17,7 +17,7 @@ public class EnhancedPanicGoal extends PanicGoal {
         } else {
             ((EnhancedAnimalAbstract)this.mob).awaken();
             if (this.mob.isOnFire()) {
-                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 5);
+                BlockPos blockpos = this.lookForWater(this.mob.level(), this.mob, 5);
                 if (blockpos != null) {
                     this.posX = (double)blockpos.getX();
                     this.posY = (double)blockpos.getY();

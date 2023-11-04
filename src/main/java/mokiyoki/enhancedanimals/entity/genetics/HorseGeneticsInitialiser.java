@@ -29,7 +29,7 @@ public class HorseGeneticsInitialiser extends AbstractGeneticsInitialiser{
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockPos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.HORSE_AUTOSOMAL_GENES_LENGTH];
         Biome biome = biomeHolder.value();
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"

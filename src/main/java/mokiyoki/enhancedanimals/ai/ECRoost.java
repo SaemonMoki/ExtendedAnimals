@@ -21,9 +21,9 @@ public class ECRoost extends Goal {
     }
 
     public boolean canUse() {
-        if (!this.enhancedChicken.level.isDay()) {
+        if (!this.enhancedChicken.level().isDay()) {
             if (!this.enhancedChicken.isRoosting()) {
-                List<BlockPos> allPostPos = this.enhancedChicken.level.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
+                List<BlockPos> allPostPos = this.enhancedChicken.level().getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
                     postPos = blockPosToGoTo;

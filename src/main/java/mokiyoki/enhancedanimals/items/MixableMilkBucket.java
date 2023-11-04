@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.items;
 
-import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.LivingEntity;

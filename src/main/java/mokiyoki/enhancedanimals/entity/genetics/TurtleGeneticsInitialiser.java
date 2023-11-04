@@ -33,7 +33,7 @@ public class TurtleGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockPos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.TURTLE_AUTOSOMAL_GENES_LENGTH];
         Biome biome = biomeHolder.value();
 

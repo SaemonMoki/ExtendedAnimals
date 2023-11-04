@@ -32,7 +32,7 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
     }
 
     protected boolean canUpdatePath() {
-        return this.mob.isOnGround() || this.isInLiquid() || this.mob.isPassenger();
+        return this.mob.onGround() || this.isInLiquid() || this.mob.isPassenger();
     }
 
     protected Vec3 getTempMobPos() {
@@ -56,11 +56,11 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
             pos = blockpos;
         }
 
-        if (!this.level.getBlockState(pos).getMaterial().isSolid()) {
+        if (!this.level.getBlockState(pos).isSolid()) {
             return super.createPath(pos, p_179680_2_);
         } else {
             BlockPos blockpos1;
-            for(blockpos1 = pos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).getMaterial().isSolid(); blockpos1 = blockpos1.above()) {
+            for(blockpos1 = pos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).isSolid(); blockpos1 = blockpos1.above()) {
             }
 
             return super.createPath(blockpos1, p_179680_2_);
@@ -74,12 +74,12 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
     private int getPathablePosY() {
         if (this.mob.isInWater() && this.canFloat()) {
             int i = Mth.floor(this.mob.getY());
-            Block block = this.level.getBlockState(new BlockPos(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
+            Block block = this.level.getBlockState(new BlockPos(Mth.floor(this.mob.getX()), i, Mth.floor(this.mob.getZ()))).getBlock();
             int j = 0;
 
             while(block == Blocks.WATER) {
                 ++i;
-                block = this.level.getBlockState(new BlockPos(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
+                block = this.level.getBlockState(new BlockPos(Mth.floor(this.mob.getX()), i, Mth.floor(this.mob.getZ()))).getBlock();
                 ++j;
                 if (j > 16) {
                     return Mth.floor(this.mob.getY());
@@ -96,11 +96,11 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
         super.trimPath();
         if (this.shouldSeekShelter) {
             if (this.isHot) {
-                if (this.level.canSeeSky(new BlockPos(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ()))) {
+                if (this.level.canSeeSky(new BlockPos(Mth.floor(this.mob.getX()), Mth.floor(this.mob.getY() + 0.5D), Mth.floor(this.mob.getZ())))) {
                     return;
                 }
             } else {
-                if (this.level.canSeeSky(new BlockPos(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ())) && this.level.isWaterAt(this.mob.blockPosition())) {
+                if (this.level.canSeeSky(new BlockPos(Mth.floor(this.mob.getX()), Mth.floor(this.mob.getY() + 0.5D), Mth.floor(this.mob.getZ()))) && this.level.isWaterAt(this.mob.blockPosition())) {
                     return;
                 }
             }
@@ -121,105 +121,105 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
         }
     }
 
-    /**
-     * Checks if the specified entity can safely walk to the specified location.
-     */
-    protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32, int sizeX, int sizeY, int sizeZ) {
-        int i = Mth.floor(posVec31.x);
-        int j = Mth.floor(posVec31.z);
-        double d0 = posVec32.x - posVec31.x;
-        double d1 = posVec32.z - posVec31.z;
-        double d2 = d0 * d0 + d1 * d1;
-        if (d2 < 1.0E-8D) {
-            return false;
-        } else {
-            double d3 = 1.0D / Math.sqrt(d2);
-            d0 = d0 * d3;
-            d1 = d1 * d3;
-            sizeX = sizeX + 2;
-            sizeZ = sizeZ + 2;
-            if (!this.isSafeToStandAt(i, Mth.floor(posVec31.y), j, sizeX, sizeY, sizeZ, posVec31, d0, d1)) {
-                return false;
-            } else {
-                sizeX = sizeX - 2;
-                sizeZ = sizeZ - 2;
-                double d4 = 1.0D / Math.abs(d0);
-                double d5 = 1.0D / Math.abs(d1);
-                double d6 = (double)i - posVec31.x;
-                double d7 = (double)j - posVec31.z;
-                if (d0 >= 0.0D) {
-                    ++d6;
-                }
-
-                if (d1 >= 0.0D) {
-                    ++d7;
-                }
-
-                d6 = d6 / d0;
-                d7 = d7 / d1;
-                int k = d0 < 0.0D ? -1 : 1;
-                int l = d1 < 0.0D ? -1 : 1;
-                int i1 = Mth.floor(posVec32.x);
-                int j1 = Mth.floor(posVec32.z);
-                int k1 = i1 - i;
-                int l1 = j1 - j;
-
-                while(k1 * k > 0 || l1 * l > 0) {
-                    if (d6 < d7) {
-                        d6 += d4;
-                        i += k;
-                        k1 = i1 - i;
-                    } else {
-                        d7 += d5;
-                        j += l;
-                        l1 = j1 - j;
-                    }
-
-                    if (!this.isSafeToStandAt(i, Mth.floor(posVec31.y), j, sizeX, sizeY, sizeZ, posVec31, d0, d1)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        }
-    }
-
-    /**
-     * Returns true when an entity could stand at a position, including solid blocks under the entire entity.
-     */
-    private boolean isSafeToStandAt(int x, int y, int z, int sizeX, int sizeY, int sizeZ, Vec3 vec31, double p_179683_8_, double p_179683_10_) {
-        int i = x - sizeX / 2;
-        int j = z - sizeZ / 2;
-        if (!this.isPositionClear(i, y, j, sizeX, sizeY, sizeZ, vec31, p_179683_8_, p_179683_10_)) {
-            return false;
-        } else {
-            for(int k = i; k < i + sizeX; ++k) {
-                for(int l = j; l < j + sizeZ; ++l) {
-                    double d0 = (double)k + 0.5D - vec31.x;
-                    double d1 = (double)l + 0.5D - vec31.z;
-                    if (!(d0 * p_179683_8_ + d1 * p_179683_10_ < 0.0D)) {
-                        BlockPathTypes pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y - 1, l, this.mob, sizeX, sizeY, sizeZ, false, true);
-                        if (!this.hasValidPathType(pathnodetype)) {
-                            return false;
-                        }
-
-                        pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y, l, this.mob, sizeX, sizeY, sizeZ, false, true);
-                        float f = this.mob.getPathfindingMalus(pathnodetype);
-                        if (f < 0.0F || f >= 8.0F) {
-                            return false;
-                        }
-
-                        if (pathnodetype == BlockPathTypes.DAMAGE_FIRE || pathnodetype == BlockPathTypes.DANGER_FIRE || pathnodetype == BlockPathTypes.DAMAGE_OTHER) {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-    }
+//    /**
+//     * Checks if the specified entity can safely walk to the specified location.
+//     */
+//    protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32, int sizeX, int sizeY, int sizeZ) {
+//        int i = Mth.floor(posVec31.x);
+//        int j = Mth.floor(posVec31.z);
+//        double d0 = posVec32.x - posVec31.x;
+//        double d1 = posVec32.z - posVec31.z;
+//        double d2 = d0 * d0 + d1 * d1;
+//        if (d2 < 1.0E-8D) {
+//            return false;
+//        } else {
+//            double d3 = 1.0D / Math.sqrt(d2);
+//            d0 = d0 * d3;
+//            d1 = d1 * d3;
+//            sizeX = sizeX + 2;
+//            sizeZ = sizeZ + 2;
+//            if (!this.isSafeToStandAt(i, Mth.floor(posVec31.y), j, sizeX, sizeY, sizeZ, posVec31, d0, d1)) {
+//                return false;
+//            } else {
+//                sizeX = sizeX - 2;
+//                sizeZ = sizeZ - 2;
+//                double d4 = 1.0D / Math.abs(d0);
+//                double d5 = 1.0D / Math.abs(d1);
+//                double d6 = (double)i - posVec31.x;
+//                double d7 = (double)j - posVec31.z;
+//                if (d0 >= 0.0D) {
+//                    ++d6;
+//                }
+//
+//                if (d1 >= 0.0D) {
+//                    ++d7;
+//                }
+//
+//                d6 = d6 / d0;
+//                d7 = d7 / d1;
+//                int k = d0 < 0.0D ? -1 : 1;
+//                int l = d1 < 0.0D ? -1 : 1;
+//                int i1 = Mth.floor(posVec32.x);
+//                int j1 = Mth.floor(posVec32.z);
+//                int k1 = i1 - i;
+//                int l1 = j1 - j;
+//
+//                while(k1 * k > 0 || l1 * l > 0) {
+//                    if (d6 < d7) {
+//                        d6 += d4;
+//                        i += k;
+//                        k1 = i1 - i;
+//                    } else {
+//                        d7 += d5;
+//                        j += l;
+//                        l1 = j1 - j;
+//                    }
+//
+//                    if (!this.isSafeToStandAt(i, Mth.floor(posVec31.y), j, sizeX, sizeY, sizeZ, posVec31, d0, d1)) {
+//                        return false;
+//                    }
+//                }
+//
+//                return true;
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Returns true when an entity could stand at a position, including solid blocks under the entire entity.
+//     */
+//    private boolean isSafeToStandAt(int x, int y, int z, int sizeX, int sizeY, int sizeZ, Vec3 vec31, double p_179683_8_, double p_179683_10_) {
+//        int i = x - sizeX / 2;
+//        int j = z - sizeZ / 2;
+//        if (!this.isPositionClear(i, y, j, sizeX, sizeY, sizeZ, vec31, p_179683_8_, p_179683_10_)) {
+//            return false;
+//        } else {
+//            for(int k = i; k < i + sizeX; ++k) {
+//                for(int l = j; l < j + sizeZ; ++l) {
+//                    double d0 = (double)k + 0.5D - vec31.x;
+//                    double d1 = (double)l + 0.5D - vec31.z;
+//                    if (!(d0 * p_179683_8_ + d1 * p_179683_10_ < 0.0D)) {
+//                        BlockPathTypes pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y - 1, l, this.mob, sizeX, sizeY, sizeZ, false, true);
+//                        if (!this.hasValidPathType(pathnodetype)) {
+//                            return false;
+//                        }
+//
+//                        pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y, l, this.mob, sizeX, sizeY, sizeZ, false, true);
+//                        float f = this.mob.getPathfindingMalus(pathnodetype);
+//                        if (f < 0.0F || f >= 8.0F) {
+//                            return false;
+//                        }
+//
+//                        if (pathnodetype == BlockPathTypes.DAMAGE_FIRE || pathnodetype == BlockPathTypes.DANGER_FIRE || pathnodetype == BlockPathTypes.DAMAGE_OTHER) {
+//                            return false;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            return true;
+//        }
+//    }
 
     protected boolean hasValidPathType(BlockPathTypes nodeType) {
         if (nodeType == BlockPathTypes.WATER) {

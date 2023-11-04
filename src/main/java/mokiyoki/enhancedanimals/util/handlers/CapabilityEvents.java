@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
 
 /**
@@ -18,10 +19,10 @@ import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
  */
 public class CapabilityEvents {
 
-    public static final ResourceLocation POST_CAP = new ResourceLocation(Reference.MODID, "postcap");
-    public static final ResourceLocation HAY_CAP = new ResourceLocation(Reference.MODID, "haycap");
-    public static final ResourceLocation EGG_CAP = new ResourceLocation(Reference.MODID, "eggcap");
-    public static final ResourceLocation NEST_CAP = new ResourceLocation(Reference.MODID, "nestcap");
+    public static final ResourceLocation POST_CAP = new ResourceLocation(MODID, "postcap");
+    public static final ResourceLocation HAY_CAP = new ResourceLocation(MODID, "haycap");
+    public static final ResourceLocation EGG_CAP = new ResourceLocation(MODID, "eggcap");
+    public static final ResourceLocation NEST_CAP = new ResourceLocation(MODID, "nestcap");
 
     @SubscribeEvent
     public void onAddCapabilitiesWorld(AttachCapabilitiesEvent<Level> event) {

@@ -11,9 +11,11 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Optional;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 public class ModMemoryModuleTypes {
 
-    public static final DeferredRegister<MemoryModuleType<?>> MEMORY_MODULE_TYPE_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.MEMORY_MODULE_TYPES, Reference.MODID);
+    public static final DeferredRegister<MemoryModuleType<?>> MEMORY_MODULE_TYPE_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.MEMORY_MODULE_TYPES, MODID);
 
     public static final RegistryObject<MemoryModuleType<Boolean>> HAS_EGG = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("has_egg", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
 

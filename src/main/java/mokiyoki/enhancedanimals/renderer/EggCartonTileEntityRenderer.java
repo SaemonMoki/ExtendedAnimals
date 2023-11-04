@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.util.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -30,15 +31,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 @OnlyIn(Dist.CLIENT)
 public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
-    public static final ResourceLocation EGG_CARTON_TEXTURE = new ResourceLocation(Reference.MODID, "block/egg_carton");
-    public static final ModelLayerLocation EGG_CARTON = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "egg_carton"), "main");
+    public static final ResourceLocation EGG_CARTON_TEXTURE = new ResourceLocation(MODID, "block/egg_carton");
+    public static final ModelLayerLocation EGG_CARTON = new ModelLayerLocation(new ResourceLocation(MODID, "egg_carton"), "main");
 
     private final ModelPart base;
     private final ModelPart inside;
@@ -76,7 +78,7 @@ public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity>
         matrixStackIn.pushPose();
         float f = blockstate.getValue(EggCartonBlock.FACING).toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
         DoubleBlockCombiner.NeighborCombineResult<? extends EggCartonTileEntity> iCallbackWrapper;

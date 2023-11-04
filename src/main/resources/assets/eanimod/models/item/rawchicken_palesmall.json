@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "eanimod:items/rawchicken_palesmall"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "eanimod:item/rawchicken_palesmall"
+    }
 }

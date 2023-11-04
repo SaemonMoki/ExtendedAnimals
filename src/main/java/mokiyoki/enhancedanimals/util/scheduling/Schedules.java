@@ -9,7 +9,7 @@ import java.util.function.Function;
 public enum Schedules {
 
     RESIZE_AND_REFRESH_TEXTURE_SCHEDULE("ResizeAndRefreshSchedule", (ticks) -> new AnimalScheduledFunction(ticks, (eaa) -> {
-            if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0) {
+            if (eaa.getEnhancedAnimalAge() > 0 && eaa.level().getLevelData().getGameTime() > 0) {
                 eaa.refreshDimensions();
                 eaa.updateColouration = true;
             }

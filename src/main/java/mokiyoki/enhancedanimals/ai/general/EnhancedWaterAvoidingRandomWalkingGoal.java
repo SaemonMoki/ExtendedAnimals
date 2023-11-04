@@ -73,10 +73,10 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomS
 //        } else if (IS_GRASS.test(this.creature.world.getBlockState(blockpos))) {
 //            return true;
 //        } else
-            if (IS_GRASSBLOCK.test(this.mob.level.getBlockState(blockpos))) {
+            if (IS_GRASSBLOCK.test(this.mob.level().getBlockState(blockpos))) {
             return true;
         } else {
-            return this.mob.level.getBlockState(blockpos.below()).getBlock() == Blocks.GRASS_BLOCK;
+            return this.mob.level().getBlockState(blockpos.below()).getBlock() == Blocks.GRASS_BLOCK;
         }
     }
 

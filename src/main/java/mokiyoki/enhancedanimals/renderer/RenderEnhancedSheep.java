@@ -17,13 +17,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhancedSheep<EnhancedSheep>> {
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/sheep/sheep.png");
-    public static final ModelLayerLocation SHEEP_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "sheep"), "sheep_layer");
+    private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entity/sheep/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/sheep/sheep.png");
+    public static final ModelLayerLocation SHEEP_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "sheep"), "sheep_layer");
 
     public RenderEnhancedSheep(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedSheep<>(renderManager.bakeLayer(SHEEP_LAYER)), 0.6F);

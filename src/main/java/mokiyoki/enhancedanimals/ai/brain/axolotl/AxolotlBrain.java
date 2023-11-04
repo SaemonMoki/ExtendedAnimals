@@ -13,28 +13,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.AnimalMakeLove;
-import net.minecraft.world.entity.ai.behavior.BabyFollowAdult;
-import net.minecraft.world.entity.ai.behavior.CountDownCooldownTicks;
-import net.minecraft.world.entity.ai.behavior.DoNothing;
-import net.minecraft.world.entity.ai.behavior.EraseMemoryIf;
-import net.minecraft.world.entity.ai.behavior.FollowTemptation;
-import net.minecraft.world.entity.ai.behavior.GateBehavior;
-import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
-import net.minecraft.world.entity.ai.behavior.MeleeAttack;
-import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
-import net.minecraft.world.entity.ai.behavior.PositionTracker;
-import net.minecraft.world.entity.ai.behavior.RandomStroll;
-import net.minecraft.world.entity.ai.behavior.RandomSwim;
-import net.minecraft.world.entity.ai.behavior.RunIf;
-import net.minecraft.world.entity.ai.behavior.RunOne;
-import net.minecraft.world.entity.ai.behavior.RunSometimes;
-import net.minecraft.world.entity.ai.behavior.SetEntityLookTarget;
-import net.minecraft.world.entity.ai.behavior.SetWalkTargetFromAttackTargetIfTargetOutOfReach;
-import net.minecraft.world.entity.ai.behavior.SetWalkTargetFromLookTarget;
-import net.minecraft.world.entity.ai.behavior.StartAttacking;
-import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
-import net.minecraft.world.entity.ai.behavior.TryFindWater;
+import net.minecraft.world.entity.ai.behavior.*;
+import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
@@ -67,7 +47,7 @@ public class AxolotlBrain {
                 Activity.PLAY_DEAD,
                 ImmutableList.of(
                         Pair.of(0, new PlayDead()),
-                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::isBreeding, MemoryModuleType.PLAY_DEAD_TICKS))
+                        Pair.of(1, EraseMemoryIf.create(AxolotlBrain::isBreeding, MemoryModuleType.PLAY_DEAD_TICKS))
                 ),
                 ImmutableSet.of(
                         Pair.of(MemoryModuleType.PLAY_DEAD_TICKS, MemoryStatus.VALUE_PRESENT)
@@ -81,7 +61,7 @@ public class AxolotlBrain {
                 ModActivities.PAUSE_BRAIN.get(),
                 ImmutableList.of(
                         Pair.of(0, new PauseBrain()),
-                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::isBreeding, ModMemoryModuleTypes.HAS_EGG.get()))
+                        Pair.of(1, EraseMemoryIf.create(AxolotlBrain::isBreeding, ModMemoryModuleTypes.HAS_EGG.get()))
                 ),
                 ImmutableSet.of(
                         Pair.of(ModMemoryModuleTypes.HAS_EGG.get(), MemoryStatus.VALUE_PRESENT)
@@ -95,10 +75,10 @@ public class AxolotlBrain {
                 Activity.FIGHT,
                 0,
                 ImmutableList.of(
-                        new StopAttackingIfTargetInvalid<>(EnhancedAxolotl::onStopAttacking),
-                        new SetWalkTargetFromAttackTargetIfTargetOutOfReach(AxolotlBrain::getSpeedModifierChasing),
-                        new MeleeAttack(20),
-                        new EraseMemoryIf<EnhancedAxolotl>(AxolotlBrain::isBreeding, MemoryModuleType.ATTACK_TARGET)
+                        StopAttackingIfTargetInvalid.create(EnhancedAxolotl::onStopAttacking),
+                        SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(AxolotlBrain::getSpeedModifierChasing),
+                        MeleeAttack.create(20),
+                        EraseMemoryIf.<EnhancedAxolotl>create(AxolotlBrain::isBreeding, MemoryModuleType.ATTACK_TARGET)
                 ),
                 MemoryModuleType.ATTACK_TARGET
         );
@@ -116,32 +96,32 @@ public class AxolotlBrain {
 
     private static void initIdleActivity(Brain<EnhancedAxolotl> brain) {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
-                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))),
+                Pair.of(0, SetEntityLookTargetSometimes.create(EntityType.PLAYER, 6.0F, UniformInt.of(30, 60))),
                 Pair.of(1, new AnimalMakeLove(EntityType.AXOLOTL, 0.2F)),
                 Pair.of(2, new RunOne<>(ImmutableList.of(
                         Pair.of(new FollowTemptation(AxolotlBrain::getSpeedModifier), 1),
-                        Pair.of(new BabyFollowAdult<>(ADULT_FOLLOW_RANGE, AxolotlBrain::getSpeedModifierFollowingAdult), 1)))
+                        Pair.of(BabyFollowAdult.create(ADULT_FOLLOW_RANGE, AxolotlBrain::getSpeedModifierFollowingAdult), 1)))
                 ),
-                Pair.of(3, new StartAttacking<>(AxolotlBrain::findNearestValidAttackTarget)),
-                Pair.of(3, new TryFindWater(6, 0.15F)),
+                Pair.of(3, StartAttacking.create(AxolotlBrain::findNearestValidAttackTarget)),
+                Pair.of(3, TryFindWater.create(6, 0.15F)),
                 Pair.of(4, new GateBehavior<>(
                         ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT),
                         ImmutableSet.of(),
                         GateBehavior.OrderPolicy.ORDERED,
                         GateBehavior.RunningPolicy.TRY_ALL,
                         ImmutableList.of(
-                                Pair.of(new RandomSwim(0.5F), 2),
-                                Pair.of(new RandomStroll(0.15F, false), 2),
-                                Pair.of(new SetWalkTargetFromLookTarget(AxolotlBrain::canSetWalkTargetFromLookTarget, AxolotlBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new RunIf<>(Entity::isInWaterOrBubble, new DoNothing(30, 60)), 5),
-                                Pair.of(new RunIf<>(Entity::isOnGround, new DoNothing(200, 400)), 5))
+                                Pair.of(RandomStroll.swim(0.5F), 2),
+                                Pair.of(RandomStroll.stroll(0.15F, false), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(AxolotlBrain::canSetWalkTargetFromLookTarget, AxolotlBrain::getSpeedModifier, 3), 3),
+                                Pair.of(BehaviorBuilder.triggerIf(Entity::isInWaterOrBubble), 5),
+                                Pair.of(BehaviorBuilder.triggerIf(Entity::onGround), 5))
                         )
                 )
         ));
     }
 
     private static boolean canSetWalkTargetFromLookTarget(LivingEntity livingEntity) {
-        Level level = livingEntity.level;
+        Level level = livingEntity.level();
         Optional<PositionTracker> optional = livingEntity.getBrain().getMemory(MemoryModuleType.LOOK_TARGET);
         if (optional.isPresent()) {
             BlockPos blockpos = optional.get().currentBlockPosition();

@@ -15,11 +15,13 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhancedTurtle<EnhancedTurtle>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entities/turtle/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/turtle/turtlebase.png");
-    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "turtle"), "turtle_layer");
+    private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entity/turtle/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/turtle/turtlebase.png");
+    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "turtle"), "turtle_layer");
 
     public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedTurtle<>(renderManager.bakeLayer(TURTLE_LAYER)), 0.5F);

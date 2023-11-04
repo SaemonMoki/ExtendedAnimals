@@ -16,6 +16,8 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 
 /**
  * Created by saemon on 2/09/2018.
@@ -23,10 +25,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
-    private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
-    public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "chicken"), "chicken_layer");
+    private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entity/chicken/";
+    private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entity/chickensilkie/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/chicken/chickenbase.png");
+    public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "chicken"), "chicken_layer");
 
     public RenderEnhancedChicken(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedChicken<>(renderManager.bakeLayer(CHICKEN_LAYER)), 0.5F);

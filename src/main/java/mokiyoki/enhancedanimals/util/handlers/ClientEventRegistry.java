@@ -52,6 +52,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModEntities.*;
 import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
@@ -60,15 +61,8 @@ import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEventRegistry {
-
-    @SubscribeEvent
-    public static void onStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
-            event.addSprite(EGG_CARTON_TEXTURE);
-        }
-    }
 
     @SubscribeEvent
     public static void initClientSetup(FMLClientSetupEvent event) {

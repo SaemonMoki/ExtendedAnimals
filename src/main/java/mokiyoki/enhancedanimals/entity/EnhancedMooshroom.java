@@ -9,16 +9,14 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -52,13 +50,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Random;
 import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOSHROOM;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
     private static final EntityDataAccessor<String> MOOSHROOM_TYPE = SynchedEntityData.defineId(EnhancedMooshroom.class, EntityDataSerializers.STRING);
@@ -104,11 +99,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeMooshroom.get();}
+    protected int getAdultAge() { return GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get();}
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysMooshroom.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysMooshroom.get();
     }
 
     @Override
@@ -131,12 +126,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
+        EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((this.mateMushroomType)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmooshroom.configureAI();
-        this.level.addFreshEntity(enhancedmooshroom);
+        this.level().addFreshEntity(enhancedmooshroom);
     }
 
     @Override
@@ -187,7 +182,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             if (this.getMooshroomType() == EnhancedMooshroom.Type.BROWN && itemstack.is(ItemTags.SMALL_FLOWERS)) {
                 if (this.hasStewEffect != null) {
                     for(int i = 0; i < 2; ++i) {
-                        this.level.addParticle(ParticleTypes.SMOKE, this.getX() + (double)(this.random.nextFloat() / 2.0F), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ() + (double)(this.random.nextFloat() / 2.0F), 0.0D, (double)(this.random.nextFloat() / 5.0F), 0.0D);
+                        this.level().addParticle(ParticleTypes.SMOKE, this.getX() + (double)(this.random.nextFloat() / 2.0F), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ() + (double)(this.random.nextFloat() / 2.0F), 0.0D, (double)(this.random.nextFloat() / 5.0F), 0.0D);
                     }
                 } else {
                     Pair<MobEffect, Integer> pair = this.getStewEffect(itemstack);
@@ -196,7 +191,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                     }
 
                     for(int j = 0; j < 4; ++j) {
-                        this.level.addParticle(ParticleTypes.EFFECT, this.getX() + (double)(this.random.nextFloat() / 2.0F), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ() + (double)(this.random.nextFloat() / 2.0F), 0.0D, (double)(this.random.nextFloat() / 5.0F), 0.0D);
+                        this.level().addParticle(ParticleTypes.EFFECT, this.getX() + (double)(this.random.nextFloat() / 2.0F), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ() + (double)(this.random.nextFloat() / 2.0F), 0.0D, (double)(this.random.nextFloat() / 5.0F), 0.0D);
                     }
 
                     this.hasStewEffect = pair.getLeft();
@@ -265,7 +260,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     private Pair<MobEffect, Integer> getStewEffect(ItemStack p_213443_1_) {
         FlowerBlock flowerblock = (FlowerBlock)((BlockItem)p_213443_1_.getItem()).getBlock();
-        return Pair.of(flowerblock.getSuspiciousStewEffect(), flowerblock.getEffectDuration());
+        return Pair.of(flowerblock.getSuspiciousEffect(), flowerblock.getEffectDuration());
     }
 
     public void setMooshroomType(Type typeIn) {
@@ -299,15 +294,15 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public java.util.List<ItemStack> onSheared(Player playerEntity, ItemStack item, Level world, net.minecraft.core.BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
-        if (!this.level.isClientSide) {
+        this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
+        if (!this.level().isClientSide) {
             Entity leashedEntity = null;
             if (this.isLeashed()) {
                 leashedEntity = this.getLeashHolder();
                 this.dropLeash(false, false);
             }
             this.remove(RemovalReason.DISCARDED);
-            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level());
             enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
@@ -324,7 +319,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
             }
-            this.level.addFreshEntity(enhancedcow);
+            this.level().addFreshEntity(enhancedcow);
             if (leashedEntity != null) {
                 enhancedcow.setLeashedTo(leashedEntity, true);
             }

@@ -16,15 +16,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 /**
  * Created by saemon on 2/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhancedLlama<EnhancedLlama>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_LLAMA_TEXTURE_LOCATION = "eanimod:textures/entities/llama/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/llama/llamabase.png");
-    public static final ModelLayerLocation LLAMA_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "llama"), "llama_layer");
+    private static final String ENHANCED_LLAMA_TEXTURE_LOCATION = "eanimod:textures/entity/llama/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/llama/llamabase.png");
+    public static final ModelLayerLocation LLAMA_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "llama"), "llama_layer");
 
     public RenderEnhancedLlama(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedLlama<>(renderManager.bakeLayer(LLAMA_LAYER)), 0.75F);

@@ -49,13 +49,13 @@ public class EnhancedTemptGoal extends Goal {
         } else if (eanimal.isAnimalSleeping()) {
             return false;
         } else {
-            this.closestPlayer = this.eanimal.level.getNearestPlayer(getSearchPredicate(), this.eanimal);
+            this.closestPlayer = this.eanimal.level().getNearestPlayer(getSearchPredicate(), this.eanimal);
             if (this.closestPlayer == null) {
                 return false;
             } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getMainHandItem().getItem() || this.temptItem == this.closestPlayer.getOffhandItem().getItem())) {
                 return true;
             } else {
-                 if (this.eanimal.level.getBlockState(this.eanimal.blockPosition().below()).getBlock() instanceof GrassBlock) {
+                 if (this.eanimal.level().getBlockState(this.eanimal.blockPosition().below()).getBlock() instanceof GrassBlock) {
                      return this.eanimal.isFoodItem(this.closestPlayer.getMainHandItem()) || this.eanimal.isFoodItem(this.closestPlayer.getOffhandItem());
                 }
                 return this.isTempting(this.closestPlayer.getMainHandItem()) || this.isTempting(this.closestPlayer.getOffhandItem());

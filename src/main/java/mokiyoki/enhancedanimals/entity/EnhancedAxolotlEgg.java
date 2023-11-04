@@ -1,13 +1,13 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -52,11 +52,11 @@ public class EnhancedAxolotlEgg extends Entity {
     private boolean hasParents = false;
     public int time;
     private boolean clockwise = this.random.nextBoolean();
-    private int animationTicks = this.level.isClientSide ? this.random.nextInt(500) : 0;
+    private int animationTicks = this.level().isClientSide ? this.random.nextInt(500) : 0;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
-        setHatchTime(EanimodCommonConfig.COMMON.axolotlHatchTime.get());
+        setHatchTime(GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
     }
 
     public void setGenes(Genes eggGenes) {
@@ -112,7 +112,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
     public boolean skipAttackInteraction(Entity entity) {
         if (entity instanceof Player player) {
-            return !this.level.mayInteract(player, this.blockPosition()) || this.hurt(DamageSource.playerAttack(player), 0.0F);
+            return !this.level().mayInteract(player, this.blockPosition()) || this.hurt(this.damageSources().playerAttack(player), 0.0F);
         } else {
             return false;
         }
@@ -122,7 +122,7 @@ public class EnhancedAxolotlEgg extends Entity {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         } else {
-            if (!this.isRemoved() && !this.level.isClientSide) {
+            if (!this.isRemoved() && !this.level().isClientSide) {
                 this.kill();
                 this.markHurt();
             }
@@ -132,7 +132,7 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     public InteractionResult interact(Player player, InteractionHand interactionHand) {
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
             ItemStack itemStack = player.getItemInHand(interactionHand);
@@ -163,21 +163,21 @@ public class EnhancedAxolotlEgg extends Entity {
         super.tick();
 
         //TODO put axolotlEggAttachableToo here
-        if (!onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level)) {
+        if (!onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level())) {
             fall();
         }
 
         pushEntities();
 
         if (this.getHatchTime() == 0) {
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 createAndSpawnChild();
             }
         } else if (this.getHatchTime() > 0){
             this.setHatchTime(this.getHatchTime() - 1);
         }
 
-        if (this.level.isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
+        if (this.level().isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
             this.animationTicks++;
         }
     }
@@ -218,7 +218,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
         if (this.isInWater()) {
             this.setDeltaMovement(this.getDeltaMovement().scale(0.3D));
-            if (!this.isOnGround()) {
+            if (!this.onGround()) {
                 Double spiralX = Math.sin(this.time*0.2F)*0.075F;
                 Double spiralZ = Math.cos  (this.time*0.2F)*0.075F;
                 this.setDeltaMovement(this.getDeltaMovement().add(this.clockwise ? spiralX : -spiralX, 0.0F, spiralZ));
@@ -231,9 +231,9 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     protected void pushEntities() {
-        List<EnhancedAxolotlEgg> list = this.level.getEntitiesOfClass(EnhancedAxolotlEgg.class, this.getBoundingBox().inflate(0.1D));
+        List<EnhancedAxolotlEgg> list = this.level().getEntitiesOfClass(EnhancedAxolotlEgg.class, this.getBoundingBox().inflate(0.1D));
         if (!list.isEmpty()) {
-            int i = this.level.getGameRules().getInt(GameRules.RULE_MAX_ENTITY_CRAMMING);
+            int i = this.level().getGameRules().getInt(GameRules.RULE_MAX_ENTITY_CRAMMING);
             if (i > 0 && list.size() > i - 1 && this.random.nextInt(4) == 0) {
                 int j = 0;
 
@@ -244,7 +244,7 @@ public class EnhancedAxolotlEgg extends Entity {
                 }
 
                 if (j > i - 1) {
-                    this.hurt(DamageSource.CRAMMING, 6.0F);
+                    this.hurt(this.damageSources().cramming(), 6.0F);
                 }
             }
 
@@ -258,7 +258,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
     private void createAndSpawnChild() {
         this.playSound(SoundEvents.SLIME_BLOCK_HIT, 1.0F, 1.0F);
-        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
+        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level());
         if (!this.getGenes().isEmpty() && !this.getGenes().equals("INFERTILE")) {
             axolotl.setGenes(new Genes(this.getGenes()));
             axolotl.setSharedGenes(new Genes(this.getGenes()));
@@ -271,13 +271,13 @@ public class EnhancedAxolotlEgg extends Entity {
         axolotl.setDamName(this.getDam());
         axolotl.initilizeAnimalSize();
         axolotl.setAge(-axolotl.getAdultAge());
-        axolotl.setBirthTime(String.valueOf(level.getGameTime()));
+        axolotl.setBirthTime(String.valueOf(level().getGameTime()));
         axolotl.initilizeAnimalSize();
         axolotl.moveTo(this.xo,this.yo, this.zo, this.xRotO, this.yRotO);
         if (this.hasCustomName()) {
             axolotl.setCustomName(this.getCustomName());
         }
-        level.addFreshEntity(axolotl);
+        level().addFreshEntity(axolotl);
         this.remove(RemovalReason.DISCARDED);
     }
 
@@ -296,7 +296,7 @@ public class EnhancedAxolotlEgg extends Entity {
         this.getEntityData().set(SIRE, compound.getString("SireName"));
         this.getEntityData().set(DAM, compound.getString("DamName"));
         this.hasParents = compound.getBoolean("hasParents");
-        this.setHatchTime(compound.contains("HatchTime") ? compound.getInt("HatchTime") : EanimodCommonConfig.COMMON.axolotlHatchTime.get());
+        this.setHatchTime(compound.contains("HatchTime") ? compound.getInt("HatchTime") : GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
     }
 
     @Override
@@ -317,7 +317,7 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

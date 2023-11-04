@@ -19,6 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -207,13 +208,13 @@ public class EggCartonBlock extends BaseEntityBlock {
     }
 
 
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity tileentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
-            builder = builder.withDynamicDrop(CONTENTS, (p_220168_1_, p_220168_2_) -> {
+            builder = builder.withDynamicDrop(CONTENTS, (p_56219_) -> {
                 for(int i = 0; i < eggCartonTileEntity.getContainerSize(); ++i) {
-                    p_220168_2_.accept(eggCartonTileEntity.getItem(i));
+                    p_56219_.accept(eggCartonTileEntity.getItem(i));
                 }
 
             });

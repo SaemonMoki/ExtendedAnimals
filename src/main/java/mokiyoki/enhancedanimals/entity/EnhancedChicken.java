@@ -14,7 +14,7 @@ import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -73,8 +73,6 @@ import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASS
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -381,11 +379,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeChicken.get();}
+    protected int getAdultAge() { return GeneticAnimalsConfig.COMMON.adultAgeChicken.get();}
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
+        return GeneticAnimalsConfig.COMMON.incubationDaysChicken.get();
     }
 
     @Override
@@ -441,17 +439,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
-    public void positionRider(Entity passenger) {
-        super.positionRider(passenger);
-        float f = Mth.sin(this.yBodyRot * ((float)Math.PI / 180F));
-        float f1 = Mth.cos(this.yBodyRot * ((float)Math.PI / 180F));
-        float f2 = 0.1F;
-        float f3 = 0.0F;
-        passenger.setPos(this.getX() + (double)(0.1F * f), this.getY(0.5D) + passenger.getMyRidingOffset() + 0.0D, this.getZ() - (double)(0.1F * f1));
-        if (passenger instanceof LivingEntity) {
-            ((LivingEntity)passenger).yBodyRot = this.yBodyRot;
+    protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
+        if (this.hasPassenger(passenger)) {
+            double d0 = this.getY() + this.getPassengersRidingOffset() + passenger.getMyRidingOffset();
+            moveFunction.accept(passenger, this.getX(), d0, this.getZ());
+            float f = Mth.sin(this.yBodyRot * ((float)Math.PI / 180F));
+            float f1 = Mth.cos(this.yBodyRot * ((float)Math.PI / 180F));
+            passenger.setPos(this.getX() + (double)(0.1F * f), this.getY(0.5D) + passenger.getMyRidingOffset() + 0.0D, this.getZ() - (double)(0.1F * f1));
+            if (passenger instanceof LivingEntity) {
+                ((LivingEntity)passenger).yBodyRot = this.yBodyRot;
+            }
         }
-
     }
 
     /**
@@ -473,16 +471,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.aiStep();
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
-        this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
+        this.destPos = (float)((double)this.destPos + (double)(this.onGround() ? -1 : 4) * 0.3D);
         this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
 
-        if (!this.onGround && this.wingRotDelta < 1.0F) {
+        if (!this.onGround() && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
 
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
         Vec3 vec3d = this.getDeltaMovement();
-        if (!this.onGround && vec3d.y < 0.0D) {
+        if (!this.onGround() && vec3d.y < 0.0D) {
             this.setDeltaMovement(vec3d.multiply(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
         }
 
@@ -505,7 +503,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {
+        if (GeneticAnimalsConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
             }
@@ -532,12 +530,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
                 CompoundTag nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
-                if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                     int i = 1;
                     while (i > 0) {
                         int j = ExperienceOrb.getExperienceValue(i);
                         i -= j;
-                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
+                        this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), j));
                     }
                 }
             }
@@ -589,7 +587,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 2.0F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 2.0F);
         }
     }
 
@@ -608,7 +606,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void handlePartnerBreeding(AgeableMob ageable) {
-        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+        if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(((EnhancedChicken)ageable).getOrSetIsFemale());

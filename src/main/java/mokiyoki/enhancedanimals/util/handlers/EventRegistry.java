@@ -7,7 +7,6 @@ import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.nestegg.INestEggCapability;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
@@ -19,8 +18,10 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
+import mokiyoki.enhancedanimals.init.datagen.GASpriteSourceProvider;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
-import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -28,13 +29,16 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
@@ -50,22 +54,18 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
 /**
  * Created by moki on 24/08/2018.
  */
-@Mod.EventBusSubscriber(modid = Reference.MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
 public class EventRegistry {
 
     public static final MenuType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeMenuType.create(EggCartonContainer::new);
     public static final MenuType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeMenuType.create((windowId, inv, data) -> {
-        Entity entity = inv.player.level.getEntity(data.readInt());
+        Entity entity = inv.player.level().getEntity(data.readInt());
         EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readUtf());
         if(entity instanceof EnhancedAnimalAbstract) {
             return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimalAbstract) entity, animalInfo);
@@ -73,6 +73,16 @@ public class EventRegistry {
             return null;
         }
     });
+
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
+        boolean includeClient = event.includeClient();
+        boolean includeServer = event.includeServer();
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        ExistingFileHelper fileHelper = event.getExistingFileHelper();
+        generator.addProvider(includeClient, new GASpriteSourceProvider(packOutput, fileHelper));
+    }
 
     @SubscribeEvent
     public static void onCapabilitiesRegistry(RegisterCapabilitiesEvent event) {

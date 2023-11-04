@@ -25,7 +25,7 @@ public class SeekShelterGoal extends FleeSunGoal {
 
     public SeekShelterGoal(PathfinderMob theCreatureIn, double movementSpeedIn, int start, int end, int modifier) {
         super(theCreatureIn, movementSpeedIn);
-        this.world = theCreatureIn.level;
+        this.world = theCreatureIn.level();
         this.creature = theCreatureIn;
         this.start = start + modifier;
         this.end = end + modifier;

@@ -78,7 +78,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biome, BlockPos blockPos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH];
 
         /**

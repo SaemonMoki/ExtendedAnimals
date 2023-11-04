@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "eanimod:items/half_milk_bottle"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "eanimod:item/half_milk_bottle"
+    }
 }

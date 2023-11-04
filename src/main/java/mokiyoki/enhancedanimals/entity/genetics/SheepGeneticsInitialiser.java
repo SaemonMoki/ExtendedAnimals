@@ -49,7 +49,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockpos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.SHEEP_AUTOSOMAL_GENES_LENGTH];
 
 //        if (true) {
@@ -190,11 +190,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
 
-        if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) || biomeHolder.get().getPrecipitation() == Biome.Precipitation.SNOW ) {
+        if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) || biomeHolder.get().coldEnoughToSnow(blockpos) ) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] * 2;
             }
-        } else if (biomeHolder.get().getPrecipitation() == Biome.Precipitation.NONE) {
+        } else if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] != 1 ? (int)(woolmod[i] * 0.5) : 1;
             }
@@ -360,7 +360,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biomeHolder.get().getPrecipitation() == Biome.Precipitation.NONE) {
+            if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
                 autosomalGenes[46] = 1;
             } else {
                 autosomalGenes[46] = 2;
@@ -369,7 +369,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biomeHolder.get().getPrecipitation() == Biome.Precipitation.NONE) {
+            if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
                 autosomalGenes[47] = 1;
             } else {
                 autosomalGenes[47] = 2;

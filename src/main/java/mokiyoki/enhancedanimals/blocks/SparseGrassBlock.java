@@ -4,15 +4,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.PlantType;
-
-import javax.annotation.Nullable;
-import java.util.Random;
 
 import static net.minecraftforge.common.PlantType.BEACH;
 import static net.minecraftforge.common.PlantType.CAVE;
@@ -21,8 +18,6 @@ import static net.minecraftforge.common.PlantType.DESERT;
 import static net.minecraftforge.common.PlantType.NETHER;
 import static net.minecraftforge.common.PlantType.PLAINS;
 import static net.minecraftforge.common.PlantType.WATER;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
 
@@ -64,19 +59,16 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
         } else if (CAVE.equals(type) || PLAINS.equals(type)) {
             return true;
         } else if (BEACH.equals(type)) {
-            boolean hasWater = (world.getBlockState(pos.east()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.west()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.north()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.south()).getMaterial() == Material.WATER);
-            return hasWater;
+            BlockPos blockpos = pos.below();
+            for(Direction direction : Direction.Plane.HORIZONTAL) {
+                BlockState blockstate1 = world.getBlockState(blockpos.relative(direction));
+                FluidState fluidstate = world.getFluidState(blockpos.relative(direction));
+                if (state.canBeHydrated(world, pos, fluidstate, blockpos.relative(direction)) || blockstate1.is(Blocks.FROSTED_ICE)) {
+                    return true;
+                }
+            }
         }
 
         return false;
     }
-
-//    @Nullable
-//    @Override
-//    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
-//        return ToolType.SHOVEL;
-//    }
 }

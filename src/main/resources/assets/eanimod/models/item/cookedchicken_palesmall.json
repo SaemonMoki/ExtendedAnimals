@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "eanimod:items/cookedchicken_palesmall"
+    "layer0": "eanimod:item/cookedchicken_palesmall"
   }
 }

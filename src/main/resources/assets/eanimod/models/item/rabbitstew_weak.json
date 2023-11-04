@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "eanimod:items/rabbitstew_weak"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "eanimod:item/rabbitstew_weak"
+    }
 }

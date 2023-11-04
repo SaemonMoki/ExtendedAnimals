@@ -16,13 +16,18 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.CowModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.biome.BiomeData;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -65,8 +70,6 @@ import static mokiyoki.enhancedanimals.entity.textures.CowTextureHelper.calculat
 import static mokiyoki.enhancedanimals.entity.textures.CowTextureHelper.calculateCowTextures;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
@@ -154,7 +157,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeCow.get();}
+    protected int getAdultAge() { return GeneticAnimalsConfig.COMMON.adultAgeCow.get();}
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
@@ -165,7 +168,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysCow.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysCow.get();
     }
 
     protected void setMooshroomUUID(String uuid) {
@@ -206,8 +209,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL.get(), 1.0F, 0.1F);
         }
     }
 
@@ -326,7 +329,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public void aiStep() {
         super.aiStep();
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
@@ -361,7 +364,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
+        return (((this.level().getDayTime()%24000 >= 12600 && this.level().getDayTime()%24000 <= 22000) || this.level().isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
@@ -389,12 +392,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
-        this.level.addFreshEntity(enhancedcow);
+        this.level().addFreshEntity(enhancedcow);
     }
 
     public void lethalGenes(){
@@ -616,7 +619,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
-        if (this.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()){
+        if (this.getOrSetIsFemale() || GeneticAnimalsConfig.COMMON.omnigenders.get()){
             for (int i = 1; i < genes[62]; i++){
                 maxBagSize = maxBagSize + 0.01F;
             }
@@ -766,7 +769,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                    refillAmount = currentMilk;
             }
 
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 int resultingMilkAmount = currentMilk - refillAmount;
                 this.setMilkAmount(resultingMilkAmount);
 

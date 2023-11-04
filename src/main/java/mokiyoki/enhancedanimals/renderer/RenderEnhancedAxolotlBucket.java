@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.renderer.texture.DrawnTexture;
@@ -12,11 +12,10 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,7 +37,7 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
     }
 
     @Override
-    public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemTransforms.TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource multiBufferSource, int light, int overlayLight) {
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemDisplayContext transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource multiBufferSource, int light, int overlayLight) {
         matrix.pushPose();
 
         RenderType renderType = RenderType.cutoutMipped();
@@ -58,15 +57,15 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
             case FIRST_PERSON_RIGHT_HAND -> {
                 matrix.scale(0.68F, 0.68F, 0.68F);
                 matrix.translate(1.32F, 0.8-0.01F, 1.53F);
-                matrix.mulPose(Vector3f.YP.rotationDegrees(-90));
-                matrix.mulPose(Vector3f.ZP.rotationDegrees(25F));
+                matrix.mulPose(Axis.YP.rotationDegrees(-90));
+                matrix.mulPose(Axis.ZP.rotationDegrees(25F));
                 renderType = axolotlBucketModel.renderType(texture);
             }
             case FIRST_PERSON_LEFT_HAND -> {
                 matrix.scale(0.68F, 0.68F, 0.68F);
                 matrix.translate(1.31-0.1F, 0.8-0.01F, 1.53F);
-                matrix.mulPose(Vector3f.YP.rotationDegrees(-90));
-                matrix.mulPose(Vector3f.ZP.rotationDegrees(25F));
+                matrix.mulPose(Axis.YP.rotationDegrees(-90));
+                matrix.mulPose(Axis.ZP.rotationDegrees(25F));
                 renderType = axolotlBucketModel.renderType(texture);
             }
             case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> {
@@ -112,7 +111,7 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
                 try {
                     resourcelocation = new ResourceLocation(s);
-                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/items/axolotl_bucket_base.png");
+                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/item/axolotl_bucket_base.png");
                     Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);
@@ -143,7 +142,7 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
                 try {
                     resourcelocation = new ResourceLocation(s);
-                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/items/axolotl_glow_bucket_base.png");
+                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/item/axolotl_glow_bucket_base.png");
                     Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);

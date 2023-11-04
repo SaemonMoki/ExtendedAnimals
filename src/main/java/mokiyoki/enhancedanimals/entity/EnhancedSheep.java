@@ -16,7 +16,7 @@ import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -273,7 +273,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
+    protected int getAdultAge() { return GeneticAnimalsConfig.COMMON.adultAgeSheep.get();}
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
@@ -284,7 +284,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysSheep.get();
     }
 
     private void setCoatLength(int coatLength) {
@@ -314,7 +314,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public void aiStep() {
         super.aiStep();
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
@@ -426,13 +426,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
+        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = 0;
         enhancedsheep.setCoatLength(0);
-        this.level.addFreshEntity(enhancedsheep);
+        this.level().addFreshEntity(enhancedsheep);
     }
 
     @Override
@@ -463,7 +463,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.SHEEP_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 1.0F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 1.0F);
         }
     }
 
@@ -478,13 +478,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public boolean isShearable(ItemStack item, Level world, BlockPos pos) {
-        return !this.level.isClientSide && currentCoatLength >= 1;
+        return !this.level().isClientSide && currentCoatLength >= 1;
     }
 
     @Override
     public java.util.List<ItemStack> onSheared(Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             int woolCount = (int)(this.currentCoatLength * 0.2F);
             float bonusWoolChance = (this.currentCoatLength - woolCount) * 0.2F;
             woolCount += bonusWoolChance >= this.random.nextFloat() ? 1 : 0;
@@ -1332,7 +1332,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 refillAmount = currentMilk;
             }
 
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 int resultingMilkAmount = currentMilk - refillAmount;
                 this.setMilkAmount(resultingMilkAmount);
 
@@ -1341,7 +1341,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
             }
 
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 this.setMilkAmount(currentMilk - refillAmount);
             }
 
@@ -1391,16 +1391,16 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        if (!this.level.isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
+        if (!this.level().isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 int[] genes = this.genetics.getAutosomalGenes();
                 if (!this.isBaby() && (genes[46] == 1 || genes[47] == 1) && this.currentCoatLength == this.maxCoatLength) {
-                        List<ItemStack> woolToDrop = onSheared(entityPlayer,null, this.level, blockPosition(), 0);
+                        List<ItemStack> woolToDrop = onSheared(entityPlayer,null, this.level(), blockPosition(), 0);
                         woolToDrop.forEach(d -> {
                             net.minecraft.world.entity.item.ItemEntity ent = this.spawnAtLocation(d, 1.0F);
                             ent.setDeltaMovement(ent.getDeltaMovement().add((double)((random.nextFloat() - random.nextFloat()) * 0.1F), (double)(random.nextFloat() * 0.05F), (double)((random.nextFloat() - random.nextFloat()) * 0.1F)));
                         });
-                        onSheared(entityPlayer, ItemStack.EMPTY, this.level, blockPosition(), 0);
+                        onSheared(entityPlayer, ItemStack.EMPTY, this.level(), blockPosition(), 0);
                 }
 
             } else if (item == Items.WATER_BUCKET && this.getFleeceDyeColour() != DyeColor.WHITE) {

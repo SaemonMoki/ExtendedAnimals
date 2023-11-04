@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "eanimod:items/collar_basic",
-    "layer1": "eanimod:items/collar_leather_overlay",
-    "layer2": "eanimod:items/collar_ring_iron",
-    "layer3": "eanimod:items/collar_bell_gold"
+    "layer0": "eanimod:item/collar_basic",
+    "layer1": "eanimod:item/collar_leather_overlay",
+    "layer2": "eanimod:item/collar_ring_iron",
+    "layer3": "eanimod:item/collar_bell_gold"
   }
 }

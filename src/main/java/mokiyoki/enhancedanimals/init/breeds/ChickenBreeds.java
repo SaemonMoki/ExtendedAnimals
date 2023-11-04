@@ -11,7 +11,7 @@ import java.util.List;
 public final class ChickenBreeds {
     List<Breed> breeds = new ArrayList<>();
 
-    public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
+    public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", 0.8F, 0.4F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
                        new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5")));
 
@@ -43,42 +43,42 @@ public final class ChickenBreeds {
             .setGeneSketch(new GeneSketch(),
                     new GeneSketch().add(32, "2").add(54, "1").add(62, "1|3|4")));
 
-    public static final Breed WYANDOTTE = new Breed(new Breed.Properties().setData("Wyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed WYANDOTTE = new Breed(new Breed.Properties().setData("Wyandotte", 0.6F, 0.6F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.FLATROSE,GeneSet.YELLOWLEGS).get(),new GeneSketch().add(6, "1").add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
 
-    public static final Breed SILVER_LACED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("SilverLacedWyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed SILVER_LACED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("SilverLacedWyandotte", 0.6F, 0.6F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED).get()));
 
-    public static final Breed GOLD_LACED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("GoldLacedWyandotte", Biomes.FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed GOLD_LACED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("GoldLacedWyandotte", 0.7F, 0.8F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.LACED).get()));
 
-    public static final Breed WHITE_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("WhiteWyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.COMMON)
+    public static final Breed WHITE_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("WhiteWyandotte", 0.6F, 0.6F, Breed.Rarity.COMMON)
             .setGeneSketch(GeneSet.SILVER.get(), new GeneSketch(), new GeneSketch().add(20, "2")));
 
-    public static final Breed BUFF_LACED_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("BuffLacedWyandotte", Biomes.FOREST, Breed.Rarity.UNCOMMON)
+    public static final Breed BUFF_LACED_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("BuffLacedWyandotte", 0.7F, 0.8F, Breed.Rarity.UNCOMMON)
             .setGeneSketch(GeneSet.DOMWHITE.get()));
 
-    public static final Breed BLUE_LACED_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("BlueLacedWyandotte", Biomes.FOREST, Breed.Rarity.UNCOMMON)
+    public static final Breed BLUE_LACED_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("BlueLacedWyandotte", 0.7F, 0.8F, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.BLUE,GeneSet.MAHOGANY).get()));
 
-    public static final Breed GOLD_PENCILED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("GoldPenciledWyandotte", Biomes.FOREST, Breed.Rarity.COMMON)
+    public static final Breed GOLD_PENCILED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("GoldPenciledWyandotte", 0.7F, 0.8F, Breed.Rarity.COMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.PENCILED).get()));
 
-    public static final Breed SILVER_PENCILED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("SilverPenciledWyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.UNCOMMON)
+    public static final Breed SILVER_PENCILED_WYANDOTTE = new Breed(WYANDOTTE, new Breed.Properties().setData("SilverPenciledWyandotte", 0.6F, 0.6F, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.PENCILED).get()));
 
-    public static final Breed MILLEFLEUR_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("MillefluerWyandotte", Biomes.FLOWER_FOREST, Breed.Rarity.RARE)
+    public static final Breed MILLEFLEUR_WYANDOTTE = new Breed(GOLD_LACED_WYANDOTTE, new Breed.Properties().setData("MillefluerWyandotte", 0.7F, 0.8F, Breed.Rarity.RARE)
             .setGeneSketch(GeneSet.MOTTLED.get()));
 
-    public static final Breed RHODEISLANDRED = new Breed(new Breed.Properties().setData("RhodeIslandRed", Biomes.FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed RHODEISLANDRED = new Breed(new Breed.Properties().setData("RhodeIslandRed", 0.7F, 0.8F, Breed.Rarity.ORDINARY)
             .setGeneSketch(GeneSet.YELLOWLEGS.get(), new GeneSketch().add(0, "1").add(4, "4-6").add(8, "2", "2", "4-6").add(18, "1"),
                     new GeneSketch().add(20, "1", "1", "3", "2", "2", "2", "3", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2","2","1|2","1|3","1","1","1").add(80, "2","2","2","2").add(98, "1", "1").add(146, "1","1").add(152, "9|11","9|11","7|9|11","4","15|17|19|21|23","15|17|19|21|23","5").add(168,"1","1")));
 
-    public static final Breed PLYMOUTHROCK = new Breed(new Breed.Properties().setData("PlymouthRock", Biomes.TAIGA, Breed.Rarity.ORDINARY)
+    public static final Breed PLYMOUTHROCK = new Breed(new Breed.Properties().setData("PlymouthRock", 0.25F, 0.8F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.SINGLE,GeneSet.YELLOWLEGS).get(), new GeneSketch().add(6, "2", "1", "1", "1", "1"),
                     new GeneSketch().add(20, "1", "1", "5").add(38, "2").add(42, "2").add(44, "2", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1|2", "1-3", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "1", "1")));
 
-    public static final Breed ORPINGTON = new Breed(new Breed.Properties().setData("Orpington", Biomes.DESERT, Breed.Rarity.ORDINARY)
+    public static final Breed ORPINGTON = new Breed(new Breed.Properties().setData("Orpington", 2.0F, 0.0F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(6, "1").add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
 
     public static final Breed BUFF_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("BuffOrpington", Breed.Rarity.ORDINARY)
@@ -108,7 +108,7 @@ public final class ChickenBreeds {
     public static final Breed SILVER_CHOCOLATE_LACED_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("SilverChocolateLacedOrpington", Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED,GeneSet.CHOCOLATE).get()));
 
-    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.WINDSWEPT_SAVANNA, Breed.Rarity.UNCOMMON)
+    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", 2.0F, 0.0F, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
 
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
@@ -162,28 +162,28 @@ public final class ChickenBreeds {
     public static final Breed BELGIUM_DE_GRUBBE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDeGrubbe")
             .setGeneSketch(new NewGeneSet(GeneSet.FLATROSE, GeneSet.CRESTLESS, GeneSet.BEARDED, GeneSet.CLEANLEGS, GeneSet.RUMPLESS).get()));
 
-    public static final Breed ARAUCANA = new Breed(new Breed.Properties().setData("Araucana", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+    public static final Breed ARAUCANA = new Breed(new Breed.Properties().setData("Araucana", 0.7F, 0.8F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD, GeneSet.DUCKWING, GeneSet.CLEANLEGS, GeneSet.PEA, GeneSet.RUMPLESS, GeneSet.EARTUFTS, GeneSet.BLUEEGGER).get()));
 
-    public static final Breed EASTEREGGER = new Breed(new Breed.Properties().setData("EasterEgger", Biomes.PLAINS, Breed.Rarity.UNCOMMON)
+    public static final Breed EASTEREGGER = new Breed(new Breed.Properties().setData("EasterEgger", 0.8F, 0.4F, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD, GeneSet.DUCKWING, GeneSet.CLEANLEGS, GeneSet.PEA, GeneSet.EASTEREGGER).get()));
 
-    public static final Breed SPANISH = new Breed(new Breed.Properties().setData("Spanish", Biomes.SAVANNA, Breed.Rarity.RARE)
+    public static final Breed SPANISH = new Breed(new Breed.Properties().setData("Spanish", 2.0F, 0.0F, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
                     new GeneSketch().add(20, "1", "1","5").add(38, "2").add(44, "1", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1", "2").add(152, "10|12","10|12","10|12","4|6","22|24","22|24","5")));
 
-    public static final Breed CUTIEPIE = new Breed(new Breed.Properties().setData("Cutiepie", Biomes.SAVANNA, Breed.Rarity.EXOTIC)
+    public static final Breed CUTIEPIE = new Breed(new Breed.Properties().setData("Cutiepie", 2.0F, 0.0F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
                     new GeneSketch().add(20, "1", "1","5").add(38, "2").add(42, "1").add(44, "1", "3", "2", "1").add(52, "2","3","1","2","1","1").add(70, "1", "1").add(80, "2","1","1","2").add(102, "2","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
-    public static final Breed SILKIE = new Breed(new Breed.Properties().setData("Silkie", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+    public static final Breed SILKIE = new Breed(new Breed.Properties().setData("Silkie", 0.7F, 0.8F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
                     new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "1", "1").add(52, "2","1","1","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
-    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
+    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", 0.2F, 0.3F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
 
-    public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", Biomes.SAVANNA, Breed.Rarity.EXOTIC)
+    public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", 2.0F, 0.0F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.GREYLEGS, GeneSet.V).get()));
 
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)

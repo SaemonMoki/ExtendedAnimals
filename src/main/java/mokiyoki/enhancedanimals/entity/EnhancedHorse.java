@@ -9,7 +9,7 @@ import mokiyoki.enhancedanimals.entity.genetics.HorseGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -44,8 +44,6 @@ import javax.annotation.Nullable;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.horseFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_HORSE;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
@@ -186,7 +184,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysHorse.get();
     }
 
     @Override
@@ -282,8 +280,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.HORSE_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL.get(), 1.0F, 0.1F);
         }
     }
 
@@ -303,7 +301,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.level().getDayTime()%24000 >= 12600 && this.level().getDayTime()%24000 <= 22000) || this.level().isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
     @Override
@@ -320,11 +318,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedhorse, inWorld, babyGenes, -this.getAdultAge());
         enhancedhorse.configureAI();
-        this.level.addFreshEntity(enhancedhorse);
+        this.level().addFreshEntity(enhancedhorse);
     }
 
     @Override

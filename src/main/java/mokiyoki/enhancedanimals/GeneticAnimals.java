@@ -5,10 +5,8 @@ import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -19,14 +17,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import static mokiyoki.enhancedanimals.util.Reference.MODID;
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 
-/**
- * Created by moki on 24/08/2018.
- */
+@Mod(MODID)
+public class GeneticAnimals {
 
-@Mod(value = "eanimod")
-public class EnhancedAnimals {
+    public static final String MODID = "eanimod";
 
     private static final String PROTOCOL_VERSION = "1.0";
 
@@ -37,20 +33,11 @@ public class EnhancedAnimals {
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
 
-    public static final CreativeModeTab GENETICS_ANIMALS_GROUP = new CreativeModeTab(MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(ModItems.EGG_BLUE.get());
-        }
-    };
+    public static GeneticAnimals instance;
 
-    public static EnhancedAnimals instance;
-
-    public static final EanimodCommonConfig commonConfig = new EanimodCommonConfig();
-
-    public EnhancedAnimals() {
+    public GeneticAnimals() {
         instance = this;
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EanimodCommonConfig.getConfigSpecForLoader(), EanimodCommonConfig.getFileNameForLoader());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, GeneticAnimalsConfig.getConfigSpecForLoader(), GeneticAnimalsConfig.getFileNameForLoader());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -65,6 +52,7 @@ public class EnhancedAnimals {
         ModBlocks.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModTileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModCreativeTabs.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModSensorTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModActivities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModMemoryModuleTypes.register(FMLJavaModLoadingContext.get().getModEventBus());

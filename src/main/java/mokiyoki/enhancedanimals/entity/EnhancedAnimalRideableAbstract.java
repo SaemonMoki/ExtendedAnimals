@@ -99,7 +99,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
         super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
-        this.maxUpStep = 1.1F;
+        this.setMaxUpStep(1.1F);
     }
 
     protected static void registerAnimalAttributes() {
@@ -123,7 +123,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (BOOST_TIME.equals(key) && this.level.isClientSide) {
+        if (BOOST_TIME.equals(key) && this.level().isClientSide) {
             this.boosting = true;
             this.boostTime = 0;
             this.totalBoostTime = this.entityData.get(BOOST_TIME);
@@ -140,6 +140,10 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return false;
         }
             return super.isAnimalSleeping();
+    }
+
+    public Boolean hasSaddled() {
+        return this.entityData.get(HAS_SADDLE);
     }
 
     protected boolean getRideableWatchableBoolean(int byteNumber) {
@@ -165,16 +169,15 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         if (i <= 0) {
             return false;
         } else {
+            this.hurt(damageSource, (float)i);
             if (this.isVehicle()) {
                 for(Entity entity : this.getIndirectPassengers()) {
-                    entity.hurt(DamageSource.FALL, (float)i);
+                    entity.hurt(damageSource, (float)i);
                 }
-            } else {
-                this.hurt(DamageSource.FALL, (float)i);
             }
 
             this.playBlockFallSound();
-            return false;
+            return true;
         }
     }
 
@@ -244,11 +247,11 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        if (!blockIn.getMaterial().isLiquid()) {
-            BlockState blockstate = this.level.getBlockState(pos.above());
-            SoundType soundtype = blockIn.getSoundType(level, pos, this);
+        if (!blockIn.liquid()) {
+            BlockState blockstate = this.level().getBlockState(pos.above());
+            SoundType soundtype = blockIn.getSoundType(level(), pos, this);
             if (blockstate.getBlock() == Blocks.SNOW) {
-                soundtype = blockstate.getSoundType(level, pos, this);
+                soundtype = blockstate.getSoundType(level(), pos, this);
             }
 
             if (this.isVehicle()) {
@@ -350,7 +353,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return InteractionResult.sidedSuccess(this.saddleAnimal(itemStack, entityPlayer, hand, this));
         }
 
-        if ((!this.level.isClientSide && this.isFoodItem(itemStack)) || (!this.level.isClientSide && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
+        if ((!this.level().isClientSide && this.isFoodItem(itemStack)) || (!this.level().isClientSide && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
             return super.mobInteract(entityPlayer, hand);
         }
 
@@ -415,13 +418,27 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     @Nullable
-    public Entity getControllingPassenger() {
-        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+    public LivingEntity getControllingPassenger() {
+        if(this.getPassengers().isEmpty()) return null;
+        Entity entity = this.getPassengers().get(0);
+
+        if (entity instanceof Mob) {
+            return (Mob)entity;
+        } else {
+            if (this.hasSaddled()) {
+                entity = this.getFirstPassenger();
+                if (entity instanceof Player) {
+                    return (Player)entity;
+                }
+            }
+
+            return null;
+        }
     }
 
     protected void mountTo(Player player) {
         this.setRearing(false);
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             player.setYRot(this.getYRot());
             player.setXRot(this.getXRot());
             player.startRiding(this);
@@ -441,125 +458,125 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         return false;
     }
 
-    @Override
-    public void travel(Vec3 p_213352_1_) {
-        //TODO bareback and blankets need to be options for riding with a drawback for how long you can ride.
-        //TODO maybe create some different effects on speed, jump height and ride time based on the saddle.
-        //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal
-        if (this.isAlive()) {
-            if (this.isVehicle() && this.canBeControlledByRider()) {
-                this.allowStandSliding = true;
-                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
-                if (this.hasBridle() && !livingentity.isHolding(Items.CARROT_ON_A_STICK)) {
-                    this.setYRot(livingentity.getYRot());
-                    this.yRotO = this.getYRot();
-                    this.setXRot(livingentity.getXRot() * 0.5F);
-                    this.setRot(this.getYRot(), this.getXRot());
-                    this.yBodyRot = this.getYRot();
-                    this.yHeadRot = this.yBodyRot;
-                    float f = livingentity.xxa * 0.5F;
-                    float f1 = livingentity.zza;
-                    if (f1 <= 0.0F) {
-                        f1 *= 0.25F;
-                        this.gallopSoundCounter = 0;
-                    }
-
-                    if (this.onGround && this.playerJumpPendingScale == 0.0F && !this.allowStandSliding) {
-                        f = 0.0F;
-                        f1 = 0.0F;
-                    }
-
-                    if (this.jumpPower > 0.0F && !this.isAnimalJumping() && this.onGround) {
-                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getBlockJumpFactor();
-                        double d1;
-                        if (this.hasEffect(MobEffects.JUMP)) {
-                            d1 = d0 + (double) ((float) (this.getEffect(MobEffects.JUMP).getAmplifier() + 1) * 0.1F);
-                        } else {
-                            d1 = d0;
-                        }
-
-                        Vec3 vec3d = this.getDeltaMovement();
-                        this.setDeltaMovement(vec3d.x, d1, vec3d.z);
-                        this.setAnimalJumping(true);
-                        this.hasImpulse = true;
-                        if (f1 > 0.0F) {
-                            float f2 = Mth.sin(this.getYRot() * ((float) Math.PI / 180F));
-                            float f3 = Mth.cos(this.getYRot() * ((float) Math.PI / 180F));
-                            this.setDeltaMovement(this.getDeltaMovement().add((double) (-0.4F * f2 * this.jumpPower), 0.0D, (double) (0.4F * f3 * this.jumpPower)));
-                            this.playJumpSound();
-                        }
-
-                        this.jumpPower = 0.0F;
-                    }
-
-                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
-                    if (this.isControlledByLocalInstance()) {
-                        this.setSpeed((float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
-                        super.travel(new Vec3((double) f, p_213352_1_.y, (double) f1));
-                    } else if (livingentity instanceof Player) {
-                        this.setDeltaMovement(Vec3.ZERO);
-                    }
-
-                    if (this.onGround) {
-                        this.jumpPower = 0.0F;
-                        this.setAnimalJumping(false);
-                    }
-
-                    this.animationSpeedOld = this.animationSpeed;
-                    double d2 = this.getX() - this.xo;
-                    double d3 = this.getZ() - this.zo;
-                    float f4 = Mth.sqrt((float) (d2 * d2 + d3 * d3)) * 4.0F;
-                    if (f4 > 1.0F) {
-                        f4 = 1.0F;
-                    }
-
-                    this.animationSpeed += (f4 - this.animationSpeed) * 0.4F;
-                    this.animationPosition += this.animationSpeed;
-                } else {
-                    this.setYRot(livingentity.getYRot());
-                    this.yRotO = this.getYRot();
-                    this.setXRot(livingentity.getXRot() * 0.5F);
-                    this.setRot(this.getYRot(), this.getXRot());
-                    this.yBodyRot = this.getYRot();
-                    this.yHeadRot = this.getYRot();
-                    this.maxUpStep = 1.1F;
-                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
-                    if (this.boosting && this.boostTime++ > this.totalBoostTime) {
-                        this.boosting = false;
-                    }
-
-                    if (this.isControlledByLocalInstance()) {
-                        float f = (float)this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier() * 0.225F;
-                        if (this.boosting) {
-                            f += f * 1.15F * Mth.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
-                        }
-
-                        this.setSpeed(f);
-                        super.travel(new Vec3(0.0D, 0.0D, 1.0D));
-                        this.lerpSteps = 0;
-                    } else {
-                        this.setDeltaMovement(Vec3.ZERO);
-                    }
-
-                    this.animationSpeedOld = this.animationSpeed;
-                    double d1 = this.getX() - this.xo;
-                    double d0 = this.getZ() - this.zo;
-                    float f1 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
-                    if (f1 > 1.0F) {
-                        f1 = 1.0F;
-                    }
-
-                    this.animationSpeed += (f1 - this.animationSpeed) * 0.4F;
-                    this.animationPosition += this.animationSpeed;
-                }
-            } else {
-                this.allowStandSliding = false;
-                this.maxUpStep = 1.1F;
-                this.flyingSpeed = 0.02F;
-                super.travel(p_213352_1_);
-            }
-        }
-    }
+//    @Override
+//    public void travel(Vec3 p_213352_1_) {
+//        //TODO bareback and blankets need to be options for riding with a drawback for how long you can ride.
+//        //TODO maybe create some different effects on speed, jump height and ride time based on the saddle.
+//        //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal
+//        if (this.isAlive()) {
+//            if (this.isVehicle() && this.canBeControlledByRider()) {
+//                this.allowStandSliding = true;
+//                LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
+//                if (this.hasBridle() && !livingentity.isHolding(Items.CARROT_ON_A_STICK)) {
+//                    this.setYRot(livingentity.getYRot());
+//                    this.yRotO = this.getYRot();
+//                    this.setXRot(livingentity.getXRot() * 0.5F);
+//                    this.setRot(this.getYRot(), this.getXRot());
+//                    this.yBodyRot = this.getYRot();
+//                    this.yHeadRot = this.yBodyRot;
+//                    float f = livingentity.xxa * 0.5F;
+//                    float f1 = livingentity.zza;
+//                    if (f1 <= 0.0F) {
+//                        f1 *= 0.25F;
+//                        this.gallopSoundCounter = 0;
+//                    }
+//
+//                    if (this.onGround() && this.playerJumpPendingScale == 0.0F && !this.allowStandSliding) {
+//                        f = 0.0F;
+//                        f1 = 0.0F;
+//                    }
+//
+//                    if (this.jumpPower > 0.0F && !this.isAnimalJumping() && this.onGround()) {
+//                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getBlockJumpFactor();
+//                        double d1;
+//                        if (this.hasEffect(MobEffects.JUMP)) {
+//                            d1 = d0 + (double) ((float) (this.getEffect(MobEffects.JUMP).getAmplifier() + 1) * 0.1F);
+//                        } else {
+//                            d1 = d0;
+//                        }
+//
+//                        Vec3 vec3d = this.getDeltaMovement();
+//                        this.setDeltaMovement(vec3d.x, d1, vec3d.z);
+//                        this.setAnimalJumping(true);
+//                        this.hasImpulse = true;
+//                        if (f1 > 0.0F) {
+//                            float f2 = Mth.sin(this.getYRot() * ((float) Math.PI / 180F));
+//                            float f3 = Mth.cos(this.getYRot() * ((float) Math.PI / 180F));
+//                            this.setDeltaMovement(this.getDeltaMovement().add((double) (-0.4F * f2 * this.jumpPower), 0.0D, (double) (0.4F * f3 * this.jumpPower)));
+//                            this.playJumpSound();
+//                        }
+//
+//                        this.jumpPower = 0.0F;
+//                    }
+//
+//                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
+//                    if (this.isControlledByLocalInstance()) {
+//                        this.setSpeed((float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
+//                        super.travel(new Vec3((double) f, p_213352_1_.y, (double) f1));
+//                    } else if (livingentity instanceof Player) {
+//                        this.setDeltaMovement(Vec3.ZERO);
+//                    }
+//
+//                    if (this.onGround()) {
+//                        this.jumpPower = 0.0F;
+//                        this.setAnimalJumping(false);
+//                    }
+//
+//                    this.walkAnimation.speedOld = this.animationSpeed;
+//                    double d2 = this.getX() - this.xo;
+//                    double d3 = this.getZ() - this.zo;
+//                    float f4 = Mth.sqrt((float) (d2 * d2 + d3 * d3)) * 4.0F;
+//                    if (f4 > 1.0F) {
+//                        f4 = 1.0F;
+//                    }
+//
+//                    this.animationSpeed += (f4 - this.animationSpeed) * 0.4F;
+//                    this.animationPosition += this.animationSpeed;
+//                } else {
+//                    this.setYRot(livingentity.getYRot());
+//                    this.yRotO = this.getYRot();
+//                    this.setXRot(livingentity.getXRot() * 0.5F);
+//                    this.setRot(this.getYRot(), this.getXRot());
+//                    this.yBodyRot = this.getYRot();
+//                    this.yHeadRot = this.getYRot();
+//                    this.setMaxUpStep(1.1F);
+//                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
+//                    if (this.boosting && this.boostTime++ > this.totalBoostTime) {
+//                        this.boosting = false;
+//                    }
+//
+//                    if (this.isControlledByLocalInstance()) {
+//                        float f = (float)this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier() * 0.225F;
+//                        if (this.boosting) {
+//                            f += f * 1.15F * Mth.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
+//                        }
+//
+//                        this.setSpeed(f);
+//                        super.travel(new Vec3(0.0D, 0.0D, 1.0D));
+//                        this.lerpSteps = 0;
+//                    } else {
+//                        this.setDeltaMovement(Vec3.ZERO);
+//                    }
+//
+//                    this.animationSpeedOld = this.animationSpeed;
+//                    double d1 = this.getX() - this.xo;
+//                    double d0 = this.getZ() - this.zo;
+//                    float f1 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
+//                    if (f1 > 1.0F) {
+//                        f1 = 1.0F;
+//                    }
+//
+//                    this.animationSpeed += (f1 - this.animationSpeed) * 0.4F;
+//                    this.animationPosition += this.animationSpeed;
+//                }
+//            } else {
+//                this.allowStandSliding = false;
+//                this.maxUpStep = 1.1F;
+//                this.flyingSpeed = 0.02F;
+//                super.travel(p_213352_1_);
+//            }
+//        }
+//    }
 
     protected float getJumpHeight() {
         return 1F;
@@ -608,7 +625,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             double d0 = this.random.nextGaussian() * 0.02D;
             double d1 = this.random.nextGaussian() * 0.02D;
             double d2 = this.random.nextGaussian() * 0.02D;
-            this.level.addParticle(iparticledata, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
+            this.level().addParticle(iparticledata, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
         }
     }
 

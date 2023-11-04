@@ -8,6 +8,7 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.mojang.blaze3d.platform.NativeImage.combine;
-import static com.mojang.blaze3d.platform.NativeImage.getA;
-import static com.mojang.blaze3d.platform.NativeImage.getB;
-import static com.mojang.blaze3d.platform.NativeImage.getG;
-import static com.mojang.blaze3d.platform.NativeImage.getR;
 
 @OnlyIn(Dist.CLIENT)
 public class EnhancedLayeredTexture extends AbstractTexture {
@@ -561,14 +556,14 @@ public class EnhancedLayeredTexture extends AbstractTexture {
 
     public void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int baseI = baseImage.getPixelRGBA(xIn, yIn);
-        float alpha = (float)getA(colIn) / 255.0F;
-        float blue = (float)getB(colIn) / 255.0F;
-        float green = (float)getG(colIn) / 255.0F;
-        float red = (float)getR(colIn) / 255.0F;
-        float baseAlpha = (float)getA(baseI) / 255.0F;
-        float baseBlue = (float)getB(baseI) / 255.0F;
-        float baseGreen = (float)getG(baseI) / 255.0F;
-        float baseRed = (float)getR(baseI) / 255.0F;
+        float alpha = (float) FastColor.ABGR32.alpha(colIn) / 255.0F;
+        float blue = (float)FastColor.ABGR32.blue(colIn) / 255.0F;
+        float green = (float)FastColor.ABGR32.green(colIn) / 255.0F;
+        float red = (float)FastColor.ABGR32.red(colIn) / 255.0F;
+        float baseAlpha = (float)FastColor.ABGR32.alpha(baseI) / 255.0F;
+        float baseBlue = (float)FastColor.ABGR32.blue(baseI) / 255.0F;
+        float baseGreen = (float)FastColor.ABGR32.green(baseI) / 255.0F;
+        float baseRed = (float)FastColor.ABGR32.red(baseI) / 255.0F;
         float inverseAlpha = 1.0F - alpha;
         float a = alpha * alpha + baseAlpha * inverseAlpha;
         float b = blue * alpha + baseBlue * inverseAlpha;
@@ -594,19 +589,19 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         int k = (int)(b * 255.0F);
         int l = (int)(g * 255.0F);
         int i1 = (int)(r * 255.0F);
-        baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
+        baseImage.setPixelRGBA(xIn, yIn, FastColor.ABGR32.color(j, k, l, i1));
     }
 
     public void multiplyPixel(NativeImage baseImage, int xIn, int yIn, int layerABGR) {
         int baseABGR = baseImage.getPixelRGBA(xIn, yIn);
-        float layerAlpha = (float)getA(layerABGR) / 255.0F;
-        float layerBlue = (float)getB(layerABGR) / 255.0F;
-        float layerGreen = (float)getG(layerABGR) / 255.0F;
-        float layerRed = (float)getR(layerABGR) / 255.0F;
-        float baseAlpha = (float)getA(baseABGR) / 255.0F;
-        float baseBlue = (float)getB(baseABGR) / 255.0F;
-        float baseGreen = (float)getG(baseABGR) / 255.0F;
-        float baseRed = (float)getR(baseABGR) / 255.0F;
+        float layerAlpha = (float)FastColor.ABGR32.alpha(layerABGR) / 255.0F;
+        float layerBlue = (float)FastColor.ABGR32.blue(layerABGR) / 255.0F;
+        float layerGreen = (float)FastColor.ABGR32.green(layerABGR) / 255.0F;
+        float layerRed = (float)FastColor.ABGR32.red(layerABGR) / 255.0F;
+        float baseAlpha = (float)FastColor.ABGR32.alpha(baseABGR) / 255.0F;
+        float baseBlue = (float)FastColor.ABGR32.blue(baseABGR) / 255.0F;
+        float baseGreen = (float)FastColor.ABGR32.green(baseABGR) / 255.0F;
+        float baseRed = (float)FastColor.ABGR32.red(baseABGR) / 255.0F;
         float remainder = 1.0F - layerAlpha;
         float alpha = layerAlpha * layerAlpha + baseAlpha * remainder;
         float blue = (layerBlue * baseBlue * layerAlpha) + baseBlue * remainder;
@@ -632,7 +627,7 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         int k = (int)(blue * 255.0F);
         int l = (int)(green * 255.0F);
         int i1 = (int)(red * 255.0F);
-        baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
+        baseImage.setPixelRGBA(xIn, yIn, FastColor.ABGR32.color(j, k, l, i1));
     }
 
     public NativeImage getImage() {

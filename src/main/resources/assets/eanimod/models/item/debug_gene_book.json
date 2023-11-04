@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "eanimod:items/debug_gene_book"
+        "layer0": "eanimod:item/debug_gene_book"
     }
 }

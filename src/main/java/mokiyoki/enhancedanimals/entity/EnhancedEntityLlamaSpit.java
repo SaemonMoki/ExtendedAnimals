@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.LlamaSpit;
 import net.minecraft.network.protocol.Packet;
@@ -38,7 +39,7 @@ public class EnhancedEntityLlamaSpit extends LlamaSpit {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

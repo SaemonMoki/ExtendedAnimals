@@ -25,36 +25,36 @@ public class GrazingGoalMooshroom extends GrazingGoal {
     @Override
     protected void eatBlocks() {
         BlockPos blockpos = new BlockPos(this.eanimal.blockPosition());
-        if (IS_GRASS.test(this.eanimal.level.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.eanimal.level.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.eanimal.level.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.eanimal.level.getBlockState(blockpos))) {
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                this.eanimal.level.destroyBlock(blockpos, false);
+        if (IS_GRASS.test(this.eanimal.level().getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.eanimal.level().getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.eanimal.level().getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.eanimal.level().getBlockState(blockpos))) {
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                this.eanimal.level().destroyBlock(blockpos, false);
             }
             this.eanimal.ate();
         } else {
             BlockPos blockposDown = blockpos.below();
-            if (this.eanimal.level.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
+            if (this.eanimal.level().getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
                 }
                 this.eanimal.ate();
-            }else if (this.eanimal.level.getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.get().defaultBlockState(), 2);
+            }else if (this.eanimal.level().getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.get().defaultBlockState(), 2);
                 }
                 this.eanimal.ate();
-            } else if (this.eanimal.level.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
+            } else if (this.eanimal.level().getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
                 }
 
                 this.eanimal.ate();
-            } else if (this.eanimal.level.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK.get()) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                    this.eanimal.level.levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
-                    this.eanimal.level.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
+            } else if (this.eanimal.level().getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK.get()) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                    this.eanimal.level().levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
+                    this.eanimal.level().setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
                 }
 
                 this.eanimal.ate();

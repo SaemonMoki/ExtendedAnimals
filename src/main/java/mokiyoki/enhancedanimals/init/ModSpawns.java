@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
 import com.mojang.serialization.Codec;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
@@ -33,9 +34,9 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID)
+@Mod.EventBusSubscriber(modid = MODID)
 public class ModSpawns {
-    public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIER_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Reference.MODID);
+    public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIER_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
 
     private static final RegistryObject<Codec<BiomeModifier>> BIOME_MODIFIER_SERIALIZER_REGISTRY = BIOME_MODIFIER_DEFERRED_REGISTRY.register("eanimod_spawn", () -> Codec.unit(BiomeSpawnModifier::new));
 
@@ -57,7 +58,7 @@ public class ModSpawns {
             while (currentSpawns.hasNext()) {
                 MobSpawnSettings.SpawnerData entry = currentSpawns.next();
 
-                EanimodCommonConfig.CommonConfig config = EanimodCommonConfig.COMMON;
+                GeneticAnimalsConfig.CommonConfig config = GeneticAnimalsConfig.COMMON;
 
                 //add pigs
                 if (entry.type == EntityType.PIG) {
@@ -132,7 +133,7 @@ public class ModSpawns {
             while (currentAxolotlSpawns.hasNext()) {
                 MobSpawnSettings.SpawnerData entry = currentAxolotlSpawns.next();
 
-                EanimodCommonConfig.CommonConfig config = EanimodCommonConfig.COMMON;
+                GeneticAnimalsConfig.CommonConfig config = GeneticAnimalsConfig.COMMON;
 
                 if (entry.type == EntityType.AXOLOTL) {
                     if(config.spawnGeneticAxolotls.get()) {
@@ -148,7 +149,7 @@ public class ModSpawns {
             }
 
             if (biomeHolder.containsTag(Tags.Biomes.IS_SNOWY)) {
-                spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT.get(), EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
+                spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT.get(), GeneticAnimalsConfig.COMMON.spawnWeightRabbits.get(), GeneticAnimalsConfig.COMMON.minimumRabbitGroup.get(), GeneticAnimalsConfig.COMMON.maximumRabbitGroup.get()));
             }
         }
 
@@ -161,56 +162,56 @@ public class ModSpawns {
 
                 //remove vanilla pig
                 if (entry.type == EntityType.PIG && entry.type.toString().contains("pig")) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
+                    if(!GeneticAnimalsConfig.COMMON.spawnVanillaPigs.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove vanilla sheep
                 if (entry.type == EntityType.SHEEP && entry.type.toString().contains("sheep")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaSheep.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove vanilla cow
                 if (entry.type == EntityType.COW && entry.type.toString().contains("cow")) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
+                    if(!GeneticAnimalsConfig.COMMON.spawnVanillaCows.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //add and remove llama
                 if (entry.type == EntityType.LLAMA && entry.type.toString().contains("llama")) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
+                    if(!GeneticAnimalsConfig.COMMON.spawnVanillaLlamas.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove vanilla chicken
                 if (entry.type == EntityType.CHICKEN && entry.type.toString().contains("chicken")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaChickens.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove vanilla rabbit
                 if (entry.type == EntityType.RABBIT && entry.type.toString().contains("rabbit")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaRabbits.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove vanilla mooshroom
                 if (entry.type == EntityType.MOOSHROOM && entry.type.toString().contains("mooshroom")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaMooshroom.get()) {
                         removeSpawns.add(entry);
                     }
                 }
                 //remove modded mooblooms?
                 if (entry.type.toString().contains("moobloom")) {
-                    if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                    if (GeneticAnimalsConfig.COMMON.spawnGeneticMoobloom.get()) {
                         removeSpawns.add(entry);
                     }
                 }
 
                 //remove turtles?
                 if (entry.type == EntityType.TURTLE && entry.type.toString().contains("turtle")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaTurtles.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaTurtles.get()) {
                         removeSpawns.add(entry);
                     }
                 }
@@ -229,7 +230,7 @@ public class ModSpawns {
 
                 //remove axolotls
                 if (entry.type == EntityType.AXOLOTL && entry.type.toString().contains("axolotl")) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaAxolotls.get()) {
+                    if (!GeneticAnimalsConfig.COMMON.spawnVanillaAxolotls.get()) {
                         removeAxolotlSpawns.add(entry);
                     }
                 }

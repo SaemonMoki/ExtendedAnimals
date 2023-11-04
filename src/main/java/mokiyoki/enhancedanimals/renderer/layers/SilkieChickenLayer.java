@@ -20,9 +20,9 @@
 //public class SilkieChickenLayer extends RenderLayer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
 //
 //    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chickensilkie/chickenbase.png");
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/chickensilkie/chickenbase.png");
 //
-//    private static final ResourceLocation[] CHICKEN_SADDLE_TEXTURES = new ResourceLocation[]{new ResourceLocation("eanimod:textures/entities/chickensilkie/ground_solid_silver.png")};
+//    private static final ResourceLocation[] CHICKEN_SADDLE_TEXTURES = new ResourceLocation[]{new ResourceLocation("eanimod:textures/entity/chickensilkie/ground_solid_silver.png")};
 //    private final ModelEnhancedChicken<EnhancedChicken> model_2 = new ModelEnhancedChicken<>();
 //
 //    public SilkieChickenLayer(RenderLayerParent<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> p_i50933_1_) {

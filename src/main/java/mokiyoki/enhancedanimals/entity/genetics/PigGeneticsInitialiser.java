@@ -198,18 +198,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[15] = (1);
         }
 
-        //White Extension [ Undermarked, medium+, over marked ]
+        //White Extension [ Undermarked+, medium, over marked ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            autosomalGenes[16] = (2);
+            autosomalGenes[16] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            autosomalGenes[17] = (2);
+            autosomalGenes[17] = (1);
         }
 
         //face squash genes 1 [ Wildtype+, long, medium, short, squashed ]
@@ -295,7 +295,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //wooly [ wooly, wildtype, curly wool ]
+        //wooly [ thicker hair, wildtype, curly wool ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 

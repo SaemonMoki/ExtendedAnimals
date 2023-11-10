@@ -641,27 +641,18 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     protected float getMovementFactorModifier() {
         float speedMod = 1.0F;
         int[] genes = this.genetics.getAutosomalGenes();
-        float muscle = 0.0F; // 0 to 1
-        float fat = 0.0F; // 0 to 1
 
-        for (int i = 166; i < 172; i++) {
-            muscle += (genes[i] / 80.0F);
-        }
-        if (genes[172] == 2 || genes[173] == 2) {
-            muscle += 0.25F;
-        }
-        for (int i = 174; i < 182; i++) {
-            fat += (genes[i] / 80.0F);
-        }
+        float muscle = getPigMuscle();
+        float fat = getPigFat();
 
         if (fat > 0.55F) {
             speedMod -= fat * 0.15F;
         }
         if (muscle > 0.55F) {
-            speedMod += 0.25F * 0.55F;
+            speedMod += 0.4F * 0.55F;
         }
         else {
-            speedMod += 0.25F * muscle;
+            speedMod += 0.4F * muscle;
         }
 
         float size = this.getAnimalSize();
@@ -1001,7 +992,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 melanin[2] += 0.245F;
             }
 
-            //float saturation = (1 - ((gene[148] + gene[149])/2.0F))*1.2F;
             int s = 0;
 
             for (int i = 192; i < 202; i++) {
@@ -1453,6 +1443,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             // skin color
 
+            if (gene[12] == 4 && gene[13] == 4) {
+                skinBlack = 1;
+            }
             if (gene[12] == 5 && gene[13] == 5 ) {
                 //roan causes grey skin
                 skinBlack = 2;
@@ -2083,4 +2076,28 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
         return this.colouration;
     }*/
+    private float getPigMuscle() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        float muscle = 0;
+        for (int i = 166; i < 172; i++) {
+            muscle += (genes[i] / 80.0F);
+        }
+        if (genes[172] == 2 || genes[173] == 2) {
+            muscle += 0.25F;
+        }
+        return muscle;
+    };
+
+
+    private float getPigFat() {
+        float fat = 0;
+        if (fat < 0) {
+            int[] genes = this.genetics.getAutosomalGenes();
+            for (int i = 174; i < 182; i++) {
+                fat += (genes[i] / 80.0F);
+            }
+        }
+        return fat;
+    };
+
 }

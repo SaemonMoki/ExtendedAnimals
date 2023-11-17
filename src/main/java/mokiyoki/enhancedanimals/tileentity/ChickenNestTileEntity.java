@@ -1,20 +1,27 @@
 package mokiyoki.enhancedanimals.tileentity;
 
+import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Random;
+
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
+    private int incubation = EanimodCommonConfig.COMMON.incubationDaysChicken.get();
 
     public ChickenNestTileEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(ModTileEntities.CHICKEN_NEST_TILE_ENTITY.get(), p_155229_, p_155230_);
@@ -26,6 +33,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (compound.contains("Items", 9)) {
             ContainerHelper.loadAllItems(compound, this.items);
+            this.incubation *= (int) compound.getFloat("incubation");
         }
     }
 
@@ -33,13 +41,20 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     protected void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
         ContainerHelper.saveAllItems(compound, this.items, false);
+        compound.putFloat("incubation", (float) incubation/EanimodCommonConfig.COMMON.incubationDaysChicken.get());
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         ContainerHelper.saveAllItems(tag, this.items, true);
+        tag.putFloat("incubation", incubation);
         return tag;
+    }
+
+    public boolean incubate() {
+        this.incubation--;
+        return this.incubation < 0;
     }
 
     @Override
@@ -152,6 +167,10 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
-
+    public void hatchEggs(Level level, BlockPos pos, Random random) {
+        if (level instanceof ServerLevel serverLevel) {
+            EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random);
+        }
+    }
 
 }

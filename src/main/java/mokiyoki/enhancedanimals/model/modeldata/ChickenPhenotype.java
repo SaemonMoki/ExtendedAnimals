@@ -341,8 +341,7 @@ public class ChickenPhenotype implements Phenotype {
             if (gene[i]==2) bodyAngle *= 0.9F;
         }
 
-        bodyAngle = -1.5F+bodyAngle;
-        return bodyAngle;
+        return -1.5F+bodyAngle;
     }
 
     private static float getNeckAngle(int[] gene) {

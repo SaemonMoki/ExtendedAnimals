@@ -1,9 +1,7 @@
 package mokiyoki.enhancedanimals.util.scheduling;
 
-import mokiyoki.enhancedanimals.blocks.NestBlock;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,7 +37,7 @@ public enum Schedules {
                                 if (nestTileEntity.isFull()) {
                                     continue;
                                 }
-                                chicken.rateNest(nestTileEntity, pos, false);
+                                chicken.rateNest(pos);
                             }
 
                             BlockState state = eaa.level.getBlockState(pos);
@@ -53,7 +51,7 @@ public enum Schedules {
                                 }
                             }
                             if (chicken.isGoodNestSite(pos)) {
-                                chicken.rateChickenNestSite(pos);
+                                chicken.rateNest(pos);
                             }
                         }
                     }

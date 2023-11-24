@@ -41,6 +41,7 @@ public class ChickenPhenotype implements Phenotype {
     public float height;
     private boolean silkie;
     public float fluffiness;
+    public final float neckPoof;
     public float meatiness;
 
     public ChickenPhenotype(Genes genes, boolean isFemale) {
@@ -292,9 +293,35 @@ public class ChickenPhenotype implements Phenotype {
 
         this.fluffiness = getFluffiness(gene);
 
+        this.neckPoof = getNeckPoof(gene);
+
         this.meatiness = getMeatiness(gene);
 
         this.tailAngle = getTailAngle(gene);
+    }
+
+    private static float getBodyAngle(int[] gene) {
+        float bodyAngle = 1.5F;
+        for (int i = 186; i < 196; i+=2) {
+            if (gene[i] == 2 && gene[i+1] == 2) {
+                bodyAngle -= 0.3F;
+            }
+        }
+
+        for (int i = 248; i<258; i++) {
+            if (gene[i]==2) bodyAngle *= 0.9F;
+        }
+
+        return -1.5F+bodyAngle;
+    }
+
+    private static float getNeckAngle(int[] gene) {
+        float neckAngle = 1.0F;
+
+        for (int i = 10; i<20; i++) {
+            if (gene[i]==2) neckAngle *= 0.8F;
+        }
+        return neckAngle;
     }
 
     private static float getWingAngle(int[] gene) {
@@ -329,30 +356,6 @@ public class ChickenPhenotype implements Phenotype {
         return -wingAngle;
     }
 
-    private static float getBodyAngle(int[] gene) {
-        float bodyAngle = 1.5F;
-        for (int i = 186; i < 196; i+=2) {
-            if (gene[i] == 2 && gene[i+1] == 2) {
-                bodyAngle -= 0.3F;
-            }
-        }
-
-        for (int i = 248; i<258; i++) {
-            if (gene[i]==2) bodyAngle *= 0.9F;
-        }
-
-        return -1.5F+bodyAngle;
-    }
-
-    private static float getNeckAngle(int[] gene) {
-        float neckAngle = 1.0F;
-
-        for (int i = 10; i<20; i++) {
-            if (gene[i]==2) neckAngle *= 0.8F;
-        }
-        return neckAngle;
-    }
-
     private static float getTailAngle(int[] gene) {
         float tailAngle = 0.5F;
         for (int i = 258; i<268; i++) {
@@ -375,6 +378,18 @@ public class ChickenPhenotype implements Phenotype {
             }
         }
         return fluffiness;
+    }
+
+    private static float getNeckPoof(int[] gene) {
+        float poof = 0.0F;
+        if (gene[286]==2 && gene[287]==2) {
+            poof+=0.95F;
+        }
+        for (int i = 288; i<294; i++) {
+            if (gene[i]==2) poof+=0.05F;
+        }
+
+        return poof;
     }
 
     private static float getMeatiness(int[] gene) {

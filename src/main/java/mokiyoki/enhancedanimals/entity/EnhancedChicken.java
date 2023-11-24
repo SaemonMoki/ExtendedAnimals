@@ -319,7 +319,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
-        this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(6, new EnhancedFollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new ECRoost(this));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
@@ -630,13 +630,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public void playAmbientSound() {
-        if (!this.getOrSetIsFemale() && this.growthAmount()==1.0F && this.soundOffset <= 0) {
-            this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
-            this.soundOffset = this.random.nextInt(10);
-        } else {
-            if (this.soundOffset>0 && !this.sleeping) this.soundOffset--;
+//        if (!this.getOrSetIsFemale() && this.growthAmount()==1.0F && this.soundOffset <= 0) {
+//            this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
+//            this.soundOffset = this.random.nextInt(10);
+//        } else {
+//            if (this.soundOffset>0 && !this.sleeping) this.soundOffset--;
             super.playAmbientSound();
-        }
+//        }
     }
 
     @Override
@@ -668,6 +668,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isSilent() && this.getBells()) {
             this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 2.0F);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void crow() {
+        this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
     }
 
     /**
@@ -1944,5 +1949,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         }
     }
+/*
+    static class InteractWithParentGoal extends EnhancedLookAtGoal {
+        InteractWithParentGoal(Mob entityIn, Class<? extends LivingEntity> parentClass, float distance) {
+            super(entityIn, parentClass, distance);
+        }
+    }*/
 }
 

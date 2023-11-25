@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.util.scheduling;
 
+import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
@@ -26,6 +27,15 @@ public enum Schedules {
 
     DESPAWN_NO_PASSENGER_SCHEDULE("DespawnNoPassengerSchedule", (ticks) ->
         new AnimalScheduledFunction(ticks, (eaa) -> eaa.despawn(), (eaa) -> !eaa.getPassengers().isEmpty())),
+
+    CROW_SCHEDULE("CrowSchedule", (ticks) ->
+        new AnimalScheduledFunction(ticks, (eaa) -> {
+            if (eaa instanceof EnhancedChicken) {
+                eaa.level.broadcastEntityEvent(eaa, (byte)11);
+                ((EnhancedChicken)eaa).crowTick = 120;
+                eaa.setAIStatus(AIStatus.FOCUSED);
+            }
+        })),
 
     LOOK_FOR_NEST_SCHEDULE("LookForNestSchedule", (ticks) ->
             new AnimalScheduledFunction(12000, (eaa) -> {

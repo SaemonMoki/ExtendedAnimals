@@ -72,6 +72,7 @@ import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.LOOK_FOR_NEST_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.CROW_SCHEDULE;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -262,6 +263,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected GrazingGoal grazingGoal;
     public boolean chickenJockey;
 
+    public int crowTick = 0;
+
     @OnlyIn(Dist.CLIENT)
     private ChickenModelData chickenModelData;
 
@@ -271,39 +274,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.timeUntilNextEgg = (int) (this.random.nextInt(this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get()); //TODO make some genes to alter these numbers
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
-
-//    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
-//        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
-//        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(7, 1, 750));
-//        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
-//        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
-//        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
-//        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
-//        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
-//        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
-//        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_DANDELION.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
-//        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
-//        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
-//        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
-//        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-//        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
-//        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
-//
-//        return ediblePlants;
-//    }
 
     @Override
     protected void registerGoals() {
@@ -510,6 +480,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.chickenJockey = jockey;
     }
 
+    public void handleEntityEvent(byte p_29814_) {
+        if (p_29814_ == 11) { //crow event broadcasted
+            this.crowTick = 120;
+        } else {
+            super.handleEntityEvent(p_29814_);
+        }
+    }
+
     @Override
     public void aiStep() {
         super.aiStep();
@@ -533,8 +511,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        //TODO if it is daytime and if this chicken can crow and (it randomly wants to crow OR another chicken near by is crowing) then crow.
-
+        if (!this.isFemale) {
+            if (this.crowTick > 0) {
+                this.crowTick = Math.max(0, this.crowTick - 1);
+                if (!this.level.isClientSide) {
+                    if (this.crowTick == 60) { //TODO this is the start of the crow, change to whatever is needed to match the animation
+                        this.level.playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
+                    }
+                    this.currentAIStatus = AIStatus.NONE;
+                }
+            } else {
+                if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
+                    //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
+                    //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(100, 1000)));
+                }
+            }
+        }
     }
 
     protected void incrementHunger() {

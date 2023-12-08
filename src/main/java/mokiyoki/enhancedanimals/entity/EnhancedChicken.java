@@ -79,6 +79,7 @@ import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -514,7 +515,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        if (this.isFemale != null && !this.isFemale) {
+        if (!this.getOrSetIsFemale()) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {
@@ -527,7 +528,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
                     //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
                     //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
-                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(100, 1000)));
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(ThreadLocalRandom.current().nextInt(5)==0?120:100, 6000)));
                 }
             }
         }

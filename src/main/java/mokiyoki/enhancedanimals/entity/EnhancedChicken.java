@@ -261,6 +261,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private int timeUntilNextEgg;
     private float currentNestScore;
     protected GrazingGoal grazingGoal;
+
+    public EnhancedFollowParentGoal followParentGoal;
     public boolean chickenJockey;
 
     public int crowTick = 0;
@@ -279,6 +281,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void registerGoals() {
         int napmod = this.random.nextInt(1200);
         this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
+        this.followParentGoal = new EnhancedFollowParentGoal(this, 1.1D, 0.5D);
 //        this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
@@ -289,7 +292,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
-        this.goalSelector.addGoal(6, new EnhancedFollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(6, this.followParentGoal);
         this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new ECRoost(this));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
@@ -511,7 +514,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        if (!this.isFemale) {
+        if (this.isFemale != null && !this.isFemale) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {
@@ -1133,619 +1136,317 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     private Item getEggColour(int eggColourGene){
 
-        switch (eggColourGene) {
-            case 0:
-                return ModItems.EGG_WHITE.get();
-            case 1:
-                return ModItems.EGG_CREAMLIGHT.get();
-            case 2:
-                return ModItems.EGG_CREAM.get();
-            case 3:
-                return ModItems.EGG_CREAMDARK.get();
-            case 4:
-                return ModItems.EGG_CREAMDARKEST.get();
-            case 5:
-                return ModItems.EGG_CARMELDARK.get();
-            case 6:
-                return ModItems.EGG_GARNET.get();
-            case 7:
-                return ModItems.EGG_PINKLIGHT.get();
-            case 8:
-                return ModItems.EGG_PINK.get();
-            case 9:
-                return ModItems.EGG_PINKDARK.get();
-            case 10:
-                return ModItems.EGG_PINKDARKEST.get();
-            case 11:
-                return ModItems.EGG_CHERRYDARK.get();
-            case 12:
-                return ModItems.EGG_PLUM.get();
-            case 13:
-                return ModItems.EGG_BROWNLIGHT.get();
-            case 14:
-                return ModItems.EGG_BROWN.get();
-            case 15:
-                return ModItems.EGG_BROWNDARK.get();
-            case 16:
-                return ModItems.EGG_CHOCOLATE.get();
-            case 17:
-                return ModItems.EGG_CHOCOLATEDARK.get();
-            case 18:
-                return ModItems.EGG_CHOCOLATECOSMOS.get();
-            case 19:
-                return ModItems.EGG_BLUE.get();
-            case 20:
-                return ModItems.EGG_GREENLIGHT.get();
-            case 21:
-                return ModItems.EGG_GREENYELLOW.get();
-            case 22:
-                return ModItems.EGG_OLIVELIGHT.get();
-            case 23:
-                return ModItems.EGG_OLIVE.get();
-            case 24:
-                return ModItems.EGG_OLIVEDARK.get();
-            case 25:
-                return ModItems.EGG_ARMY.get();
-            case 26:
-                return ModItems.EGG_BLUEGREY.get();
-            case 27:
-                return ModItems.EGG_GREY.get();
-            case 28:
-                return ModItems.EGG_GREYGREEN.get();
-            case 29:
-                return ModItems.EGG_AVOCADO.get();
-            case 30:
-                return ModItems.EGG_AVOCADODARK.get();
-            case 31:
-                return ModItems.EGG_FELDGRAU.get();
-            case 32:
-                return ModItems.EGG_MINT.get();
-            case 33:
-                return ModItems.EGG_GREEN.get();
-            case 34:
-                return ModItems.EGG_GREENDARK.get();
-            case 35:
-                return ModItems.EGG_PINE.get();
-            case 36:
-                return ModItems.EGG_PINEDARK.get();
-            case 37:
-                return ModItems.EGG_PINEBLACK.get();
-            case 38:
-                return ModItems.EGG_POWDERBLUE.get();
-            case 39:
-                return ModItems.EGG_TEA.get();
-            case 40:
-                return ModItems.EGG_MATCHA.get();
-            case 41:
-                return ModItems.EGG_MATCHADARK.get();
-            case 42:
-                return ModItems.EGG_MOSS.get();
-            case 43:
-                return ModItems.EGG_MOSSDARK.get();
-            case 44:
-                return ModItems.EGG_GREENUMBER.get();
-            case 45:
-                return ModItems.EGG_GREYBLUE.get();
-            case 46:
-                return ModItems.EGG_GREYNEUTRAL.get();
-            case 47:
-                return ModItems.EGG_LAUREL.get();
-            case 48:
-                return ModItems.EGG_RESEDA.get();
-            case 49:
-                return ModItems.EGG_GREENPEWTER.get();
-            case 50:
-                return ModItems.EGG_GREYDARK.get();
-            case 51:
-                return ModItems.EGG_CELADON.get();
-            case 52:
-                return ModItems.EGG_FERN.get();
-            case 53:
-                return ModItems.EGG_ASPARAGUS.get();
-            case 54:
-                return ModItems.EGG_HUNTER.get();
-            case 55:
-                return ModItems.EGG_HUNTERDARK.get();
-            case 56:
-                return ModItems.EGG_TREEDARK.get();
-            case 57:
-                return ModItems.EGG_PALEBLUE.get();
-            case 58:
-                return ModItems.EGG_HONEYDEW.get();
-            case 59:
-                return ModItems.EGG_EARTH.get();
-            case 60:
-                return ModItems.EGG_KHAKI.get();
-            case 61:
-                return ModItems.EGG_GRULLO.get();
-            case 62:
-                return ModItems.EGG_KHAKIDARK.get();
-            case 63:
-                return ModItems.EGG_CAROB.get();
-            case 64:
-                return ModItems.EGG_COOLGREY.get();
-            case 65:
-                return ModItems.EGG_PINKGREY.get();
-            case 66:
-                return ModItems.EGG_WARMGREY.get();
-            case 67:
-                return ModItems.EGG_ARTICHOKE.get();
-            case 68:
-                return ModItems.EGG_MYRTLEGREY.get();
-            case 69:
-                return ModItems.EGG_RIFLE.get();
-            case 70:
-                return ModItems.EGG_JADE.get();
-            case 71:
-                return ModItems.EGG_PISTACHIO.get();
-            case 72:
-                return ModItems.EGG_SAGE.get();
-            case 73:
-                return ModItems.EGG_ROSEMARY.get();
-            case 74:
-                return ModItems.EGG_GREENBROWN.get();
-            case 75:
-                return ModItems.EGG_UMBER.get();
-            case 76:
-                return ModItems.EGG_WHITE.get();
-            case 77:
-                return ModItems.EGG_CREAMLIGHT.get();
-            case 78:
-                return ModItems.EGG_CREAM_SPECKLE.get();
-            case 79:
-                return ModItems.EGG_CREAMDARK_SPECKLE.get();
-            case 80:
-                return ModItems.EGG_CARMEL_SPECKLE.get();
-            case 81:
-                return ModItems.EGG_CARMELDARK_SPECKLE.get();
-            case 82:
-                return ModItems.EGG_GARNET_SPECKLE.get();
-            case 83:
-                return ModItems.EGG_PINKLIGHT.get();
-            case 84:
-                return ModItems.EGG_PINK_SPECKLE.get();
-            case 85:
-                return ModItems.EGG_PINKDARK_SPECKLE.get();
-            case 86:
-                return ModItems.EGG_CHERRY_SPECKLE.get();
-            case 87:
-                return ModItems.EGG_CHERRYDARK_SPECKLE.get();
-            case 88:
-                return ModItems.EGG_PLUM_SPECKLE.get();
-            case 89:
-                return ModItems.EGG_BROWNLIGHT_SPECKLE.get();
-            case 90:
-                return ModItems.EGG_BROWN_SPECKLE.get();
-            case 91:
-                return ModItems.EGG_BROWNDARK_SPECKLE.get();
-            case 92:
-                return ModItems.EGG_CHOCOLATE_SPECKLE.get();
-            case 93:
-                return ModItems.EGG_CHOCOLATEDARK_SPECKLE.get();
-            case 94:
-                return ModItems.EGG_CHOCOLATECOSMOS.get();
-            case 95:
-                return ModItems.EGG_BLUE.get();
-            case 96:
-                return ModItems.EGG_GREENLIGHT.get();
-            case 97:
-                return ModItems.EGG_GREENYELLOW_SPECKLE.get();
-            case 98:
-                return ModItems.EGG_OLIVELIGHT_SPECKLE.get();
-            case 99:
-                return ModItems.EGG_OLIVE_SPECKLE.get();
-            case 100:
-                return ModItems.EGG_OLIVEDARK_SPECKLE.get();
-            case 101:
-                return ModItems.EGG_ARMY_SPECKLE.get();
-            case 102:
-                return ModItems.EGG_BLUEGREY.get();
-            case 103:
-                return ModItems.EGG_GREY_SPECKLE.get();
-            case 104:
-                return ModItems.EGG_GREYGREEN_SPECKLE.get();
-            case 105:
-                return ModItems.EGG_AVOCADO_SPECKLE.get();
-            case 106:
-                return ModItems.EGG_AVOCADODARK_SPECKLE.get();
-            case 107:
-                return ModItems.EGG_FELDGRAU_SPECKLE.get();
-            case 108:
-                return ModItems.EGG_MINT_SPECKLE.get();
-            case 109:
-                return ModItems.EGG_GREEN_SPECKLE.get();
-            case 110:
-                return ModItems.EGG_GREENDARK_SPECKLE.get();
-            case 111:
-                return ModItems.EGG_PINE_SPECKLE.get();
-            case 112:
-                return ModItems.EGG_PINEDARK_SPECKLE.get();
-            case 113:
-                return ModItems.EGG_PINEBLACK_SPECKLE.get();
-            case 114:
-                return ModItems.EGG_POWDERBLUE.get();
-            case 115:
-                return ModItems.EGG_TEA.get();
-            case 116:
-                return ModItems.EGG_MATCHA_SPECKLE.get();
-            case 117:
-                return ModItems.EGG_MATCHADARK_SPECKLE.get();
-            case 118:
-                return ModItems.EGG_MOSS_SPECKLE.get();
-            case 119:
-                return ModItems.EGG_MOSSDARK_SPECKLE.get();
-            case 120:
-                return ModItems.EGG_GREENUMBER_SPECKLE.get();
-            case 121:
-                return ModItems.EGG_GREYBLUE.get();
-            case 122:
-                return ModItems.EGG_GREYNEUTRAL_SPECKLE.get();
-            case 123:
-                return ModItems.EGG_LAUREL_SPECKLE.get();
-            case 124:
-                return ModItems.EGG_RESEDA_SPECKLE.get();
-            case 125:
-                return ModItems.EGG_GREENPEWTER_SPECKLE.get();
-            case 126:
-                return ModItems.EGG_GREYDARK_SPECKLE.get();
-            case 127:
-                return ModItems.EGG_CELADON_SPECKLE.get();
-            case 128:
-                return ModItems.EGG_FERN_SPECKLE.get();
-            case 129:
-                return ModItems.EGG_ASPARAGUS_SPECKLE.get();
-            case 130:
-                return ModItems.EGG_HUNTER_SPECKLE.get();
-            case 131:
-                return ModItems.EGG_HUNTERDARK_SPECKLE.get();
-            case 132:
-                return ModItems.EGG_TREEDARK_SPECKLE.get();
-            case 133:
-                return ModItems.EGG_PALEBLUE.get();
-            case 134:
-                return ModItems.EGG_HONEYDEW.get();
-            case 135:
-                return ModItems.EGG_EARTH_SPECKLE.get();
-            case 136:
-                return ModItems.EGG_KHAKI_SPECKLE.get();
-            case 137:
-                return ModItems.EGG_GRULLO_SPECKLE.get();
-            case 138:
-                return ModItems.EGG_KHAKIDARK_SPECKLE.get();
-            case 139:
-                return ModItems.EGG_CAROB_SPECKLE.get();
-            case 140:
-                return ModItems.EGG_COOLGREY.get();
-            case 141:
-                return ModItems.EGG_PINKGREY_SPECKLE.get();
-            case 142:
-                return ModItems.EGG_WARMGREY_SPECKLE.get();
-            case 143:
-                return ModItems.EGG_ARTICHOKE_SPECKLE.get();
-            case 144:
-                return ModItems.EGG_MYRTLEGREY_SPECKLE.get();
-            case 145:
-                return ModItems.EGG_RIFLE_SPECKLE.get();
-            case 146:
-                return ModItems.EGG_JADE_SPECKLE.get();
-            case 147:
-                return ModItems.EGG_PISTACHIO_SPECKLE.get();
-            case 148:
-                return ModItems.EGG_SAGE_SPECKLE.get();
-            case 149:
-                return ModItems.EGG_ROSEMARY_SPECKLE.get();
-            case 150:
-                return ModItems.EGG_GREENBROWN_SPECKLE.get();
-            case 151:
-                return ModItems.EGG_UMBER_SPECKLE.get();
-            case 152:
-                return ModItems.EGG_WHITE.get();
-            case 153:
-                return ModItems.EGG_CREAMLIGHT.get();
-            case 154:
-                return ModItems.EGG_CREAM_SPATTER.get();
-            case 155:
-                return ModItems.EGG_CREAMDARK_SPATTER.get();
-            case 156:
-                return ModItems.EGG_CARMEL_SPATTER.get();
-            case 157:
-                return ModItems.EGG_CARMELDARK_SPATTER.get();
-            case 158:
-                return ModItems.EGG_GARNET_SPATTER.get();
-            case 159:
-                return ModItems.EGG_PINKLIGHT.get();
-            case 160:
-                return ModItems.EGG_PINK_SPATTER.get();
-            case 161:
-                return ModItems.EGG_PINKDARK_SPATTER.get();
-            case 162:
-                return ModItems.EGG_CHERRY_SPATTER.get();
-            case 163:
-                return ModItems.EGG_CHERRYDARK_SPATTER.get();
-            case 164:
-                return ModItems.EGG_PLUM_SPATTER.get();
-            case 165:
-                return ModItems.EGG_BROWNLIGHT_SPATTER.get();
-            case 166:
-                return ModItems.EGG_BROWN_SPATTER.get();
-            case 167:
-                return ModItems.EGG_BROWNDARK_SPATTER.get();
-            case 168:
-                return ModItems.EGG_CHOCOLATE_SPATTER.get();
-            case 169:
-                return ModItems.EGG_CHOCOLATEDARK_SPATTER.get();
-            case 170:
-                return ModItems.EGG_CHOCOLATECOSMOS.get();
-            case 171:
-                return ModItems.EGG_BLUE.get();
-            case 172:
-                return ModItems.EGG_GREENLIGHT.get();
-            case 173:
-                return ModItems.EGG_GREENYELLOW_SPATTER.get();
-            case 174:
-                return ModItems.EGG_OLIVELIGHT_SPATTER.get();
-            case 175:
-                return ModItems.EGG_OLIVE_SPATTER.get();
-            case 176:
-                return ModItems.EGG_OLIVEDARK_SPATTER.get();
-            case 177:
-                return ModItems.EGG_ARMY_SPATTER.get();
-            case 178:
-                return ModItems.EGG_BLUEGREY.get();
-            case 179:
-                return ModItems.EGG_GREY_SPATTER.get();
-            case 180:
-                return ModItems.EGG_GREYGREEN_SPATTER.get();
-            case 181:
-                return ModItems.EGG_AVOCADO_SPATTER.get();
-            case 182:
-                return ModItems.EGG_AVOCADODARK_SPATTER.get();
-            case 183:
-                return ModItems.EGG_FELDGRAU_SPATTER.get();
-            case 184:
-                return ModItems.EGG_MINT_SPATTER.get();
-            case 185:
-                return ModItems.EGG_GREEN_SPATTER.get();
-            case 186:
-                return ModItems.EGG_GREENDARK_SPATTER.get();
-            case 187:
-                return ModItems.EGG_PINE_SPATTER.get();
-            case 188:
-                return ModItems.EGG_PINEDARK_SPATTER.get();
-            case 189:
-                return ModItems.EGG_PINEBLACK_SPATTER.get();
-            case 190:
-                return ModItems.EGG_POWDERBLUE.get();
-            case 191:
-                return ModItems.EGG_TEA.get();
-            case 192:
-                return ModItems.EGG_MATCHA_SPATTER.get();
-            case 193:
-                return ModItems.EGG_MATCHADARK_SPATTER.get();
-            case 194:
-                return ModItems.EGG_MOSS_SPATTER.get();
-            case 195:
-                return ModItems.EGG_MOSSDARK_SPATTER.get();
-            case 196:
-                return ModItems.EGG_GREENUMBER_SPATTER.get();
-            case 197:
-                return ModItems.EGG_GREYBLUE.get();
-            case 198:
-                return ModItems.EGG_GREYNEUTRAL_SPATTER.get();
-            case 199:
-                return ModItems.EGG_LAUREL_SPATTER.get();
-            case 200:
-                return ModItems.EGG_RESEDA_SPATTER.get();
-            case 201:
-                return ModItems.EGG_GREENPEWTER_SPATTER.get();
-            case 202:
-                return ModItems.EGG_GREYDARK_SPATTER.get();
-            case 203:
-                return ModItems.EGG_CELADON_SPATTER.get();
-            case 204:
-                return ModItems.EGG_FERN_SPATTER.get();
-            case 205:
-                return ModItems.EGG_ASPARAGUS_SPATTER.get();
-            case 206:
-                return ModItems.EGG_HUNTER_SPATTER.get();
-            case 207:
-                return ModItems.EGG_HUNTERDARK_SPATTER.get();
-            case 208:
-                return ModItems.EGG_TREEDARK_SPATTER.get();
-            case 209:
-                return ModItems.EGG_PALEBLUE.get();
-            case 210:
-                return ModItems.EGG_HONEYDEW.get();
-            case 211:
-                return ModItems.EGG_EARTH_SPATTER.get();
-            case 212:
-                return ModItems.EGG_KHAKI_SPATTER.get();
-            case 213:
-                return ModItems.EGG_GRULLO_SPATTER.get();
-            case 214:
-                return ModItems.EGG_KHAKIDARK_SPATTER.get();
-            case 215:
-                return ModItems.EGG_CAROB_SPATTER.get();
-            case 216:
-                return ModItems.EGG_COOLGREY.get();
-            case 217:
-                return ModItems.EGG_PINKGREY_SPATTER.get();
-            case 218:
-                return ModItems.EGG_WARMGREY_SPATTER.get();
-            case 219:
-                return ModItems.EGG_ARTICHOKE_SPATTER.get();
-            case 220:
-                return ModItems.EGG_MYRTLEGREY_SPATTER.get();
-            case 221:
-                return ModItems.EGG_RIFLE_SPATTER.get();
-            case 222:
-                return ModItems.EGG_JADE_SPATTER.get();
-            case 223:
-                return ModItems.EGG_PISTACHIO_SPATTER.get();
-            case 224:
-                return ModItems.EGG_SAGE_SPATTER.get();
-            case 225:
-                return ModItems.EGG_ROSEMARY_SPATTER.get();
-            case 226:
-                return ModItems.EGG_GREENBROWN_SPATTER.get();
-            case 227:
-                return ModItems.EGG_UMBER_SPATTER.get();
-            case 228:
-                return ModItems.EGG_WHITE.get();
-            case 229:
-                return ModItems.EGG_CREAMLIGHT.get();
-            case 230:
-                return ModItems.EGG_CREAM_SPOT.get();
-            case 231:
-                return ModItems.EGG_CREAMDARK_SPOT.get();
-            case 232:
-                return ModItems.EGG_CARMEL_SPOT.get();
-            case 233:
-                return ModItems.EGG_CARMELDARK_SPOT.get();
-            case 234:
-                return ModItems.EGG_GARNET_SPOT.get();
-            case 235:
-                return ModItems.EGG_PINKLIGHT.get();
-            case 236:
-                return ModItems.EGG_PINK_SPOT.get();
-            case 237:
-                return ModItems.EGG_PINKDARK_SPOT.get();
-            case 238:
-                return ModItems.EGG_CHERRY_SPOT.get();
-            case 239:
-                return ModItems.EGG_CHERRYDARK_SPOT.get();
-            case 240:
-                return ModItems.EGG_PLUM_SPOT.get();
-            case 241:
-                return ModItems.EGG_BROWNLIGHT_SPOT.get();
-            case 242:
-                return ModItems.EGG_BROWN_SPOT.get();
-            case 243:
-                return ModItems.EGG_BROWNDARK_SPOT.get();
-            case 244:
-                return ModItems.EGG_CHOCOLATE_SPOT.get();
-            case 245:
-                return ModItems.EGG_CHOCOLATEDARK_SPOT.get();
-            case 246:
-                return ModItems.EGG_CHOCOLATECOSMOS.get();
-            case 247:
-                return ModItems.EGG_BLUE.get();
-            case 248:
-                return ModItems.EGG_GREENLIGHT.get();
-            case 249:
-                return ModItems.EGG_GREENYELLOW_SPOT.get();
-            case 250:
-                return ModItems.EGG_OLIVELIGHT_SPOT.get();
-            case 251:
-                return ModItems.EGG_OLIVE_SPOT.get();
-            case 252:
-                return ModItems.EGG_OLIVEDARK_SPOT.get();
-            case 253:
-                return ModItems.EGG_ARMY_SPOT.get();
-            case 254:
-                return ModItems.EGG_BLUEGREY.get();
-            case 255:
-                return ModItems.EGG_GREY_SPOT.get();
-            case 256:
-                return ModItems.EGG_GREYGREEN_SPOT.get();
-            case 257:
-                return ModItems.EGG_AVOCADO_SPOT.get();
-            case 258:
-                return ModItems.EGG_AVOCADODARK_SPOT.get();
-            case 259:
-                return ModItems.EGG_FELDGRAU_SPOT.get();
-            case 260:
-                return ModItems.EGG_MINT_SPOT.get();
-            case 261:
-                return ModItems.EGG_GREEN_SPOT.get();
-            case 262:
-                return ModItems.EGG_GREENDARK_SPOT.get();
-            case 263:
-                return ModItems.EGG_PINE_SPOT.get();
-            case 264:
-                return ModItems.EGG_PINEDARK_SPOT.get();
-            case 265:
-                return ModItems.EGG_PINEBLACK_SPOT.get();
-            case 266:
-                return ModItems.EGG_POWDERBLUE.get();
-            case 267:
-                return ModItems.EGG_TEA.get();
-            case 268:
-                return ModItems.Egg_Matcha_Spot.get();
-            case 269:
-                return ModItems.Egg_MatchaDark_Spot.get();
-            case 270:
-                return ModItems.EGG_MOSS_SPOT.get();
-            case 271:
-                return ModItems.EGG_MOSSDARK_SPOT.get();
-            case 272:
-                return ModItems.EGG_GREENUMBER_SPOT.get();
-            case 273:
-                return ModItems.EGG_GREYBLUE.get();
-            case 274:
-                return ModItems.EGG_GREYNEUTRAL_SPOT.get();
-            case 275:
-                return ModItems.EGG_LAUREL_SPOT.get();
-            case 276:
-                return ModItems.EGG_RESEDA_SPOT.get();
-            case 277:
-                return ModItems.EGG_GREENPEWTER_SPOT.get();
-            case 278:
-                return ModItems.EGG_GREYDARK_SPOT.get();
-            case 279:
-                return ModItems.EGG_CELADON_SPOT.get();
-            case 280:
-                return ModItems.EGG_FERN_SPOT.get();
-            case 281:
-                return ModItems.EGG_ASPARAGUS_SPOT.get();
-            case 282:
-                return ModItems.EGG_HUNTER_SPOT.get();
-            case 283:
-                return ModItems.EGG_HUNTERDARK_SPOT.get();
-            case 284:
-                return ModItems.EGG_TREEDARK_SPOT.get();
-            case 285:
-                return ModItems.EGG_PALEBLUE.get();
-            case 286:
-                return ModItems.EGG_HONEYDEW.get();
-            case 287:
-                return ModItems.EGG_EARTH_SPOT.get();
-            case 288:
-                return ModItems.EGG_KHAKI_SPOT.get();
-            case 289:
-                return ModItems.EGG_GRULLO_SPOT.get();
-            case 290:
-                return ModItems.EGG_KHAKIDARK_SPOT.get();
-            case 291:
-                return ModItems.EGG_CAROB_SPOT.get();
-            case 292:
-                return ModItems.EGG_COOLGREY.get();
-            case 293:
-                return ModItems.EGG_PINKGREY_SPOT.get();
-            case 294:
-                return ModItems.EGG_WARMGREY_SPOT.get();
-            case 295:
-                return ModItems.EGG_ARTICHOKE_SPOT.get();
-            case 296:
-                return ModItems.EGG_MYRTLEGREY_SPOT.get();
-            case 297:
-                return ModItems.EGG_RIFLE_SPOT.get();
-            case 298:
-                return ModItems.EGG_JADE_SPOT.get();
-            case 299:
-                return ModItems.EGG_PISTACHIO_SPOT.get();
-            case 300:
-                return ModItems.EGG_SAGE_SPOT.get();
-            case 301:
-                return ModItems.EGG_ROSEMARY_SPOT.get();
-            case 302:
-                return ModItems.EGG_GREENBROWN_SPOT.get();
-            case 303:
-                return ModItems.EGG_UMBER_SPOT.get();
-        }
+        return switch (eggColourGene) {
+            case 0 -> ModItems.EGG_WHITE.get();
+            case 1 -> ModItems.EGG_CREAMLIGHT.get();
+            case 2 -> ModItems.EGG_CREAM.get();
+            case 3 -> ModItems.EGG_CREAMDARK.get();
+            case 4 -> ModItems.EGG_CREAMDARKEST.get();
+            case 5 -> ModItems.EGG_CARMELDARK.get();
+            case 6 -> ModItems.EGG_GARNET.get();
+            case 7 -> ModItems.EGG_PINKLIGHT.get();
+            case 8 -> ModItems.EGG_PINK.get();
+            case 9 -> ModItems.EGG_PINKDARK.get();
+            case 10 -> ModItems.EGG_PINKDARKEST.get();
+            case 11 -> ModItems.EGG_CHERRYDARK.get();
+            case 12 -> ModItems.EGG_PLUM.get();
+            case 13 -> ModItems.EGG_BROWNLIGHT.get();
+            case 14 -> ModItems.EGG_BROWN.get();
+            case 15 -> ModItems.EGG_BROWNDARK.get();
+            case 16 -> ModItems.EGG_CHOCOLATE.get();
+            case 17 -> ModItems.EGG_CHOCOLATEDARK.get();
+            case 18 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 19 -> ModItems.EGG_BLUE.get();
+            case 20 -> ModItems.EGG_GREENLIGHT.get();
+            case 21 -> ModItems.EGG_GREENYELLOW.get();
+            case 22 -> ModItems.EGG_OLIVELIGHT.get();
+            case 23 -> ModItems.EGG_OLIVE.get();
+            case 24 -> ModItems.EGG_OLIVEDARK.get();
+            case 25 -> ModItems.EGG_ARMY.get();
+            case 26 -> ModItems.EGG_BLUEGREY.get();
+            case 27 -> ModItems.EGG_GREY.get();
+            case 28 -> ModItems.EGG_GREYGREEN.get();
+            case 29 -> ModItems.EGG_AVOCADO.get();
+            case 30 -> ModItems.EGG_AVOCADODARK.get();
+            case 31 -> ModItems.EGG_FELDGRAU.get();
+            case 32 -> ModItems.EGG_MINT.get();
+            case 33 -> ModItems.EGG_GREEN.get();
+            case 34 -> ModItems.EGG_GREENDARK.get();
+            case 35 -> ModItems.EGG_PINE.get();
+            case 36 -> ModItems.EGG_PINEDARK.get();
+            case 37 -> ModItems.EGG_PINEBLACK.get();
+            case 38 -> ModItems.EGG_POWDERBLUE.get();
+            case 39 -> ModItems.EGG_TEA.get();
+            case 40 -> ModItems.EGG_MATCHA.get();
+            case 41 -> ModItems.EGG_MATCHADARK.get();
+            case 42 -> ModItems.EGG_MOSS.get();
+            case 43 -> ModItems.EGG_MOSSDARK.get();
+            case 44 -> ModItems.EGG_GREENUMBER.get();
+            case 45 -> ModItems.EGG_GREYBLUE.get();
+            case 46 -> ModItems.EGG_GREYNEUTRAL.get();
+            case 47 -> ModItems.EGG_LAUREL.get();
+            case 48 -> ModItems.EGG_RESEDA.get();
+            case 49 -> ModItems.EGG_GREENPEWTER.get();
+            case 50 -> ModItems.EGG_GREYDARK.get();
+            case 51 -> ModItems.EGG_CELADON.get();
+            case 52 -> ModItems.EGG_FERN.get();
+            case 53 -> ModItems.EGG_ASPARAGUS.get();
+            case 54 -> ModItems.EGG_HUNTER.get();
+            case 55 -> ModItems.EGG_HUNTERDARK.get();
+            case 56 -> ModItems.EGG_TREEDARK.get();
+            case 57 -> ModItems.EGG_PALEBLUE.get();
+            case 58 -> ModItems.EGG_HONEYDEW.get();
+            case 59 -> ModItems.EGG_EARTH.get();
+            case 60 -> ModItems.EGG_KHAKI.get();
+            case 61 -> ModItems.EGG_GRULLO.get();
+            case 62 -> ModItems.EGG_KHAKIDARK.get();
+            case 63 -> ModItems.EGG_CAROB.get();
+            case 64 -> ModItems.EGG_COOLGREY.get();
+            case 65 -> ModItems.EGG_PINKGREY.get();
+            case 66 -> ModItems.EGG_WARMGREY.get();
+            case 67 -> ModItems.EGG_ARTICHOKE.get();
+            case 68 -> ModItems.EGG_MYRTLEGREY.get();
+            case 69 -> ModItems.EGG_RIFLE.get();
+            case 70 -> ModItems.EGG_JADE.get();
+            case 71 -> ModItems.EGG_PISTACHIO.get();
+            case 72 -> ModItems.EGG_SAGE.get();
+            case 73 -> ModItems.EGG_ROSEMARY.get();
+            case 74 -> ModItems.EGG_GREENBROWN.get();
+            case 75 -> ModItems.EGG_UMBER.get();
+            case 76 -> ModItems.EGG_WHITE.get();
+            case 77 -> ModItems.EGG_CREAMLIGHT.get();
+            case 78 -> ModItems.EGG_CREAM_SPECKLE.get();
+            case 79 -> ModItems.EGG_CREAMDARK_SPECKLE.get();
+            case 80 -> ModItems.EGG_CARMEL_SPECKLE.get();
+            case 81 -> ModItems.EGG_CARMELDARK_SPECKLE.get();
+            case 82 -> ModItems.EGG_GARNET_SPECKLE.get();
+            case 83 -> ModItems.EGG_PINKLIGHT.get();
+            case 84 -> ModItems.EGG_PINK_SPECKLE.get();
+            case 85 -> ModItems.EGG_PINKDARK_SPECKLE.get();
+            case 86 -> ModItems.EGG_CHERRY_SPECKLE.get();
+            case 87 -> ModItems.EGG_CHERRYDARK_SPECKLE.get();
+            case 88 -> ModItems.EGG_PLUM_SPECKLE.get();
+            case 89 -> ModItems.EGG_BROWNLIGHT_SPECKLE.get();
+            case 90 -> ModItems.EGG_BROWN_SPECKLE.get();
+            case 91 -> ModItems.EGG_BROWNDARK_SPECKLE.get();
+            case 92 -> ModItems.EGG_CHOCOLATE_SPECKLE.get();
+            case 93 -> ModItems.EGG_CHOCOLATEDARK_SPECKLE.get();
+            case 94 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 95 -> ModItems.EGG_BLUE.get();
+            case 96 -> ModItems.EGG_GREENLIGHT.get();
+            case 97 -> ModItems.EGG_GREENYELLOW_SPECKLE.get();
+            case 98 -> ModItems.EGG_OLIVELIGHT_SPECKLE.get();
+            case 99 -> ModItems.EGG_OLIVE_SPECKLE.get();
+            case 100 -> ModItems.EGG_OLIVEDARK_SPECKLE.get();
+            case 101 -> ModItems.EGG_ARMY_SPECKLE.get();
+            case 102 -> ModItems.EGG_BLUEGREY.get();
+            case 103 -> ModItems.EGG_GREY_SPECKLE.get();
+            case 104 -> ModItems.EGG_GREYGREEN_SPECKLE.get();
+            case 105 -> ModItems.EGG_AVOCADO_SPECKLE.get();
+            case 106 -> ModItems.EGG_AVOCADODARK_SPECKLE.get();
+            case 107 -> ModItems.EGG_FELDGRAU_SPECKLE.get();
+            case 108 -> ModItems.EGG_MINT_SPECKLE.get();
+            case 109 -> ModItems.EGG_GREEN_SPECKLE.get();
+            case 110 -> ModItems.EGG_GREENDARK_SPECKLE.get();
+            case 111 -> ModItems.EGG_PINE_SPECKLE.get();
+            case 112 -> ModItems.EGG_PINEDARK_SPECKLE.get();
+            case 113 -> ModItems.EGG_PINEBLACK_SPECKLE.get();
+            case 114 -> ModItems.EGG_POWDERBLUE.get();
+            case 115 -> ModItems.EGG_TEA.get();
+            case 116 -> ModItems.EGG_MATCHA_SPECKLE.get();
+            case 117 -> ModItems.EGG_MATCHADARK_SPECKLE.get();
+            case 118 -> ModItems.EGG_MOSS_SPECKLE.get();
+            case 119 -> ModItems.EGG_MOSSDARK_SPECKLE.get();
+            case 120 -> ModItems.EGG_GREENUMBER_SPECKLE.get();
+            case 121 -> ModItems.EGG_GREYBLUE.get();
+            case 122 -> ModItems.EGG_GREYNEUTRAL_SPECKLE.get();
+            case 123 -> ModItems.EGG_LAUREL_SPECKLE.get();
+            case 124 -> ModItems.EGG_RESEDA_SPECKLE.get();
+            case 125 -> ModItems.EGG_GREENPEWTER_SPECKLE.get();
+            case 126 -> ModItems.EGG_GREYDARK_SPECKLE.get();
+            case 127 -> ModItems.EGG_CELADON_SPECKLE.get();
+            case 128 -> ModItems.EGG_FERN_SPECKLE.get();
+            case 129 -> ModItems.EGG_ASPARAGUS_SPECKLE.get();
+            case 130 -> ModItems.EGG_HUNTER_SPECKLE.get();
+            case 131 -> ModItems.EGG_HUNTERDARK_SPECKLE.get();
+            case 132 -> ModItems.EGG_TREEDARK_SPECKLE.get();
+            case 133 -> ModItems.EGG_PALEBLUE.get();
+            case 134 -> ModItems.EGG_HONEYDEW.get();
+            case 135 -> ModItems.EGG_EARTH_SPECKLE.get();
+            case 136 -> ModItems.EGG_KHAKI_SPECKLE.get();
+            case 137 -> ModItems.EGG_GRULLO_SPECKLE.get();
+            case 138 -> ModItems.EGG_KHAKIDARK_SPECKLE.get();
+            case 139 -> ModItems.EGG_CAROB_SPECKLE.get();
+            case 140 -> ModItems.EGG_COOLGREY.get();
+            case 141 -> ModItems.EGG_PINKGREY_SPECKLE.get();
+            case 142 -> ModItems.EGG_WARMGREY_SPECKLE.get();
+            case 143 -> ModItems.EGG_ARTICHOKE_SPECKLE.get();
+            case 144 -> ModItems.EGG_MYRTLEGREY_SPECKLE.get();
+            case 145 -> ModItems.EGG_RIFLE_SPECKLE.get();
+            case 146 -> ModItems.EGG_JADE_SPECKLE.get();
+            case 147 -> ModItems.EGG_PISTACHIO_SPECKLE.get();
+            case 148 -> ModItems.EGG_SAGE_SPECKLE.get();
+            case 149 -> ModItems.EGG_ROSEMARY_SPECKLE.get();
+            case 150 -> ModItems.EGG_GREENBROWN_SPECKLE.get();
+            case 151 -> ModItems.EGG_UMBER_SPECKLE.get();
+            case 152 -> ModItems.EGG_WHITE.get();
+            case 153 -> ModItems.EGG_CREAMLIGHT.get();
+            case 154 -> ModItems.EGG_CREAM_SPATTER.get();
+            case 155 -> ModItems.EGG_CREAMDARK_SPATTER.get();
+            case 156 -> ModItems.EGG_CARMEL_SPATTER.get();
+            case 157 -> ModItems.EGG_CARMELDARK_SPATTER.get();
+            case 158 -> ModItems.EGG_GARNET_SPATTER.get();
+            case 159 -> ModItems.EGG_PINKLIGHT.get();
+            case 160 -> ModItems.EGG_PINK_SPATTER.get();
+            case 161 -> ModItems.EGG_PINKDARK_SPATTER.get();
+            case 162 -> ModItems.EGG_CHERRY_SPATTER.get();
+            case 163 -> ModItems.EGG_CHERRYDARK_SPATTER.get();
+            case 164 -> ModItems.EGG_PLUM_SPATTER.get();
+            case 165 -> ModItems.EGG_BROWNLIGHT_SPATTER.get();
+            case 166 -> ModItems.EGG_BROWN_SPATTER.get();
+            case 167 -> ModItems.EGG_BROWNDARK_SPATTER.get();
+            case 168 -> ModItems.EGG_CHOCOLATE_SPATTER.get();
+            case 169 -> ModItems.EGG_CHOCOLATEDARK_SPATTER.get();
+            case 170 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 171 -> ModItems.EGG_BLUE.get();
+            case 172 -> ModItems.EGG_GREENLIGHT.get();
+            case 173 -> ModItems.EGG_GREENYELLOW_SPATTER.get();
+            case 174 -> ModItems.EGG_OLIVELIGHT_SPATTER.get();
+            case 175 -> ModItems.EGG_OLIVE_SPATTER.get();
+            case 176 -> ModItems.EGG_OLIVEDARK_SPATTER.get();
+            case 177 -> ModItems.EGG_ARMY_SPATTER.get();
+            case 178 -> ModItems.EGG_BLUEGREY.get();
+            case 179 -> ModItems.EGG_GREY_SPATTER.get();
+            case 180 -> ModItems.EGG_GREYGREEN_SPATTER.get();
+            case 181 -> ModItems.EGG_AVOCADO_SPATTER.get();
+            case 182 -> ModItems.EGG_AVOCADODARK_SPATTER.get();
+            case 183 -> ModItems.EGG_FELDGRAU_SPATTER.get();
+            case 184 -> ModItems.EGG_MINT_SPATTER.get();
+            case 185 -> ModItems.EGG_GREEN_SPATTER.get();
+            case 186 -> ModItems.EGG_GREENDARK_SPATTER.get();
+            case 187 -> ModItems.EGG_PINE_SPATTER.get();
+            case 188 -> ModItems.EGG_PINEDARK_SPATTER.get();
+            case 189 -> ModItems.EGG_PINEBLACK_SPATTER.get();
+            case 190 -> ModItems.EGG_POWDERBLUE.get();
+            case 191 -> ModItems.EGG_TEA.get();
+            case 192 -> ModItems.EGG_MATCHA_SPATTER.get();
+            case 193 -> ModItems.EGG_MATCHADARK_SPATTER.get();
+            case 194 -> ModItems.EGG_MOSS_SPATTER.get();
+            case 195 -> ModItems.EGG_MOSSDARK_SPATTER.get();
+            case 196 -> ModItems.EGG_GREENUMBER_SPATTER.get();
+            case 197 -> ModItems.EGG_GREYBLUE.get();
+            case 198 -> ModItems.EGG_GREYNEUTRAL_SPATTER.get();
+            case 199 -> ModItems.EGG_LAUREL_SPATTER.get();
+            case 200 -> ModItems.EGG_RESEDA_SPATTER.get();
+            case 201 -> ModItems.EGG_GREENPEWTER_SPATTER.get();
+            case 202 -> ModItems.EGG_GREYDARK_SPATTER.get();
+            case 203 -> ModItems.EGG_CELADON_SPATTER.get();
+            case 204 -> ModItems.EGG_FERN_SPATTER.get();
+            case 205 -> ModItems.EGG_ASPARAGUS_SPATTER.get();
+            case 206 -> ModItems.EGG_HUNTER_SPATTER.get();
+            case 207 -> ModItems.EGG_HUNTERDARK_SPATTER.get();
+            case 208 -> ModItems.EGG_TREEDARK_SPATTER.get();
+            case 209 -> ModItems.EGG_PALEBLUE.get();
+            case 210 -> ModItems.EGG_HONEYDEW.get();
+            case 211 -> ModItems.EGG_EARTH_SPATTER.get();
+            case 212 -> ModItems.EGG_KHAKI_SPATTER.get();
+            case 213 -> ModItems.EGG_GRULLO_SPATTER.get();
+            case 214 -> ModItems.EGG_KHAKIDARK_SPATTER.get();
+            case 215 -> ModItems.EGG_CAROB_SPATTER.get();
+            case 216 -> ModItems.EGG_COOLGREY.get();
+            case 217 -> ModItems.EGG_PINKGREY_SPATTER.get();
+            case 218 -> ModItems.EGG_WARMGREY_SPATTER.get();
+            case 219 -> ModItems.EGG_ARTICHOKE_SPATTER.get();
+            case 220 -> ModItems.EGG_MYRTLEGREY_SPATTER.get();
+            case 221 -> ModItems.EGG_RIFLE_SPATTER.get();
+            case 222 -> ModItems.EGG_JADE_SPATTER.get();
+            case 223 -> ModItems.EGG_PISTACHIO_SPATTER.get();
+            case 224 -> ModItems.EGG_SAGE_SPATTER.get();
+            case 225 -> ModItems.EGG_ROSEMARY_SPATTER.get();
+            case 226 -> ModItems.EGG_GREENBROWN_SPATTER.get();
+            case 227 -> ModItems.EGG_UMBER_SPATTER.get();
+            case 228 -> ModItems.EGG_WHITE.get();
+            case 229 -> ModItems.EGG_CREAMLIGHT.get();
+            case 230 -> ModItems.EGG_CREAM_SPOT.get();
+            case 231 -> ModItems.EGG_CREAMDARK_SPOT.get();
+            case 232 -> ModItems.EGG_CARMEL_SPOT.get();
+            case 233 -> ModItems.EGG_CARMELDARK_SPOT.get();
+            case 234 -> ModItems.EGG_GARNET_SPOT.get();
+            case 235 -> ModItems.EGG_PINKLIGHT.get();
+            case 236 -> ModItems.EGG_PINK_SPOT.get();
+            case 237 -> ModItems.EGG_PINKDARK_SPOT.get();
+            case 238 -> ModItems.EGG_CHERRY_SPOT.get();
+            case 239 -> ModItems.EGG_CHERRYDARK_SPOT.get();
+            case 240 -> ModItems.EGG_PLUM_SPOT.get();
+            case 241 -> ModItems.EGG_BROWNLIGHT_SPOT.get();
+            case 242 -> ModItems.EGG_BROWN_SPOT.get();
+            case 243 -> ModItems.EGG_BROWNDARK_SPOT.get();
+            case 244 -> ModItems.EGG_CHOCOLATE_SPOT.get();
+            case 245 -> ModItems.EGG_CHOCOLATEDARK_SPOT.get();
+            case 246 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 247 -> ModItems.EGG_BLUE.get();
+            case 248 -> ModItems.EGG_GREENLIGHT.get();
+            case 249 -> ModItems.EGG_GREENYELLOW_SPOT.get();
+            case 250 -> ModItems.EGG_OLIVELIGHT_SPOT.get();
+            case 251 -> ModItems.EGG_OLIVE_SPOT.get();
+            case 252 -> ModItems.EGG_OLIVEDARK_SPOT.get();
+            case 253 -> ModItems.EGG_ARMY_SPOT.get();
+            case 254 -> ModItems.EGG_BLUEGREY.get();
+            case 255 -> ModItems.EGG_GREY_SPOT.get();
+            case 256 -> ModItems.EGG_GREYGREEN_SPOT.get();
+            case 257 -> ModItems.EGG_AVOCADO_SPOT.get();
+            case 258 -> ModItems.EGG_AVOCADODARK_SPOT.get();
+            case 259 -> ModItems.EGG_FELDGRAU_SPOT.get();
+            case 260 -> ModItems.EGG_MINT_SPOT.get();
+            case 261 -> ModItems.EGG_GREEN_SPOT.get();
+            case 262 -> ModItems.EGG_GREENDARK_SPOT.get();
+            case 263 -> ModItems.EGG_PINE_SPOT.get();
+            case 264 -> ModItems.EGG_PINEDARK_SPOT.get();
+            case 265 -> ModItems.EGG_PINEBLACK_SPOT.get();
+            case 266 -> ModItems.EGG_POWDERBLUE.get();
+            case 267 -> ModItems.EGG_TEA.get();
+            case 268 -> ModItems.Egg_Matcha_Spot.get();
+            case 269 -> ModItems.Egg_MatchaDark_Spot.get();
+            case 270 -> ModItems.EGG_MOSS_SPOT.get();
+            case 271 -> ModItems.EGG_MOSSDARK_SPOT.get();
+            case 272 -> ModItems.EGG_GREENUMBER_SPOT.get();
+            case 273 -> ModItems.EGG_GREYBLUE.get();
+            case 274 -> ModItems.EGG_GREYNEUTRAL_SPOT.get();
+            case 275 -> ModItems.EGG_LAUREL_SPOT.get();
+            case 276 -> ModItems.EGG_RESEDA_SPOT.get();
+            case 277 -> ModItems.EGG_GREENPEWTER_SPOT.get();
+            case 278 -> ModItems.EGG_GREYDARK_SPOT.get();
+            case 279 -> ModItems.EGG_CELADON_SPOT.get();
+            case 280 -> ModItems.EGG_FERN_SPOT.get();
+            case 281 -> ModItems.EGG_ASPARAGUS_SPOT.get();
+            case 282 -> ModItems.EGG_HUNTER_SPOT.get();
+            case 283 -> ModItems.EGG_HUNTERDARK_SPOT.get();
+            case 284 -> ModItems.EGG_TREEDARK_SPOT.get();
+            case 285 -> ModItems.EGG_PALEBLUE.get();
+            case 286 -> ModItems.EGG_HONEYDEW.get();
+            case 287 -> ModItems.EGG_EARTH_SPOT.get();
+            case 288 -> ModItems.EGG_KHAKI_SPOT.get();
+            case 289 -> ModItems.EGG_GRULLO_SPOT.get();
+            case 290 -> ModItems.EGG_KHAKIDARK_SPOT.get();
+            case 291 -> ModItems.EGG_CAROB_SPOT.get();
+            case 292 -> ModItems.EGG_COOLGREY.get();
+            case 293 -> ModItems.EGG_PINKGREY_SPOT.get();
+            case 294 -> ModItems.EGG_WARMGREY_SPOT.get();
+            case 295 -> ModItems.EGG_ARTICHOKE_SPOT.get();
+            case 296 -> ModItems.EGG_MYRTLEGREY_SPOT.get();
+            case 297 -> ModItems.EGG_RIFLE_SPOT.get();
+            case 298 -> ModItems.EGG_JADE_SPOT.get();
+            case 299 -> ModItems.EGG_PISTACHIO_SPOT.get();
+            case 300 -> ModItems.EGG_SAGE_SPOT.get();
+            case 301 -> ModItems.EGG_ROSEMARY_SPOT.get();
+            case 302 -> ModItems.EGG_GREENBROWN_SPOT.get();
+            case 303 -> ModItems.EGG_UMBER_SPOT.get();
+            default ->
 
-        //TODO set up exception handling and put an exception here we should NEVER generate here.
-        return null;
+                //TODO set up exception handling and put an exception here we should NEVER generate here.
+                    null;
+        };
+
     }
 
     public void setFertile(){

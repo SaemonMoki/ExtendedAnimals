@@ -67,8 +67,18 @@ public enum Schedules {
                     }
                 }
             }, LivingEntity::isAlive)
-        )
-    ;
+        ),
+
+    DISMOUNT_SCHEDULE("DismountSchedule", (ticks) -> new AnimalScheduledFunction(ticks, LivingEntity::stopRiding)),
+
+    RIDE_MOTHER_HEN_SCHEDULE("RideMotherHenSchedule", (ticks) -> new AnimalScheduledFunction(ticks, (eaa) -> {
+        if (eaa instanceof EnhancedChicken) {
+            EnhancedAnimalAbstract parent = ((EnhancedChicken) eaa).followParentGoal.getParent();
+            if (parent != null) {
+                eaa.startRiding(parent);
+            }
+        }
+    }));
 
     public final Function<Integer, AnimalScheduledFunction> function;
 

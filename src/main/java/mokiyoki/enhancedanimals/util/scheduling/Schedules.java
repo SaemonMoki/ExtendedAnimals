@@ -37,6 +37,21 @@ public enum Schedules {
             }
         })),
 
+    START_PREEN_SCHEDULE("StartPreenSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (eaa instanceof EnhancedChicken) {
+                    eaa.level.broadcastEntityEvent(eaa, (byte)12);
+                    eaa.setAIStatus(AIStatus.FOCUSED);
+                }
+            })),
+    STOP_PREEN_SCHEDULE("StopPreenSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (eaa instanceof EnhancedChicken) {
+                    eaa.level.broadcastEntityEvent(eaa, (byte)13);
+                    eaa.setAIStatus(AIStatus.NONE);
+                }
+            })),
+
     LOOK_FOR_NEST_SCHEDULE("LookForNestSchedule", (ticks) ->
             new AnimalScheduledFunction(12000, (eaa) -> {
                 if (eaa instanceof EnhancedChicken chicken) {

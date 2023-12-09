@@ -73,6 +73,8 @@ import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculat
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.LOOK_FOR_NEST_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.CROW_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.START_PREEN_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.STOP_PREEN_SCHEDULE;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -267,6 +269,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public boolean chickenJockey;
 
     public int crowTick = 0;
+    public boolean preening = false;
 
     @OnlyIn(Dist.CLIENT)
     private ChickenModelData chickenModelData;
@@ -487,6 +490,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public void handleEntityEvent(byte p_29814_) {
         if (p_29814_ == 11) { //crow event broadcasted
             this.crowTick = 120;
+        } else if (p_29814_ == 12) { //preening start event broadcasted
+            this.preening = true;
+        } else if (p_29814_ == 13) { //preening stop event broadcasted
+            this.preening = false;
         } else {
             super.handleEntityEvent(p_29814_);
         }
@@ -522,15 +529,24 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     if (this.crowTick == 60) { //TODO this is the start of the crow, change to whatever is needed to match the animation
                         this.level.playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
                     }
-                    this.currentAIStatus = AIStatus.NONE;
+                    if (this.crowTick <= 5) {
+                        this.currentAIStatus = AIStatus.NONE;
+                    }
                 }
             } else {
                 if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
                     //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
                     //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
-                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(ThreadLocalRandom.current().nextInt(5)==0?120:100, 6000)));
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(100, 6000)));
                 }
             }
+        }
+
+        if (!this.level.isClientSide && !this.sleeping && !this.scheduledToRun.containsKey("StopPreenSchedule")) {
+            int startPreenTime = this.random.nextInt(1000, 6000);
+            int preenDuration = this.random.nextInt(100, 500);
+            this.scheduledToRun.put(START_PREEN_SCHEDULE.funcName, START_PREEN_SCHEDULE.function.apply(startPreenTime));
+            this.scheduledToRun.put(STOP_PREEN_SCHEDULE.funcName, STOP_PREEN_SCHEDULE.function.apply(startPreenTime+preenDuration));
         }
     }
 

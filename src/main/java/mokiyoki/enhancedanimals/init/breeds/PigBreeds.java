@@ -20,7 +20,7 @@ public class PigBreeds {
     public static final Breed GLOUCESTERSHIRE = new Breed(new Breed.Properties().setData("GloucestershireOldSpot", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "3").add(12, "11","1", "3").add(32, "2","1","2","2").add(50, "7","1").add(68, "2","2","2").add(166, "2|3","2|3","2|3","1","4|5","4|5","4|5","4|5")));
     public static final Breed KUNEKUNE = new Breed(new Breed.Properties().setData("KuneKune", Biomes.FOREST, Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","1").add(4,"40%1","2").add(10, "1","3","1").add(18, "5").add(32, "1","1","2","1|2","1","4","3","2").add(50, "1","3").add(58, "2").add(66, "5").add(68, "2","1|2","1","1","1").add(174, "5-8","5-8","4|5","4|5").add(182, "3|4","3|4","3|4","3|4")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","1").add(4,"40%1","2").add(6,"25%2","1").add(10, "1","3","1").add(18, "5").add(32, "1","1","2","1|2","1","4","3","2").add(50, "1","3").add(58, "2").add(66, "5").add(68, "2","1|2","1","1","1").add(174, "5-8","5-8","4|5","4|5").add(182, "3|4","3|4","3|4","3|4")));
     public static final Breed PIETRAIN = new Breed(new Breed.Properties().setData("Pietrain", Biomes.FOREST, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3","3").add(12, "11","1","1|2").add(32, "2","1", "2","2").add(50, "6","1").add(68, "3","3","1","3","3","3").add(166, "6-10", "6-10", "6-10", "2", "2-4", "2-4", "2-4", "2-4").add(182, "5-6","5-6","5-6","5-6")));
     public static final Breed PROTESTPIG = new Breed(new Breed.Properties().setData("DanishProtestPigHusumRedPied", Biomes.FOREST, Breed.Rarity.RARE)

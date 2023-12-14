@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 public class StayShelteredGoal extends Goal {
-    protected final PathfinderMob creature;
+    protected final EnhancedAnimalAbstract enhancedAnimal;
     private final Level world;
     private final int start;
     private final int end;
@@ -17,28 +17,28 @@ public class StayShelteredGoal extends Goal {
     private boolean isRaining = false;
     private boolean isHot = false;
 
-    public StayShelteredGoal(PathfinderMob creature, int siestaStart, int siestaEnd, int napMod) {
-        this.creature = creature;
-        this.world = creature.level;
+    public StayShelteredGoal(EnhancedAnimalAbstract enhancedAnimal, int siestaStart, int siestaEnd, int napMod) {
+        this.enhancedAnimal = enhancedAnimal;
+        this.world = enhancedAnimal.level;
         this.start = siestaStart + napMod;
         this.end = siestaEnd + napMod;
     }
 
     @Override
     public boolean canUse() {
-        this.getData(this.creature);
-        return !this.isHungry && (this.isRaining || this.isHot) && this.creature.getNavigation() instanceof EnhancedGroundPathNavigator;
+        this.getData(this.enhancedAnimal);
+        return !this.isHungry && (this.isRaining || this.isHot) && this.enhancedAnimal.getAIStatus() != AIStatus.FOCUSED && this.enhancedAnimal.getNavigation() instanceof EnhancedGroundPathNavigator;
     }
 
     @Override
     public void start() {
-        ((EnhancedGroundPathNavigator)this.creature.getNavigation()).setSeekShelter(true, this.isHot);
+        ((EnhancedGroundPathNavigator)this.enhancedAnimal.getNavigation()).setSeekShelter(true, this.isHot);
     }
 
     @Override
     public void stop() {
-        if (this.creature.getNavigation() instanceof EnhancedGroundPathNavigator && !this.isHungry) {
-            ((EnhancedGroundPathNavigator)this.creature.getNavigation()).setSeekShelter(true, this.isHot);
+        if (this.enhancedAnimal.getNavigation() instanceof EnhancedGroundPathNavigator && !this.isHungry) {
+            ((EnhancedGroundPathNavigator)this.enhancedAnimal.getNavigation()).setSeekShelter(true, this.isHot);
         }
     }
 

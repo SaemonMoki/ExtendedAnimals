@@ -382,11 +382,13 @@ public class ChickenPhenotype implements Phenotype {
 
     private static float getNeckPoof(int[] gene) {
         float poof = 0.0F;
-        if (gene[286]==2 && gene[287]==2) {
-            poof+=0.95F;
-        }
+
         for (int i = 288; i<294; i++) {
             if (gene[i]==2) poof+=0.05F;
+        }
+
+        if (gene[286]==2 && gene[287]==2) {
+            poof+=(0.5F-poof)*0.5F;
         }
 
         return poof;

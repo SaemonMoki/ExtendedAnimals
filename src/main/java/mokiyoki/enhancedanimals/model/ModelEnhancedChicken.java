@@ -1510,9 +1510,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
 
                 float scale = 0.62F + (FeatherFluff*0.38F);
-                scale = scale + ((1.505F-scale)*(chicken.neckPoof*7.0F));
+                scale = scale + ((1.505F-scale)*(chicken.neckPoof*1.35F));
                 if (chickenModelData.isFemale) scale*=0.8F;
-                mapOfScale.put("hackle", ModelHelper.createScalings(chickenModelData.isBrooding()?scale+0.15F:scale, 1.0F + (chicken.neckPoof*2.0F), chickenModelData.isBrooding()?scale+0.15F:scale, 0.0F, 0.0F, 0.0F));
+                mapOfScale.put("hackle", ModelHelper.createScalings(chickenModelData.isBrooding()?scale+0.15F:scale, 1.0F + (chicken.neckPoof), chickenModelData.isBrooding()?scale+0.15F:scale, 0.0F, 0.0F, 0.0F));
                 scale = 0.75F + (FeatherFluff*0.25F);
                 mapOfScale.put("bodyF", ModelHelper.createScalings(chickenModelData.isBrooding()?scale+0.15F:scale, 0.0F, 0.0F, 0.0F));
                 scale = 0.62F + (chicken.fluffiness*0.38F);

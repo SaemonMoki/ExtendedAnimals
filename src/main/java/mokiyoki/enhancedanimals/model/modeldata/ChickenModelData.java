@@ -4,13 +4,9 @@ public class ChickenModelData extends AnimalModelData {
     public boolean isFemale = true;
     public int brooding = 0;
     public int lookType = 0;
-
-    public float pitchDif = 0.0F;
-    public float yawDif = 0.0F;
-    public float pitch = 0.0F;
-    public float yaw = 0.0F;
     public int idleType = -1;
     public int idleTimer = 0;
+
     public ChickenPhenotype getPhenotype() {
         return (ChickenPhenotype) this.phenotype;
     }

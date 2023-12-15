@@ -1241,21 +1241,21 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
                 if (chicken.waddleSize >= 2) {
                     if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                        this.waddlesBearded.show();
+                        waddlesBearded.show();
                     }
                     if (!chicken.isBearded()) {
                         if (chicken.comb.hasPeaComb()) {
-                            this.waddlesPea.show();
+                            waddlesPea.show();
                         }
                     }
                 }
                 if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
                     if (chicken.waddleSize >= 3) {
-                        this.waddlesLarge.show();
+                        waddlesLarge.show();
                     } else if (chicken.waddleSize >= 1) {
-                        this.waddlesMedium.show();
+                        waddlesMedium.show();
                     } else {
-                        this.waddlesLarge.show();
+                        waddlesLarge.show();
                     }
                 }
 

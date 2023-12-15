@@ -46,7 +46,7 @@ public class EnhancedTemptGoal extends Goal {
         if (this.delayTemptCounter > 0) {
             --this.delayTemptCounter;
             return false;
-        } else if (eanimal.isAnimalSleeping()) {
+        } else if (eanimal.isAnimalSleeping() || this.eanimal.getAIStatus() == AIStatus.FOCUSED) {
             return false;
         } else {
             this.closestPlayer = this.eanimal.level.getNearestPlayer(getSearchPredicate(), this.eanimal);

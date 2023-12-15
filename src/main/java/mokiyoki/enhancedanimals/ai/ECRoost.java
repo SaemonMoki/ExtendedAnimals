@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.ai;
 
+import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.world.entity.PathfinderMob;
@@ -22,7 +23,7 @@ public class ECRoost extends Goal {
 
     public boolean canUse() {
         if (!this.enhancedChicken.level.isDay()) {
-            if (!this.enhancedChicken.isRoosting()) {
+            if (!this.enhancedChicken.isRoosting() && this.enhancedChicken.getAIStatus() != AIStatus.FOCUSED) {
                 List<BlockPos> allPostPos = this.enhancedChicken.level.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);

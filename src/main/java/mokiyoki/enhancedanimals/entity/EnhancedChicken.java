@@ -254,8 +254,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 "ear_mottledmoorish1.png", "ear_mottledmoorish2.png", "ear_mottledmoorish3.png", "ear_mottledmoorish4.png", "ear_mottledmoorish5.png", "ear_mottledmoorish6.png", "ear_mottledmoorish7.png", "ear_mottledmoorish8.png", "ear_mottledmoorish9.png", "ear_mottledmoorish10.png",
 
     };
-
-    private int soundOffset = -1;
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;

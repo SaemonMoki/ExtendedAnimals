@@ -78,7 +78,7 @@ public class EnhancedFollowParentGoal extends Goal {
         if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = this.adjustedTickDelay(10);
 
-            if (this.child.getRandom().nextInt(0, 100) > 95 && !this.child.isAnimalSleeping() && this.parent.getPassengers().isEmpty() && !this.child.scheduledToRun.containsKey(RIDE_MOTHER_HEN_SCHEDULE.funcName)) {
+            if (this.child.growthAmount()<0.25F && this.child.getRandom().nextInt(0, 100) > 95 && !this.child.isAnimalSleeping() && this.parent.getPassengers().isEmpty() && !this.child.scheduledToRun.containsKey(RIDE_MOTHER_HEN_SCHEDULE.funcName)) {
                 int mountInTicks = this.child.getRandom().nextInt(100, 1000);
                 int dismountInTicks = this.child.getRandom().nextInt(mountInTicks+100, mountInTicks+1000);
                 this.child.scheduledToRun.put(RIDE_MOTHER_HEN_SCHEDULE.funcName, RIDE_MOTHER_HEN_SCHEDULE.function.apply(mountInTicks));

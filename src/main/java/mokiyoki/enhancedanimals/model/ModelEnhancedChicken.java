@@ -1953,6 +1953,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
         if (wingsFlapping(crowTimer < 100, ticks*0.8F)) {
             wingsDefault(wingAngle);
+            theNeck.lerpYRot(0.0F);
+            theHead.lerpYRot(0.0F);
             if (crowTimer < 80) {
                 float bodyMod = (-bodyAngle / 1.5F) * 1.5708F;
                 float neckMod = neckAngle > 1.0F ? 0.0F : 1.0F - neckAngle;

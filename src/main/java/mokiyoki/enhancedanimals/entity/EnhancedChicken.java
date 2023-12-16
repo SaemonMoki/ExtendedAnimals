@@ -1572,6 +1572,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         private boolean stuck;
         private int closeToNestTryTicks;
 
+        private boolean onNest = false;
+
         GoToNestGoal(EnhancedChicken chicken, double speedIn) {
             this.chicken = chicken;
             this.speed = speedIn;
@@ -1602,7 +1604,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         public boolean canContinueToUse() {
-            boolean canContinue = !chicken.isSleeping() && this.chicken.getNest() != BlockPos.ZERO && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) && !this.chicken.getNest().closerToCenterThan(this.chicken.position(), 2.0D) && !this.stuck && this.closeToNestTryTicks <= 600;
+            boolean canContinue = (!chicken.isSleeping() || this.onNest)
+                    && this.chicken.getNest() != BlockPos.ZERO
+                    && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()))
+                    && !this.stuck
+                    && (this.closeToNestTryTicks <= 600 || this.onNest);
 
             if (!canContinue) {
                 this.chicken.setAIStatus(AIStatus.NONE);
@@ -1625,6 +1631,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
                     if (chicken.isGoodNestSite(blockPos)) {
                         if (!this.chicken.isBrooding()) chicken.setBrooding(true);
+                        this.onNest = true;
                         Level world = chicken.level;
                         if (world.isEmptyBlock(blockPos)) {
                             List<BlockPos> nestList = new ArrayList<>();

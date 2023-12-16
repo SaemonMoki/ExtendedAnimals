@@ -75,6 +75,8 @@ import static mokiyoki.enhancedanimals.util.scheduling.Schedules.LOOK_FOR_NEST_S
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.CROW_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.START_PREEN_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.STOP_PREEN_SCHEDULE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -1021,7 +1023,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level world) {}
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
+        if (enhancedchicken != null) {
+            Genes genes = new Genes(this.genetics).makeChild(!this.getOrSetIsFemale(), otherParent.getSharedGenes(), !otherParent.getOrSetIsFemale(), Genes.Species.CHICKEN);
+            enhancedchicken.setGenes(genes);
+            enhancedchicken.setSharedGenes(genes);
+            enhancedchicken.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+            enhancedchicken.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+            enhancedchicken.setParent(this.getUUID().toString());
+            enhancedchicken.setGrowingAge();
+            enhancedchicken.setBirthTime();
+            enhancedchicken.initilizeAnimalSize();
+            enhancedchicken.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+            enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+            }
+        return enhancedchicken;
+    }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level level) {}
 
     @Override
     protected boolean canBePregnant() {

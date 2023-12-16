@@ -424,10 +424,30 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
     }
 
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedsheep.setGenes(babyGenes);
+        enhancedsheep.setSharedGenes(babyGenes);
+        enhancedsheep.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedsheep.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedsheep.setParent(this.getUUID().toString());
+        enhancedsheep.setGrowingAge();
+        enhancedsheep.setBirthTime();
+        enhancedsheep.initilizeAnimalSize();
+        enhancedsheep.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedsheep.setMaxCoatLength();
+        enhancedsheep.currentCoatLength = 0;
+        enhancedsheep.setCoatLength(0);
+        enhancedsheep.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedsheep;
+    }
+
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedsheep, level, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = 0;
         enhancedsheep.setCoatLength(0);

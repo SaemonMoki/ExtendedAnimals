@@ -76,6 +76,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
@@ -291,6 +292,24 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @Override
     public void initilizeAnimalSize() {
         this.setAnimalSize(1.0F);
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        turtle.setGenes(babyGenes);
+        turtle.setSharedGenes(babyGenes);
+        turtle.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        turtle.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        turtle.setGrowingAge();
+        turtle.setBirthTime();
+        turtle.initilizeAnimalSize();
+        turtle.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        turtle.setHome(this.blockPosition());
+        turtle.setHasScute();
+        turtle.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return turtle;
     }
 
     @Override

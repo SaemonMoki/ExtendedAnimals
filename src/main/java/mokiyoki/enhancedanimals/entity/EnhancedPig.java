@@ -411,10 +411,27 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return (ThreadLocalRandom.current().nextInt(pigletRange*2) - (pigletRange)) + pigletAverage;
     }
 
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedpig.setGenes(babyGenes);
+        enhancedpig.setSharedGenes(babyGenes);
+        enhancedpig.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedpig.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedpig.setParent(this.getUUID().toString());
+        enhancedpig.setGrowingAge();
+        enhancedpig.setBirthTime();
+        enhancedpig.initilizeAnimalSize();
+        enhancedpig.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedpig.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedpig;
+    }
+
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedpig, level, babyGenes, -this.getAdultAge());
 
         this.level.addFreshEntity(enhancedpig);
     }

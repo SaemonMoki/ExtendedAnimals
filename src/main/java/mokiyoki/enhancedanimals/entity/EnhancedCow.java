@@ -389,11 +389,28 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void runExtraIdleTimeTick() {
     }
 
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedcow.setGenes(babyGenes);
+        enhancedcow.setSharedGenes(babyGenes);
+        enhancedcow.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedcow.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedcow.setParent(this.getUUID().toString());
+        enhancedcow.setGrowingAge();
+        enhancedcow.setBirthTime();
+        enhancedcow.initilizeAnimalSize();
+        enhancedcow.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        enhancedcow.configureAI();
+        return enhancedcow;
+    }
 
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedcow, level, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
         this.level.addFreshEntity(enhancedcow);

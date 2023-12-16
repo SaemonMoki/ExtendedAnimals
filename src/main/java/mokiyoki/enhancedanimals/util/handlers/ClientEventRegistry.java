@@ -4,7 +4,6 @@ import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotlEgg;
@@ -15,11 +14,11 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.model.ModelEnhancedRabbit;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
+import mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
 import mokiyoki.enhancedanimals.renderer.ModelLayers;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
-import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
@@ -31,9 +30,6 @@ import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -52,9 +48,13 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.*;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_PLAIN_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPECKLE_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPATTER_TEXTURE;
+import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPOT_TEXTURE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
@@ -67,6 +67,10 @@ public class ClientEventRegistry {
     public static void onStitchEvent(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(EGG_CARTON_TEXTURE);
+            event.addSprite(EGG_PLAIN_TEXTURE);
+            event.addSprite(EGG_SPECKLE_TEXTURE);
+            event.addSprite(EGG_SPATTER_TEXTURE);
+            event.addSprite(EGG_SPOT_TEXTURE);
         }
     }
 
@@ -97,6 +101,7 @@ public class ClientEventRegistry {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_JUNGLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_OAK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_SPRUCE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHICKEN_NEST.get(), RenderType.cutout());
     }
 
     @SubscribeEvent
@@ -105,8 +110,8 @@ public class ClientEventRegistry {
                 blockAndTintGetter != null && pos != null ? BiomeColors.getAverageGrassColor(blockAndTintGetter, pos) : GrassColor.get(0.5D, 1.0D),
                 ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
 //        event.getBlockColors().register((state, blockAndTintGetter, pos, tintIndex) ->
-//                        pos != null ? EnhancedAxolotlEggBlock.getEggColour(state, pos, tintIndex) : -1,
-//                ModBlocks.AXOLOTL_EGG.get());
+//                pos != null ? EnhancedChickenEggBlock.getEggColour(state, pos, tintIndex) : -1,
+//                ModBlocks.CHICKEN_NEST.get());
     }
 
     @SubscribeEvent
@@ -151,6 +156,7 @@ public class ClientEventRegistry {
         event.registerEntityRenderer(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntityRenderer::new);
+        event.registerBlockEntityRenderer(CHICKEN_NEST_TILE_ENTITY.get(), ChickenNestTileEntityRenderer::new);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -168,6 +174,7 @@ public class ClientEventRegistry {
         event.registerLayerDefinition(RenderEnhancedLlama.LLAMA_LAYER, ModelEnhancedLlama::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedTurtle.TURTLE_LAYER, ModelEnhancedTurtle::createBodyLayer);
         event.registerLayerDefinition(EggCartonTileEntityRenderer.EGG_CARTON, EggCartonTileEntityRenderer::createBodyLayer);
+        event.registerLayerDefinition(ChickenNestTileEntityRenderer.CHICKEN_NEST, ChickenNestTileEntityRenderer::createBodyLayer);
         event.registerLayerDefinition(ModelLayers.AXOLOTL_BUCKET_LAYER, EnhancedAxolotlBucketModel::createLayer);
     }
 

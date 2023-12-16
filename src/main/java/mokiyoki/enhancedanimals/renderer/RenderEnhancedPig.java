@@ -63,4 +63,9 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
         return resourcelocation;
     }
 
+    protected boolean shouldShowName(EnhancedPig entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
+
 }

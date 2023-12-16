@@ -156,9 +156,10 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
          */
 
-        //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3]
+        //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3, White-Head]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            if (autosomalGenes[12]>=6) autosomalGenes[12]+=2;
             if (wildType == 1) {
                 autosomalGenes[13] = (1);
             } else {

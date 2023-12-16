@@ -128,6 +128,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String damName = "???";
     protected Boolean isFemale;
 
+    protected Boolean breedable = true;
+
     //Hunger
     protected float hunger = 0F;
     protected int healTicks = 0;
@@ -181,6 +183,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     private int reloadSizeTime = 0;
 
     public boolean updateColouration = true;
+
+    //PhotoMode
+    public boolean isInPhotoMode = false;
 
     //Overrides
     @Nullable
@@ -704,6 +709,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
     }
 
+    @Nullable
+    public Entity getLeashHolder() {
+        if (!this.isInPhotoMode) {
+            return super.getLeashHolder();
+        }
+        return null;
+    }
+
     protected boolean ableToMoveWhileLeashed() {
         return !(this.getLeashHolder() instanceof LivingEntity);
     }
@@ -1016,6 +1029,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.writeNBTGenes("Genetics", compound, this.genetics);
         this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
+        compound.putBoolean("Breedable", this.breedable);
+
         compound.putFloat("Hunger", hunger);
 
         compound.putString("Status", getEntityStatus());
@@ -1099,6 +1114,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
+
+        this.breedable = compound.getBoolean("Breedable");
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1297,7 +1314,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean canBreed() {
-        if (this.getEnhancedAnimalAge() < this.getAdultAge()) {
+        if (this.getEnhancedAnimalAge() < this.getAdultAge() || !this.breedable) {
             return false;
         } else {
             return super.canBreed();
@@ -1746,9 +1763,32 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, boolean hasTexture) {
+        if (hasTexture) textureGroup.addTextureLayers(new TextureLayer(texture));
+        this.texturesIndexes.add(String.valueOf(hasTexture?0:1));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texture));
         this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addIndividualTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, Integer RGB) {
+        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
+        textureLayer.setRGB(RGB);
+        textureGroup.addTextureLayers(textureLayer);
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(String.valueOf(RGB));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, String textureID, Integer RGB) {
+        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
+        textureLayer.setRGB(RGB);
+        textureGroup.addTextureLayers(textureLayer);
+        this.texturesIndexes.add(textureID);
+        this.texturesIndexes.add(String.valueOf(RGB));
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
@@ -1776,7 +1816,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName) {
+        if (textureName.isEmpty()) {
+            this.texturesIndexes.add(String.valueOf(0));
+        } else {
+            textureGroup.addTextureLayers(new TextureLayer(texture));
+            this.texturesIndexes.add(String.valueOf(textureName));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
         this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);

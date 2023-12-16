@@ -68,4 +68,9 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
 
         return resourcelocation;
     }
+
+    protected boolean shouldShowName(EnhancedTurtle entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
 }

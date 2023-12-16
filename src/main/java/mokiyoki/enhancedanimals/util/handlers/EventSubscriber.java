@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
+import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
@@ -17,7 +18,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
@@ -70,6 +73,7 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -170,10 +174,12 @@ public class EventSubscriber {
                 if (leashHolder instanceof WanderingTrader) {
                     ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
                 }
-            } else if (entity instanceof EnhancedChicken) {
+            }
+            if (entity instanceof EnhancedChicken) {
                 if (((EnhancedChicken) entity).isChickenJockey()) {
                     ((EnhancedChicken) entity).scheduleDespawn(4000);
                 }
+                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(12000));
             }
         }
     }
@@ -303,10 +309,13 @@ public class EventSubscriber {
                                         enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
                                     }
                                     enhancedChicken.setChickenJockey(true);
-//                                    enhancedChicken.scheduleDespawn();
                                     for (Entity rider : riders) {
                                         rider.startRiding(enhancedChicken);
                                     }
+                                }
+                                entity.remove(Entity.RemovalReason.DISCARDED);
+                            } else {
+                                if (!entity.hasCustomName()) {
                                     entity.remove(Entity.RemovalReason.DISCARDED);
                                 }
                             }
@@ -761,6 +770,7 @@ public class EventSubscriber {
             event.getWorld().setBlock(event.getPos(), Blocks.DIRT_PATH.defaultBlockState(), 11);
         }
     }
+
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLivingHurtEvent(LivingHurtEvent event) {

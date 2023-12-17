@@ -1604,11 +1604,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         public boolean canContinueToUse() {
-            boolean canContinue = (!chicken.isSleeping() || this.onNest)
+            boolean canContinue = this.chicken.isBroody() ||
+                    ((!chicken.isSleeping() || this.onNest)
                     && this.chicken.getNest() != BlockPos.ZERO
                     && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()))
                     && !this.stuck
-                    && (this.closeToNestTryTicks <= 600 || this.onNest);
+                    && (this.closeToNestTryTicks <= 600 || this.onNest));
 
             if (!canContinue) {
                 this.chicken.setAIStatus(AIStatus.NONE);

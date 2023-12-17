@@ -2313,9 +2313,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         if (ticks < 50) {
             theBody.lerpXRot(0.5F);
             headPeck(ticks);
+            legsDefault();
         } else if (ticks < 100) {
             bodyScratchGround(ticks, bodyY);
         } else {
+            legsDefault();
             return false;
         }
         return true;

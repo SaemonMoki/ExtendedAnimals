@@ -562,7 +562,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 --this.gestationTimer;
             }
 
-            if (hunger <= 24000) {
+            if (hunger <= 24000 && !isAnimalSleeping() && !this.isBroody()) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
                 this.timeUntilNextEgg = eggLayingTime();
@@ -601,7 +601,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     this.currentNestScore = -(this.currentNestScore+0.1F);
                 }
                 nestEntity.addEggToNest(eggItem);
-
+                if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
+                    this.setBroody(true);
+                }
             } else {
                 this.spawnAtLocation(eggItem, 1);
                 if (this.getNest()!=BlockPos.ZERO && this.random.nextInt(3)==0) {

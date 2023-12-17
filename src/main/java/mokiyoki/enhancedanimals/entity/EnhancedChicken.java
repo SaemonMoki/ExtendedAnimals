@@ -1583,7 +1583,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 return false;
             } else if (this.chicken.isBroody()) {
                 return true;
-            } else if (this.chicken.isSleeping()) {
+            } else if (this.chicken.isAnimalSleeping()) {
                 return false;
             } else if (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())) {
                 return true;
@@ -1604,7 +1604,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         public boolean canContinueToUse() {
             boolean canContinue = this.chicken.isBroody() ||
-                    ((!chicken.isSleeping() || this.onNest)
+                    ((!chicken.isAnimalSleeping() || this.onNest)
                     && this.chicken.getNest() != BlockPos.ZERO
                     && (this.chicken.timeUntilNextEgg<800 && (this.chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()))
                     && !this.stuck

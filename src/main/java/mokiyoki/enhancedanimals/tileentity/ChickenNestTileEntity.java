@@ -21,7 +21,8 @@ import java.util.Random;
 
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
-    private int incubation = EanimodCommonConfig.COMMON.incubationDaysChicken.get();
+    private static final int incubationTime = EanimodCommonConfig.COMMON.incubationDaysChicken.get()==0?1:EanimodCommonConfig.COMMON.incubationDaysChicken.get();
+    private int incubation = incubationTime;
 
     public ChickenNestTileEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(ModTileEntities.CHICKEN_NEST_TILE_ENTITY.get(), p_155229_, p_155230_);
@@ -41,20 +42,24 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     protected void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
         ContainerHelper.saveAllItems(compound, this.items, false);
-        compound.putFloat("incubation", (float) incubation/EanimodCommonConfig.COMMON.incubationDaysChicken.get());
+        compound.putFloat("incubation", incubationPercent());
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         ContainerHelper.saveAllItems(tag, this.items, true);
-        tag.putFloat("incubation", incubation);
+        tag.putFloat("incubation", incubationPercent());
         return tag;
     }
 
     public boolean incubate() {
         this.incubation--;
         return this.incubation < 0;
+    }
+
+    public float incubationPercent() {
+        return (float) incubation/incubationTime;
     }
 
     @Override

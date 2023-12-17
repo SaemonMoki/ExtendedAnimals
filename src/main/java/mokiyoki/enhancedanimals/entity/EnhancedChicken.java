@@ -1671,8 +1671,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     this.chicken.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
                 }
             } else {
-                if (this.chicken.getNavigation().isDone()) {
-                    this.chicken.getNavigation().moveTo(blockPos.getX() + 0.5D, blockPos.getY() + 0.0625D, blockPos.getZ() + 0.5D, 1.5D);
+                if (blockPos.closerToCenterThan(this.chicken.position(), 1.0D)) {
+                    this.chicken.moveTo(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D);
                 }
                 if (chicken.isBroody()) {
                     if (chicken.level.getBlockEntity(chicken.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {

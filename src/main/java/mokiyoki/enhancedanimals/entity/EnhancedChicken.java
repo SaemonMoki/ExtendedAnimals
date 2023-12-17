@@ -77,7 +77,6 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 
 import java.util.ArrayList;
 import java.util.List;

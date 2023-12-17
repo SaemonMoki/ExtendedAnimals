@@ -1828,7 +1828,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                                     chickenModelData.idleType = ThreadLocalRandom.current().nextInt(3);
                                 }
                                 chickenModelData.idleTimer = (int) ageInTicks + (ThreadLocalRandom.current().nextInt(chickenModelData.idleType <= 1 ? 5 : 10) * 20) + 20;
-                            } else if (chickenModelData.idleType!=0 && chickenModelData.idleTimer > ageInTicks) {
+                            } else if (entityIn.preening) {
                                 usingNeck = true;
                                 switch (chickenModelData.idleType) {
                                     case 1 -> {

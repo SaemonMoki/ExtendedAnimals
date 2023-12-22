@@ -34,7 +34,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (compound.contains("Items", 9)) {
             ContainerHelper.loadAllItems(compound, this.items);
-            this.incubation *= (int) compound.getFloat("incubation");
+            this.incubation = (int) compound.getFloat("incubation") * incubationTime;
         }
     }
 
@@ -59,7 +59,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     public float incubationPercent() {
-        return (float) incubation/incubationTime;
+        return (float)incubation/(float) incubationTime;
     }
 
     @Override
@@ -175,6 +175,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     public void hatchEggs(Level level, BlockPos pos, Random random) {
         if (level instanceof ServerLevel serverLevel) {
             EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random);
+            incubation = incubationTime;
         }
     }
 

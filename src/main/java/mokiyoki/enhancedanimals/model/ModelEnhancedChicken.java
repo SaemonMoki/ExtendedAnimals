@@ -345,6 +345,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(1.0F, 0.0F, -1.0F, 1, 5, 4, new CubeDeformation(-0.25F, -0.5F, -0.5F)),
                 PartPose.offset(0.0F, -0.75F, -2.125F)
         );
+
+        /**
+         *  Eyes
+         */
         base.addOrReplaceChild("eyes",
                 CubeListBuilder.create()
                         .texOffs(24, 0)
@@ -1105,8 +1109,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         /**
          *      Equipment
          */
-        this.collar = new WrappedModelPart(base, "collar");
-        this.collarHardware = new WrappedModelPart(base, "collarH");
+        this.collar = new WrappedModelPart("collar", base);
+        this.collarHardware = new WrappedModelPart("collarH", base);
         theNeck.addChild(this.collar);
 
         this.collar.addChild(this.collarHardware);
@@ -1168,7 +1172,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             ChickenPhenotype chicken = (ChickenPhenotype) this.chickenModelData.phenotype;
 
             resetCubes();
-
             super.renderToBuffer(this.chickenModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
@@ -1364,19 +1367,19 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 if (this.chickenModelData.offsets.get("bBodyPos").y() < 8.0F + (15.5F - chicken.height)) {
                     if (chicken.creeper) {
                         if (chicken.hasLongLegs()) {
-                            this.legLeftMedium.show();
-                            this.legRightMedium.show();
+                            legLeftMedium.show();
+                            legRightMedium.show();
                         } else {
-                            this.legLeftShort.show();
-                            this.legRightShort.show();
+                            legLeftShort.show();
+                            legRightShort.show();
                         }
                     } else {
                         if (chicken.hasLongLegs()) {
-                            this.legLeftLong.show();
-                            this.legRightLong.show();
+                            legLeftLong.show();
+                            legRightLong.show();
                         } else {
-                            this.legLeftMedium.show();
-                            this.legRightMedium.show();
+                            legLeftMedium.show();
+                            legRightMedium.show();
                         }
                     }
                 }
@@ -1420,10 +1423,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                  */
                 switch (chicken.beard) {
                     case BIG_BEARD -> {
-                        this.beardLarge.show();
+                        beardLarge.show();
                     }
                     case SMALL_BEARD, NN_BEARD -> {
-                        this.beardNakedNeck.show();
+                        beardNakedNeck.show();
                     }
                 }
 
@@ -1831,8 +1834,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                                 } else {
                                     chickenModelData.idleType = ThreadLocalRandom.current().nextInt(4) + 1;
                                 }
-                                chickenModelData.idleTimer = (int) ageInTicks + (ThreadLocalRandom.current().nextInt(chickenModelData.idleType <= 1 ? 5 : 10) * 20) + 20;
-                            } else if (entityIn.preening) {
                                 if (chickenModelData.idleType == 4 && (chicken.rumpless || chicken.isScaleless)) {
                                     chickenModelData.idleType = 3 - ThreadLocalRandom.current().nextInt(2);
                                 }
@@ -2014,9 +2015,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     private void wingRightDefault(float wingAngle) {
-        if (theWingRight.getZRot() == 0.0F && theWingRight.getXRot() == wingAngle) return;
-        theWingRight.setZRot(lerpTo(theWingRight.getZRot(), 0.0F));
-        theWingRight.setXRot(lerpTo(theWingRight.getXRot(), wingAngle));
         theWingRight.lerpZRot(0.0F);
         theWingRight.lerpYRot(0.0F);
         theWingRight.lerpXRot(wingAngle);
@@ -2348,7 +2346,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private void sittingDown(float height) {
         theBody.setY(height+3.0F);
         theBody.setXRot(0.0F);
-//        thighLeft.setY((height + 10.0F) * 0.25F);
     }
 
     private void broodyAnimation(float height, float brooding) {

@@ -22,6 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -253,7 +254,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -3.5F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -4.625F, 0.3F));
-        base.addOrReplaceChild("bEars", CubeListBuilder.create(), PartPose.ZERO);
+        base.addOrReplaceChild("bEars", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 0.0F));
         base.addOrReplaceChild("bComb", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 0.0F));
         base.addOrReplaceChild("bWaddles", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, -1.0F));
         base.addOrReplaceChild("bCrest", CubeListBuilder.create(), PartPose.offset(0.0F, -2.0F,-1.0F));
@@ -306,7 +307,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F, -0.5F, -0.5F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F, -0.5F, -0.5F)),
-                PartPose.offset(0.0F, -1.75F, -0.625F)
+                PartPose.offset(0.0F, -0.75F, -0.625F)
         );
         base.addOrReplaceChild("earS",
                 CubeListBuilder.create()
@@ -315,7 +316,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F)),
-                PartPose.offset(0.0F, -1.5F, -0.625F)
+                PartPose.offset(0.0F, 0.5F, -0.625F)
         );
         base.addOrReplaceChild("earM",
                 CubeListBuilder.create()
@@ -324,7 +325,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 3, 3, new CubeDeformation(-0.25F, -0.5F, -0.5F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 3, 3, new CubeDeformation(-0.25F, -0.5F, -0.5F)),
-                PartPose.offset(0.0F, -1.75F, -1.125F)
+                PartPose.offset(0.0F, -0.75F, -1.125F)
         );
         base.addOrReplaceChild("earL",
                 CubeListBuilder.create()
@@ -333,7 +334,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 4, 3, new CubeDeformation(-0.25F, -0.5F, -0.5F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 4, 3, new CubeDeformation(-0.25F, -0.5F, -0.5F)),
-                PartPose.offset(0.0F, -1.75F, -1.125F)
+                PartPose.offset(0.0F, -0.75F, -1.125F)
         );
         base.addOrReplaceChild("earXl",
                 CubeListBuilder.create()
@@ -342,7 +343,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 5, 4, new CubeDeformation(-0.25F, -0.5F, -0.5F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 5, 4, new CubeDeformation(-0.25F, -0.5F, -0.5F)),
-                PartPose.offset(0.0F, -1.75F, -2.125F)
+                PartPose.offset(0.0F, -0.75F, -2.125F)
         );
         base.addOrReplaceChild("eyes",
                 CubeListBuilder.create()
@@ -1182,63 +1183,64 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
              */
 
 
-            if (chickenModelData.growthAmount>0.75F) {
+            if (chickenModelData.earGrowth > 0.0F) {
+                List<Float> earScale = new ArrayList<>();
                 switch (chicken.earSize) {
                     case 2 -> {
                         earTiny.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.75F, 0.75F, 0.0F, -0.03F, -0.01F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, 0.75F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
                     }
                     case 3 -> {
                         earTiny.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.85F, 0.85F, 0.0F, -0.015F, -0.005F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, 0.85F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
                     }
-                    case 4 -> earTiny.show();
+                    case 4 -> {
+                        earTiny.show();
+                    }
                     case 5 -> {
                         earSmall.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.8F, 0.8F, 0.0F, -0.03F, -0.01F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.8F * chickenModelData.earGrowth, 0.8F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
                     }
-                    case 6 -> earSmall.show();
+                    case 6 -> {
+                        earSmall.show();
+                    }
                     case 7 -> {
                         earMedium.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.8F, 0.8F, 0.0F, -0.03F, -0.01F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.8F * chickenModelData.earGrowth, 0.8F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
                     }
                     case 8 -> {
                         earMedium.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.9F, 0.9F, 0.0F, -0.015F, -0.005F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.9F * chickenModelData.earGrowth, 0.9F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
                     }
-                    case 9 -> earMedium.show();
+                    case 9 -> {
+                        earMedium.show();
+                    }
                     case 10 -> {
                         earLarge.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.75F, 1.0F, 0.0F, -0.03F, 0.0F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, -0.03F, 0.0F);
                     }
                     case 11 -> {
                         earLarge.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.85F, 1.0F, 0.0F, -0.015F, 0.0F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, -0.015F, 0.0F);
                     }
-                    case 12 -> earLarge.show();
+                    case 12 -> {
+                        earLarge.show();
+                    }
                     case 13 -> {
                         earXLarge.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.75F, 0.75F, 0.0F, -0.03F, -0.01F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, 0.75F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
                     }
                     case 14 -> {
                         earXLarge.show();
-                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.85F, 0.85F, 0.0F, -0.015F, -0.005F));
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, 0.85F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
                     }
-                    case 15 -> earXLarge.show();
+                    case 15 -> {
+                        earXLarge.show();
+                    }
+                    default -> chickenModelData.earGrowth = -1.0F;
                 }
-
-                if (chickenModelData.earGrowth < 1.0F) {
-                    if (chicken.earSize > 1 ) {
-                        if (mapOfScale.containsKey("bEars")) {
-                            List<Float> earScale = mapOfScale.get("bEars");
-                            earScale.set(1, earScale.get(1) * chickenModelData.earGrowth);
-                            earScale.set(2, earScale.get(2) * chickenModelData.earGrowth);
-                        } else {
-                            mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, 0.0F, 0.0F));
-                        }
-                    } else {
-                        chickenModelData.earGrowth = 1.0F;
-                    }
+                if (chickenModelData.earGrowth != -1.0F) {
+                    mapOfScale.put("bEars", earScale.isEmpty() ? ModelHelper.createScalings(1.0F, chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, 0.0F, 0.0F) : earScale);
                 }
             }
 
@@ -1536,8 +1538,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 mapOfScale.put("head", scalings);
                 mapOfScale.put("headF", scalings);
                 mapOfScale.put("eyes", scalings);
-                mapOfScale.put("bEars", scalings);
                 mapOfScale.put("bBeard", scalings);
+                if (chickenModelData.earGrowth > 0.0F) {
+                    scalings = mapOfScale.getOrDefault("bEars", ModelHelper.createDefaultScalings());
+                    scalings.set(0, scalings.get(0) * scale);
+                    mapOfScale.put("bEars", scalings);
+                }
                 scale = 1.0F + (chicken.meatiness*0.75F);
                 mapOfScale.put("neck", ModelHelper.createScalings(scale, 1.0F, scale, 0.0F, 0.0F, 0.0F));
 
@@ -2468,6 +2474,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         }
         if (chickenModelData.earGrowth < 1.0F) {
             chickenModelData.earGrowth = getEarGrowth(enhancedAnimal.getEnhancedAnimalAge());
+        if (((ChickenModelData) animalModelData).earGrowth != -1.0F) {
+            ((ChickenModelData) animalModelData).earGrowth = getEarGrowth(enhancedAnimal.getEnhancedAnimalAge());
+        }
         }
     }
 
@@ -2477,8 +2486,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     protected float getEarGrowth(float age) {
-        if (age>0.5F*earMaxGrowth) {
-            return Math.min(1.0F,(age-(0.5F*earMaxGrowth)) / (4.0F*earMaxGrowth));
+        if (age>(0.5F*earMaxGrowth)) {
+            return age > 4.5F*earMaxGrowth ? 1.0F : (age-(0.5F*earMaxGrowth)) / (4.0F*earMaxGrowth);
         }
         return 0.0F;
     }

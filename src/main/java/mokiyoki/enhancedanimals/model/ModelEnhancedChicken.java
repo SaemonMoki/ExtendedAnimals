@@ -1174,10 +1174,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             resetCubes();
             super.renderToBuffer(this.chickenModelData, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             Map<String, List<Float>> mapOfScale = new HashMap<>();
-
-
-//            mapOfScale.put("bWaddles", ModelHelper.createScalings(1.01F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F));
-
             float size = this.chickenModelData.size;
             float finalChickenSize = ((3.0F * size * this.chickenModelData.growthAmount) + size) / 4.0F;
 
@@ -1587,6 +1583,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 List<Float> beakScaling = ModelHelper.createScalings(1.0F, 1.0F, 0.7F + (chickenModelData.growthAmount*0.3F), 0.0F, 0.0F, 0.0F);
                 mapOfScale.put("beak", beakScaling);
                 mapOfScale.put("jaw", beakScaling);
+                mapOfScale.put("bWaddles", ModelHelper.createScalings(1.01F, this.chickenModelData.growthAmount, 1.0F, 0.0F, 0.0F, 0.0F));
             }
             mapOfScale.put("collar", ModelHelper.createScalings(chicken.isScaleless||chicken.nakedNeckType==NakedNeckType.NAKED_NECK?0.25F:0.5F, 0.0F, 0.0F, 0.0F));
             mapOfScale.put("collarH", ModelHelper.createScalings(2.0F, 0.0F, 0.0F, 0.0F));

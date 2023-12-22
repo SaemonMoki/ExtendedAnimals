@@ -2480,9 +2480,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     protected float getEarGrowth(float age) {
+        if (age > 3.5F*earMaxGrowth) return 1.0F;
         if (age>(0.5F*earMaxGrowth)) {
-            return age > 4.5F*earMaxGrowth ? 1.0F : (age-(0.5F*earMaxGrowth)) / (4.0F*earMaxGrowth);
+            return 0.25F + (float) Math.pow((age-(0.5F*earMaxGrowth)) / (3.0F*earMaxGrowth), 2);
         }
-        return 0.0F;
+        return age < 0.1F*earMaxGrowth ? (age/(0.1F*earMaxGrowth)) * 0.25F : 0.25F;
     }
 }

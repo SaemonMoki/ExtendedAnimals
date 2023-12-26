@@ -555,6 +555,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
+//    @Override
+//    public boolean sleepingConditional() {
+//        return (((this.level.getDayTime()%24000 >= 11000 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
+//    }
+
     @Override
     protected void runExtraIdleTimeTick() {
         if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {

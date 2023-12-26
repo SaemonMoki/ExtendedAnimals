@@ -255,7 +255,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, -3.5F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -4.625F, 0.3F));
         base.addOrReplaceChild("bEars", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 0.0F));
-        base.addOrReplaceChild("bComb", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 0.0F));
+        base.addOrReplaceChild("bComb", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.5F));
         base.addOrReplaceChild("bWaddles", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, -1.0F));
         base.addOrReplaceChild("bCrest", CubeListBuilder.create(), PartPose.offset(0.0F, -2.0F,-1.0F));
         base.addOrReplaceChild("bBeard", CubeListBuilder.create(), PartPose.offset(0.0F, 2.5F, 0.0F));
@@ -470,7 +470,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     .addBox(-0.5F, -2.25F, -1.5F, 1, 2, 1, new CubeDeformation(-0.25F))
                     .addBox(-0.5F, -1.75F, -1.0F, 1, 1, 1, new CubeDeformation(-0.25F))
                     .addBox(-0.5F, -2.0F, -0.5F, 1, 1, 1, new CubeDeformation(-0.25F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         base.addOrReplaceChild("combSingleS",
                     CubeListBuilder.create()
@@ -482,7 +482,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             .addBox(-0.5F, -2.5F, -1.25F, 1, 1, 1, new CubeDeformation(-0.125F))
                             .addBox(-0.5F, -1.75F, -0.75F, 1, 1, 1, new CubeDeformation(-0.125F))
                             .addBox(-0.5F, -2.0F, 0.0F, 1, 1, 1, new CubeDeformation(-0.125F)),
-                    PartPose.ZERO
+                    PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         CubeDeformation cubeDeformation = new CubeDeformation(-0.125F, 0.0F, 0.0F);
         base.addOrReplaceChild("combSingleM",
@@ -494,7 +494,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, -2.0F, -1.0F, 1, 2, 1, cubeDeformation)
                         .addBox(-0.5F, -2.5F, 0.0F, 1, 2, 1, cubeDeformation)
                         .addBox(-0.5F, -1.5F, 1.0F, 1, 1, 1, cubeDeformation),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         base.addOrReplaceChild("combSingleL",
                 CubeListBuilder.create()
@@ -507,7 +507,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     .addBox(-0.5F, -2.5F, 1.0F, 1, 2, 1, cubeDeformation)
                     .addBox(-0.5F, -3.5F, 2.0F, 1, 3, 1, cubeDeformation)
                     .addBox(-0.5F, -2.0F, 3.0F, 1, 1, 1, cubeDeformation),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         base.addOrReplaceChild("combSingleXl",
                 CubeListBuilder.create()
@@ -523,7 +523,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     .addBox(-0.5F, -5.0F, 2.5F, 1, 1, 1, cubeDeformation)
                     .addBox(-0.5F, -3.0F, 3.0F, 1, 2, 1, cubeDeformation)
                     .addBox(-0.5F, -3.5F, 4.0F, 1, 2, 1, cubeDeformation),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         base.addOrReplaceChild("combRoseTallS",
                 CubeListBuilder.create()
@@ -1182,64 +1182,73 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
              */
 
 
-            if (chickenModelData.earGrowth > 0.0F) {
+            if (chicken.earSize > 1 && chickenModelData.extraGrowth > 0.0F) {
                 List<Float> earScale = new ArrayList<>();
                 switch (chicken.earSize) {
                     case 2 -> {
                         earTiny.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, 0.75F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F, 0.75F, 0.0F, -0.03F, -0.01F);
                     }
                     case 3 -> {
                         earTiny.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, 0.85F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F, 0.85F, 0.0F, -0.015F, -0.005F);
                     }
                     case 4 -> {
                         earTiny.show();
                     }
                     case 5 -> {
                         earSmall.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.8F * chickenModelData.earGrowth, 0.8F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.8F, 0.8F, 0.0F, -0.03F, -0.01F);
                     }
                     case 6 -> {
                         earSmall.show();
                     }
                     case 7 -> {
                         earMedium.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.8F * chickenModelData.earGrowth, 0.8F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.8F, 0.8F, 0.0F, -0.03F, -0.01F);
                     }
                     case 8 -> {
                         earMedium.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.9F * chickenModelData.earGrowth, 0.9F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.9F, 0.9F, 0.0F, -0.015F, -0.005F);
                     }
                     case 9 -> {
                         earMedium.show();
                     }
                     case 10 -> {
                         earLarge.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, -0.03F, 0.0F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F,1.0F, 0.0F, -0.03F, 0.0F);
                     }
                     case 11 -> {
                         earLarge.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, -0.015F, 0.0F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F,1.0F, 0.0F, -0.015F, 0.0F);
                     }
                     case 12 -> {
                         earLarge.show();
                     }
                     case 13 -> {
                         earXLarge.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.75F * chickenModelData.earGrowth, 0.75F * chickenModelData.earGrowth, 0.0F, -0.03F, -0.01F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.75F, 0.75F, 0.0F, -0.03F, -0.01F);
                     }
                     case 14 -> {
                         earXLarge.show();
-                        earScale = ModelHelper.createScalings(1.0F, 0.85F * chickenModelData.earGrowth, 0.85F * chickenModelData.earGrowth, 0.0F, -0.015F, -0.005F);
+                        earScale = ModelHelper.createScalings(1.0F, 0.85F, 0.85F, 0.0F, -0.015F, -0.005F);
                     }
                     case 15 -> {
                         earXLarge.show();
                     }
-                    default -> chickenModelData.earGrowth = -1.0F;
                 }
-                if (chickenModelData.earGrowth != -1.0F) {
-                    mapOfScale.put("bEars", earScale.isEmpty() ? ModelHelper.createScalings(1.0F, chickenModelData.earGrowth, chickenModelData.earGrowth, 0.0F, 0.0F, 0.0F) : earScale);
+                if (earScale.isEmpty()) {
+                    if (chickenModelData.extraGrowth < 1.0F) {
+                        float growth = chickenModelData.isFemale ? chickenModelData.extraGrowth - (0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth;
+                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, growth, growth, 0.0F, 0.0F, 0.0F));
+                    } else if (chickenModelData.isFemale) {
+                        mapOfScale.put("bEars", ModelHelper.createScalings(1.0F, 0.8F, 0.8F, 0.0F, 0.0F, 0.0F));
+                    }
+                } else {
+                    float growth = chickenModelData.isFemale ? chickenModelData.extraGrowth - (0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth;
+                    earScale.set(1, earScale.get(1)*growth);
+                    earScale.set(1, earScale.get(1)*growth);
+                    mapOfScale.put("bEars", earScale);
                 }
             }
 
@@ -1249,110 +1258,120 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             if (chicken.isCombed() && chickenModelData.growthAmount>0.25F){
                 theComb.show();
 
-                if (chicken.waddleSize >= 2) {
-                    if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                        waddlesBearded.show();
-                    }
-                    if (!chicken.isBearded()) {
-                        if (chicken.comb.hasPeaComb()) {
-                            waddlesPea.show();
-                        }
-                    }
-                }
-                if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                    if (chicken.waddleSize >= 3) {
-                        waddlesLarge.show();
-                    } else if (chicken.waddleSize >= 1) {
-                        waddlesMedium.show();
-                    } else {
-                        waddlesLarge.show();
-                    }
-                }
+//                if (chicken.waddleSize >= 2) {
+//                    if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+//                        waddlesBearded.show();
+//                    }
+//                    if (!chicken.isBearded()) {
+//                        if (chicken.comb.hasPeaComb()) {
+//                            waddlesPea.show();
+//                        }
+//                    }
+//                }
+//                if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+//                    if (chicken.waddleSize >= 3) {
+//                        waddlesLarge.show();
+//                    } else if (chicken.waddleSize >= 1) {
+//                        waddlesMedium.show();
+//                    } else {
+//                        waddlesLarge.show();
+//                    }
+//                }
+//
+//                if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
+//                    switch (chicken.combSize) {
+//                        case 0:
+//                            combSingleXs.show();
+//                            break;
+//                        case 1:
+//                            combSingleS.show();
+//                            break;
+//                        case 2:
+//                            combSingleM.show();
+//                            break;
+//                        case 3:
+//                            combSingleL.show();
+//                            break;
+//                        case 4:
+//                        default:
+//                            combSingleXl.show();
+//                            break;
+//
+//                    }
+//                } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
+//                    switch (chicken.combSize) {
+//                        case 0:
+//                            combRoseTallS.show();
+//                            break;
+//                        case 1:
+//                        case 2:
+//                        case 3:
+//                            combRoseTallM.show();
+//                            break;
+//                        case 4:
+//                        default:
+//                            combRoseTallL.show();
+//                            break;
+//                    }
+//                } else if (chicken.comb == Comb.ROSE_TWO) {
+//                    switch (chicken.combSize) {
+//                        case 0:
+//                            combRoseFlatS.show();
+//                            break;
+//                        case 1:
+//                        case 2:
+//                        case 3:
+//                            combRoseFlatM.show();
+//                            break;
+//                        case 4:
+//                        default:
+//                            combRoseFlatL.show();
+//                            break;
+//                    }
+//                } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
+//                    switch (chicken.combSize) {
+//                        case 1:
+//                        case 2:
+//                            combPeaS.show();
+//                            break;
+//                        case 3:
+//                            combPeaM.show();
+//                            break;
+//                        case 4:
+//                        default:
+//                            combPeaL.show();
+//                            break;
+//                    }
+//                } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
+//                    switch (chicken.combSize) {
+//                        case 1:
+//                        case 2:
+//                            combWalnutS.show();
+//                            break;
+//                        case 3:
+//                            combWalnutM.show();
+//                            break;
+//                        case 4:
+//                        default:
+//                            combWalnutL.show();
+//                            break;
+//                    }
+//                } else if (chicken.comb == Comb.V) {
+//                    combV.show();
+//                }
+//
+//                if (chicken.butterCup) {
+//                    combDuplex.show();
+//                }
 
-                if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combSingleXs.show();
-                            break;
-                        case 1:
-                            combSingleS.show();
-                            break;
-                        case 2:
-                            combSingleM.show();
-                            break;
-                        case 3:
-                            combSingleL.show();
-                            break;
-                        case 4:
-                        default:
-                            combSingleXl.show();
-                            break;
+                combSingleXs.show();
 
-                    }
-                } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combRoseTallS.show();
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                            combRoseTallM.show();
-                            break;
-                        case 4:
-                        default:
-                            combRoseTallL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.ROSE_TWO) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combRoseFlatS.show();
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                            combRoseFlatM.show();
-                            break;
-                        case 4:
-                        default:
-                            combRoseFlatL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
-                    switch (chicken.combSize) {
-                        case 1:
-                        case 2:
-                            combPeaS.show();
-                            break;
-                        case 3:
-                            combPeaM.show();
-                            break;
-                        case 4:
-                        default:
-                            combPeaL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
-                    switch (chicken.combSize) {
-                        case 1:
-                        case 2:
-                            combWalnutS.show();
-                            break;
-                        case 3:
-                            combWalnutM.show();
-                            break;
-                        case 4:
-                        default:
-                            combWalnutL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.V) {
-                    combV.show();
-                }
-
-                if (chicken.butterCup) {
-                    combDuplex.show();
+                if (chickenModelData.extraGrowth < 1.0F) {
+                    mapOfScale.put("bComb", ModelHelper.createScalings(chickenModelData.isFemale ? chickenModelData.extraGrowth -(0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth, 0.0F, 0.0F, 0.0F));
+                    mapOfScale.put("bWaddles", ModelHelper.createScalings(1.0F, chickenModelData.isFemale ? this.chickenModelData.extraGrowth - (0.2F*this.chickenModelData.extraGrowth): this.chickenModelData.extraGrowth, 1.0F, 0.0F, 0.0F, 0.0F));
+                } else if (chickenModelData.isFemale) {
+                    mapOfScale.put("bComb", ModelHelper.createScalings(0.8F, 0.0F, 0.0F, 0.0F));
+                    mapOfScale.put("bWaddles", ModelHelper.createScalings(1.0F, 0.8F, 1.0F, 0.0F, 0.0F, 0.0F));
                 }
             }
 
@@ -1538,7 +1557,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 mapOfScale.put("headF", scalings);
                 mapOfScale.put("eyes", scalings);
                 mapOfScale.put("bBeard", scalings);
-                if (chickenModelData.earGrowth > 0.0F) {
+                if (chickenModelData.extraGrowth > 0.0F) {
                     scalings = mapOfScale.getOrDefault("bEars", ModelHelper.createDefaultScalings());
                     scalings.set(0, scalings.get(0) * scale);
                     mapOfScale.put("bEars", scalings);
@@ -1583,7 +1602,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 List<Float> beakScaling = ModelHelper.createScalings(1.0F, 1.0F, 0.7F + (chickenModelData.growthAmount*0.3F), 0.0F, 0.0F, 0.0F);
                 mapOfScale.put("beak", beakScaling);
                 mapOfScale.put("jaw", beakScaling);
-                mapOfScale.put("bWaddles", ModelHelper.createScalings(1.01F, this.chickenModelData.growthAmount, 1.0F, 0.0F, 0.0F, 0.0F));
             }
             mapOfScale.put("collar", ModelHelper.createScalings(chicken.isScaleless||chicken.nakedNeckType==NakedNeckType.NAKED_NECK?0.25F:0.5F, 0.0F, 0.0F, 0.0F));
             mapOfScale.put("collarH", ModelHelper.createScalings(2.0F, 0.0F, 0.0F, 0.0F));
@@ -1695,6 +1713,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 theComb.setZRot(0.0F);
                 combDuplex.setZRot(0.0F);
             }
+
+            theComb.setY(theComb.getY()-1.0F);
 
             if (chicken.ear != EarType.NONE) {
                 if (chicken.earSize == 13 && chicken.ear == EarType.ROUND) {
@@ -2453,7 +2473,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         ChickenModelData chickenModelData = new ChickenModelData();
         chickenModelData.isFemale = enhancedChicken.getOrSetIsFemale();
         chickenModelData.brooding = enhancedChicken.isBrooding() ? 1 : 0;
-        chickenModelData.earGrowth = getEarGrowth(enhancedChicken.getEnhancedAnimalAge());
+        chickenModelData.extraGrowth = getExtraGrowth(enhancedChicken.getEnhancedAnimalAge());
         setBaseInitialModelData(chickenModelData, enhancedChicken);
     }
 
@@ -2464,9 +2484,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         } else {
             ((ChickenModelData) animalModelData).brooding = 0;
         }
-        if (((ChickenModelData) animalModelData).earGrowth != -1.0F) {
-            ((ChickenModelData) animalModelData).earGrowth = getEarGrowth(enhancedAnimal.getEnhancedAnimalAge());
-        }
+        ((ChickenModelData) animalModelData).extraGrowth = getExtraGrowth(enhancedAnimal.getEnhancedAnimalAge());
         if (((ChickenModelData) animalModelData).idleType == -1) {
             if (enhancedAnimal.preening) ((ChickenModelData) animalModelData).idleType = 0;
         } else if (!enhancedAnimal.preening) {
@@ -2479,10 +2497,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         return new ChickenPhenotype(enhancedAnimal.getSharedGenes(), enhancedAnimal.getOrSetIsFemale());
     }
 
-    protected float getEarGrowth(float age) {
+    protected float getExtraGrowth(float age) {
         if (age > 3.5F*earMaxGrowth) return 1.0F;
         if (age>(0.5F*earMaxGrowth)) {
-            return 0.25F + (float) Math.pow((age-(0.5F*earMaxGrowth)) / (3.0F*earMaxGrowth), 2);
+            return 0.25F + (age-(0.5F*earMaxGrowth)) / (3.0F*earMaxGrowth);
         }
         return age < 0.1F*earMaxGrowth ? (age/(0.1F*earMaxGrowth)) * 0.25F : 0.25F;
     }

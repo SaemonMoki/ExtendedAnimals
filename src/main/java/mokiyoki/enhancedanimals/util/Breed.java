@@ -201,12 +201,6 @@ public class Breed {
             return this;
         }
 
-        public Breed.Properties setBiome(ResourceKey<Biome> biome) {
-            this.temperature = ForgeRegistries.BIOMES.getValue(biome.location()).getBaseTemperature();
-            this.rain = ForgeRegistries.BIOMES.getValue(biome.location()).getModifiedClimateSettings().downfall();
-            return this;
-        }
-
         public Breed.Properties setRarity(Breed.Rarity rarity) {
             this.rarity = rarity;
             return this;

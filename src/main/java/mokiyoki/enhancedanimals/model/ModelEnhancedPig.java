@@ -218,12 +218,12 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         bNeck.addOrReplaceChild("waddleL", CubeListBuilder.create()
-                        .texOffs(3, 9)
+                        .texOffs(64, 57)
                         .addBox(1.5F, 0.0F, -9.0F, 2, 4, 2),
                 PartPose.offsetAndRotation(0.0F, 3.5F, -8.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
         bNeck.addOrReplaceChild("waddleR", CubeListBuilder.create()
-                        .texOffs(25,9)
+                        .texOffs(64,63)
                         .addBox(-3.5F, 0.0F, -9.0F, 2, 4, 2),
                 PartPose.offsetAndRotation(0.0F, 3.5F, -8.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
@@ -262,6 +262,16 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         bButt.addOrReplaceChild("butt6", CubeListBuilder.create()
                         .texOffs(0, 53)
                         .addBox(-4.5F, 0.0F, 0.0F, 9, 6, 9),
+                PartPose.ZERO
+        );
+        bButt.addOrReplaceChild("butt6_0", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, -1F, 0.0F, 9, 6, 9),
+                PartPose.ZERO
+        );
+        bButt.addOrReplaceChild("butt6_2", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, 1.5F, 0.0F, 9, 6, 9),
                 PartPose.ZERO
         );
         bButt.addOrReplaceChild("butt7", CubeListBuilder.create()
@@ -654,11 +664,14 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.neckShort.show(pig.shape == 2);
             this.neckLongBig.show(pig.shape == 3);
             this.neckLong.show(pig.shape == 4);
-            
+
             this.body11.show(pig.shape == 0);
-            this.body12.show(pig.shape == 1);
-            this.body13.show(pig.shape == 2);
-            this.body14.show(pig.shape == 3);
+//            this.body12.show(pig.shape == 1);
+            this.body12.show(pig.bodyLength == 12);
+            //this.body13.show(pig.shape == 2);
+            this.body13.show(pig.bodyLength == 13);
+            this.body14.show(pig.bodyLength == 14);
+            //this.body14.show(pig.shape == 3);
             this.body15.show(pig.shape == 4);
             
             this.butt5.show(pig.shape == 0 || pig.shape == 1);
@@ -666,14 +679,52 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.butt7.show(pig.shape == 3);
             this.butt8.show(pig.shape == 4);
 
+            float shoulderScaling = 1.0F + (pig.muscle*0.075F) + (pig.fat*0.05F) + (pig.wool*0.7F);
+            float shoulderWidth = (pig.muscle*0.035F) + (pig.fat*0.055F) - (pig.wildBody*0.03F);
+            float shoulderLength = (pig.wildBody*0.2F);
+            float shoulderHeight = (pig.muscle*0.055F) + (pig.wildBody*0.05F);
+            float shoulderY = -(pig.wildBody*0.01F);
+            float buttWidth = (pig.muscle*0.050F) + (pig.fat*0.025F);
+            //float buttZ = -(pig.fat*0.025F);
+            float bodyWidth = (pig.fat*0.025F) + (pig.muscle*0.01F);
+            float shoulderZ = (pig.muscle*0.025F) + (pig.wildBody*0.02F);
+            float bodyZ = (pig.muscle * 0.015F);
+            if (pig.fat > 0) {
+                bodyZ += -(pig.fat * 0.08F);
+            }
+            else {
+                shoulderHeight += (pig.fat * 0.05F);
+                shoulderZ += (pig.fat * 0.04F);
+            }
+            float headWidth = (pig.fat*0.055F);
+            float headY = (pig.muscle*0.040F);
+            float headZ = -(pig.wildBody*0.05F);
+            float headScaling = 1.0F;
+            if (pig.lengthScaling < 0) {
+                headScaling += pig.lengthScaling;
+            }
+            float cheekFat = (pig.fat*0.012F);
+
             if (pigModelData.saddle != SaddleType.NONE) {
                 if (pigModelData.saddle == SaddleType.ENGLISH) {
                     mapOfScale.put("saddlePad", ModelHelper.createScalings(1.125F, 1.125F, 1.125F, 0.0F, -1.125F * 0.01F, (1.125F - 1.0F) * 0.04F));
                 }
-                mapOfScale.put(pigModelData.saddle.getName(), ModelHelper.createScalings(0.75F, 0.75F, 0.75F, 0.0F, -0.75F * 0.01F, (0.75F - 1.0F) * 0.04F));
+                mapOfScale.put(pigModelData.saddle.getName(), ModelHelper.createScalings((pig.bodyScale+bodyWidth)*0.75F, pig.bodyScale*0.75F, pig.bodyScale*0.75F, 0.0F, (1.0F-pig.bodyScale) - (bodyZ + 0.02F), ((0.75F - 1.0F) * 0.04F)*pig.lengthScaling));
             }
 
             float finalPigSize = ((3.0F * pigModelData.size * pigModelData.growthAmount) + pigModelData.size) / 4.0F;
+
+            mapOfScale.put("neckS", ModelHelper.createScalings(shoulderScaling + shoulderWidth, shoulderScaling+shoulderLength, shoulderScaling+shoulderHeight, 0.0F, shoulderY, shoulderZ));
+            mapOfScale.put("butt6", ModelHelper.createScalings(pig.buttScale+buttWidth, 1.0F, pig.buttScale, 0.0F, 0.0F, 0.0F));
+            List<Float> bodyScalings = ModelHelper.createScalings(pig.bodyScale + bodyWidth, pig.bodyScale+pig.lengthScaling, pig.bodyScale, 0.0F, 0.0F, bodyZ);
+            mapOfScale.put("body12", bodyScalings);
+            mapOfScale.put("body13", bodyScalings);
+            mapOfScale.put("body14", bodyScalings);
+            mapOfScale.put("cheeks", ModelHelper.createScalings(1+pig.wool+(cheekFat*2.0F), 1+pig.wool+cheekFat, 1+pig.wool+cheekFat, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("bEarL", ModelHelper.createScalings(1+pig.wool, 1+pig.wool, 1+pig.wool, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("bEarR", ModelHelper.createScalings(1+pig.wool, 1+pig.wool, 1+pig.wool, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("bHead", ModelHelper.createScalings(headScaling+headWidth, headScaling, headScaling, 0.0F, headZ, headY));
+
             poseStack.pushPose();
             poseStack.scale(finalPigSize, finalPigSize, finalPigSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalPigSize, 0.0F);
@@ -688,6 +739,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         Map<String, Vector3f> map = data.offsets;
         map.put("bPig", this.getRotationVector(this.thePig));
         map.put("bPigPos", this.getPosVector(this.thePig));
+        map.put("bBodyPos", this.getPosVector(this.theBody));
         map.put("snout", this.getRotationVector(this.snout));
         map.put("jaw", this.getRotationVector(this.jaw));
         map.put("bNeck", this.getRotationVector(this.theNeck));
@@ -703,7 +755,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         map.put("bLegFL", this.getRotationVector(this.theLegFrontLeft));
         map.put("bLegFR", this.getRotationVector(this.theLegFrontRight));
         map.put("bLegBL", this.getRotationVector(this.theLegBackLeft));
+        map.put("bLegBLPos", this.getPosVector(this.theLegBackLeft));
         map.put("bLegBR", this.getRotationVector(this.theLegBackRight));
+        map.put("bLegBRPos", this.getPosVector(this.theLegBackRight));
+        map.put("bButtPos", this.getPosVector(this.theButt));
         map.put("tail0", this.getRotationVector(this.tail0));
         map.put("tail1", this.getRotationVector(this.tail1));
         map.put("tail2", this.getRotationVector(this.tail2));
@@ -722,7 +777,14 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.theLegFrontRight.setXRot(-Mth.HALF_PI);
             this.theLegBackLeft.setXRot(-Mth.HALF_PI);
             this.theLegBackRight.setXRot(-Mth.HALF_PI);
+            this.theLegBackLeft.setY((pig.bodyLength+1)+pig.buttTranslation);
+            this.theLegBackRight.setY((pig.bodyLength+1)+pig.buttTranslation);;
+            this.theButt.setY((pig.bodyLength-2)+pig.buttTranslation);
+            this.thePig.setZ(-(pig.buttTranslation+2.5F));
         } else {
+            this.theLegBackLeft.setY(map.get("bLegBLPos").y());
+            this.theLegBackRight.setY(map.get("bLegBRPos").y());;
+            this.theButt.setY(map.get("bButtPos").y());
             this.thePig.setRotation(map.get("bPig"));
             this.thePig.setPos(map.get("bPigPos"));
             this.theNeck.setRotation(map.get("bNeck"));

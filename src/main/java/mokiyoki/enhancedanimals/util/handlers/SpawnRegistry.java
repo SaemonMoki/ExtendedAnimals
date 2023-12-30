@@ -25,6 +25,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_FOX;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class SpawnRegistry {
@@ -93,6 +94,13 @@ public class SpawnRegistry {
                     addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_TURTLE.get(), config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
                 }
             }
+            //add fox
+            if (entry.type == EntityType.FOX) {
+                if(config.spawnGeneticFoxes.get()) {
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_FOX.get(), config.spawnWeightFoxes.get(), config.minimumFoxGroup.get(), config.maximumFoxGroup.get()));
+                }
+            }
+            //add axolotl
             if (entry.type == EntityType.AXOLOTL) {
                 if(config.spawnGeneticAxolotls.get()) {
                     addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_AXOLOTL.get(), config.spawnWeightAxolotls.get(), config.minimumAxolotlGroup.get(), config.maximumAxolotlGroup.get()));
@@ -194,7 +202,12 @@ public class SpawnRegistry {
                     removeSpawns.add(entry);
                 }
             }
-
+            //remove vanilla fox
+            if (entry.type == EntityType.FOX&& entry.type.toString().contains("fox")) {
+                if(!EanimodCommonConfig.COMMON.spawnVanillaFoxes.get()) {
+                    removeSpawns.add(entry);
+                }
+            }
             //remove turtles?
             if (entry.type == EntityType.TURTLE && entry.type.toString().contains("turtle")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaTurtles.get()) {

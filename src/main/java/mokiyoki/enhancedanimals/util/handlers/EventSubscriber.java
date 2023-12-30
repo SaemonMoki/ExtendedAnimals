@@ -704,6 +704,8 @@ public class EventSubscriber {
                     if (EanimodCommonConfig.COMMON.spawnGeneticAxolotls.get() && EanimodCommonConfig.COMMON.wanderingTraderAxolotl.get()) {
                         animals.add(ENHANCED_AXOLOTL.get());
                     }
+                //  if (EanimodCommonConfig.COMMON.spawnGeneticFoxes.get() && EanimodCommonConfig.COMMON.wanderingTraderFox.get()) {
+                //      animals.add(ENHANCED_FOX.get());
 
                     int selection = animals.size()==1?0:ThreadLocalRandom.current().nextInt(animals.size());
 

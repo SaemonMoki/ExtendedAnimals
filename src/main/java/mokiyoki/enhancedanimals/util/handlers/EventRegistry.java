@@ -27,6 +27,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.EnhancedFox;                //  fox
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -80,6 +81,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_FOX;    // fox
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -179,6 +181,7 @@ public class EventRegistry {
         event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
         event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
         event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
+        event.put(ENHANCED_FOX.get(), EnhancedFox.prepareAttributes().build());           // FOX
 
     }
 
@@ -232,6 +235,7 @@ public class EventRegistry {
         SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedRabbit::checkRabbitSpawnRules);
         SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
         SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
+        SpawnPlacements.register(ENHANCED_FOX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);        // fox
     }
 
     private static class GeneticShearDispenseBehavior extends ShearsDispenseItemBehavior {

@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.EnhancedFox;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -41,7 +42,11 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_turtle", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
     public static final RegistryObject<EntityType<EnhancedAxolotl>> ENHANCED_AXOLOTL = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl", () -> EntityType.Builder.of(EnhancedAxolotl::new, MobCategory.AXOLOTLS).sized(0.75F, 0.42F).build(Reference.MODID + ":enhanced_axolotl"));
     public static final RegistryObject<EntityType<EnhancedAxolotlEgg>> ENHANCED_AXOLOTL_EGG = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl_egg", () -> EntityType.Builder.of(EnhancedAxolotlEgg::new, MobCategory.MISC).sized(0.375F, 0.375F).build(Reference.MODID + ":axolotl_egg"));
-//    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
+
+    public static final RegistryObject<EntityType<EnhancedFox>> ENHANCED_FOX = ENTITIES_DEFERRED_REGISTRY.register("enhanced_fox", () -> EntityType.Builder.of(EnhancedFox::new, MobCategory.CREATURE).sized(0.9F, 0.9F).build(Reference.MODID + ":enhanced_fox"));
+
+
+//   public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
     public static void register(IEventBus modEventBus) {

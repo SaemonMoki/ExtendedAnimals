@@ -438,6 +438,7 @@ public class Genes {
         SHEEP,
         LLAMA,
         HORSE,
+        FOX,
         UNIMPORTANT
 
     }

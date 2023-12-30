@@ -1,0 +1,106 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "registryName": "minecraft:melon",
+      "hungerRestored": 10000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:pumpkin",
+      "hungerRestored": 10000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:apple",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "forge:egg",
+      "hungerRestored": 100,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:turtle_egg",
+      "hungerRestored": 100,
+      "isBreedingItem": false
+    },
+
+    {
+      "registryName": "minecraft:sweet_berries",
+      "hungerRestored": 100,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:rotten_flesh",
+      "hungerRestored": 200,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:brown_mushroom",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:spider_eye",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:cooked_beef",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:cooked_chicken",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:cooked_mutton",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:cooked_salmon",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:cooked_rabbit",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedchicken_darkbig",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedchicken_dark",
+      "hungerRestored": 2000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedchicken_darksmall",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedchicken_pale",
+      "hungerRestored": 2000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedchicken_palesmall",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:cookedrabbit_small",
+      "hungerRestored": 750,
+      "isBreedingItem": false
+    }
+  ]
+}

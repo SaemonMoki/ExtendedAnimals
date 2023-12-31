@@ -27,6 +27,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -80,6 +81,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CAT;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -177,6 +179,7 @@ public class EventRegistry {
         event.put(ENHANCED_MOOSHROOM.get(), EnhancedMooshroom.prepareAttributes().build());
         event.put(ENHANCED_MOOBLOOM.get(), EnhancedMoobloom.prepareAttributes().build());
         event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
+        event.put(ENHANCED_CAT.get(), EnhancedCat.prepareAttributes().build());
         event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
         event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
 

@@ -1472,13 +1472,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             else {
                 //grey
                 skin = 2;
-//                if ( spotPower < 0 ) {
-//                    //tamworth causes pink skin
-//                    skin = 1;
-//                }
             }
             if ((gene[62] + gene[63]) > (gene[64] + gene[65])) { //tamworth causes pink skin, even on black pigs
                 skin = 1;
+                skinBlack = 1;
             }
 
             //random brindle

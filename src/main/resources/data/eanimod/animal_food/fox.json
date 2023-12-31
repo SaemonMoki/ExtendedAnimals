@@ -2,28 +2,23 @@
   "replaceDefault": false,
   "values": [
     {
-      "registryName": "minecraft:melon",
-      "hungerRestored": 10000,
-      "isBreedingItem": false
-    },
-    {
       "registryName": "minecraft:pumpkin",
-      "hungerRestored": 10000,
+      "hungerRestored": 1000,
       "isBreedingItem": false
     },
     {
       "registryName": "minecraft:apple",
-      "hungerRestored": 1500,
+      "hungerRestored": 1000,
       "isBreedingItem": false
     },
     {
       "registryName": "forge:egg",
-      "hungerRestored": 100,
+      "hungerRestored": 750,
       "isBreedingItem": false
     },
     {
       "registryName": "minecraft:turtle_egg",
-      "hungerRestored": 100,
+      "hungerRestored": 750,
       "isBreedingItem": false
     },
 
@@ -39,17 +34,17 @@
     },
     {
       "registryName": "minecraft:brown_mushroom",
-      "hungerRestored": 1000,
+      "hungerRestored": 100,
       "isBreedingItem": false
     },
     {
       "registryName": "minecraft:spider_eye",
-      "hungerRestored": 1000,
+      "hungerRestored": 100,
       "isBreedingItem": false
     },
     {
       "registryName": "minecraft:cooked_beef",
-      "hungerRestored": 3000,
+      "hungerRestored": 2000,
       "isBreedingItem": false
     },
     {

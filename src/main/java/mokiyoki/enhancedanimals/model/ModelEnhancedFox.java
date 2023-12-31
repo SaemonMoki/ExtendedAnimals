@@ -70,11 +70,11 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     // this part creates the bone groups
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO); // prev .offset(0.0F, 0.0F, 0.0F)
         base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 10.5F, 16.0F, Mth.HALF_PI, 0.0F, 0.0F));  // 16.0,-4.0
         base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 9.5F));
-        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -7.0F, -4.0F));
+        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)); // prev 0, -7.0F, -4.0F
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, -3.0F, -3.0F));
         base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, -3.0F, -3.0F));
@@ -84,7 +84,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-4.0F, 14.0F, -2.0F));
         base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, 8.0F));
 
-// THE EYES I GUESS
+// THE EYES I GUESS - doesnt have a separate texture yet
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
                         .texOffs(69, 15)
                         .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
@@ -93,17 +93,17 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                 PartPose.offset(0.0F, -5.0F, 0.0F)
         );
 
-//HEAD
+//HEAD   - currently facing down, needs to be rotated?
         base.addOrReplaceChild("skull", CubeListBuilder.create()
                         .texOffs(26, 0)
-                        .addBox(0.0F, 14.75F, -0.25F, 7, 6, 6),
-                PartPose.offset(-3.5F, 11.75F, -4.25F)
+                        .addBox(0.0F, 14.75F, -0.25F, 7, 6, 6), // first three = pivot point, second set = box dimensions
+                PartPose.ZERO   // offset(-3.5F, 11.75F, -4.25F)
         );
 
         base.addOrReplaceChild("nose", CubeListBuilder.create()
                         .texOffs(33, 36)
                         .addBox(0.0F, 14.75F, -5.25F, 3, 3, 4),
-                PartPose.offset(-1.5F, 12.25F, -9.25F)
+                PartPose.offset(0.0F, 3.5F, -3.0F)
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
@@ -113,7 +113,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
 
 
-// EARS
+// EARS   ear pieces located roughly correctly in relation to each other, but overall are not in the right position and rotation
         base.addOrReplaceChild("earL", CubeListBuilder.create()
                         .texOffs(44, 43)
                         .addBox(-6.75F, 14.0F, -1.25F, 3, 4, 2)
@@ -142,8 +142,8 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // BODY
         base.addOrReplaceChild("body1", CubeListBuilder.create()
                         .texOffs(0, 0)
-                        .addBox(0.0F, 4.0F, 0.0F, 6, 13, 7),
-                PartPose.offsetAndRotation(-3.0F, -6.0F, 3.0F, -90.0F, 0.0F, 0.0F)
+                        .addBox(0.0F, 4.0F, 0.0F, 6, 13, 7), // first three are pivot point, second set is box dimensions
+                PartPose.ZERO // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
         );
 
 
@@ -203,7 +203,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                 PartPose.offset(0.0F, -1.0F, -7.5F)
         );
 
-        return LayerDefinition.create(meshdefinition, 64, 64);
+        return LayerDefinition.create(meshdefinition, 64, 64);    // texture size 64x64
     }
 
 

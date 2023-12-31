@@ -747,7 +747,7 @@ public class ChickenTexture {
             }
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            setSkinColour(chicken, isFemale, sGene, gene, detailGroup);
+            setSkinColour(chicken, isFemale, sGene, gene, detailGroup, chicken.growthAmount());
             setEarColour(chicken, isFemale, sGene, gene, earColour, detailGroup);
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale));
             parentGroup.addGrouping(detailGroup);
@@ -756,10 +756,13 @@ public class ChickenTexture {
         }
     }
 
-    private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup) {
+    private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateSkinRGB(sGene, gene, isFemale));
-        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", calculateShanksRGB(sGene, gene, isFemale));
+        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShanksRGB(sGene, gene, isFemale));
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
+        if (age < 0.25F) {
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", calculateSkinRGB(sGene, gene, isFemale));
+        }
     }
 
     private static void setEarColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, int earColour, TextureGrouping detailGroup) {

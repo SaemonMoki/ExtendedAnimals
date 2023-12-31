@@ -105,7 +105,7 @@ public class WrappedModelPart {
             if (Mth.abs(this.modelPart.xRot - xRot) < 0.0001F) {
                 this.modelPart.xRot = xRot;
             } else {
-                this.modelPart.xRot = Mth.rotLerp(0.05F, this.modelPart.xRot, xRot);
+                this.modelPart.xRot = Mth.lerp(0.05F, this.modelPart.xRot, xRot);
                 return false;
             }
         }
@@ -117,7 +117,7 @@ public class WrappedModelPart {
             if (Mth.abs(this.modelPart.yRot - yRot) < 0.0001F) {
                 this.modelPart.yRot = yRot;
             } else {
-                this.modelPart.yRot = Mth.rotLerp(0.05F, this.modelPart.yRot, yRot);
+                this.modelPart.yRot = Mth.lerp(0.05F, this.modelPart.yRot, yRot);
                 return false;
             }
         }
@@ -129,7 +129,7 @@ public class WrappedModelPart {
             if (Mth.abs(this.modelPart.zRot - zRot) < 0.0001F) {
                 this.modelPart.zRot = zRot;
             } else {
-                this.modelPart.zRot = Mth.rotLerp(0.05F, this.modelPart.zRot, zRot);
+                this.modelPart.zRot = Mth.lerp(0.05F, this.modelPart.zRot, zRot);
                 return false;
             }
         }

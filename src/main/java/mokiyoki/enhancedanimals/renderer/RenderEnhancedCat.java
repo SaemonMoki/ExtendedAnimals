@@ -19,8 +19,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderEnhancedCat extends MobRenderer<EnhancedCat, ModelEnhancedCat<EnhancedCat>> {
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/pig/pigbase.png");
+    private static final String ENHANCED_CAT_TEXTURE_LOCATION = "eanimod:textures/entities/cat/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cat/catbase.png");
     public static final ModelLayerLocation CAT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "cat"), "cat_layer");
 
     public RenderEnhancedCat(EntityRendererProvider.Context renderManager)
@@ -52,7 +52,7 @@ public class RenderEnhancedCat extends MobRenderer<EnhancedCat, ModelEnhancedCat
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CAT_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

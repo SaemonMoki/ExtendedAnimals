@@ -141,6 +141,7 @@ public class ClientEventRegistry {
         event.registerEntityRenderer(ENHANCED_SHEEP.get(), RenderEnhancedSheep::new);
         event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
         event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
+        event.registerEntityRenderer(ENHANCED_CAT.get(), RenderEnhancedCat::new);
 //        event.registerEntityRenderer(ENHANCED_HORSE.get(), RenderEnhancedHorse::new);
         event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
         event.registerEntityRenderer(ENHANCED_TURTLE.get(), RenderEnhancedTurtle::new);

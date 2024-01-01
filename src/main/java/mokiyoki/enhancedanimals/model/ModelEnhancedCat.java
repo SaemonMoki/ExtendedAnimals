@@ -29,10 +29,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     public ModelEnhancedCat(ModelPart modelPart) {
         super(modelPart);
         ModelPart base = modelPart.getChild("base");
-        ModelPart bCat = base.getChild("bCat");
 
-        this.theCat = new WrappedModelPart(bCat, "bCat");
-        this.cube = new WrappedModelPart("cube", bCat);
+        this.theCat = new WrappedModelPart(base, "base");
+        this.cube = new WrappedModelPart("cube", base);
 
         this.theCat.addChild(this.cube);
     }
@@ -47,12 +46,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bCat = base.addOrReplaceChild("bCat", CubeListBuilder.create()
-                .texOffs(0, 0)
-                .addBox(0.0F, 0.0F, 0.0F, 16, 16, 16),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
 
-        bCat.addOrReplaceChild("cube", CubeListBuilder.create()
+        base.addOrReplaceChild("cube", CubeListBuilder.create()
                         .texOffs(0, 0)
                         .addBox(0.0F, 0.0F, 0.0F, 16, 16, 16),
                 PartPose.ZERO
@@ -72,6 +67,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             poseStack.pushPose();
             poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.translate(0.0F, 0.0F, 0.0F);
 
             gaRender(this.theCat, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 

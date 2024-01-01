@@ -25,23 +25,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel<T> {
-
-    public ModelEnhancedCat(ModelPart modelPart) {
-        super(modelPart);
-        ModelPart base = modelPart.getChild("base");
-
-        this.theCat = new WrappedModelPart(base, "base");
-        this.cube = new WrappedModelPart("cube", base);
-
-        this.theCat.addChild(this.cube);
-    }
     private CatModelData catModelData;
     protected WrappedModelPart theCat;
     protected WrappedModelPart cube;
-
-    private void resetCubes() {
-
-    }
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -55,6 +41,21 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
+
+    public ModelEnhancedCat(ModelPart modelPart) {
+        super(modelPart);
+        ModelPart base = modelPart.getChild("base");
+
+        this.theCat = new WrappedModelPart(base, "base");
+        this.cube = new WrappedModelPart("cube", base);
+
+        this.theCat.addChild(this.cube);
+    }
+
+    private void resetCubes() {
+
+    }
+
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (this.catModelData!=null && this.catModelData.getPhenotype() != null) {
@@ -77,7 +78,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+        this.catModelData = getCreateCatModelData(entityIn);
     }
 
     private CatModelData getCreateCatModelData(T enhancedCat) {

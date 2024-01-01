@@ -71,18 +71,18 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO); // prev .offset(0.0F, 0.0F, 0.0F)
-        base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 10.5F, 16.0F, Mth.HALF_PI, 0.0F, 0.0F));  // 16.0,-4.0
-        base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
-        base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 9.5F));
+        base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offset(0.0F, 13.5F, 0.0F));  // 16.0,-4.0
+        base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.25F, Mth.HALF_PI*0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)); // prev 0, -7.0F, -4.0F
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, -3.0F, -3.0F));
-        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, -3.0F, -3.0F));
-        base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(4.0F, 14.0F, -2.0F));
-        base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-4.0F, 14.0F, -2.0F));
-        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, 8.0F));
+        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
+        base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
+        base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, 5.0F));
+        base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, 5.0F));
+        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, 10.0F));
 
 // THE EYES I GUESS - doesnt have a separate texture yet
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
@@ -90,100 +90,100 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                         .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
                         .texOffs(49, 15)
                         .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.offset(0.0F, -5.0F, 0.0F)
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
 //HEAD   - currently facing down, needs to be rotated?
         base.addOrReplaceChild("skull", CubeListBuilder.create()
                         .texOffs(26, 0)
-                        .addBox(0.0F, 14.75F, -0.25F, 7, 6, 6), // first three = pivot point, second set = box dimensions
+                        .addBox(-3.5F, 14.75F, -0.25F, 7, 6, 6), // first three = pivot point, second set = box dimensions
                 PartPose.ZERO   // offset(-3.5F, 11.75F, -4.25F)
         );
 
         base.addOrReplaceChild("nose", CubeListBuilder.create()
                         .texOffs(33, 36)
-                        .addBox(0.0F, 14.75F, -5.25F, 3, 3, 4),
-                PartPose.offset(0.0F, 3.5F, -3.0F)
+                        .addBox(-1.5F, 14.75F, -5.25F, 3, 3, 4),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
                         .texOffs(0, 21)
-                        .addBox(0.0F, 11.75F, -1.25F, 3, 2, 8, new CubeDeformation(-0.25F)),
-                PartPose.offset(-1.5F, 10.8848F, -9.0486F)
+                        .addBox(-1.5F, 11.75F, -1.25F, 3, 2, 8, new CubeDeformation(-0.25F)),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
 
 // EARS   ear pieces located roughly correctly in relation to each other, but overall are not in the right position and rotation
         base.addOrReplaceChild("earL", CubeListBuilder.create()
                         .texOffs(44, 43)
-                        .addBox(-6.75F, 14.0F, -1.25F, 3, 4, 2)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
                         .texOffs(0, 20)
-                .addBox(-8.25F, 13.5F, -1.25F, 1, 2, 2), // lower
-                PartPose.offset(-4.1716F, 16.5784F, -2.25F)
+                        .addBox(2.0F, 2.0F, 0.0F, 1, 2, 2), // lower
+                PartPose.ZERO
         );
 
         base.addOrReplaceChild("earR", CubeListBuilder.create()
                         .texOffs(40, 12)
-                        .addBox(3.0F, 14.0F, -1.25F, 3, 4, 2)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
                         .texOffs(0, 0)
-                .addBox(1.5F, 13.5F, -1.25F, 1, 2, 2), // lower
-                PartPose.offset(1.4216F, 16.5784F, -2.25F)
+                        .addBox(-2.0F, 2.0F, 0.0F, 1, 2, 2), // lower
+                PartPose.ZERO
         );
 
 
 // NECK
         base.addOrReplaceChild("neck", CubeListBuilder.create()
                         .texOffs(19, 13)
-                        .addBox(0.0F, 10.0F, 1.5F, 7, 9, 7),
-                PartPose.offsetAndRotation(-3.5F, 8.0784F, -2.4216F, -90.0F, 0.0F, 0.0F)
+                        .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7),
+                PartPose.ZERO
         );
 
 
 // BODY
         base.addOrReplaceChild("body1", CubeListBuilder.create()
                         .texOffs(0, 0)
-                        .addBox(0.0F, 4.0F, 0.0F, 6, 13, 7), // first three are pivot point, second set is box dimensions
-                PartPose.ZERO // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
+                        .addBox(-3.0F, -6.5F, -3.5F, 6, 13, 7), // first three are pivot point, second set is box dimensions
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F) // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
         );
 
 
 // LEGS
         base.addOrReplaceChild("legFL", CubeListBuilder.create()
                         .texOffs(36, 43)
-                        .addBox(-2.0F, 7.0F, -3.0F, 2, 8, 2),
+                        .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legFR", CubeListBuilder.create()
                         .texOffs(43, 29)
-                        .addBox(2.0F, 7.0F, -3.0F, 2, 8, 2),
+                        .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(20, 40)
-                        .addBox(-2.0F, 7.5F, 9.0F, 2, 8, 2),
-                PartPose.ZERO
+                        .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
+                PartPose.offset(0.0F, -0.5F, 0.0F)
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(28, 43)
-                        .addBox(2.0F, 7.5F, 9.0F, 2, 8, 2),
-                PartPose.ZERO
+                        .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
+                PartPose.offset(0.0F, -0.5F, 0.0F)
         );
 
 // TAIL
         base.addOrReplaceChild("tail0", CubeListBuilder.create()
                         .texOffs(0, 35)
-                        .addBox(0.0F, 12.5F, 10.0F, 5, 6, 5, new CubeDeformation(-0.05F)),
-                PartPose.offsetAndRotation(-2.5F, 12.5F, 9.0F, -90.0F, 0.0F, 0.0F)
+                        .addBox(0.0F, 0.0F, 0.0F, 5, 6, 5, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(17, 29)
-                        .addBox(0.0F, 13.5F, 16.0F, 5, 6, 5, new CubeDeformation(-0.1F)),
-                PartPose.offsetAndRotation(-2.5F, 13.5F, 16.0F, -1.5708F, 0.0F, 0.0F)
+                        .addBox(0.0F, 0.0F, 0.0F, 5, 6, 5, new CubeDeformation(-0.1F)),
+                PartPose.ZERO
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(19, 0)  // TEXTURE OFFSET
-                        .addBox(0F, 13.0F, 22.0F, 3, 4, 2, new CubeDeformation(-0.15F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
-                PartPose.offset(-1.5F, 9.5F, 22.0F)  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2, new CubeDeformation(-0.15F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
+                PartPose.ZERO  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
         );
 
         // PartPose.offset for just position offset
@@ -269,11 +269,11 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         this.theFox.addChild(this.theBody);
         this.theBody.addChild(this.theNeck);
-        this.theBody.addChild(this.theTail);
-        this.theNeck.addChild(this.theHead);
-        this.theHead.addChild(this.theMouth);
-        this.theHead.addChild(this.theEarLeft);
-        this.theHead.addChild(this.theEarRight);
+//        this.theBody.addChild(this.theTail);
+//        this.theNeck.addChild(this.theHead);
+//        this.theHead.addChild(this.theMouth);
+//        this.theHead.addChild(this.theEarLeft);
+//        this.theHead.addChild(this.theEarRight);
         this.theFox.addChild(this.theLegFrontLeft);
         this.theFox.addChild(this.theLegFrontRight);
         this.theFox.addChild(this.theLegBackLeft);
@@ -333,9 +333,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            this.neck.show(fox.shape == 2);
-
-            this.body.show(fox.shape == 0);
+//            this.neck.show(fox.shape == 2);
+//
+//            this.body.show(fox.shape == 0);
 
 
             float finalFoxSize = ((3.0F * foxModelData.size * foxModelData.growthAmount) + foxModelData.size) / 4.0F;
@@ -379,34 +379,30 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     private void readInitialAnimationValues(FoxModelData data, FoxPhenotype fox) {
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
-            this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
-            this.theLegFrontLeft.setXRot(-Mth.HALF_PI);
-            this.theLegFrontRight.setXRot(-Mth.HALF_PI);
-            this.theLegBackLeft.setXRot(-Mth.HALF_PI);
-            this.theLegBackRight.setXRot(-Mth.HALF_PI);
+//            this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
         } else {
-            this.theFox.setRotation(map.get("bFox"));
-            this.theFox.setPos(map.get("bFoxPos"));
-            this.theNeck.setRotation(map.get("bNeck"));
-            this.theHead.setRotation(map.get("bHead"));
-            if (map.containsKey("bMouthPos")) {
-                this.theMouth.setPos(map.get("bMouthPos"));
-            } else {
-                this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
-            }
-            this.nose.setRotation(map.get("nose"));
-            this.jaw.setRotation(map.get("jaw"));
-            this.theEarLeft.setRotation(map.get("bEarL"));
-            this.theEarRight.setRotation(map.get("bEarR"));
-            this.theEarLeft.setPos(map.get("bEarLPos"));
-            this.theEarRight.setPos(map.get("bEarRPos"));
-            this.theLegFrontLeft.setRotation(map.get("bLegFL"));
-            this.theLegFrontRight.setRotation(map.get("bLegFR"));
-            this.theLegBackLeft.setRotation(map.get("bLegBL"));
-            this.theLegBackRight.setRotation(map.get("bLegBR"));
-            this.tail0.setRotation(map.get("tail0"));
-            this.tail1.setRotation(map.get("tail1"));
-            this.tail2.setRotation(map.get("tail2"));
+//            this.theFox.setRotation(map.get("bFox"));
+//            this.theFox.setPos(map.get("bFoxPos"));
+//            this.theNeck.setRotation(map.get("bNeck"));
+//            this.theHead.setRotation(map.get("bHead"));
+//            if (map.containsKey("bMouthPos")) {
+//                this.theMouth.setPos(map.get("bMouthPos"));
+//            } else {
+//                this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
+//            }
+//            this.nose.setRotation(map.get("nose"));
+//            this.jaw.setRotation(map.get("jaw"));
+//            this.theEarLeft.setRotation(map.get("bEarL"));
+//            this.theEarRight.setRotation(map.get("bEarR"));
+//            this.theEarLeft.setPos(map.get("bEarLPos"));
+//            this.theEarRight.setPos(map.get("bEarRPos"));
+//            this.theLegFrontLeft.setRotation(map.get("bLegFL"));
+//            this.theLegFrontRight.setRotation(map.get("bLegFR"));
+//            this.theLegBackLeft.setRotation(map.get("bLegBL"));
+//            this.theLegBackRight.setRotation(map.get("bLegBR"));
+//            this.tail0.setRotation(map.get("tail0"));
+//            this.tail1.setRotation(map.get("tail1"));
+//            this.tail2.setRotation(map.get("tail2"));
         }
     }
 
@@ -420,84 +416,84 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.foxModelData = getCreateFoxModelData(entityIn);
 
-        if (this.foxModelData!=null) {
-            FoxPhenotype fox = this.foxModelData.getPhenotype();
-            readInitialAnimationValues(this.foxModelData, fox);
-            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
-
-            if (this.foxModelData.earTwitchTimer <= ageInTicks) {
-                float[] oldRot;
-                boolean flag;
-                if (this.foxModelData.earTwitchSide) {
-                    oldRot = new float[]{this.theEarLeft.getXRot(), this.theEarLeft.getYRot(), this.theEarLeft.getZRot()};
-                    flag = oldRot[0] == this.theEarLeft.getXRot() && oldRot[1] == this.theEarLeft.getYRot() && oldRot[2] == this.theEarLeft.getZRot();
-                } else {
-                    oldRot = new float[]{this.theEarRight.getXRot(), this.theEarRight.getYRot(), this.theEarRight.getZRot()};
-                    flag = oldRot[0] == this.theEarRight.getXRot() && oldRot[1] == this.theEarRight.getYRot() && oldRot[2] == this.theEarRight.getZRot();
-                }
-
-                if (flag) {
-                    this.foxModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
-                    this.foxModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(this.foxModelData.sleeping ? 60 : 30) * 20) + 30;
-                } else {
-                    if (this.foxModelData.earTwitchSide) {
-                        this.theEarLeft.setXRot(this.lerpTo(oldRot[0], this.theEarLeft.getXRot()));
-                        this.theEarLeft.setYRot(this.lerpTo(oldRot[1], this.theEarLeft.getYRot()));
-                        this.theEarLeft.setZRot(this.lerpTo(oldRot[2], this.theEarLeft.getZRot()));
-                    } else {
-                        this.theEarRight.setXRot(this.lerpTo(oldRot[0], this.theEarRight.getXRot()));
-                        this.theEarRight.setYRot(this.lerpTo(oldRot[1], this.theEarRight.getYRot()));
-                        this.theEarRight.setZRot(this.lerpTo(oldRot[2], this.theEarRight.getZRot()));
-                    }
-                }
-            } else if (this.foxModelData.earTwitchTimer <= ageInTicks + 30) {
-                twitchEarAnimation(this.foxModelData.earTwitchSide, (int)ageInTicks);
-            }
-
-            if (this.foxModelData.sleeping && !isMoving) {
-                if (this.theFox.getY() < 22.0F && this.theFox.getZRot() == 0.0F) {
-                    layDownAnimation();
-                } else {
-                    rollOnSideAnimation();
-                }
-            } else {
-
-                if (this.theFox.getY() != 16.0F) {
-                    if (this.theFox.getZRot() == 0.0F) {
-                        standUpAnimation();
-                    } else {
-                        rightSelfAnimation();
-                    }
-                }
-
-                boolean flag = true;
-                if (this.foxModelData.isEating != 0) {
-                    if (this.foxModelData.isEating == -1) {
-                        this.foxModelData.isEating = (int)ageInTicks + 90;
-                    } else if (this.foxModelData.isEating < ageInTicks) {
-                        this.foxModelData.isEating = 0;
-                    }
-                    flag = grazingAnimation(this.foxModelData.isEating - (int)ageInTicks);
-                }
-
-                if (flag) {
-                    if (netHeadYaw == 0 && headPitch == 0) {
-                        moveHeadAnimation();
-                    } else {
-                        headLookingAnimation(netHeadYaw, headPitch);
-                    }
-                }
-
-                if (isMoving) {
-                    walkingLegsAnimation(limbSwing, limbSwingAmount);
-                } else if (this.theFox.getY() == 16.0F ){
-                    standingLegsAnimation();
-                }
-            }
-
-
-            saveAnimationValues(this.foxModelData, fox);
-        }
+//        if (this.foxModelData!=null) {
+//            FoxPhenotype fox = this.foxModelData.getPhenotype();
+//            readInitialAnimationValues(this.foxModelData, fox);
+//            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
+//
+//            if (this.foxModelData.earTwitchTimer <= ageInTicks) {
+//                float[] oldRot;
+//                boolean flag;
+//                if (this.foxModelData.earTwitchSide) {
+//                    oldRot = new float[]{this.theEarLeft.getXRot(), this.theEarLeft.getYRot(), this.theEarLeft.getZRot()};
+//                    flag = oldRot[0] == this.theEarLeft.getXRot() && oldRot[1] == this.theEarLeft.getYRot() && oldRot[2] == this.theEarLeft.getZRot();
+//                } else {
+//                    oldRot = new float[]{this.theEarRight.getXRot(), this.theEarRight.getYRot(), this.theEarRight.getZRot()};
+//                    flag = oldRot[0] == this.theEarRight.getXRot() && oldRot[1] == this.theEarRight.getYRot() && oldRot[2] == this.theEarRight.getZRot();
+//                }
+//
+//                if (flag) {
+//                    this.foxModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
+//                    this.foxModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(this.foxModelData.sleeping ? 60 : 30) * 20) + 30;
+//                } else {
+//                    if (this.foxModelData.earTwitchSide) {
+//                        this.theEarLeft.setXRot(this.lerpTo(oldRot[0], this.theEarLeft.getXRot()));
+//                        this.theEarLeft.setYRot(this.lerpTo(oldRot[1], this.theEarLeft.getYRot()));
+//                        this.theEarLeft.setZRot(this.lerpTo(oldRot[2], this.theEarLeft.getZRot()));
+//                    } else {
+//                        this.theEarRight.setXRot(this.lerpTo(oldRot[0], this.theEarRight.getXRot()));
+//                        this.theEarRight.setYRot(this.lerpTo(oldRot[1], this.theEarRight.getYRot()));
+//                        this.theEarRight.setZRot(this.lerpTo(oldRot[2], this.theEarRight.getZRot()));
+//                    }
+//                }
+//            } else if (this.foxModelData.earTwitchTimer <= ageInTicks + 30) {
+//                twitchEarAnimation(this.foxModelData.earTwitchSide, (int)ageInTicks);
+//            }
+//
+//            if (this.foxModelData.sleeping && !isMoving) {
+//                if (this.theFox.getY() < 22.0F && this.theFox.getZRot() == 0.0F) {
+//                    layDownAnimation();
+//                } else {
+//                    rollOnSideAnimation();
+//                }
+//            } else {
+//
+//                if (this.theFox.getY() != 16.0F) {
+//                    if (this.theFox.getZRot() == 0.0F) {
+//                        standUpAnimation();
+//                    } else {
+//                        rightSelfAnimation();
+//                    }
+//                }
+//
+//                boolean flag = true;
+//                if (this.foxModelData.isEating != 0) {
+//                    if (this.foxModelData.isEating == -1) {
+//                        this.foxModelData.isEating = (int)ageInTicks + 90;
+//                    } else if (this.foxModelData.isEating < ageInTicks) {
+//                        this.foxModelData.isEating = 0;
+//                    }
+//                    flag = grazingAnimation(this.foxModelData.isEating - (int)ageInTicks);
+//                }
+//
+//                if (flag) {
+//                    if (netHeadYaw == 0 && headPitch == 0) {
+//                        moveHeadAnimation();
+//                    } else {
+//                        headLookingAnimation(netHeadYaw, headPitch);
+//                    }
+//                }
+//
+//                if (isMoving) {
+//                    walkingLegsAnimation(limbSwing, limbSwingAmount);
+//                } else if (this.theFox.getY() == 16.0F ){
+//                    standingLegsAnimation();
+//                }
+//            }
+//
+//
+//            saveAnimationValues(this.foxModelData, fox);
+//        }
 
     }
 

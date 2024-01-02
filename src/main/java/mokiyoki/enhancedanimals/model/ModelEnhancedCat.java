@@ -50,7 +50,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart head;
     private static WrappedModelPart neck;
     private static WrappedModelPart earL[] = new WrappedModelPart[3];
-    private static WrappedModelPart earR;
+    private static WrappedModelPart earR[] = new WrappedModelPart[3];
     private static WrappedModelPart bodyFront;
     private static WrappedModelPart bodyBack;
     private static WrappedModelPart legFrontLeft;
@@ -80,6 +80,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -7.0F, Mth.PI*0.15F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.0F, -Mth.PI*0.15F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bBodyF", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bBodyB", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-1.5F, 7.0F, -7.0F));
@@ -119,6 +120,26 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(35, 4)
                         .addBox(0.0F, 0.0F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.offsetAndRotation(1.0F, 0.0F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
+        );
+
+        base.addOrReplaceChild("earR0", CubeListBuilder.create()
+                        .texOffs(16, 4)
+                        .addBox(0.0F, -1.0F, -1.025F, 1,2,1, new CubeDeformation(0.0F, 0.0F, 0.0F))
+                        .texOffs(13, 1)
+                        .addBox(0.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
+                PartPose.rotation(0.0F, Mth.PI*0.15F, 0.0F)
+        );
+        base.addOrReplaceChild("earR1", CubeListBuilder.create()
+                        .texOffs(9, 0)
+                        .addBox(-1.0F, -3.0F, -0.525F, 1,4,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("earR2", CubeListBuilder.create()
+                        .texOffs(5, 1)
+                        .addBox(-1.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F))
+                        .texOffs(2, 4)
+                        .addBox(-1.0F, 0.0F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
+                PartPose.offsetAndRotation(-1.0F, 0.0F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
 
         /**
@@ -285,6 +306,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         theCat = new WrappedModelPart(base, "base");
         theEarL = new WrappedModelPart("bEarL", base);
+        theEarR = new WrappedModelPart("bEarR", base);
         theHead = new WrappedModelPart("bHead", base);
         theNeck = new WrappedModelPart("bNeck", base);
         theBodyFront = new WrappedModelPart("bBodyF", base);
@@ -306,6 +328,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         for (int i = 0; i < 3; i++) {
             earL[i] = new WrappedModelPart("earL"+i, base);
             theEarL.addChild(earL[i]);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            earR[i] = new WrappedModelPart("earR"+i, base);
+            theEarR.addChild(earR[i]);
         }
         head = new WrappedModelPart("head", base);
         neck = new WrappedModelPart("neck", base);
@@ -342,6 +369,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         theCat.addChild(theBodyBack);
         theHead.addChild(theEarL);
+        theHead.addChild(theEarR);
         theNeck.addChild(theHead);
         theBodyBack.addChild(theBodyFront);
         theBodyFront.addChild(theNeck);

@@ -70,7 +70,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CAT;
 public class EnhancedCat extends EnhancedAnimalAbstract {
 
     private static final String[] CAT_TEXTURES_SKINBASE = new String[] {
-            "catbase.png"
+            "base_16x.png"
     };
     private static final int SEXLINKED_GENES_LENGTH = 2;
 

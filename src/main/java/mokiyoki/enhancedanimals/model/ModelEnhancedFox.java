@@ -74,15 +74,15 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offset(0.0F, 13.5F, 0.0F));  // 16.0,-4.0
         base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.25F, Mth.HALF_PI*0.55F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)); // prev 0, -7.0F, -4.0F
+        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -10.0F, 0.0F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
-        base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
+        base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
+        base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, 5.0F));
         base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, 5.0F));
-        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, 10.0F));
+        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(-2.5F, -3.0F, 8.0F));
 
 // THE EYES I GUESS - doesnt have a separate texture yet
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
@@ -95,21 +95,21 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 //HEAD   - currently facing down, needs to be rotated?
         base.addOrReplaceChild("skull", CubeListBuilder.create()
-                        .texOffs(26, 0)
-                        .addBox(-3.5F, 14.75F, -0.25F, 7, 6, 6), // first three = pivot point, second set = box dimensions
-                PartPose.ZERO   // offset(-3.5F, 11.75F, -4.25F)
+                        .texOffs(26, 0)    // neck  -3.5F, -7.0F, -1.0F
+                        .addBox(-3.5F, -2.0F, 0.0F, 7, 6, 6), // first three = block offset or pivot point, second set = box dimensions
+                PartPose.ZERO  // x, y, z
         );
 
         base.addOrReplaceChild("nose", CubeListBuilder.create()
                         .texOffs(33, 36)
-                        .addBox(-1.5F, 14.75F, -5.25F, 3, 3, 4),
+                        .addBox(-1.5F, 0.5F, -4.0F, 3, 3, 4),
                 PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
                         .texOffs(0, 21)
-                        .addBox(-1.5F, 11.75F, -1.25F, 3, 2, 8, new CubeDeformation(-0.25F)),
-                PartPose.offset(0.0F, 0.0F, 0.0F)
+                        .addBox(-1.5F, 2.5F, -3.0F, 3, 2, 8, new CubeDeformation(-0.25F)),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F)
         );
 
 
@@ -134,7 +134,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // NECK
         base.addOrReplaceChild("neck", CubeListBuilder.create()
                         .texOffs(19, 13)
-                        .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7),
+                        .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
 
@@ -148,12 +148,12 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 
 // LEGS
-        base.addOrReplaceChild("legFL", CubeListBuilder.create()
+        base.addOrReplaceChild("legFL", CubeListBuilder.create()  //switch with FR?
                         .texOffs(36, 43)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
         );
-        base.addOrReplaceChild("legFR", CubeListBuilder.create()
+        base.addOrReplaceChild("legFR", CubeListBuilder.create()  //switch with FL?
                         .texOffs(43, 29)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
@@ -177,13 +177,13 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(17, 29)
-                        .addBox(0.0F, 0.0F, 0.0F, 5, 6, 5, new CubeDeformation(-0.1F)),
+                        .addBox(0.0F, 0.0F, 5.0F, 5, 6, 5, new CubeDeformation(-0.1F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(19, 0)  // TEXTURE OFFSET
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2, new CubeDeformation(-0.15F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
-                PartPose.ZERO  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
+                        .addBox(0.0F, 0.0F, 10.0F, 3, 4, 2, new CubeDeformation(-0.15F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
+                PartPose.offset(1.0F, 0.0F, 0.0F)  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
         );
 
         // PartPose.offset for just position offset
@@ -269,9 +269,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         this.theFox.addChild(this.theBody);
         this.theBody.addChild(this.theNeck);
-//        this.theBody.addChild(this.theTail);
-//        this.theNeck.addChild(this.theHead);
-//        this.theHead.addChild(this.theMouth);
+        this.theBody.addChild(this.theTail);
+        this.theNeck.addChild(this.theHead);
+        this.theHead.addChild(this.theMouth);
 //        this.theHead.addChild(this.theEarLeft);
 //        this.theHead.addChild(this.theEarRight);
         this.theFox.addChild(this.theLegFrontLeft);

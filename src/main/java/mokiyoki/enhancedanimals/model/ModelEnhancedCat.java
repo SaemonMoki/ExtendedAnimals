@@ -81,7 +81,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 41.0F, 0.0F));
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 8.0F, 0.0F));
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.25F, -Mth.PI*0.027F, 0.0F, 0.0F));
         base.addOrReplaceChild("bSnout", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.0F, -4.5F, Mth.PI*0.527F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -7.0F, Mth.PI*0.15F, 0.0F, 0.0F));
@@ -89,7 +89,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bBodyF", CubeListBuilder.create(), PartPose.ZERO);
-        base.addOrReplaceChild("bBodyB", CubeListBuilder.create(), PartPose.offset(0.0F, -17.0F, 0.0F));
+        base.addOrReplaceChild("bBodyB", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-1.5F, 7.0F, -7.0F));
         base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(1.5F, 7.0F, -7.0F));
         base.addOrReplaceChild("bLegBFL", CubeListBuilder.create(), PartPose.offset(0.0F, 4.0F, 0.0F));
@@ -474,9 +474,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
+            float scale = 0.75F;
+            mapOfScale.put("base", ModelHelper.createScalings(scale, 0.0F, 1.0F, 0.0F));
             mapOfScale.put("bNeck", ModelHelper.createScalings(1.01F, 0.0F, 0.0F, 0.0F));
-
-            float scale = 0.5F;
 
             poseStack.pushPose();
             poseStack.scale(scale, scale, scale);
@@ -591,7 +591,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     private void standing() {
         theCat.lerpZ(0.0F);
-//TODO        theCat.lerpY(8.0F);
+        theCat.lerpY(8.0F);
         theBodyBack.lerpXRot(0.0F);
         theBodyFront.lerpXRot(0.0F);
         theTail.setXRot(Mth.HALF_PI*-0.5F);
@@ -603,8 +603,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
      *  sit the cat down and return false otherwise
      */
     private boolean sitting() {
-//TODO        theCat.lerpZ(5.0F);
-//TODO        theCat.lerpY(15.0F);
+        theCat.lerpZ(5.0F);
+        theCat.lerpY(15.0F);
         theBodyBack.lerpXRot(-Mth.HALF_PI*0.9F);
         theBodyFront.lerpXRot(Mth.HALF_PI*0.65F);
         theLegFrontLeft.lerpXRot(Mth.HALF_PI*0.25F);

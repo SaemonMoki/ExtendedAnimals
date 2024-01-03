@@ -76,13 +76,13 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.25F, Mth.HALF_PI*0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -10.0F, 0.0F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(3.75F, -4.75F, 3.0F, 0.0F, 0.0F, Mth.HALF_PI*0.5F));  //
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-6.0F, -2.75F, 3.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.5F));
         base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, 5.0F));
         base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, 5.0F));
-        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(-2.5F, -3.0F, 8.0F));
+        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(-2.5F, -3.0F, 6.5F));
 
 // THE EYES I GUESS - doesnt have a separate texture yet
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
@@ -113,12 +113,12 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
 
 
-// EARS   ear pieces located roughly correctly in relation to each other, but overall are not in the right position and rotation
+// EARS
         base.addOrReplaceChild("earL", CubeListBuilder.create()
                         .texOffs(44, 43)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
                         .texOffs(0, 20)
-                        .addBox(2.0F, 2.0F, 0.0F, 1, 2, 2), // lower
+                        .addBox(3.0F, 2.0F, 0.0F, 1, 2, 2), // lower
                 PartPose.ZERO
         );
 
@@ -126,7 +126,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                         .texOffs(40, 12)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
                         .texOffs(0, 0)
-                        .addBox(-2.0F, 2.0F, 0.0F, 1, 2, 2), // lower
+                        .addBox(-1.0F, 2.0F, 0.0F, 1, 2, 2), // lower - move
                 PartPose.ZERO
         );
 
@@ -177,13 +177,13 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(17, 29)
-                        .addBox(0.0F, 0.0F, 5.0F, 5, 6, 5, new CubeDeformation(-0.1F)),
+                        .addBox(0.0F, 0.0F, 4.75F, 5, 6, 5, new CubeDeformation(-0.15F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(19, 0)  // TEXTURE OFFSET
-                        .addBox(0.0F, 0.0F, 10.0F, 3, 4, 2, new CubeDeformation(-0.15F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
-                PartPose.offset(1.0F, 0.0F, 0.0F)  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
+                        .addBox(0.0F, 0.0F, 9.5F, 3, 4, 2, new CubeDeformation(-0.05F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
+                PartPose.offset(1.0F, 0.1F, 0.0F)  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
         );
 
         // PartPose.offset for just position offset
@@ -272,8 +272,8 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         this.theBody.addChild(this.theTail);
         this.theNeck.addChild(this.theHead);
         this.theHead.addChild(this.theMouth);
-//        this.theHead.addChild(this.theEarLeft);
-//        this.theHead.addChild(this.theEarRight);
+        this.theHead.addChild(this.theEarLeft);
+        this.theHead.addChild(this.theEarRight);
         this.theFox.addChild(this.theLegFrontLeft);
         this.theFox.addChild(this.theLegFrontRight);
         this.theFox.addChild(this.theLegBackLeft);

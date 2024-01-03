@@ -53,6 +53,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart neck;
     private static WrappedModelPart snout;
     private static WrappedModelPart nose;
+    private static WrappedModelPart eyeL[] = new WrappedModelPart[3];
+    private static WrappedModelPart eyeR[] = new WrappedModelPart[3];
     private static WrappedModelPart earL[] = new WrappedModelPart[3];
     private static WrappedModelPart earR[] = new WrappedModelPart[3];
     private static WrappedModelPart mouth;
@@ -105,6 +107,42 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 8.0F));
 
         CubeDeformation deformation = new CubeDeformation(-0.5F);
+
+        /**
+         *      Eyes
+         */
+        base.addOrReplaceChild("eyes", CubeListBuilder.create(), PartPose.offset(0.0F, 0.75F, -4.501F));
+        base.addOrReplaceChild("eyeL0", CubeListBuilder.create()
+                        .texOffs(4, 22)
+                        .addBox(-2.0F, -2.0F, 0.0F, 4, 4, 0, new CubeDeformation(-1.0F, -1.0F, 0.0F)),
+                PartPose.offset(1.5F, -0.25F, 0.0F)
+        );
+        base.addOrReplaceChild("eyeR0", CubeListBuilder.create()
+                        .texOffs(0, 28)
+                        .addBox(-2.0F, -2.0F, 0.0F, 4, 4, 0, new CubeDeformation(-1.0F, -1.0F, 0.0F)),
+                PartPose.offset(-1.5F, -0.25F, 0.0F)
+        );
+        base.addOrReplaceChild("eyeL1", CubeListBuilder.create()
+                        .texOffs(4, 19)
+                        .addBox(-2.0F, -2.0F, -0.001F, 4, 4, 0, new CubeDeformation(-1.0F, -1.0F, 0.0F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("eyeR1", CubeListBuilder.create()
+                        .texOffs(0, 25)
+                        .mirror()
+                        .addBox(-2.0F, -2.0F, -0.001F, 4, 4, 0, new CubeDeformation(-1.0F, -1.0F, 0.0F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("eyeL2", CubeListBuilder.create()
+                        .texOffs(12, 19)
+                        .addBox(-1.0F, -1.0F, -0.002F, 2, 2, 0, new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("eyeR2", CubeListBuilder.create()
+                        .texOffs(12, 21)
+                        .addBox(-1.0F, -1.0F, -0.002F, 2, 2, 0, new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.ZERO
+        );
 
         /**
          *      Snout
@@ -353,6 +391,19 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         thePawBackRight = new WrappedModelPart("bPawBR", base);
         theTail = new WrappedModelPart("bTail", base);
 
+        eyes = new WrappedModelPart("eyes", base);
+        for (int i = 0; i < eyeL.length; i++) {
+            eyeL[i] = new WrappedModelPart("eyeL"+i, base);
+            eyeR[i] = new WrappedModelPart("eyeR"+i, base);
+            if (i == 0) {
+                eyes.addChild(eyeL[0]);
+                eyes.addChild(eyeR[0]);
+            } else {
+                eyeL[i-1].addChild(eyeL[i]);
+                eyeR[i-1].addChild(eyeR[i]);
+            }
+        }
+
         mouth = new WrappedModelPart("mouth", base);
         snout = new WrappedModelPart("snout", base);
         for (int i = 0; i < 3; i++) {
@@ -426,6 +477,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theSnout.addChild(nose);
 
         theHead.addChild(head);
+        theHead.addChild(eyes);
 
         theNeck.addChild(neck);
 
@@ -477,6 +529,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             float scale = 0.75F;
             mapOfScale.put("base", ModelHelper.createScalings(scale, 0.0F, 1.0F, 0.0F));
             mapOfScale.put("bNeck", ModelHelper.createScalings(1.01F, 0.0F, 0.0F, 0.0F));
+            if (false /*TODO this makes the cat partially close its eyes for stuff like slow blink*/) {
+                mapOfScale.put("eyes", ModelHelper.createScalings(1.0F, 0.5F/*TODO eye openness percentage*/, 1.0F, 0.0F, 0.0F, 0.0F));
+            }
 
             poseStack.pushPose();
             poseStack.scale(scale, scale, scale);
@@ -490,6 +545,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     protected void saveAnimationValues(CatModelData data) {
         Map<String, Vector3f> map = data.offsets;
+        map.put("bSnoutPos", this.getPosVector(theSnout));
         map.put("bLegBL", this.getRotationVector(theLegBackLeft));
         map.put("bLegBR", this.getRotationVector(theLegBackRight));
         map.put("bLegBBL", this.getRotationVector(theLegBottomBackLeft));
@@ -502,12 +558,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private void setupInitialAnimationValues(CatModelData data) {
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
+            theSnout.setZ(-3.5F);
             theLegBackLeft.setXRot(Mth.PI*-0.05F);
             theLegBackRight.setXRot(Mth.PI*-0.05F);
             theTail.setXRot(Mth.HALF_PI*-0.5F);
             tail[3].setXRot(Mth.HALF_PI*0.5F);
             tail[6].setXRot(Mth.HALF_PI*-0.5F);
         } else {
+            theSnout.setPos(map.get("bSnoutPos"));
             theLegBackLeft.setRotation(map.get("bLegBL"));
             theLegBackRight.setRotation(map.get("bLegBR"));
             theLegBottomBackLeft.setRotation(map.get("bLegBBL"));
@@ -625,18 +683,39 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     }
 
     private void headLookingAnimation(float netHeadYaw, float headPitch) {
-        netHeadYaw = netHeadYaw * 0.017453292F * 0.5F;
-        headPitch = headPitch * 0.017453292F * 0.5F;
+        netHeadYaw *= 0.017453292F;
+        headPitch *= 0.017453292F;
+        float yaw = netHeadYaw * 0.5F;
+        float pitch = headPitch * 0.5F;
 
         float posture = 1.0F;
         if (theBodyBack.getXRot() != 0.0F || theBodyFront.getXRot() != 0.0F) {
-            theNeck.lerpXRot(-posture + (headPitch - (theBodyBack.getXRot() + theBodyFront.getXRot())));
+            theNeck.lerpXRot(-posture + (pitch - (theBodyBack.getXRot() + theBodyFront.getXRot())));
         } else {
-            theNeck.lerpXRot(-posture + headPitch);
+            theNeck.lerpXRot(-posture + pitch);
         }
-        theNeck.lerpYRot(netHeadYaw);
-        theHead.lerpXRot(posture + headPitch);
-        theHead.lerpYRot(this.lerpTo(theHead.getYRot(),netHeadYaw));
+        theNeck.lerpYRot(yaw);
+        theHead.lerpXRot(posture + pitch);
+        theHead.lerpYRot(this.lerpTo(theHead.getYRot(),yaw));
+
+        if (yaw < 0.5F) {
+            if (yaw > -0.5F) {
+                eyeL[1].lerpX(0.0F);
+                eyeL[2].lerpX(0.0F);
+                eyeR[1].lerpX(0.0F);
+                eyeR[2].lerpX(0.0F);
+            } else {
+                eyeL[1].lerpX(0.5F);
+//                eyeR[1].lerpX(0.5F);
+//                eyeL[2].lerpX(-0.5F);
+                eyeR[2].lerpX(0.5F);
+            }
+        } else {
+//            eyeL[1].lerpX(-0.5F);
+            eyeR[1].lerpX(-0.5F);
+            eyeL[2].lerpX(-0.5F);
+//            eyeR[2].lerpX(-0.75F);
+        }
     }
 
     private void articulate() {

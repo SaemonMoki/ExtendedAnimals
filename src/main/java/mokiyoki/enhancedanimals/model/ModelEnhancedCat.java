@@ -31,6 +31,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart theEarL;
     private static WrappedModelPart theEarR;
     private static WrappedModelPart theNeck;
+    private static WrappedModelPart theSnout;
     private static WrappedModelPart theBodyFront;
     private static WrappedModelPart theBodyBack;
     private static WrappedModelPart theLegFrontLeft;
@@ -49,6 +50,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     private static WrappedModelPart head;
     private static WrappedModelPart neck;
+    private static WrappedModelPart snout;
+    private static WrappedModelPart nose;
     private static WrappedModelPart earL[] = new WrappedModelPart[3];
     private static WrappedModelPart earR[] = new WrappedModelPart[3];
     private static WrappedModelPart bodyFront;
@@ -79,6 +82,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -7.0F, Mth.PI*0.15F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.0F, -Mth.PI*0.15F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bSnout", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.0F, -5.5F, Mth.PI*0.527F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bBodyF", CubeListBuilder.create(), PartPose.ZERO);
@@ -140,6 +144,20 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(2, 4)
                         .addBox(-1.0F, 0.0F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.offsetAndRotation(-1.0F, 0.0F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
+        );
+
+        /**
+         *      Snout
+         */
+        base.addOrReplaceChild("snout", CubeListBuilder.create()
+                        .texOffs(6, 7)
+                        .addBox(-1.5F, -1F, -2F, 3, 3, 2, new CubeDeformation(0.0F, 0.0F, 0.0F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("nose", CubeListBuilder.create()
+                        .texOffs(2, 7)
+                        .addBox(-0.5F, -1.1F, -0.55F, 1, 4, 1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
+                PartPose.ZERO
         );
 
         /**
@@ -308,6 +326,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theEarL = new WrappedModelPart("bEarL", base);
         theEarR = new WrappedModelPart("bEarR", base);
         theHead = new WrappedModelPart("bHead", base);
+        theSnout = new WrappedModelPart("bSnout", base);
         theNeck = new WrappedModelPart("bNeck", base);
         theBodyFront = new WrappedModelPart("bBodyF", base);
         theBodyBack = new WrappedModelPart("bBodyB", base);
@@ -336,6 +355,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         }
         head = new WrappedModelPart("head", base);
         neck = new WrappedModelPart("neck", base);
+        snout = new WrappedModelPart("snout", base);
+        nose = new WrappedModelPart("nose", base);
 
         bodyFront = new WrappedModelPart("bodyF", base);
         bodyBack = new WrappedModelPart("bodyB", base);
@@ -370,6 +391,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theCat.addChild(theBodyBack);
         theHead.addChild(theEarL);
         theHead.addChild(theEarR);
+        theHead.addChild(theSnout);
         theNeck.addChild(theHead);
         theBodyBack.addChild(theBodyFront);
         theBodyFront.addChild(theNeck);
@@ -390,6 +412,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         theHead.addChild(head);
         theNeck.addChild(neck);
+        theSnout.addChild(snout);
+        theSnout.addChild(nose);
 
         theBodyFront.addChild(bodyFront);
         theBodyBack.addChild(bodyBack);

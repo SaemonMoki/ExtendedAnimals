@@ -1763,13 +1763,14 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
                 hairTexGroup.addGrouping(redGroup);
 
-                TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (whitebelly != 0) {
                     addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
                 }
                 else if (swallowbelly != 0) {
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", swallowbellyRGB);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
                     if (roan) {
                         addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, this.isBaby() ? 2 : 1, l -> true);
                     }

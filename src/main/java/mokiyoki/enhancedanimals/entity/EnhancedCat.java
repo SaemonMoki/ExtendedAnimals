@@ -64,7 +64,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static mokiyoki.enhancedanimals.init.FoodSerialiser.pigFoodMap;
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.catFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CAT;
 
 public class EnhancedCat extends EnhancedAnimalAbstract {
@@ -107,7 +107,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return pigFoodMap();
+        return catFoodMap();
     }
 
     @Override

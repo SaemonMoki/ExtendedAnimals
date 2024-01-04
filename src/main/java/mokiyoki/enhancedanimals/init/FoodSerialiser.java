@@ -153,6 +153,10 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
         return compiledAnimalFoodMap.get("axolotl");
     }
 
+    public static AnimalFoodMap catFoodMap() {
+        return compiledAnimalFoodMap.get("cat");
+    }
+
     public static class AnimalFoodMap {
 
         private List<FoodMap> foodMapList = new ArrayList<>();

@@ -15,13 +15,13 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel<T> {
@@ -129,7 +129,6 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("eyeR1", CubeListBuilder.create()
                         .texOffs(0, 25)
-                        .mirror()
                         .addBox(-2.0F, -2.0F, -0.001F, 4, 4, 0, new CubeDeformation(-1.0F, -1.0F, 0.0F)),
                 PartPose.ZERO
         );
@@ -526,11 +525,20 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
+//            System.out.println((packedLightIn & 0xFFFF) >> 4); //block light
+//            System.out.println(packedLightIn >> 20 & '\uffff'); //sky light
+
+            float dilation = 1.0F-(Math.max(((packedLightIn & 0xFFFF) >> 4)/15F, ((packedLightIn >> 20 & '\uffff')/15F) * (catModelData.light))*0.75F);
+
             float scale = 0.75F;
             mapOfScale.put("base", ModelHelper.createScalings(scale, 0.0F, 1.0F, 0.0F));
             mapOfScale.put("bNeck", ModelHelper.createScalings(1.01F, 0.0F, 0.0F, 0.0F));
             if (false /*TODO this makes the cat partially close its eyes for stuff like slow blink*/) {
                 mapOfScale.put("eyes", ModelHelper.createScalings(1.0F, 0.5F/*TODO eye openness percentage*/, 1.0F, 0.0F, 0.0F, 0.0F));
+            }
+            if (dilation!=1.0F /*TODO this controls pupil dilation*/) {
+                mapOfScale.put("eyeL2", ModelHelper.createScalings(dilation, 1.0F, 1.0F, (1.0F-dilation)*-0.065F, 0.0F, 0.0F));
+                mapOfScale.put("eyeR2", ModelHelper.createScalings(dilation, 1.0F, 1.0F, (1.0F-dilation)*0.065F, 0.0F, 0.0F));
             }
 
             poseStack.pushPose();
@@ -741,8 +749,33 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
-        animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
+        if (animalModelData.sleepDelay!=0) {
+            ((CatModelData) animalModelData).light = getSkyLight(enhancedAnimal.getLevel());
+        }
     }
+
+    private float getSkyLight(Level level) {
+        float light = 0.0F;
+        if (level.dimensionType().hasSkyLight()) {
+            float time = level.dayTime();
+            if (time > 23000) {
+                light = (time-23000) * 0.0006F;
+            } else if (time < 1000) {
+                light = time * 0.0003F;
+            } else if (time < 11500 ) {
+                light = 1.0F;
+            } else if (time < 13000) {
+                light = (time-11500)/1500F;
+            }
+        }
+        if (level.isThundering()) {
+            light *= 0.3F;
+        } else if (level.isRaining()) {
+            light *= 0.6F;
+        }
+        return light;
+    }
+
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {

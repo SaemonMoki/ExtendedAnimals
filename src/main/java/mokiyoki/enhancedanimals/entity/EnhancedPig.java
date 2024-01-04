@@ -1770,7 +1770,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
                 else if (swallowbelly != 0) {
                     addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", swallowbellyRGB);
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, this.isBaby() ? 2 : 1, l -> true);
+                    if (roan) {
+                        addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, this.isBaby() ? 2 : 1, l -> true);
+                    }
                 }
 
                 int agoutiTex = 0;

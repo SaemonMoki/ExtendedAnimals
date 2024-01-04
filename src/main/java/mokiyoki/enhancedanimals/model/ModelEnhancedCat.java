@@ -526,11 +526,20 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
+            System.out.println((packedLightIn & 0xFFFF) >> 4); //block light
+//            System.out.println(packedLightIn >> 20 & '\uffff'); //sky light
+
+            float dilation = 1.0F - ((((packedLightIn & 0xFFFF) >> 4)/15F)*0.75F);
+
             float scale = 0.75F;
             mapOfScale.put("base", ModelHelper.createScalings(scale, 0.0F, 1.0F, 0.0F));
             mapOfScale.put("bNeck", ModelHelper.createScalings(1.01F, 0.0F, 0.0F, 0.0F));
             if (false /*TODO this makes the cat partially close its eyes for stuff like slow blink*/) {
                 mapOfScale.put("eyes", ModelHelper.createScalings(1.0F, 0.5F/*TODO eye openness percentage*/, 1.0F, 0.0F, 0.0F, 0.0F));
+            }
+            if (dilation!=1.0F /*TODO this controls pupil dilation*/) {
+                mapOfScale.put("eyeL2", ModelHelper.createScalings(dilation, 1.0F, 1.0F, (1.0F-dilation)*-0.065F, 0.0F, 0.0F));
+                mapOfScale.put("eyeR2", ModelHelper.createScalings(dilation, 1.0F, 1.0F, (1.0F-dilation)*0.065F, 0.0F, 0.0F));
             }
 
             poseStack.pushPose();

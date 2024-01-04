@@ -8,7 +8,6 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
 import mokiyoki.enhancedanimals.model.modeldata.FoxModelData;
 import mokiyoki.enhancedanimals.model.modeldata.FoxPhenotype;
-import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -24,45 +23,38 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel<T> {
 
-    protected WrappedModelPart theFox;
+    private static WrappedModelPart theFox;
 
-    protected WrappedModelPart theHead;
-    protected WrappedModelPart theMouth;
-    protected WrappedModelPart theEarLeft;
-    protected WrappedModelPart theEarRight;
-    protected WrappedModelPart theNeck;
-    protected WrappedModelPart theBody;
-    protected WrappedModelPart theLegFrontLeft;
-    protected WrappedModelPart theLegFrontRight;
-    protected WrappedModelPart theLegBackLeft;
-    protected WrappedModelPart theLegBackRight;
-    protected WrappedModelPart theTail;
-
-    protected WrappedModelPart skull;
-    protected WrappedModelPart nose;
-    protected WrappedModelPart jaw;
-
-    protected WrappedModelPart earL;
-
-    protected WrappedModelPart earR;
-
-    protected WrappedModelPart neck;
-
-    protected WrappedModelPart body;
-
-    private WrappedModelPart legFrontLeft;
-    private WrappedModelPart legFrontRight;
-    private WrappedModelPart legBackLeft;
-    private WrappedModelPart legBackRight;
-
-    private WrappedModelPart tail0;
-    private WrappedModelPart tail1;
-    private WrappedModelPart tail2;
+    private static WrappedModelPart theHead;
+    private static WrappedModelPart theSnout;
+    private static WrappedModelPart theMouth;
+    private static WrappedModelPart theEarLeft;
+    private static WrappedModelPart theEarRight;
+    private static WrappedModelPart theNeck;
+    private static WrappedModelPart theBody;
+    private static WrappedModelPart theLegFrontLeft;
+    private static WrappedModelPart theLegFrontRight;
+    private static WrappedModelPart theLegBackLeft;
+    private static WrappedModelPart theLegBackRight;
+    private static WrappedModelPart theTail;
+    private static WrappedModelPart skull;
+    private static WrappedModelPart nose;
+    private static WrappedModelPart jaw;
+    private static WrappedModelPart earL;
+    private static WrappedModelPart earR;
+    private static WrappedModelPart neck;
+    private static WrappedModelPart body;
+    private static WrappedModelPart legFrontLeft;
+    private static WrappedModelPart legFrontRight;
+    private static WrappedModelPart legBackLeft;
+    private static WrappedModelPart legBackRight;
+    private static WrappedModelPart tail0;
+    private static WrappedModelPart tail1;
+    private static WrappedModelPart tail2;
 
 
     private FoxModelData foxModelData;
@@ -74,29 +66,30 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offset(0.0F, 13.5F, 0.0F));  // 16.0,-4.0
         base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.25F, Mth.HALF_PI*0.55F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -10.0F, 0.0F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -6.0F, 3.5F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bSnout", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -6.0F));
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(3.75F, -4.75F, 3.0F, 0.0F, 0.0F, Mth.HALF_PI*0.5F));  //
-        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-6.0F, -2.75F, 3.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.5F));
+        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.5F, -1.3F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI*0.5F));  //
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.5F, -1.3F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.5F));
         base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, 5.0F));
         base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, 5.0F));
-        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(-2.5F, -3.0F, 6.5F));
+        base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, 6.5F));
 
 // THE EYES I GUESS - doesnt have a separate texture yet
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
-                        .texOffs(69, 15)
-                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
-                        .texOffs(49, 15)
-                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.offset(0.0F, 0.0F, 0.0F)
+                        .texOffs(52, 0)
+                        .addBox(1.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))
+                        .texOffs(58, 0)
+                        .addBox(-3.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F)),
+                PartPose.offset(0.0F, 0.0F, -6.0F)
         );
 
 //HEAD   - currently facing down, needs to be rotated?
         base.addOrReplaceChild("skull", CubeListBuilder.create()
                         .texOffs(26, 0)    // neck  -3.5F, -7.0F, -1.0F
-                        .addBox(-3.5F, -2.0F, 0.0F, 7, 6, 6), // first three = block offset or pivot point, second set = box dimensions
+                        .addBox(-3.5F, -2.0F, -6.0F, 7, 6, 6), // first three = block offset or pivot point, second set = box dimensions
                 PartPose.ZERO  // x, y, z
         );
 
@@ -112,21 +105,20 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                 PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F)
         );
 
-
 // EARS
         base.addOrReplaceChild("earL", CubeListBuilder.create()
                         .texOffs(44, 43)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
+                        .addBox(-1.0F, -4.0F, -1.0F, 3, 4, 2)
                         .texOffs(0, 20)
-                        .addBox(3.0F, 2.0F, 0.0F, 1, 2, 2), // lower
+                        .addBox(2.0F, -2.0F, -1.0F, 1, 2, 2), // lower
                 PartPose.ZERO
         );
 
         base.addOrReplaceChild("earR", CubeListBuilder.create()
                         .texOffs(40, 12)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 2)
+                        .addBox(-2.0F, -4.0F, -1.0F, 3, 4, 2)
                         .texOffs(0, 0)
-                        .addBox(-1.0F, 2.0F, 0.0F, 1, 2, 2), // lower - move
+                        .addBox(-3.0F, -2.0F, -1.0F, 1, 2, 2), // lower - move
                 PartPose.ZERO
         );
 
@@ -172,18 +164,18 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // TAIL
         base.addOrReplaceChild("tail0", CubeListBuilder.create()
                         .texOffs(0, 35)
-                        .addBox(0.0F, 0.0F, 0.0F, 5, 6, 5, new CubeDeformation(-0.05F)),
+                        .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(17, 29)
-                        .addBox(0.0F, 0.0F, 4.75F, 5, 6, 5, new CubeDeformation(-0.15F)),
-                PartPose.ZERO
+                        .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
+                PartPose.offset(0.0F, 0.0F, 5.0F)
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(19, 0)  // TEXTURE OFFSET
-                        .addBox(0.0F, 0.0F, 9.5F, 3, 4, 2, new CubeDeformation(-0.05F)), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
-                PartPose.offset(1.0F, 0.1F, 0.0F)  // partposeOFFSET = POSITION  cubeDEFORM = SCALE
+                        .addBox(-1.5F, -2.0F, 0.0F, 3, 4, 2), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
+                PartPose.offset(0.0F, -1.0F, 5.0F)
         );
 
         // PartPose.offset for just position offset
@@ -213,33 +205,19 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         super(modelPart);
         ModelPart base = modelPart.getChild("base");
 
-        /**
-         * "bFox",
-         * "bBody",
-         * "bNeck",
-         * "bHead",
-         * "bMouth"
-         * "bEarL",
-         * "bEarR",
-         * "bLegFL"
-         * "bLegFR"
-         * "bLegBL"
-         * "bLegBR"
-         * "bTail",
-         */
-
-        this.theFox = new WrappedModelPart("bFox", base);
-        this.theBody = new WrappedModelPart("bBody", base);
-        this.theNeck = new WrappedModelPart("bNeck", base);
-        this.theHead = new WrappedModelPart("bHead", base);
-        this.theMouth = new WrappedModelPart("bMouth", base);
-        this.theEarLeft = new WrappedModelPart("bEarL", base);
-        this.theEarRight = new WrappedModelPart("bEarR", base);
-        this.theLegFrontLeft = new WrappedModelPart("bLegFL", base);
-        this.theLegFrontRight = new WrappedModelPart("bLegFR", base);
-        this.theLegBackLeft = new WrappedModelPart("bLegBL", base);
-        this.theLegBackRight = new WrappedModelPart("bLegBR", base);
-        this.theTail = new WrappedModelPart("bTail", base);
+        theFox = new WrappedModelPart("bFox", base);
+        theBody = new WrappedModelPart("bBody", base);
+        theNeck = new WrappedModelPart("bNeck", base);
+        theHead = new WrappedModelPart("bHead", base);
+        theSnout = new WrappedModelPart("bSnout", base);
+        theMouth = new WrappedModelPart("bMouth", base);
+        theEarLeft = new WrappedModelPart("bEarL", base);
+        theEarRight = new WrappedModelPart("bEarR", base);
+        theLegFrontLeft = new WrappedModelPart("bLegFL", base);
+        theLegFrontRight = new WrappedModelPart("bLegFR", base);
+        theLegBackLeft = new WrappedModelPart("bLegBL", base);
+        theLegBackRight = new WrappedModelPart("bLegBR", base);
+        theTail = new WrappedModelPart("bTail", base);
 
         /**
          *
@@ -247,63 +225,64 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         this.eyes = new WrappedModelPart("eyes", base);
 
-        this.skull = new WrappedModelPart("skull", base);
-        this.nose = new WrappedModelPart("nose", base);
-        this.jaw = new WrappedModelPart("jaw", base);
+        skull = new WrappedModelPart("skull", base);
+        nose = new WrappedModelPart("nose", base);
+        jaw = new WrappedModelPart("jaw", base);
 
-        this.earL = new WrappedModelPart("earL", base);
-        this.earR = new WrappedModelPart("earR", base);
+        earL = new WrappedModelPart("earL", base);
+        earR = new WrappedModelPart("earR", base);
 
-        this.neck = new WrappedModelPart("neck", base);
+        neck = new WrappedModelPart("neck", base);
 
-        this.body = new WrappedModelPart("body1", base);
+        body = new WrappedModelPart("body1", base);
 
-        this.legFrontLeft = new WrappedModelPart("legFL", base);
-        this.legFrontRight = new WrappedModelPart("legFR", base);
-        this.legBackLeft = new WrappedModelPart("legBL", base);
-        this.legBackRight = new WrappedModelPart("legBR", base);
+        legFrontLeft = new WrappedModelPart("legFL", base);
+        legFrontRight = new WrappedModelPart("legFR", base);
+        legBackLeft = new WrappedModelPart("legBL", base);
+        legBackRight = new WrappedModelPart("legBR", base);
 
-        this.tail0 = new WrappedModelPart("tail0", base);
-        this.tail1 = new WrappedModelPart("tail1", base);
-        this.tail2 = new WrappedModelPart("tail2", base);
+        tail0 = new WrappedModelPart("tail0", base);
+        tail1 = new WrappedModelPart("tail1", base);
+        tail2 = new WrappedModelPart("tail2", base);
 
-        this.theFox.addChild(this.theBody);
-        this.theBody.addChild(this.theNeck);
-        this.theBody.addChild(this.theTail);
-        this.theNeck.addChild(this.theHead);
-        this.theHead.addChild(this.theMouth);
-        this.theHead.addChild(this.theEarLeft);
-        this.theHead.addChild(this.theEarRight);
-        this.theFox.addChild(this.theLegFrontLeft);
-        this.theFox.addChild(this.theLegFrontRight);
-        this.theFox.addChild(this.theLegBackLeft);
-        this.theFox.addChild(this.theLegBackRight);
+        theFox.addChild(theBody);
+        theBody.addChild(theNeck);
+        theBody.addChild(theTail);
+        theNeck.addChild(theHead);
+        theHead.addChild(theSnout);
+        theSnout.addChild(theMouth);
+        theHead.addChild(theEarLeft);
+        theHead.addChild(theEarRight);
+        theFox.addChild(theLegFrontLeft);
+        theFox.addChild(theLegFrontRight);
+        theFox.addChild(theLegBackLeft);
+        theFox.addChild(theLegBackRight);
 
-        this.theHead.addChild(this.skull);
-        this.theHead.addChild(this.eyes);
+        theHead.addChild(skull);
+        theHead.addChild(eyes);
 
-        this.theEarLeft.addChild(this.earL);
+        theEarLeft.addChild(earL);
 
-        this.theEarRight.addChild(this.earR);
+        theEarRight.addChild(earR);
 
-        this.theMouth.addChild(this.nose);
-        this.theMouth.addChild(this.jaw);
+        theSnout.addChild(nose);
+        theMouth.addChild(jaw);
 
-        this.theNeck.addChild(this.neck);
+        theNeck.addChild(neck);
 
-        this.theBody.addChild(this.body);
+        theBody.addChild(body);
 
-        this.theLegFrontLeft.addChild(this.legFrontLeft);
+        theLegFrontLeft.addChild(legFrontLeft);
 
-        this.theLegFrontRight.addChild(this.legFrontRight);
+        theLegFrontRight.addChild(legFrontRight);
 
-        this.theLegBackLeft.addChild(this.legBackLeft);
+        theLegBackLeft.addChild(legBackLeft);
 
-        this.theLegBackRight.addChild(this.legBackRight);
+        theLegBackRight.addChild(legBackRight);
 
-        this.theTail.addChild(this.tail0);
-        this.tail0.addChild(this.tail1);
-        this.tail1.addChild(this.tail2);
+        theTail.addChild(tail0);
+        tail0.addChild(tail1);
+        tail1.addChild(tail2);
 
         /**
          *      Equipment
@@ -311,7 +290,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         this.collar = new WrappedModelPart("collar", base);
 
-        this.theNeck.addChild(this.collar);
+        theNeck.addChild(this.collar);
 
     }
 
@@ -344,7 +323,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
             poseStack.scale(finalFoxSize, finalFoxSize, finalFoxSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalFoxSize, 0.0F);
 
-            gaRender(this.theFox, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);  //error here?
+            gaRender(theFox, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);  //error here?
 
             poseStack.popPose();
         }
@@ -354,26 +333,26 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
     protected void saveAnimationValues(FoxModelData data, FoxPhenotype fox) {
         Map<String, Vector3f> map = data.offsets;
-        map.put("bFox", this.getRotationVector(this.theFox));
-        map.put("bFoxPos", this.getPosVector(this.theFox));
-        map.put("nose", this.getRotationVector(this.nose));
-        map.put("jaw", this.getRotationVector(this.jaw));
-        map.put("bNeck", this.getRotationVector(this.theNeck));
-        map.put("bHead", this.getRotationVector(this.theHead));
+        map.put("bFox", this.getRotationVector(theFox));
+        map.put("bFoxPos", this.getPosVector(theFox));
+        map.put("nose", this.getRotationVector(nose));
+        map.put("jaw", this.getRotationVector(jaw));
+        map.put("bNeck", this.getRotationVector(theNeck));
+        map.put("bHead", this.getRotationVector(theHead));
         if (data.growthAmount == 1.0F && !map.containsKey("bMouthPos")) {
-            map.put("bMouthPos",this.getPosVector(this.theMouth));
+            map.put("bMouthPos",this.getPosVector(theMouth));
         }
-        map.put("bEarL", this.getRotationVector(this.theEarLeft));
-        map.put("bEarR", this.getRotationVector(this.theEarRight));
-        map.put("bEarLPos", this.getPosVector(this.theEarLeft));
-        map.put("bEarRPos", this.getPosVector(this.theEarRight));
-        map.put("bLegFL", this.getRotationVector(this.theLegFrontLeft));
-        map.put("bLegFR", this.getRotationVector(this.theLegFrontRight));
-        map.put("bLegBL", this.getRotationVector(this.theLegBackLeft));
-        map.put("bLegBR", this.getRotationVector(this.theLegBackRight));
-        map.put("tail0", this.getRotationVector(this.tail0));
-        map.put("tail1", this.getRotationVector(this.tail1));
-        map.put("tail2", this.getRotationVector(this.tail2));
+        map.put("bEarL", this.getRotationVector(theEarLeft));
+        map.put("bEarR", this.getRotationVector(theEarRight));
+        map.put("bEarLPos", this.getPosVector(theEarLeft));
+        map.put("bEarRPos", this.getPosVector(theEarRight));
+        map.put("bLegFL", this.getRotationVector(theLegFrontLeft));
+        map.put("bLegFR", this.getRotationVector(theLegFrontRight));
+        map.put("bLegBL", this.getRotationVector(theLegBackLeft));
+        map.put("bLegBR", this.getRotationVector(theLegBackRight));
+        map.put("tail0", this.getRotationVector(tail0));
+        map.put("tail1", this.getRotationVector(tail1));
+        map.put("tail2", this.getRotationVector(tail2));
     }
 
     private void readInitialAnimationValues(FoxModelData data, FoxPhenotype fox) {
@@ -416,211 +395,52 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.foxModelData = getCreateFoxModelData(entityIn);
 
-//        if (this.foxModelData!=null) {
-//            FoxPhenotype fox = this.foxModelData.getPhenotype();
-//            readInitialAnimationValues(this.foxModelData, fox);
-//            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
-//
-//            if (this.foxModelData.earTwitchTimer <= ageInTicks) {
-//                float[] oldRot;
-//                boolean flag;
-//                if (this.foxModelData.earTwitchSide) {
-//                    oldRot = new float[]{this.theEarLeft.getXRot(), this.theEarLeft.getYRot(), this.theEarLeft.getZRot()};
-//                    flag = oldRot[0] == this.theEarLeft.getXRot() && oldRot[1] == this.theEarLeft.getYRot() && oldRot[2] == this.theEarLeft.getZRot();
-//                } else {
-//                    oldRot = new float[]{this.theEarRight.getXRot(), this.theEarRight.getYRot(), this.theEarRight.getZRot()};
-//                    flag = oldRot[0] == this.theEarRight.getXRot() && oldRot[1] == this.theEarRight.getYRot() && oldRot[2] == this.theEarRight.getZRot();
-//                }
-//
-//                if (flag) {
-//                    this.foxModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
-//                    this.foxModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(this.foxModelData.sleeping ? 60 : 30) * 20) + 30;
-//                } else {
-//                    if (this.foxModelData.earTwitchSide) {
-//                        this.theEarLeft.setXRot(this.lerpTo(oldRot[0], this.theEarLeft.getXRot()));
-//                        this.theEarLeft.setYRot(this.lerpTo(oldRot[1], this.theEarLeft.getYRot()));
-//                        this.theEarLeft.setZRot(this.lerpTo(oldRot[2], this.theEarLeft.getZRot()));
-//                    } else {
-//                        this.theEarRight.setXRot(this.lerpTo(oldRot[0], this.theEarRight.getXRot()));
-//                        this.theEarRight.setYRot(this.lerpTo(oldRot[1], this.theEarRight.getYRot()));
-//                        this.theEarRight.setZRot(this.lerpTo(oldRot[2], this.theEarRight.getZRot()));
-//                    }
-//                }
-//            } else if (this.foxModelData.earTwitchTimer <= ageInTicks + 30) {
-//                twitchEarAnimation(this.foxModelData.earTwitchSide, (int)ageInTicks);
-//            }
-//
-//            if (this.foxModelData.sleeping && !isMoving) {
-//                if (this.theFox.getY() < 22.0F && this.theFox.getZRot() == 0.0F) {
-//                    layDownAnimation();
-//                } else {
-//                    rollOnSideAnimation();
-//                }
-//            } else {
-//
-//                if (this.theFox.getY() != 16.0F) {
-//                    if (this.theFox.getZRot() == 0.0F) {
-//                        standUpAnimation();
-//                    } else {
-//                        rightSelfAnimation();
-//                    }
-//                }
-//
-//                boolean flag = true;
-//                if (this.foxModelData.isEating != 0) {
-//                    if (this.foxModelData.isEating == -1) {
-//                        this.foxModelData.isEating = (int)ageInTicks + 90;
-//                    } else if (this.foxModelData.isEating < ageInTicks) {
-//                        this.foxModelData.isEating = 0;
-//                    }
-//                    flag = grazingAnimation(this.foxModelData.isEating - (int)ageInTicks);
-//                }
-//
-//                if (flag) {
-//                    if (netHeadYaw == 0 && headPitch == 0) {
-//                        moveHeadAnimation();
-//                    } else {
-//                        headLookingAnimation(netHeadYaw, headPitch);
-//                    }
-//                }
-//
-//                if (isMoving) {
-//                    walkingLegsAnimation(limbSwing, limbSwingAmount);
-//                } else if (this.theFox.getY() == 16.0F ){
-//                    standingLegsAnimation();
-//                }
-//            }
-//
-//
-//            saveAnimationValues(this.foxModelData, fox);
-//        }
+        if (this.foxModelData!=null) {
+            FoxPhenotype fox = this.foxModelData.getPhenotype();
+            readInitialAnimationValues(this.foxModelData, fox);
+            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-    }
-
-    private boolean grazingAnimation(float ticks) {
-        if (ticks < 50) {
-            float neckRot = this.theNeck.getXRot();
-            if (neckRot < Mth.HALF_PI*0.1F) {
-                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.2F));
-            } else if (neckRot < Mth.HALF_PI*0.17F){
-                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.2F));
-                this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.1F));
-                this.nose.setXRot(this.lerpTo(this.nose.getXRot(), Mth.HALF_PI*0.0F));
-                this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.1F));
-            } else {
-                float loop = (float) Math.cos(ticks*0.5F);
-                if (loop > 0) {
-                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.2F));
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.3F));
-                    this.nose.setXRot(this.lerpTo(this.nose.getXRot(), Mth.HALF_PI*0.0F));
-                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
+            if (this.foxModelData.earTwitchTimer <= ageInTicks) {
+                if (theEarLeft.getXRot() != 0F || theEarRight.getXRot() != 0F) {
+                    theEarLeft.setXRot(lerpTo(0.1F, theEarLeft.getXRot(), 0.0F));
+                    theEarRight.setXRot(lerpTo(0.1F,theEarRight.getXRot(), 0.0F));
+                    theEarLeft.setYRot(lerpTo(0.15F, theEarLeft.getYRot(), 0.0F));
+                    theEarRight.setYRot(lerpTo(0.15F, theEarRight.getYRot(), 0.0F));
                 } else {
-                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.2F));
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.1F));
-                    this.nose.setXRot(this.lerpTo(this.nose.getXRot(), Mth.HALF_PI*-0.2F));
-                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.05F));
+                    this.foxModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
+                    this.foxModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(this.foxModelData.sleeping ? 60 : 30) * 20) + 30;
+                }
+            } else if (this.foxModelData.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(this.foxModelData.earTwitchSide, (int)ageInTicks);
+            }
+
+            if (this.foxModelData.sleeping && !isMoving) {
+                layDownAnimation();
+            } else {
+                standUpAnimation();
+
+                if (netHeadYaw == 0 && headPitch == 0) {
+                    headDefault();
+                } else {
+                    headLookingAnimation(netHeadYaw, headPitch);
+                }
+
+                if (isMoving) {
+                    walkingLegsAnimation(limbSwing, limbSwingAmount);
+                } else {
+                    standingLegsAnimation();
                 }
             }
-            return false;
-        } else {
-            return true;
-        }
-    }
 
-    private void rightSelfAnimation() {
-        float zRot = this.theFox.getZRot();
-        this.theFox.setZRot(zRot > 0.0F ? Math.max(zRot - 0.01F, 0.0F) : Math.min(zRot + 0.01F, 0.0F));
-        if (this.theFox.getZRot()!=0.0F) {
-            this.theFox.setX(this.lerpTo(0.02F, this.theFox.getX(), 0.0F));
-            this.theFox.setY(this.lerpTo(0.02F, this.theFox.getY(), 22.0F));
-            this.theFox.setXRot(this.lerpTo(0.02F, this.theFox.getXRot(), Mth.HALF_PI));
-            this.theLegFrontLeft.setXRot(this.lerpTo(0.02F, this.theLegFrontLeft.getXRot(), 0.0F));
-            this.theLegFrontLeft.setYRot(this.lerpTo(0.02F, this.theLegFrontLeft.getYRot(), 0.0F));
-            this.theLegFrontRight.setXRot(this.lerpTo(0.02F, this.theLegFrontRight.getXRot(), 0.0F));
-            this.theLegFrontRight.setYRot(this.lerpTo(0.02F, this.theLegFrontRight.getYRot(), 0.0F));
-            this.theLegBackLeft.setXRot(this.lerpTo(0.02F, this.theLegBackLeft.getXRot(), -Mth.PI));
-            this.theLegBackLeft.setYRot(this.lerpTo(0.02F, this.theLegBackLeft.getYRot(), 0.0F));
-            this.theLegBackRight.setXRot(this.lerpTo(0.02F, this.theLegBackRight.getXRot(), -Mth.PI));
-            this.theLegBackRight.setYRot(this.lerpTo(0.02F, this.theLegBackRight.getYRot(), 0.0F));
-        } else {
-            this.theFox.setX(0.0F);
-            this.theFox.setY(22.0F);
-            this.theFox.setXRot(Mth.HALF_PI);
-            this.theLegFrontLeft.setXRot(0.0F);
-            this.theLegFrontLeft.setYRot(0.0F);
-            this.theLegFrontRight.setXRot(0.0F);
-            this.theLegFrontRight.setYRot(0.0F);
-            this.theLegBackLeft.setXRot(-Mth.PI);
-            this.theLegBackLeft.setYRot(0.0F);
-            this.theLegBackRight.setXRot(-Mth.PI);
-            this.theLegBackRight.setYRot(0.0F);
+            saveAnimationValues(this.foxModelData, fox);
         }
-    }
 
-    private void standUpAnimation() {
-        if (this.theFox.getY() < 20.0F) {
-            this.theFox.setY(this.lerpTo(0.02F,this.theFox.getY(), 16.0F));
-            this.theFox.setXRot(this.lerpTo(0.02F,this.theFox.getXRot(), Mth.HALF_PI));
-            this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), -Mth.HALF_PI));
-            this.theLegBackLeft.setXRot(this.lerpTo(0.05F,this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegBackRight.setXRot(this.lerpTo(0.05F,this.theLegBackRight.getXRot(), -Mth.HALF_PI));
-        } else {
-            this.theFox.setY(this.lerpTo(0.02F,this.theFox.getY(), 19.8F));
-            this.theFox.setXRot(this.lerpTo(0.02F,this.theFox.getXRot(), Mth.HALF_PI*0.85F));
-            this.theLegFrontLeft.setXRot(this.lerpTo(0.05F,this.theLegFrontLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegFrontRight.setXRot(this.lerpTo(0.05F,this.theLegFrontRight.getXRot(), -Mth.HALF_PI));
-            this.theLegBackLeft.setXRot(this.lerpTo(0.05F, this.theLegBackLeft.getXRot(), -Mth.HALF_PI * 1.85F));
-            this.theLegBackRight.setXRot(this.lerpTo(0.05F, this.theLegBackRight.getXRot(), -Mth.HALF_PI * 1.85F));
-        }
     }
 
     private void layDownAnimation() {
-        if (this.theFox.getY() >= 20.0F) {
-            this.theFox.setY(this.lerpTo(0.02F, this.theFox.getY(), 22.2F));
-            this.theFox.setXRot(this.lerpTo(0.02F, this.theFox.getXRot(), Mth.HALF_PI));
-            this.theLegFrontLeft.setXRot(this.lerpTo(0.02F, this.theLegFrontLeft.getXRot(), 0.0F));
-            this.theLegFrontRight.setXRot(this.lerpTo(0.02F, this.theLegFrontRight.getXRot(), 0.0F));
-            this.theLegBackLeft.setXRot(this.lerpTo(0.02F, this.theLegBackLeft.getXRot(), -Mth.PI));
-            this.theLegBackRight.setXRot(this.lerpTo(0.02F, this.theLegBackRight.getXRot(), -Mth.PI));
-        } else {
-            this.theFox.setY(this.lerpTo(0.02F, this.theFox.getY(), 20.2F));
-            this.theFox.setXRot(this.lerpTo(0.02F, this.theFox.getXRot(), Mth.HALF_PI*1.15F));
-            this.theLegFrontLeft.setXRot(this.lerpTo(0.02F, this.theLegFrontLeft.getXRot(), -Mth.HALF_PI * 0.4F));
-            this.theLegFrontRight.setXRot(this.lerpTo(0.02F, this.theLegFrontRight.getXRot(), -Mth.HALF_PI * 0.4F));
-            this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
-        }
     }
-    private void rollOnSideAnimation() {
-        if (this.theFox.getZRot() == 0.0F) {
-            this.theFox.setZRot(ThreadLocalRandom.current().nextBoolean() ? 0.0001F : -0.0001F);
-        }
-        if (this.theFox.getZRot() > 0.0F) {
-            this.theFox.setZRot(this.lerpTo(this.theFox.getZRot(), Mth.HALF_PI));
-            this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), Mth.HALF_PI * 0.05F));
-            this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), Mth.HALF_PI * 0.1F));
-            this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI * 0.75F));
-            this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), -Mth.HALF_PI));
-            this.theLegFrontRight.setYRot(this.lerpTo(this.theLegFrontRight.getYRot(), -Mth.HALF_PI * 0.25F));
-            this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI * 1.25F));
-            this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
-            this.theLegBackRight.setYRot(this.lerpTo(this.theLegBackRight.getYRot(), -Mth.HALF_PI * 0.25F));
 
-        } else {
-            this.theFox.setZRot(this.lerpTo(this.theFox.getZRot(), -Mth.HALF_PI));
-            this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), -Mth.HALF_PI * 0.05F));
-            this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), -Mth.HALF_PI * 0.1F));
-            this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegFrontLeft.setYRot(this.lerpTo(this.theLegFrontLeft.getYRot(), Mth.HALF_PI * 0.25F));
-            this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), -Mth.HALF_PI * 0.75F));
-            this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
-            this.theLegBackLeft.setYRot(this.lerpTo(this.theLegBackLeft.getYRot(), Mth.HALF_PI * 0.25F));
-            this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI * 1.25F));
-        }
-        this.theFox.setY(this.lerpTo(this.theFox.getY(), 20.0F));
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
+    private void standUpAnimation() {
     }
 
     private void headLookingAnimation(float netHeadYaw, float headPitch) {
@@ -629,45 +449,51 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         float lookRotX = Math.min((headPitch * 0.65F), 0.0F);
         float lookRotZ = netHeadYaw * 0.2F;
 
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), headPitch - lookRotX));
-        this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), -lookRotZ));
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), lookRotX));
-        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), -limit(netHeadYaw - lookRotZ, Mth.HALF_PI * 0.75F)));
-        this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), 0.0F));
+        theNeck.lerpXRot((Mth.HALF_PI*0.55F) + (headPitch - lookRotX));
+        theNeck.lerpYRot(limit(netHeadYaw - lookRotZ, Mth.HALF_PI * 0.75F));
+        theHead.lerpXRot((-Mth.HALF_PI*0.55F) + lookRotX);
+        theHead.lerpYRot(lookRotZ);
     }
 
-    private void moveHeadAnimation() {
-        this.lerpPart(this.theNeck, 0.0F, 0.0F, 0.0F);
-        this.lerpPart(this.theHead, 0.0F, 0.0F, 0.0F);
-        this.nose.setXRot(this.lerpTo(this.nose.getXRot(), 0.0F));
-        this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), 0.0F));
+    private void headDefault() {
+        theNeck.lerpXRot(Mth.HALF_PI*0.55F);
+        theNeck.lerpYRot(0.0F);
+        theHead.lerpXRot(-Mth.HALF_PI*0.55F);
+        theHead.lerpYRot(0.0F);
+        theHead.lerpZRot(0.0F);
     }
 
     private void walkingLegsAnimation(float limbSwing, float limbSwingAmount) {
-        float f = -Mth.HALF_PI + ((Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount);
-        float f1 = -Mth.HALF_PI + (Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount);
+        float f = (Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount;
+        float f1 = Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount;
 
-        this.theLegFrontLeft.setXRot(f);
-        this.theLegFrontRight.setXRot(f1);
-        this.theLegBackLeft.setXRot(f);
-        this.theLegBackRight.setXRot(f1);
+        theLegFrontLeft.setXRot(f);
+        theLegFrontRight.setXRot(f1);
+        theLegBackLeft.setXRot(f);
+        theLegBackRight.setXRot(f1);
     }
 
     private void standingLegsAnimation() {
-        this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI));
-        this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), -Mth.HALF_PI));
-        this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
-        this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
+        theLegFrontLeft.lerpXRot(0.0F);
+        theLegFrontRight.lerpXRot(0.0F);
+        theLegBackLeft.lerpXRot(0.0F);
+        theLegBackRight.lerpXRot(0.0F);
     }
 
     private void twitchEarAnimation(boolean side, float ticks) {
         boolean direction = Math.cos(ticks*0.8F) > 0;
+        //TODO this animation needs to be redone for foxes, but demonstrates both how it is done and also that the rotation points are in the correct place
         if (side) {
-            this.theEarLeft.setXRot(this.theEarLeft.getXRot() + (direction ? 0.07F : -0.07F));
-            this.theEarLeft.setZRot(this.theEarLeft.getZRot() + (direction ? 0.05F : -0.05F));
+            theEarLeft.lerpXRot(Mth.HALF_PI * 0.5F * (direction?-1F:0.5F));
+            theEarLeft.lerpYRot(Mth.HALF_PI * 0.25F * (direction?-1F:0.5F));
+            theEarRight.lerpXRot(0.0F);
+            theEarRight.lerpYRot(0.0F);
+            theEarRight.setYRot(lerpTo(0.15F, theEarRight.getYRot(), 0.0F));
         } else {
-            this.theEarRight.setXRot(this.theEarRight.getXRot() + (direction ? -0.07F : 0.07F));
-            this.theEarRight.setZRot(this.theEarRight.getZRot() + (direction ? -0.05F : 0.05F));
+            theEarRight.setXRot(lerpTo(0.15F, theEarRight.getXRot(), Mth.HALF_PI * 0.5F * (direction?-1F:0.5F)));
+            theEarRight.setYRot(lerpTo(0.15F, theEarRight.getYRot(), Mth.HALF_PI * 0.25F * (direction?1F:-0.5F)));
+            theEarLeft.setXRot(lerpTo(0.15F, theEarLeft.getXRot(), 0.0F));
+            theEarLeft.setYRot(lerpTo(0.15F, theEarLeft.getYRot(), 0.0F));
         }
     }
 

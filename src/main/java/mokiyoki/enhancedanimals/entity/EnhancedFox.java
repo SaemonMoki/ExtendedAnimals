@@ -70,14 +70,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 
-public class EnhancedFox extends EnhancedAnimalChestedAbstract {
+public class EnhancedFox extends EnhancedAnimalAbstract {
 
-    //avalible UUID spaces : [ S X X 3 X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-
-    // temporarily using sheep as a base to work off of
-
-
-    private static final EntityDataAccessor<Byte> DYE_COLOUR = SynchedEntityData.<Byte>defineId(EnhancedFox.class, EntityDataSerializers.BYTE);
+    //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     // Texture Layers?
     // Base coat - red, gold, cross x2, silver x2
@@ -100,10 +95,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
 
   //  private static final String[] FOX_TEXTURES_SKIN = new String[] {
   //          "skin_pink.png"
-  //  };
-
-  //  private static final String[] FOX_TEXTURES_HOOVES = new String[] {
-  //          "hooves_black.png"
   //  };
 
  //   private static final String[] FOX_TEXTURES_FUR = new String[] {
@@ -146,26 +137,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
         return foxFoodMap();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static int getDyeRgb(DyeColor dyeColour) {
-        return Colouration.getABGRFromBGR(dyeColour.getTextureDiffuseColors());
-    }
-
-    /**
-     * Gets the wool color of this sheep.
-     */
-    public DyeColor getFleeceDyeColour() {
-        return DyeColor.byId(this.entityData.get(DYE_COLOUR) & 15);
-    }
-
-    /**
-     * Sets the wool color of this sheep
-     */
-    public void setFleeceDyeColour(DyeColor colour) {
-        byte b0 = this.entityData.get(DYE_COLOUR);
-        this.entityData.set(DYE_COLOUR, (byte)(b0 & 240 | colour.getId() & 15));
     }
 
     // check once model rendering works
@@ -223,7 +194,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     // used for stuff like entity variations (shrooms and blooms), coat length, etc
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DYE_COLOUR, Byte.valueOf((byte)0));
     }
 
     protected String getSpecies() {
@@ -248,47 +218,12 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
 
     @Override
     protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
-        if (itemStack.is(Items.WATER_BUCKET) && this.getFleeceDyeColour() != DyeColor.WHITE) {
-            player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-        } else {
-            super.usePlayerItem(player, hand, itemStack);
-        }
+        super.usePlayerItem(player, hand, itemStack);
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-
-        if (!this.level.isClientSide) {
-            if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
-                if (hunger <= 24000) {
-                    if (--this.timeUntilNextMilk <= 0) {
-                        int milk = getMilkAmount();
-                        if (milk < (6*this.maxBagSize)) {
-                            milk++;
-                            setMilkAmount(milk);
-                            this.timeUntilNextMilk = this.random.nextInt(this.random.nextInt(8000) + 4000);
-
-                            float milkBagSize = milk / (6*this.maxBagSize);
-
-                            this.setBagSize((milkBagSize*(this.maxBagSize/3.0F))+(this.maxBagSize*2.0F/3.0F));
-                        }
-                    }
-                }
-
-                if (this.timeUntilNextMilk == 0) {
-                    this.lactationTimer++;
-                } else if (getMilkAmount() <= (6*this.maxBagSize) && this.lactationTimer >= -36000) {
-                    this.lactationTimer--;
-                }
-
-                if (this.lactationTimer >= 0) {
-                    setMilkAmount(-1);
-                    setEntityStatus(EntityState.ADULT.toString());
-                }
-            }
-        }
-
     }
 
     @Override
@@ -296,21 +231,12 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
         if (this.hunger <= 36000) {
             this.timeForGrowth++;
         }
-
-        int age = this.getEnhancedAnimalAge();
-
-
     }
 
     @Override
     protected void lethalGenes() {
         int[] gene = this.genetics.getAutosomalGenes();
-    //    if(gene[68] == 2 && gene[69] == 2) {
     //        this.remove(RemovalReason.KILLED);
-    //    }
-    //    if (gene[100] == 2 && gene[101] == 2) {
-    //        this.remove(RemovalReason.KILLED);
-    //    }
     }
 
     @Override
@@ -368,7 +294,7 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
 
     @Override
     protected boolean canLactate() {
-        return true;
+        return false;
     }
 
     protected SoundEvent getAmbientSound() {
@@ -387,7 +313,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(SoundEvents.SHEEP_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
             this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 1.0F);
         }
@@ -401,56 +326,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        float size = this.getAnimalSize();
-        int age = this.getEnhancedAnimalAge();
-        int meatDrop = this.random.nextInt(4)+1;
-        boolean woolDrop = false;
-        boolean leatherDrop = false;
-        int meatChanceMod;
-
-
-
-        if (age < 72000) {
-            if (age >= 54000) {
-                meatDrop = meatDrop - 1;
-                meatChanceMod = (age-54000)/180;
-            } else if (age >= 36000) {
-                meatDrop = meatDrop - 2;
-                meatChanceMod = (age-36000)/180;
-            } else if (age >= 18000) {
-                meatDrop = meatDrop - 3;
-                meatChanceMod = (age-18000)/180;
-            } else {
-                meatDrop = meatDrop - 4;
-                meatChanceMod = age/180;
-            }
-
-            int i = this.random.nextInt(100);
-            if (meatChanceMod > i) {
-                meatDrop++;
-            }
-
-            if (woolDrop || leatherDrop) {
-                i = this.random.nextInt(100);
-                if (age/720 > i) {
-                    woolDrop = false;
-                    leatherDrop = false;
-                }
-            }
-        }
-
-        if (meatDrop < 0) {
-            meatDrop = 0;
-        }
-
-        if (this.isOnFire()){
-            ItemStack cookedMuttonStack = new ItemStack(Items.COOKED_MUTTON, meatDrop);
-            this.spawnAtLocation(cookedMuttonStack);
-        }else {
-            ItemStack muttonStack = new ItemStack(Items.MUTTON, meatDrop);
-            this.spawnAtLocation(muttonStack);
-
-        }
     }
 
 
@@ -595,9 +470,7 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
             //TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_FUR, fur, null);
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);
-            //addTextureToAnimalTextureGrouping(detailGroup, "hooves_black.png");
             //addTextureToAnimalTextureGrouping(detailGroup, "eyes_black.png");
-            //addTextureToAnimalTextureGrouping(detailGroup,"chests.png");
             //parentGroup.addGrouping(detailGroup);
 
             this.setTextureGrouping(parentGroup);  // finalizes texture grouping
@@ -637,8 +510,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
 
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putByte("Colour", (byte)this.getFleeceDyeColour().getId());
-
     }
 
     /**
@@ -646,15 +517,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
      */
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-
-
-
-        this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
-
-//        configureAI();
-        if (!compound.getString("breed").isEmpty()) {
-
-        }
     }
 
     @Nullable
@@ -666,8 +528,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     @Override
     public void setInitialDefaults() {
         super.setInitialDefaults();
-    //    setInitialCoat();
-
     }
 
     @Override
@@ -679,10 +539,6 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new FoxGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
-
-   // public void setInitialCoat() {
-
-    //}
 
     @Override
     protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
@@ -697,48 +553,9 @@ public class EnhancedFox extends EnhancedAnimalChestedAbstract {
     @Override
     public void initilizeAnimalSize() {
         int[] genes = this.genetics.getAutosomalGenes();
-        float size = 0.4F;
+        float size = 1.0F;
 
-        //(56/57) 1-2 minature [wildtype, minature]
-        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
-        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
-        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
-        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
-
-        size = size - (genes[58] - 1)*0.01F;
-        size = size - (genes[59] - 1)*0.01F;
-        size = size + (genes[60] - 1)*0.0075F;
-        size = size + (genes[61] - 1)*0.0075F;
-
-        if (genes[56] == 2 || genes[57] == 2) {
-            if (genes[56] == 2 && genes[57] == 2) {
-                size = size * 0.8F;
-            } else {
-                size = size * 0.9F;
-            }
-        }
-
-        if (genes[62] == 2 || genes[63] == 2) {
-            size = size * 0.975F;
-        } else if (genes[62] == 3 || genes[63] == 3) {
-            size = size * 0.925F;
-        } else {
-            size = size * 1.025F;
-        }
-
-        if (genes[64] == 2 || genes[65] == 2) {
-            size = size * 1.05F;
-        } else if (genes[64] == 3 || genes[65] == 3) {
-            size = size * 1.1F;
-        }
-
-        if (size > 0.6F) {
-            size = 0.6F;
-        }
-
-        size = size + 0.43F;
-
-        // [ 0.52325 - 1.1 ]
+        //TODO [ range goes here ]
         this.setAnimalSize(size);
     }
 

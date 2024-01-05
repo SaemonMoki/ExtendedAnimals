@@ -135,7 +135,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("body1", CubeListBuilder.create()
                         .texOffs(36, 27)
                         .addBox(-3.0F, -6.5F, -3.5F, 6, 13, 7), // first three are pivot point, second set is box dimensions
-                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)    // x , y , z
+                PartPose.rotation(Mth.HALF_PI, 0.0F, 0.0F) // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
         );
 
 
@@ -164,18 +164,18 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // TAIL
         base.addOrReplaceChild("tail0", CubeListBuilder.create()
                         .texOffs(3, 29)
-                        .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
-                PartPose.ZERO
+                        .addBox(-2.5F, -6.0F, -2.5F, 5, 6, 5),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F,-Mth.HALF_PI, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(41, 13)
-                        .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
-                PartPose.offset(0.0F, 0.0F, 5.0F)
+                        .addBox(-2.5F, -6.0F, -2.5F, 5, 6, 5),
+                PartPose.offset(0.0F, -6.0F, 0.0F)
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(32, 27)  // TEXTURE OFFSET
-                        .addBox(-1.5F, -2.0F, 0.0F, 3, 4, 2), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
-                PartPose.offset(0.0F, -1.0F, 5.0F)
+                        .addBox(-1.5F, -2.0F, -0.0F, 3, 4, 2), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
+                PartPose.offsetAndRotation(0.0F, -6.0F, 0.0F, Mth.HALF_PI, 0.0F, 0.0F)
         );
 
         // PartPose.offset for just position offset

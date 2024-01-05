@@ -94,7 +94,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     public void setOrderedToSit(boolean sitting) {
-        orderedToSit = sitting;
+        this.orderedToSit = sitting;
     }
 
     @Nullable
@@ -209,11 +209,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             tame(entityPlayer);
         }
 
-        if (isTame()) {
-            InteractionResult interactionresult = super.mobInteract(entityPlayer, hand);
-            if (!interactionresult.consumesAction()) {
-                this.setOrderedToSit(!this.isOrderedToSit());
-            }
+        if (isTame() && itemStack.isEmpty()) {
+            this.setOrderedToSit(!this.isOrderedToSit());
+//            InteractionResult interactionresult = super.mobInteract(entityPlayer, hand);
+//            if (!interactionresult.consumesAction()) {
+//                this.setOrderedToSit(!this.isOrderedToSit());
+//            }
         }
 
         return super.mobInteract(entityPlayer, hand);

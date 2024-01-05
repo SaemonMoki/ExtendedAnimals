@@ -528,7 +528,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 //            System.out.println((packedLightIn & 0xFFFF) >> 4); //block light
 //            System.out.println(packedLightIn >> 20 & '\uffff'); //sky light
 
-            float dilation = 1.0F-(Math.max(((packedLightIn & 0xFFFF) >> 4)/15F, ((packedLightIn >> 20 & '\uffff')/15F) * (catModelData.light))*0.75F);
+            float dilation = 1.0F-(Math.max(((packedLightIn & 0xFFFF) >> 4)/15F, ((packedLightIn >> 20 & '\uffff')/15F) * (catModelData.light))*0.8F);
 
             float scale = 0.75F;
             mapOfScale.put("base", ModelHelper.createScalings(scale, 0.0F, 1.0F, 0.0F));
@@ -610,7 +610,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                     standing();
                     legsWalking(limbSwing, limbSwingAmount);
                 } else {
-                    if (false/*TODO - entityIn.isInSittingPose()*/) {
+                    if (entityIn.isOrderedToSit()) {
                         sitting();
                     } else {
                         standing();
@@ -627,17 +627,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     }
 
     private void legsDefault() {
-        theLegFrontLeft.setXRot(this.lerpTo(theLegFrontLeft.getXRot(), 0.0F));
-        theLegFrontRight.setXRot(this.lerpTo(theLegFrontRight.getXRot(), 0.0F));
+        theLegFrontLeft.lerpXRot(0.0F);
+        theLegFrontRight.lerpXRot(0.0F);
 
-        theLegBackLeft.setXRot(this.lerpTo(theLegBackLeft.getXRot(), 0.0F));
-        theLegBackRight.setXRot(this.lerpTo(theLegBackRight.getXRot(), 0.0F));
+        theLegBackLeft.lerpXRot(0.0F);
+        theLegBackRight.lerpXRot(0.0F);
 
-        theLegBottomFrontLeft.setXRot(this.lerpTo(theLegBottomFrontLeft.getXRot(), 0.0F));
-        theLegBottomFrontRight.setXRot(this.lerpTo(theLegBottomFrontRight.getXRot(), 0.0F));
+        theLegBottomFrontLeft.lerpXRot(0.0F);
+        theLegBottomFrontRight.lerpXRot(0.0F);
 
-        theLegBottomBackLeft.setXRot(this.lerpTo(theLegBottomBackLeft.getXRot(), 0.0F));
-        theLegBottomBackRight.setXRot(this.lerpTo(theLegBottomBackRight.getXRot(), 0.0F));
+        theLegBottomBackLeft.lerpXRot(0.0F);
+        theLegBottomBackRight.lerpXRot(0.0F);
     }
     private void legsWalking(float limbSwing, float limbSwingAmount) {
         float f = (Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount;
@@ -648,11 +648,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theLegBackLeft.setXRot(f);
         theLegBackRight.setXRot(f1);
 
-        theLegBottomFrontLeft.setXRot(this.lerpTo(theLegBottomFrontLeft.getXRot(), 0.0F));
-        theLegBottomFrontRight.setXRot(this.lerpTo(theLegBottomFrontRight.getXRot(), 0.0F));
-
-        theLegBottomBackLeft.setXRot(this.lerpTo(theLegBottomBackLeft.getXRot(), 0.0F));
-        theLegBottomBackRight.setXRot(this.lerpTo(theLegBottomBackRight.getXRot(), 0.0F));
+        theLegBottomBackLeft.lerpXRot(0.0F);
+        theLegBottomBackRight.lerpXRot(0.0F);
     }
 
     private void standing() {
@@ -660,7 +657,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theCat.lerpY(8.0F);
         theBodyBack.lerpXRot(0.0F);
         theBodyFront.lerpXRot(0.0F);
+        theLegFrontLeft.lerpZ(-7.0F);
+        theLegFrontRight.lerpZ(-7.0F);
+        theLegBottomBackLeft.lerpXRot(Mth.HALF_PI*0.25F);
+        theLegBottomBackRight.lerpXRot(Mth.HALF_PI*0.25F);
         theTail.setXRot(Mth.HALF_PI*-0.5F);
+        theLegBottomBackLeft.lerpXRot(0.0F);
+        theLegBottomBackRight.lerpXRot(0.0F);
+        theLegBottomBackLeft.lerpZ(4.0F);
+        theLegBottomBackRight.lerpZ(4.0F);
+        theLegBottomBackLeft.lerpY(8.0F);
+        theLegBottomBackRight.lerpY(8.0F);
     }
 
     /**
@@ -670,13 +677,21 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
      */
     private boolean sitting() {
         theCat.lerpZ(5.0F);
-        theCat.lerpY(15.0F);
+        theCat.lerpY(12.0F);
         theBodyBack.lerpXRot(-Mth.HALF_PI*0.9F);
-        theBodyFront.lerpXRot(Mth.HALF_PI*0.65F);
+        theBodyFront.lerpXRot(Mth.HALF_PI*0.5F);
         theLegFrontLeft.lerpXRot(Mth.HALF_PI*0.25F);
         theLegFrontRight.lerpXRot(Mth.HALF_PI*0.25F);
+        theLegFrontLeft.lerpZ(-6.0F);
+        theLegFrontRight.lerpZ(-6.0F);
         theLegBackLeft.lerpXRot(Mth.HALF_PI*-0.5F);
         theLegBackRight.lerpXRot(Mth.HALF_PI*-0.5F);
+        theLegBottomBackLeft.lerpXRot(Mth.HALF_PI*0.4F);
+        theLegBottomBackRight.lerpXRot(Mth.HALF_PI*0.4F);
+        theLegBottomBackLeft.lerpZ(4.0F);
+        theLegBottomBackRight.lerpZ(4.0F);
+        theLegBottomBackLeft.lerpY(-1.0F);
+        theLegBottomBackRight.lerpY(-1.0F);
         theTail.lerpXRot(Mth.HALF_PI*0.25F);
         return false;
     }
@@ -714,15 +729,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 eyeR[2].lerpX(0.0F);
             } else {
                 eyeL[1].lerpX(0.5F);
-//                eyeR[1].lerpX(0.5F);
-//                eyeL[2].lerpX(-0.5F);
                 eyeR[2].lerpX(0.5F);
             }
         } else {
-//            eyeL[1].lerpX(-0.5F);
             eyeR[1].lerpX(-0.5F);
             eyeL[2].lerpX(-0.5F);
-//            eyeR[2].lerpX(-0.75F);
         }
     }
 
@@ -749,7 +760,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
-        if (animalModelData.sleepDelay!=0) {
+        if (animalModelData.sleepDelay!=0 && animalModelData.clientGameTime%200==0) {
             ((CatModelData) animalModelData).light = getSkyLight(enhancedAnimal.getLevel());
         }
     }

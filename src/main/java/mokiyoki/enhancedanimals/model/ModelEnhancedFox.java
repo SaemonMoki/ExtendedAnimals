@@ -77,47 +77,47 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, 5.0F));
         base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, 6.5F));
 
-// THE EYES I GUESS - doesnt have a separate texture yet
+// THE EYES
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
-                        .texOffs(52, 0)
-                        .addBox(1.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))
-                        .texOffs(58, 0)
-                        .addBox(-3.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F)),
+                        .texOffs(58, 58)
+                        .addBox(2.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))  // left
+                        .texOffs(58, 55)
+                        .addBox(-3.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F)),  // right
                 PartPose.offset(0.0F, 0.0F, -6.0F)
         );
 
 //HEAD   - currently facing down, needs to be rotated?
         base.addOrReplaceChild("skull", CubeListBuilder.create()
-                        .texOffs(26, 0)    // neck  -3.5F, -7.0F, -1.0F
+                        .texOffs(24, 49)    // neck  -3.5F, -7.0F, -1.0F
                         .addBox(-3.5F, -2.0F, -6.0F, 7, 6, 6), // first three = block offset or pivot point, second set = box dimensions
                 PartPose.ZERO  // x, y, z
         );
 
         base.addOrReplaceChild("nose", CubeListBuilder.create()
-                        .texOffs(33, 36)
+                        .texOffs(12, 45)
                         .addBox(-1.5F, 0.5F, -4.0F, 3, 3, 4),
                 PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
-                        .texOffs(0, 21)
+                        .texOffs(43, 55)
                         .addBox(-1.5F, 2.5F, -3.0F, 3, 2, 8, new CubeDeformation(-0.25F)),
                 PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F)
         );
 
 // EARS
         base.addOrReplaceChild("earL", CubeListBuilder.create()
-                        .texOffs(44, 43)
+                        .texOffs(13, 1)
                         .addBox(-1.0F, -4.0F, -1.0F, 3, 4, 2)
-                        .texOffs(0, 20)
+                        .texOffs(1, 57)
                         .addBox(2.0F, -2.0F, -1.0F, 1, 2, 2), // lower
                 PartPose.ZERO
         );
 
         base.addOrReplaceChild("earR", CubeListBuilder.create()
-                        .texOffs(40, 12)
+                        .texOffs(1, 1)
                         .addBox(-2.0F, -4.0F, -1.0F, 3, 4, 2)
-                        .texOffs(0, 0)
+                        .texOffs(1, 52)
                         .addBox(-3.0F, -2.0F, -1.0F, 1, 2, 2), // lower - move
                 PartPose.ZERO
         );
@@ -125,7 +125,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 // NECK
         base.addOrReplaceChild("neck", CubeListBuilder.create()
-                        .texOffs(19, 13)
+                        .texOffs(2, 10)
                         .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
@@ -133,7 +133,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 // BODY
         base.addOrReplaceChild("body1", CubeListBuilder.create()
-                        .texOffs(0, 0)
+                        .texOffs(36, 27)
                         .addBox(-3.0F, -6.5F, -3.5F, 6, 13, 7), // first three are pivot point, second set is box dimensions
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F) // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
         );
@@ -141,39 +141,39 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 // LEGS
         base.addOrReplaceChild("legFL", CubeListBuilder.create()  //switch with FR?
-                        .texOffs(36, 43)
+                        .texOffs(46, 0)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legFR", CubeListBuilder.create()  //switch with FL?
-                        .texOffs(43, 29)
+                        .texOffs(55, 0)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
-                        .texOffs(20, 40)
+                        .texOffs(27, 0)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.offset(0.0F, -0.5F, 0.0F)
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
-                        .texOffs(28, 43)
+                        .texOffs(36, 0)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 8, 2),
                 PartPose.offset(0.0F, -0.5F, 0.0F)
         );
 
 // TAIL
         base.addOrReplaceChild("tail0", CubeListBuilder.create()
-                        .texOffs(0, 35)
+                        .texOffs(3, 29)
                         .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("tail1", CubeListBuilder.create()
-                        .texOffs(17, 29)
+                        .texOffs(41, 13)
                         .addBox(-2.5F, -3.0F, 0.0F, 5, 6, 5),
                 PartPose.offset(0.0F, 0.0F, 5.0F)
         );
         base.addOrReplaceChild("tail2", CubeListBuilder.create()
-                        .texOffs(19, 0)  // TEXTURE OFFSET
+                        .texOffs(32, 27)  // TEXTURE OFFSET
                         .addBox(-1.5F, -2.0F, 0.0F, 3, 4, 2), //addbox = PIVOT or BLOCK OFFSET F, SIZE XYZ
                 PartPose.offset(0.0F, -1.0F, 5.0F)
         );
@@ -186,11 +186,11 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // Equipment stuff
 
         base.addOrReplaceChild("collar", CubeListBuilder.create()
-                        .texOffs(80, 1)
+                        .texOffs(0, 54)
                         .addBox(-5.5F, -5.5F, -3.0F, 11, 2, 11, new CubeDeformation(0.001F))
-                        .texOffs(80, 4)
+                        .texOffs(24, 38)
                         .addBox(0.0F, -5.0F, -5.0F, 0, 3, 3)
-                        .texOffs(116, 6)
+                        .texOffs(1, 42)
                         .addBox(-1.5F, -5.0F, -6.25F, 3, 3, 3),
                 PartPose.offset(0.0F, -1.0F, -7.5F)
         );

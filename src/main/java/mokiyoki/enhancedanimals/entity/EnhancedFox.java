@@ -83,7 +83,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     // paws - pads (pink or dark)
 
     private static final String[] FOX_TEXTURES_BASECOAT = new String[] {
-            "", "foxred.png", "fox_gold1.png", "fox_silver1.png", "fox_cross1.png", "fox_silvercross1.png", "fox_silver2.png", "fox_silver3.png"
+            "", "red_1.png", "gold_1.png", "cross_1.png", "cross_2.png", "silver_1.png", "silver_2.png", "silver_3.png"
     };
 
  //   private static final String[] FOX_TEXTURES_PATTERN = new String[] {
@@ -425,7 +425,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             // 1 = homo Dom, 2 = het, 3 = homo Rec
             if (extension == 1 && agouti == 1 ) {
-                basecoat = 1;  // AAEE - red wildtype          foxred.png
+                basecoat = 1;  // AAEE - red wildtype          red1.png
             } else if (extension == 1 && agouti == 2) {
                 basecoat = 2;  // AAEe - gold                  gold1.png
             } else if (extension == 1 && agouti == 3) {
@@ -433,7 +433,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             } else if (extension == 2 && agouti == 1) {
                 basecoat = 4;  // AaEE - alaskan cross         cross1.png
             } else if (extension == 2 && agouti == 2) {
-                basecoat = 5;  // AaEe - blended cross         silvercross1.png
+                basecoat = 5;  // AaEe - blended cross         cross2.png
             } else if (extension == 2 && agouti == 3) {
                 basecoat = 6;  // Aaee - sub-standard silver   silver2.png
             } else if (extension == 3 && agouti == 1) {

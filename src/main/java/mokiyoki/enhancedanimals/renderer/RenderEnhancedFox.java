@@ -20,7 +20,7 @@ public class RenderEnhancedFox extends MobRenderer<EnhancedFox, ModelEnhancedFox
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_FOX_TEXTURE_LOCATION = "eanimod:textures/entities/fox/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/fox/foxbase2.png");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/fox/base1.png");
     public static final ModelLayerLocation FOX_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "fox"), "fox_layer");
 
     public RenderEnhancedFox(EntityRendererProvider.Context renderManager)

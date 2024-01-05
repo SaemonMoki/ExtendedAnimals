@@ -135,7 +135,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("body1", CubeListBuilder.create()
                         .texOffs(36, 27)
                         .addBox(-3.0F, -6.5F, -3.5F, 6, 13, 7), // first three are pivot point, second set is box dimensions
-                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F) // prev .offset(-3.0F, -6.0F, 3.0F)   // x , y , z
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)    // x , y , z
         );
 
 

@@ -18,6 +18,11 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Wolf;
@@ -25,14 +30,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -61,13 +58,53 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.catFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CAT;
 
-public class EnhancedCat extends EnhancedAnimalAbstract {
+public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnimalTamableInterface {
+
+    protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(EnhancedCat.class, EntityDataSerializers.OPTIONAL_UUID);
+    protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(EnhancedCat.class, EntityDataSerializers.BYTE);
+
+    private boolean orderedToSit;
+
+    public Animal getAnimal() {
+        return this;
+    }
+    public boolean isTame() {
+        return (this.entityData.get(DATA_FLAGS_ID) & 4) != 0;
+    }
+    public boolean isOrderedToSit() {
+        return this.orderedToSit;
+    }
+
+    public void setTame(boolean tameness) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+        if (tameness) {
+            this.entityData.set(DATA_FLAGS_ID, (byte)(b0 | 4));
+        } else {
+            this.entityData.set(DATA_FLAGS_ID, (byte)(b0 & -5));
+        }
+
+        //this.reassessTameGoals();
+    }
+
+    public void setOrderedToSit(boolean sitting) {
+        orderedToSit = sitting;
+    }
+
+    @Nullable
+    public UUID getOwnerUUID() {
+        return this.entityData.get(DATA_OWNERUUID_ID).orElse((UUID)null);
+    }
+
+    public void setOwnerUUID(@Nullable UUID uuid) {
+        this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
+    }
 
     private static final String[] CAT_TEXTURES_SKINBASE = new String[] {
             "teststripes.png"
@@ -137,6 +174,8 @@ public class EnhancedCat extends EnhancedAnimalAbstract {
 
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(DATA_FLAGS_ID, (byte)0);
+        this.entityData.define(DATA_OWNERUUID_ID, Optional.empty());
     }
 
     @Override
@@ -164,15 +203,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract {
         if (item == Items.NAME_TAG) {
             itemStack.interactLivingEntity(entityPlayer, this, hand);
             return InteractionResult.SUCCESS;
-        }else if ((!this.isBaby() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
-            //enhancedegg egg eating
-            decreaseHunger(100);
-            if (!entityPlayer.getAbilities().instabuild) {
-                itemStack.shrink(1);
-            } else {
-                if (itemStack.getCount() > 1) {
-                    itemStack.shrink(1);
-                }
+        }
+
+        if ( (isBreedingItem(itemStack)) && !isTame()) {
+            tame(entityPlayer);
+        }
+
+        if (isTame()) {
+            InteractionResult interactionresult = super.mobInteract(entityPlayer, hand);
+            if (!interactionresult.consumesAction()) {
+                this.setOrderedToSit(!this.isOrderedToSit());
             }
         }
 
@@ -354,11 +394,15 @@ public class EnhancedCat extends EnhancedAnimalAbstract {
      */
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-
+        addTamableSaveData(compound);
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
     }
 
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        readTamableSaveData(compound);
+    }
 
     @Nullable
     @Override

@@ -62,8 +62,8 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     // this part creates the bone groups
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO); // prev .offset(0.0F, 0.0F, 0.0F)
-        base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offset(0.0F, 13.5F, 0.0F));  // 16.0,-4.0
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO);
+        base.addOrReplaceChild("bFox", CubeListBuilder.create(), PartPose.offset(0.0F, 13.5F, 0.0F));
         base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.25F, Mth.HALF_PI*0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -6.0F, 3.5F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
@@ -86,9 +86,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                 PartPose.offset(0.0F, 0.0F, -6.0F)
         );
 
-//HEAD   - currently facing down, needs to be rotated?
+//HEAD
         base.addOrReplaceChild("skull", CubeListBuilder.create()
-                        .texOffs(24, 49)    // neck  -3.5F, -7.0F, -1.0F
+                        .texOffs(24, 49)
                         .addBox(-3.5F, -2.0F, -6.0F, 7, 6, 6), // first three = block offset or pivot point, second set = box dimensions
                 PartPose.ZERO  // x, y, z
         );
@@ -100,9 +100,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
-                        .texOffs(43, 55)
-                        .addBox(-1.5F, 2.5F, -3.0F, 3, 2, 8, new CubeDeformation(-0.25F)),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F)
+                        .texOffs(43, 55) // correct texture offset
+                        .addBox(-1.5F, 2.5F, -3.0F, 3, 8, 2, new CubeDeformation(-0.25F)), // originally -1.5F, 2.5F, -3.0F
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F) // originally 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F
         );
 
 // EARS

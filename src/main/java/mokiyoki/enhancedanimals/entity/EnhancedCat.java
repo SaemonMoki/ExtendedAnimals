@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.*;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
-import mokiyoki.enhancedanimals.entity.genetics.PigGeneticsInitialiser;
+import mokiyoki.enhancedanimals.entity.genetics.CatGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -425,12 +425,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @Override
     protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
-        return new PigGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        return new CatGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
     public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
-        return new PigGeneticsInitialiser().generateWithBreed(world, pos, breed);
+        return new CatGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
     @Override

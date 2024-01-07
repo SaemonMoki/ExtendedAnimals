@@ -138,7 +138,9 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
 
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
-
+        for (int i = 12; i < 32; i++) {
+            autosomalGenes[i] = (0);
+        }
         // M1-5 are recessive and are all indistinguishable phenotypically
         // Long Hair [Shorthair+, M1, M2, M3, M4, M5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -158,6 +160,17 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             } else {
                 autosomalGenes[i] = (1);
             }
+        }
+        //Furnishings (temporary gene for testing)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[42] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[43] = (1);
         }
 
         // Fur Density [1-10]

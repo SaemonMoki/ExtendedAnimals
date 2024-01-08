@@ -53,6 +53,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart neck;
     private static WrappedModelPart snout;
     private static WrappedModelPart nose;
+    private static WrappedModelPart cheekFluffLeft;
+    private static WrappedModelPart cheekFluffRight;
     private static WrappedModelPart eyeL[] = new WrappedModelPart[3];
     private static WrappedModelPart eyeR[] = new WrappedModelPart[3];
     private static WrappedModelPart earL[] = new WrappedModelPart[3];
@@ -216,6 +218,18 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(10, 7)
                         .addBox(-3.0F, -2.0F, -5.0F, 6, 6, 6, deformation),
                 PartPose.ZERO
+        );
+
+        base.addOrReplaceChild("cheekFluffL", CubeListBuilder.create()
+                        .texOffs(64, 123)
+                        .addBox(0F, -1.5F, 0F,4, 5, 0, new CubeDeformation(0F, 0F, 0F)),
+                PartPose.offsetAndRotation(2.5F, 0.0F, -4.5F, 0.0F, -Mth.PI*0.25F, 0.0F)
+        );
+
+        base.addOrReplaceChild("cheekFluffR", CubeListBuilder.create()
+                        .texOffs(56, 123)
+                        .addBox(-4F, -1.5F, 0F,4, 5, 0, new CubeDeformation(0F, 0F, 0F)),
+                PartPose.offsetAndRotation(-2.5F, 0.0F, -4.5F, 0.0F, Mth.PI*0.25F, 0.0F)
         );
 
         /**
@@ -427,6 +441,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         neck = new WrappedModelPart("neck", base);
         nose = new WrappedModelPart("nose", base);
 
+        cheekFluffLeft = new WrappedModelPart("cheekFluffL", base);
+        cheekFluffRight = new WrappedModelPart("cheekFluffR", base);
+
         bodyFront = new WrappedModelPart("bodyF", base);
         bodyFurFront = new WrappedModelPart("bodyFurF", base);
         bodyBack = new WrappedModelPart("bodyB", base);
@@ -489,6 +506,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         theHead.addChild(head);
         theHead.addChild(eyes);
+
+        theHead.addChild(cheekFluffLeft);
+        theHead.addChild(cheekFluffRight);
 
         theNeck.addChild(neck);
 
@@ -557,6 +577,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             this.bodyFurFront.show(cat.furnishings);
             this.bodyFurBack.show(cat.furnishings);
+            this.cheekFluffLeft.show(cat.furnishings);
+            this.cheekFluffRight.show(cat.furnishings);
 
             float headScale = 1F + cat.furLength*0.15F;
             float neckScale = 1F + cat.furLength*0.25F;

@@ -79,9 +79,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 // THE EYES
         base.addOrReplaceChild("eyes", CubeListBuilder.create()
-                        .texOffs(58, 58)
-                        .addBox(2.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))  // left
                         .texOffs(58, 55)
+                        .addBox(1.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))  // left
+                        .texOffs(57, 58)
                         .addBox(-3.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F)),  // right
                 PartPose.offset(0.0F, 0.0F, -6.0F)
         );
@@ -100,9 +100,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         );
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
-                        .texOffs(43, 55) // correct texture offset
-                        .addBox(-1.5F, 2.5F, -3.0F, 3, 8, 2, new CubeDeformation(-0.25F)), // originally -1.5F, 2.5F, -3.0F
-                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F) // originally 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F
+                        .texOffs(42, 54)
+                        .addBox(-1.5F, 2.5F, -7.0F, 3, 2, 8, new CubeDeformation(-0.25F)), // originally -1.5F, 2.5F, -3.0F
+                PartPose.offsetAndRotation(0.0F, 0.0F, 3.5F, -Mth.HALF_PI*0.05F, 0.0F, 0.0F) // originally 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F
         );
 
 // EARS

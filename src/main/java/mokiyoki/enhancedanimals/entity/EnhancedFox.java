@@ -13,9 +13,7 @@ import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.genetics.FoxGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.FoxModelData;
@@ -26,7 +24,6 @@ import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -39,16 +36,10 @@ import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AirItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -464,14 +455,14 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             addTextureToAnimalTextureGrouping(foundationGroup, FOX_TEXTURES_BASECOAT, basecoat, l -> l != 0);  // create basecoat group
             hairGroup.addGrouping(foundationGroup); // foundation added to hair
 
-
             parentGroup.addGrouping(hairGroup);  // hair added to parent
 
-            //TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_FUR, fur, null);
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);
-            //addTextureToAnimalTextureGrouping(detailGroup, "eyes_black.png");
-            //parentGroup.addGrouping(detailGroup);
+            addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_left.png", getColour(this.growthAmount()));
+            addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_right.png", getColour(this.growthAmount()));
+            parentGroup.addGrouping(detailGroup);
 
             this.setTextureGrouping(parentGroup);  // finalizes texture grouping
         }
@@ -479,6 +470,10 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
     @Override
     protected void setAlphaTexturePaths() {}
+
+    private int getColour(float age) {
+        return age < 0.2F ? 9608151 : 14712338;
+    }
 
     @Override
     public Colouration getRgb() {

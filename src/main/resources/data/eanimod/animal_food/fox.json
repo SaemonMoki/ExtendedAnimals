@@ -2,11 +2,6 @@
   "replaceDefault": false,
   "values": [
     {
-      "registryName": "minecraft:pumpkin",
-      "hungerRestored": 1000,
-      "isBreedingItem": false
-    },
-    {
       "registryName": "minecraft:apple",
       "hungerRestored": 1000,
       "isBreedingItem": false
@@ -29,7 +24,7 @@
     },
     {
       "registryName": "minecraft:rotten_flesh",
-      "hungerRestored": 200,
+      "hungerRestored": 75,
       "isBreedingItem": false
     },
     {
@@ -64,8 +59,13 @@
     },
     {
       "registryName": "minecraft:cooked_rabbit",
-      "hungerRestored": 1500,
-      "isBreedingItem": false
+      "hungerRestored": 2500,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:rabbit",
+      "hungerRestored": 2000,
+      "isBreedingItem": true
     },
     {
       "registryName": "eanimod:cookedchicken_darkbig",

@@ -33,7 +33,7 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     @Override
     public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
-        int[] autosomalGenes = new int[Reference.FOX_AUTOSOMAL_GENES_LENGTH];
+        int[] autosomalGenes = new int[Reference.FOX_AUTOSOMAL_GENES_LENGTH];  // value is 4 rn
         Biome biome = biomeHolder.value();
 
         // note here with values

@@ -21,6 +21,7 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.world.entity.animal.horse.Donkey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -66,7 +67,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     // Texture Layers?
-    // Base coat - red, gold, cross x2, silver x2
+    // Base coat - red, gold, cross x2, silver x3
     // white spotting on different body parts? face, legs, body, ears etc.
     // coat texture - thick vs thin
     // Silvering - handle some with code?
@@ -118,9 +119,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
         Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
-        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(4, 2, 750));
-        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 2, 750));
-        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(8, 3, 750));
+        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(8, 3, 750));
 
         return ediblePlants;
     }
@@ -145,16 +144,18 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.25D, 1.25D, null));
-        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
-        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(6, new StayShelteredGoal(this, 5723, 7000, napmod));
-        this.goalSelector.addGoal(7, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
-        this.goalSelector.addGoal(8, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(9, this.wanderEatingGoal);
-        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
-        this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedLlama.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(4, new EnhancedAvoidEntityGoal<>(this, Donkey.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(5, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
+        this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+        this.goalSelector.addGoal(10, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(11, this.wanderEatingGoal);
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
 
     // let foxes wear blankets? definitely collars, but not chests

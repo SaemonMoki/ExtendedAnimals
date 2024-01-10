@@ -101,8 +101,8 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         base.addOrReplaceChild("jaw", CubeListBuilder.create()
                         .texOffs(42, 54)
-                        .addBox(-1.5F, 2.5F, -7.0F, 3, 2, 8, new CubeDeformation(-0.25F)), // originally -1.5F, 2.5F, -3.0F
-                PartPose.offsetAndRotation(0.0F, 0.0F, 3.5F, -Mth.HALF_PI*0.05F, 0.0F, 0.0F) // originally 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.06F, 0.0F, 0.0F
+                        .addBox(-1.5F, 2.5F, -7.0F, 3, 2, 8, new CubeDeformation(-0.25F)),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 3.5F, -Mth.HALF_PI*0.05F, 0.0F, 0.0F)
         );
 
 // EARS
@@ -185,12 +185,12 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
 // Equipment stuff
 
-        base.addOrReplaceChild("collar", CubeListBuilder.create()
-                        .texOffs(0, 54)
-                        .addBox(-5.5F, -5.5F, -3.0F, 11, 2, 11, new CubeDeformation(0.001F))
-                        .texOffs(24, 38)
+        base.addOrReplaceChild("collar", CubeListBuilder.create()  // need to fix texture offset or dimensions
+                        .texOffs(0, 54)  // main
+                        .addBox(-5.5F, -5.5F, 0.0F, 11, 2, 11, new CubeDeformation(0.001F))
+                        .texOffs(24, 38)  // ring
                         .addBox(0.0F, -5.0F, -5.0F, 0, 3, 3)
-                        .texOffs(1, 42)
+                        .texOffs(1, 42)  // bell
                         .addBox(-1.5F, -5.0F, -6.25F, 3, 3, 3),
                 PartPose.offset(0.0F, -1.0F, -7.5F)
         );

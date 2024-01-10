@@ -54,6 +54,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -108,6 +109,28 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
     private static final String[] CAT_TEXTURES_SKINBASE = new String[] {
             "teststripes.png"
+    };
+
+    private static final String[] CAT_TEXTURES_FUR = new String[] {
+            "", "catbase.png"
+    };
+
+    private static final String[] CAT_TEXTURES_NOSE = new String[] {
+            "nose.png"
+    };
+
+    private static final String[] CAT_TEXTURES_EYES = new String[] {
+            "eyes.png"
+    };
+
+    private static final String[] CAT_TEXTURES_PUPILS = new String[] {
+            "pupils.png"
+    };
+    private final int IDX_MACKEREL_TABBY = 1;
+    private final int IDX_CLASSIC_TABBY = 2;
+    private final int IDX_SPOTTED_TABBY = 3;
+    private static final String[] CAT_TEXTURES_TABBY = new String[] {
+            "", "mackerel_tabby1.png", "classic_tabby1.png",  "spotted_tabby1.png"
     };
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
@@ -378,9 +401,57 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+            int[] aGenes = getSharedGenes().getAutosomalGenes();
+            //COLORATION
+            float[] melanin = { 0.036F, 0.02F, 0.450F };
+            float[] pheomelanin = { 0.049F, 0.683F, 0.558F };
+            float[] blackTabbyColor = { 0.036F, 0.02F, 0.080F };
+            float[] redTabbyColor = { 0.049F, 0.683F, 03558F };
+
+            int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
+            int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
+            int blackTabbyRGB = Colouration.HSBtoABGR(blackTabbyColor[0], blackTabbyColor[1], blackTabbyColor[2]);
+            int redTabbyRGB = Colouration.HSBtoABGR(redTabbyColor[0], redTabbyColor[1], redTabbyColor[2]);
+
+            //GENES
+            int tabby = IDX_MACKEREL_TABBY;
+            if (aGenes[0] == 2 && aGenes[1] == 2) {
+                //non agouti
+                tabby = 0;
+                melanin[2] = 0.071F;
+            }
+            else {
+                //Tabby Types
+                if (aGenes[2] == 2 && aGenes[3] == 2) {
+                    //classic tabby
+                    tabby = IDX_CLASSIC_TABBY;
+                }
+            }
+
+            this.colouration.setMelaninColour(melaninRGB);
+            this.colouration.setPheomelaninColour(pheomelaninRGB);
+
+            //TEXTURES
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(parentGroup, CAT_TEXTURES_SKINBASE, 0, true);
+            //addTextureToAnimalTextureGrouping(parentGroup, CAT_TEXTURES_SKINBASE, 0, true);
+            TextureGrouping hairGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+            addTextureToAnimalTextureGrouping(hairTexGroup, TexturingType.APPLY_BLACK, CAT_TEXTURES_FUR, 1, l -> l !=0);
+            //addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_TABBY, tabby, l -> l != 0);
+
+            if (tabby != 0) {
+                addTextureToAnimalTextureGrouping(hairTexGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
+            }
+
+
+            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_NOSE, 0, true);
+            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_EYES, 0, true);
+            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_PUPILS, 0, true);
+
+            hairGroup.addGrouping(hairTexGroup);
+
+            parentGroup.addGrouping(hairGroup);
             this.setTextureGrouping(parentGroup);
         }
     }

@@ -176,7 +176,12 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         // Fur Density [1-10]
         // Fur Fur-nishings [1-2]
 
-
+        //head width gene placeholder
+        autosomalGenes[44] = 1;
+        autosomalGenes[45] = 1;
+        //head height gene placeholder
+        autosomalGenes[46] = 1;
+        autosomalGenes[47] = 1;
 
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

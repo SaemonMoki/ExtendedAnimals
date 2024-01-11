@@ -129,7 +129,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         return foxFoodMap();
     }
 
-    // check once model rendering works
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return 0.95F * sizeIn.height;
     }
@@ -142,20 +141,23 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         int napmod = this.random.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(2, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.25D, 1.25D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedLlama.class, 10.0F, 1.25D, 1.25D, null));
-        this.goalSelector.addGoal(4, new EnhancedAvoidEntityGoal<>(this, Donkey.class, 10.0F, 1.25D, 1.25D, null));
-        this.goalSelector.addGoal(5, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
-        this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 5723, 7000, napmod));
-        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
-        this.goalSelector.addGoal(10, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(11, this.wanderEatingGoal);
-        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
-        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new EnhancedPanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(4, new EnhancedAvoidEntityGoal<>(this, EnhancedLlama.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(5, new EnhancedAvoidEntityGoal<>(this, Donkey.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(6, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.RABBIT));
+        this.goalSelector.addGoal(8, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
+        this.goalSelector.addGoal(9, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(10, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(11, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+        this.goalSelector.addGoal(12, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(13, this.wanderEatingGoal);
+        this.goalSelector.addGoal(14, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, EnhancedChicken.class, 6.0F));
+        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, EnhancedRabbit.class, 6.0F));
+        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
     }
 
     // let foxes wear blankets? definitely collars, but not chests
@@ -173,7 +175,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
  // check once model renders
     @Override
     public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(0.8F, 1.2F).scale(this.getScale());
+        return EntityDimensions.scalable(0.6F, 1.0F).scale(this.getScale()); //originally 0.8, 1.2
     }
 
     @Override
@@ -205,7 +207,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     public static AttributeSupplier.Builder prepareAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.23D);
+                .add(Attributes.MOVEMENT_SPEED, 0.28D);
     }
 
     @Override
@@ -231,37 +233,37 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     //        this.remove(RemovalReason.KILLED);
     }
 
-    @Override
-    protected int getNumberOfChildren() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        int kitRange;
-        int kitAverage = 1;
-        int numberOfKits;
+//    @Override
+//    protected int getNumberOfChildren() {
+    //    int[] genes = this.genetics.getAutosomalGenes();
+    //    int kitRange;
+    //    int kitAverage = 1;
+     //   int numberOfKits;
 
-        if (genes[38] == 1 || genes[39] == 1) {
+     //   if (genes[38] == 1 || genes[39] == 1) {
             //1 baby
-            kitRange = 1;
-        } else if (genes[38] == 3 && genes[39] == 3) {
-            // 2-3 babies
-            kitRange = 2;
-            kitAverage = 2;
-        } else if (genes[38] == 2 && genes[39] == 2) {
-            //1 to 2 babies
-            kitRange = 2;
-        } else {
-            // 1-3 babies
-            kitRange = 3;
-            kitAverage = 1;
-        }
+       //     kitRange = 1;
+     //   } else if (genes[38] == 3 && genes[39] == 3) {
+     //       // 2-3 babies
+     //       kitRange = 2;
+    //        kitAverage = 2;
+    //    } else if (genes[38] == 2 && genes[39] == 2) {
+     //       //1 to 2 babies
+    //        kitRange = 2;
+    //    } else {
+    //        // 1-3 babies
+    //        kitRange = 3;
+    //        kitAverage = 1;
+    //    }
 
-        if (kitRange != 1) {
-            numberOfKits = ThreadLocalRandom.current().nextInt(kitRange) + kitAverage;
-        } else {
-            numberOfKits = 1;
-        }
-
-        return numberOfKits;
-    }
+    //    if (kitRange != 1) {
+    //        numberOfKits = ThreadLocalRandom.current().nextInt(kitRange) + kitAverage;
+    //    } else {
+    //        numberOfKits = 1;
+   //     }
+//
+   //     return numberOfKits;
+   // }
 
     @Override
     protected void incrementHunger() {
@@ -306,7 +308,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 1.0F);
+            this.playSound(SoundEvents.SHEEP_STEP, 1.5F, 1.0F);
         }
     }
 

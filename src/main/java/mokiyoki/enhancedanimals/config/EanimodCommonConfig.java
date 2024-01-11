@@ -369,19 +369,19 @@ public class EanimodCommonConfig {
 
             builder.push("fox");
             gestationDaysFox = builder
-                    .defineInRange("How many ticks it takes for a Fox to give birth, 24000 = 1 Minecraft Day:", 48000, 5, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Fox to give birth, 24000 = 1 Minecraft Day:", 5000, 5, Integer.MAX_VALUE);
             adultAgeFox = builder
-                    .defineInRange("How many ticks it takes for a Fox to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Fox to become an adult, 24000 = 1 Minecraft Day:", 16000, 1, Integer.MAX_VALUE);
             spawnVanillaFoxes = builder
                     .define("Allow vanilla minecraft Foxes to spawn/exist:", false);
             spawnGeneticFoxes = builder
                     .define("Allow Genetic Foxes to continue to spawn/exist:", true);
             spawnWeightFoxes = builder
-                    .defineInRange("How highly Fox spawning is weighted, larger numbers spawn more, Default is 6", 6, 1, 20);
+                    .defineInRange("How highly Fox spawning is weighted, larger numbers spawn more, Default is 6", 16, 1, 20);
             minimumFoxGroup = builder
                     .defineInRange("The minimum number of Foxes you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumFoxGroup = builder
-                    .defineInRange("The maximum number of Foxes you want to find in a group at spawn, Default is 3", 3, 1, 60);
+                    .defineInRange("The maximum number of Foxes you want to find in a group at spawn, Default is 3", 4, 1, 60);
             builder.pop();
 
             builder.push("horse");

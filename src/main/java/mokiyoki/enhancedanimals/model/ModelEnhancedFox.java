@@ -187,12 +187,12 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
         base.addOrReplaceChild("collar", CubeListBuilder.create()  // need to fix texture offset or dimensions
                         .texOffs(0, 54)  // main
-                        .addBox(-5.5F, -5.5F, 0.0F, 11, 2, 11, new CubeDeformation(0.001F))
+                        .addBox(-4.0F, -5.5F, 0.0F, 8, 2, 8, new CubeDeformation(-0.3F))
                         .texOffs(24, 38)  // ring
-                        .addBox(0.0F, -5.0F, -5.0F, 0, 3, 3)
+                        .addBox(0.0F, -4.5F, -2.0F, 0, 3, 3, new CubeDeformation(-0.4F))
                         .texOffs(1, 42)  // bell
-                        .addBox(-1.5F, -5.0F, -6.25F, 3, 3, 3),
-                PartPose.offset(0.0F, -1.0F, -7.5F)
+                        .addBox(-1.5F, -4.5F, -3.25F, 3, 3, 3, new CubeDeformation(-0.6F)),
+                PartPose.offset(0.0F, 1.0F, -1.5F)
         );
 
         return LayerDefinition.create(meshdefinition, 64, 64);    // texture size 64x64

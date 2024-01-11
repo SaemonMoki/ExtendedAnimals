@@ -115,8 +115,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "", "catbase.png"
     };
 
+    private static final String[] CAT_TEXTURES_FUR_BLACK = new String[] {
+            "", "catbase.png", "tortie_grade0.png"
+    };
+
     private static final String[] CAT_TEXTURES_NOSE = new String[] {
-            "nose.png"
+            "nose_pink.png", "nose_black.png"
+    };
+
+    private static final String[] CAT_TEXTURES_EARS = new String[] {
+            "ears.png"
     };
 
     private static final String[] CAT_TEXTURES_EYES = new String[] {
@@ -131,6 +139,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private final int IDX_SPOTTED_TABBY = 3;
     private static final String[] CAT_TEXTURES_TABBY = new String[] {
             "", "mackerel_tabby1.png", "classic_tabby1.png",  "spotted_tabby1.png"
+    };
+
+    private static final String[] CAT_TEXTURES_UNDERBELLY = new String[] {
+            "", "underbelly.png"
     };
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
@@ -402,31 +414,48 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
             int[] aGenes = getSharedGenes().getAutosomalGenes();
+            int[] sGenes = getSharedGenes().getSexlinkedGenes();
             //COLORATION
-            float[] melanin = { 0.036F, 0.02F, 0.450F };
-            float[] pheomelanin = { 0.049F, 0.683F, 0.558F };
-            float[] blackTabbyColor = { 0.036F, 0.02F, 0.080F };
-            float[] redTabbyColor = { 0.049F, 0.683F, 03558F };
-
-            int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
-            int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
-            int blackTabbyRGB = Colouration.HSBtoABGR(blackTabbyColor[0], blackTabbyColor[1], blackTabbyColor[2]);
-            int redTabbyRGB = Colouration.HSBtoABGR(redTabbyColor[0], redTabbyColor[1], redTabbyColor[2]);
+            float[] melanin = { 0.089F, 0.265F, 0.390F };
+            float[] pheomelanin = { 0.078F, 0.623F, 0.798F };
+            float[] blackTabbyColor = { 0.086F, 0.12F, 0.080F };
+            float[] redTabbyColor = {  0.048F, 0.623F, 0.628F };
 
             //GENES
             int tabby = IDX_MACKEREL_TABBY;
-            if (aGenes[0] == 2 && aGenes[1] == 2) {
-                //non agouti
-                tabby = 0;
-                melanin[2] = 0.071F;
+            int nose = 0;
+            int black = 1;
+            boolean agouti = true;
+
+            // Tabby Types
+            if (aGenes[2] == 2 && aGenes[3] == 2) {
+                //classic tabby
+                tabby = IDX_CLASSIC_TABBY;
             }
-            else {
-                //Tabby Types
-                if (aGenes[2] == 2 && aGenes[3] == 2) {
-                    //classic tabby
-                    tabby = IDX_CLASSIC_TABBY;
+            // Sex Linked Red
+            if (sGenes[0] == 2) {
+                if (this.getOrSetIsFemale() && sGenes[1] == 1) {
+                    //tortie
+                    black = 2;
+                }
+                else {
+                    //red
+                    black = 0;
                 }
             }
+
+            if (aGenes[0] == 2 && aGenes[1] == 2) {
+                //non agouti
+                agouti = false;
+                melanin[2] = 0.071F;
+                if (black != 0)
+                    nose = 1;
+            }
+
+            int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
+            int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
+            int blackTabbyRGB = Colouration.HSBtoARGB(blackTabbyColor[0], blackTabbyColor[1], blackTabbyColor[2]);
+            int redTabbyRGB = Colouration.HSBtoARGB(redTabbyColor[0], redTabbyColor[1], redTabbyColor[2]);
 
             this.colouration.setMelaninColour(melaninRGB);
             this.colouration.setPheomelaninColour(pheomelaninRGB);
@@ -437,21 +466,33 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             TextureGrouping hairGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            addTextureToAnimalTextureGrouping(hairTexGroup, TexturingType.APPLY_BLACK, CAT_TEXTURES_FUR, 1, l -> l !=0);
-            //addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_TABBY, tabby, l -> l != 0);
-
-            if (tabby != 0) {
-                addTextureToAnimalTextureGrouping(hairTexGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
+            //RED LAYER
+            if (black != 1) {
+                TextureGrouping hairRedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(hairRedGroup, TexturingType.APPLY_RED, CAT_TEXTURES_FUR, 1, l -> l !=0);
+                addTextureToAnimalTextureGrouping(hairRedGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
+                hairTexGroup.addGrouping(hairRedGroup);
+            }
+            //BLACK LAYER
+            if (black != 0) {
+                TextureGrouping hairBlackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                addTextureToAnimalTextureGrouping(hairBlackGroup, CAT_TEXTURES_FUR_BLACK, black, true);
+                addTextureToAnimalTextureGrouping(hairBlackGroup, TexturingType.APPLY_BLACK, CAT_TEXTURES_FUR, 1, l -> l !=0);
+                if (agouti) {
+                    addTextureToAnimalTextureGrouping(hairBlackGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
+                }
+                hairTexGroup.addGrouping(hairBlackGroup);
             }
 
-
-            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_NOSE, 0, true);
-            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_EYES, 0, true);
-            addTextureToAnimalTextureGrouping(hairTexGroup, CAT_TEXTURES_PUPILS, 0, true);
-
             hairGroup.addGrouping(hairTexGroup);
-
             parentGroup.addGrouping(hairGroup);
+
+            TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_NOSE, nose, true);
+            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_EYES, 0, true);
+            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_PUPILS, 0, true);
+            parentGroup.addGrouping(detailGroup);
+
             this.setTextureGrouping(parentGroup);
         }
     }

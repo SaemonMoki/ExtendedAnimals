@@ -122,6 +122,7 @@ public class ChickenTexture {
                                                 autosomalRed = ground;
                                             }
                                             case 4 -> {
+                                                ground = isNakedNeck ? "nakedneck_duckwing_female" : "duckwing_female";
                                                 pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female";
                                                 autosomalRed = pattern;
                                             }
@@ -206,6 +207,7 @@ public class ChickenTexture {
                                             case 5 -> pattern = "solid"; //TODO should be a leaky black.
                                             case 1, 2, 3, 4 -> pattern = "blacktail"; //TODO investigate how this should actually look
                                         }
+                                        autosomalRed = "duckwing_male";
                                     }
                                 } else {
                                     //melanized

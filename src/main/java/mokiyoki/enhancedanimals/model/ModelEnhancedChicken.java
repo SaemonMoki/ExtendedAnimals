@@ -1020,8 +1020,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          *      Equipment
          */
         base.addOrReplaceChild("collar", CubeListBuilder.create()
-                        .texOffs(0, 54)
-                        .addBox(-5.0F, -2.0F, -3.0F, 10,  2, 8)
+                        .texOffs(2, 53)
+                        .addBox(-4.5F, -2.0F, -3.0F, 9,  2, 9)
                         .texOffs(28, 54)
                         .addBox(0.0F, -2.6666F, -5.0F, 0,  4, 4),
                 PartPose.offsetAndRotation(0.0F, 0.0F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)

@@ -252,8 +252,10 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bodyB", CubeListBuilder.create()
                         .texOffs(36, 0)
                         .addBox(-3.0F, -0.5F, -7.5F, 6, 7, 8, deformation)
-                        .texOffs(29, 15)
-                        .addBox(-3.0F, 5.5F, -4.5F, 6, 4, 5, deformation),
+                        // hiding the butt for now till we make the texture copier
+                        //.texOffs(29, 15)
+                        //.addBox(-3.0F, 5.5F, -4.5F, 6, 4, 5, deformation)
+                ,
                 PartPose.rotation(Mth.HALF_PI, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("bodyFurF", CubeListBuilder.create()

@@ -136,11 +136,45 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[11] = (1);
         }
 
+        //White Markings (KIT?) [wildtype+, White Spotting]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[12] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[13] = (1);
+        }
+
+        //White Extension [normal, extended]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[14] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[15] = (1);
+        }
+
+        //White Extension 2 [normal, extended]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[16] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[17] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[17] = (1);
+        }
+
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
-        for (int i = 12; i < 32; i++) {
-            autosomalGenes[i] = (0);
-        }
+
         // M1-5 are recessive and are all indistinguishable phenotypically
         // Long Hair [Shorthair+, M1, M2, M3, M4, M5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

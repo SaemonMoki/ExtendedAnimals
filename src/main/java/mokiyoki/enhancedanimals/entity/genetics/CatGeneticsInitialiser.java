@@ -172,6 +172,18 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[17] = (1);
         }
 
+        //Color Point [Wildtype+, colorpoint]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[18] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[19] = (1);
+        }
+
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
 

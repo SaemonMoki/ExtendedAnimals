@@ -84,6 +84,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart toesBackLeft;
     private static WrappedModelPart toesBackRight;
     private static WrappedModelPart tail[] = new WrappedModelPart[7];
+    private static WrappedModelPart tailFur[] = new WrappedModelPart[7];
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -252,9 +253,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bodyB", CubeListBuilder.create()
                         .texOffs(36, 0)
                         .addBox(-3.0F, -0.5F, -7.5F, 6, 7, 8, deformation)
-                        // hiding the butt for now till we make the texture copier
-                        //.texOffs(29, 15)
-                        //.addBox(-3.0F, 5.5F, -4.5F, 6, 4, 5, deformation)
+                        .texOffs(29, 15)
+                        .addBox(-3.0F, 5.5F, -4.55F, 6, 4, 5, deformation)
                 ,
                 PartPose.rotation(Mth.HALF_PI, 0.0F, 0.0F)
         );
@@ -301,15 +301,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(36, 42)
                         .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4)
-                        .texOffs(104, 122)
-                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
+//                        .texOffs(104, 122)
+//                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4)
+                ,
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
                         .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4)
-                        .texOffs(108, 122)
-                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4),
+//                        .texOffs(108, 122)
+//                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4)
+                ,
                 PartPose.ZERO
         );
                 /** Bottom */
@@ -379,12 +381,18 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         for (int i = 0; i < 7; i++) {
             base.addOrReplaceChild("tail"+i, CubeListBuilder.create()
                     .texOffs(0, 60-(i*4))
-                    .addBox(-1.0F, -2.0F, -1.0F, 2, 2, 2)
-                    .texOffs(119, 124-(i*4))
-                    .addBox(-1.0F, -2.25F, 1.0F, 2, 2, 2, new CubeDeformation(i%2==0?0.0F:0.01F, 0.0F, 0.0F)),
+                    .addBox(-1.0F, -2.0F, -1.0F, 2, 2, 2),
                     PartPose.offset(0.0F, i == 0 ? 0.0F : -2.0F, i == 0 ? 1.0F : 0.0F)
             );
         }
+        for (int i = 0; i < 7; i++) {
+            base.addOrReplaceChild("tailFur"+i, CubeListBuilder.create()
+                            .texOffs(119, 124-(i*4))
+                            .addBox(-1.0F, -2.25F, 1.0F, 2, 2, 2, new CubeDeformation(i%2==0?0.0F:0.01F, 0.0F, 0.0F)),
+                    PartPose.offset(0.0F, i == 0 ? 0.0F : -2.0F, i == 0 ? 1.0F : 0.0F)
+            );
+        }
+
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
@@ -473,8 +481,10 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         for (int i = 0; i < 7; i++) {
             tail[i] = new WrappedModelPart("tail"+i, base);
+            tailFur[i] = new WrappedModelPart("tailFur"+i, base);
             if (i>0) {
                 tail[i-1].addChild(tail[i]);
+                tailFur[i-1].addChild(tailFur[i]);
             }
         }
 
@@ -544,6 +554,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         thePawBackRight.addChild(toesBackRight);
 
         theTail.addChild(tail[0]);
+        theTail.addChild(tailFur[0]);
 
     }
 
@@ -581,6 +592,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             this.bodyFurBack.show(cat.furnishings);
             this.cheekFluffLeft.show(cat.furnishings);
             this.cheekFluffRight.show(cat.furnishings);
+            for (int i = 0; i < 7; i++) {
+                this.tailFur[i].show(cat.furnishings);
+            }
 
             float headScale = 1F + cat.furLength*0.15F;
             float neckScale = 1F + cat.furLength*0.25F;
@@ -606,6 +620,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("bodyFurF", bodyScalingF);
             mapOfScale.put("bodyB", bodyScalingB);
             mapOfScale.put("bodyFurB", bodyScalingB);
+            //mapOfScale.put("eyeL0", ModelHelper.createScalings(0.8F, 0F,0F,0F));
+            //mapOfScale.put("eyeR0", ModelHelper.createScalings(0.8F, 0F,0F,0F));
             for (int i = 0; i < 7; i++) {
                 mapOfScale.put("tail"+i, ModelHelper.createScalings(1F + (cat.furLength*tailScales[i]), 0F,0F,0F));
             }

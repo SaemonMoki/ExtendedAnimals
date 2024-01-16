@@ -24,6 +24,7 @@ public class ChickenPhenotype implements Phenotype {
     public NakedNeckType nakedNeckType;
     public boolean earTufts;
     public boolean rumpless;
+    public boolean tailless;
     public boolean longHockFeathers;
     public boolean creeper;
     private int longLegs = 0;
@@ -298,6 +299,8 @@ public class ChickenPhenotype implements Phenotype {
         this.meatiness = getMeatiness(gene);
 
         this.tailAngle = getTailAngle(gene);
+
+        this.tailless = sGene[20] == 2 || (!isFemale && sGene[21] == 2);
     }
 
     private static float getBodyAngle(int[] gene) {

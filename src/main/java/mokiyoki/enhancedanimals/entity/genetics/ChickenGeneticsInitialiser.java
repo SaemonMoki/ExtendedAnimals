@@ -254,6 +254,10 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             sexlinkedGenes[19] = 1;
         }
 
+        //"tailless gene"
+        sexlinkedGenes[20] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        sexlinkedGenes[21] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
         /**
          *  autosomal genes
          */

@@ -1746,8 +1746,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                  */
 
                 cushion.show();
-                theTailCoverts.show();
-                tailNub.hide();
+                if (!chicken.tailless) {
+                    theTailCoverts.show();
+                    tailNub.hide();
+                }
 
                 /**
                  *      feather shape variation

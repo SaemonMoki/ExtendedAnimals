@@ -11,7 +11,7 @@ public class Reference {
     public static final String ACCEPTED_VERSIONS = "[1.18.2]";
     public static final String CLIENT_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ServerProxy";
-    public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 20;
+    public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 22;
     public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 294;
     public static final int PIG_AUTOSOMAL_GENES_LENGTH = 120;
     public static final int COW_AUTOSOMAL_GENES_LENGTH = 254;

@@ -389,7 +389,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             base.addOrReplaceChild("tailFur"+i, CubeListBuilder.create()
                             .texOffs(119, 124-(i*4))
                             .addBox(-1.0F, -2.25F, 1.0F, 2, 2, 2, new CubeDeformation(i%2==0?0.0F:0.01F, 0.0F, 0.0F)),
-                    PartPose.offset(0.0F, i == 0 ? 0.0F : -2.0F, i == 0 ? 1.0F : 0.0F)
+                    PartPose.offset(0.0F, 0.0F, i == 0 ? 1.0F : 0.0F)
             );
         }
 
@@ -484,7 +484,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             tailFur[i] = new WrappedModelPart("tailFur"+i, base);
             if (i>0) {
                 tail[i-1].addChild(tail[i]);
-                tailFur[i-1].addChild(tailFur[i]);
+                tail[i].addChild(tailFur[i]);
             }
         }
 
@@ -596,7 +596,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 this.tailFur[i].show(cat.furnishings);
             }
 
-            float headScale = 1F + cat.furLength*0.15F;
+            float headScale = 1.025F + cat.furLength*0.15F;
             float neckScale = 1F + cat.furLength*0.25F;
             float lowerLegScale = 1F + cat.furLength*0.25F;
             float upperLegScale = 1F + cat.furLength*0.35F;

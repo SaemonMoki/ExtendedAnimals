@@ -172,7 +172,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[17] = (1);
         }
 
-        //Color Point [Wildtype+, colorpoint]
+        //Color Restriction [Wildtype+, colorpoint, sepia]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -182,6 +182,18 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             autosomalGenes[19] = (1);
+        }
+
+        // Bengal Modifier
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[20] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[21] = (1);
         }
 
         // leaving a gap here for more basic stuff.

@@ -238,7 +238,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
          */
         base.addOrReplaceChild("neck", CubeListBuilder.create()
                         .texOffs(8, 19)
-                        .addBox(-3.0F, -3.0F, -7.0F, 6, 6, 8, deformation),
+                        .addBox(-3.0F, -3.0F, -7.0F, 6, 6, 8, new CubeDeformation(-0.75F, -0.5F, -0.5F)),
                 PartPose.ZERO
         );
 

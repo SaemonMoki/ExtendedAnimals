@@ -172,14 +172,14 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[17] = (1);
         }
 
-        //Color Restriction [Wildtype+, colorpoint, sepia]
+        //Color Restriction [Wildtype+, colorpoint, sepia, mocha]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
             autosomalGenes[18] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
             autosomalGenes[19] = (1);
         }
@@ -201,35 +201,35 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
 
         // M1-5 are recessive and are all indistinguishable phenotypically
         // Long Hair [Shorthair+, M1, M2, M3, M4, M5]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            autosomalGenes[32] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            autosomalGenes[33] = (1);
-        }
-        // Fur Length [1-10] (34-41)
-        for (int i = 34; i < 42; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
-            } else {
-                autosomalGenes[i] = (1);
-            }
-        }
-        //Furnishings (temporary gene for testing)
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[42] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[43] = (1);
-        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(5) + 1);
+//        } else {
+//            autosomalGenes[32] = (1);
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(5) + 1);
+//        } else {
+//            autosomalGenes[33] = (1);
+//        }
+//        // Fur Length [1-10] (34-41)
+//        for (int i = 34; i < 42; i++) {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
+//            } else {
+//                autosomalGenes[i] = (1);
+//            }
+//        }
+//        //Furnishings (temporary gene for testing)
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//        } else {
+//            autosomalGenes[42] = (1);
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//        } else {
+//            autosomalGenes[43] = (1);
+//        }
 
         // Fur Density [1-10]
         // Fur Fur-nishings [1-2]

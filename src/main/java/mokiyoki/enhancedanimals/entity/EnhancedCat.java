@@ -127,7 +127,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] CAT_TEXTURES_NOSE = new String[] {
-            "nose_brick.png", "nose_black.png", "nose_pink.png"
+            "nose.png"
     };
 
     private static final String[] CAT_TEXTURES_PAWS = new String[] {
@@ -151,10 +151,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] CAT_TEXTURES_COLORPOINT_BLACK = new String[] {
-            "", "colorpoint_5.png", "sepia_1.png",
+            "", "colorpoint.png", "sepia.png", "mocha.png", "colorpoint_sepia.png", "colorpoint_mocha.png", "sepia_mocha.png"
     };
     private static final String[] CAT_TEXTURES_COLORPOINT_RED = new String[] {
-            "", "flamepoint_1.png", "sepia_1.png",
+            "", "flamepoint.png", "sepia.png", "mocha.png", "colorpoint_sepia.png", "colorpoint_mocha.png", "sepia_mocha.png"
     };
 
     private static final String[] CAT_TEXTURES_PUPILS = new String[] {
@@ -476,11 +476,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             //GENES
             int tabby = IDX_MACKEREL_TABBY;
             int ticked = 0;
-            int nose = 0;
+            int noseRGB = 0;
             int paws = 1;
             int black = IDX_BLACK_SOLID;
-            int colorpoint1 = 0;
-            int colorpoint2 = 0;
+            int colorpoint = 0;
             int white = 0;
             int whiteExtension = 1; // starting at 1 to be consistent with grades of white.
             boolean agouti = true;
@@ -559,6 +558,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 else {
                     //red
                     black = 0;
+                    noseRGB = 2;
                 }
             }
 
@@ -567,7 +567,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 agouti = false;
                 melanin[2] = 0.071F;
                 if (black != 0)
-                    nose = 1;
+                    noseRGB = 1;
             }
 
             if (aGenes[8] == 2 || aGenes[9] == 2) {
@@ -582,18 +582,31 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
             // Colorpoint
             if (aGenes[18] > 1 && aGenes[19] > 1) {
-                if (aGenes[18] == 2) {
-                    colorpoint1 = 1;
+                if (aGenes[18] == 2 && aGenes[19] == 2) {
+                    colorpoint = 1;
                 }
-                else if (aGenes[18] == 3) {
-                    colorpoint1 = 2;
+                else if (aGenes[18] == 3 && aGenes[19] == 3) {
+                    colorpoint = 2;
                 }
-                if (aGenes[19] == 2) {
-                    colorpoint2 = 1;
+                else if (aGenes[18] == 4 && aGenes[19] == 4) {
+                    colorpoint = 3;
                 }
-                else if (aGenes[19] == 3) {
-                    colorpoint2 = 2;
+                else if ((aGenes[18] == 2 && aGenes[19] == 3) || (aGenes[18] == 3 && aGenes[19] == 2)) {
+                    colorpoint = 4;
                 }
+                else if ((aGenes[18] == 2 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 2)) {
+                    colorpoint = 5;
+                }
+                else if ((aGenes[18] == 3 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 3)) {
+                    colorpoint = 6;
+                }
+
+                if (aGenes[18] == 4 && aGenes[19] == 4) {
+                    // Homozygous Mocha
+                    noseRGB = 3;
+                    melanin[1] += agouti ? 0.03F : 0.15F;
+                }
+
                 melanin[0] -= 0.02F;
                 melanin[1] += agouti ? -0.1F : 0.4F;
                 melanin[2] += 0.05F;
@@ -668,7 +681,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int colorpointBlackRGB = Colouration.HSBtoARGB(colorpointBlack[0], colorpointBlack[1], colorpointBlack[2]);
             int colorpointRedRGB = Colouration.HSBtoARGB(colorpointRed[0], colorpointRed[1], colorpointRed[2]);
             int colorpointTabbyRGB = Colouration.HSBtoARGB(colorpointTabby[0], colorpointTabby[1], colorpointTabby[2]);
-
+            int[] noseColors = {
+                    //Brick
+                    Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
+                    //Black
+                    Colouration.HSBtoARGB(0.0F, 0.051F, 0.231F),
+                    //Light Brick
+                    Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
+                    //Pink
+                    Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F)
+            };
 
 
             this.colouration.setMelaninColour(melaninRGB);
@@ -693,12 +715,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "r-ttb", redTabbyRGB);
                 }
                 redGroup.addGrouping(redBaseGroup);
-                if (colorpoint1 != 0) {
+                if (colorpoint != 0) {
                     TextureGrouping colorpointGroup = new TextureGrouping(TexturingType.MASK_GROUP);
 
                     TextureGrouping colorpointMaskGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_RED, colorpoint1, true);
-                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_RED, colorpoint2, true);
+                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_RED, colorpoint, true);
                     colorpointGroup.addGrouping(colorpointMaskGroup);
 
                     TextureGrouping colorpointTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -727,12 +748,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 }
                 blackGroup.addGrouping(blackBaseGroup);
 
-                if (colorpoint1 != 0) {
+                if (colorpoint != 0) {
                     TextureGrouping colorpointGroup = new TextureGrouping(TexturingType.MASK_GROUP);
 
                     TextureGrouping colorpointMaskGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_BLACK, colorpoint1, true);
-                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_BLACK, colorpoint2, true);
+                    addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_BLACK, colorpoint, true);
                     colorpointGroup.addGrouping(colorpointMaskGroup);
 
                     TextureGrouping colorpointTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -787,12 +807,21 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             parentGroup.addGrouping(hairGroup);
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_NOSE, nose, true);
-            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_EARS, 0, true);
-            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_PAWS, paws, true);
-            addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, CAT_TEXTURES_EYE_L, 0, l-> true);
-            addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, CAT_TEXTURES_EYE_R, 0, l -> true);
-            addTextureToAnimalTextureGrouping(detailGroup, CAT_TEXTURES_PUPILS, 0, true);
+            TextureGrouping detailGroupBase = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(detailGroupBase, TexturingType.APPLY_RGB, CAT_TEXTURES_NOSE[0], "nose", noseColors[noseRGB]);
+            addTextureToAnimalTextureGrouping(detailGroupBase, CAT_TEXTURES_EARS, 0, true);
+            addTextureToAnimalTextureGrouping(detailGroupBase, CAT_TEXTURES_PAWS, paws, true);
+            addTextureToAnimalTextureGrouping(detailGroupBase, TexturingType.APPLY_EYE_LEFT_COLOUR, CAT_TEXTURES_EYE_L, 0, l-> true);
+            addTextureToAnimalTextureGrouping(detailGroupBase, TexturingType.APPLY_EYE_RIGHT_COLOUR, CAT_TEXTURES_EYE_R, 0, l -> true);
+            addTextureToAnimalTextureGrouping(detailGroupBase, CAT_TEXTURES_PUPILS, 0, true);
+            addTextureToAnimalTextureGrouping(detailGroupBase, TexturingType.APPLY_RGB, CAT_TEXTURES_NOSE[0], "nose", noseColors[noseRGB]);
+            detailGroup.addGrouping(detailGroupBase);
+            if (white != 0) {
+                TextureGrouping detailGroupWhite = new TextureGrouping(TexturingType.MASK_GROUP);
+                addTextureToAnimalTextureGrouping(detailGroupWhite, CAT_TEXTURES_WHITE, white, true);
+                addTextureToAnimalTextureGrouping(detailGroupWhite, TexturingType.APPLY_RGB, CAT_TEXTURES_NOSE[0], "nose", noseColors[3]);
+                detailGroup.addGrouping(detailGroupWhite);
+            }
             parentGroup.addGrouping(detailGroup);
 
             this.setTextureGrouping(parentGroup);

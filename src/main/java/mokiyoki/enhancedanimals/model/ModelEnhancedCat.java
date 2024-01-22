@@ -188,7 +188,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(32, 1)
                         .addBox(0.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F))
                         .texOffs(35, 4)
-                        .addBox(0.0F, 0.0F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
+                        .addBox(0.0F, -0.005F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.offsetAndRotation(1.0F, 0.0F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
 
@@ -208,7 +208,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(5, 1)
                         .addBox(-1.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F))
                         .texOffs(2, 4)
-                        .addBox(-1.0F, 0.0F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
+                        .addBox(-1.0F, -0.005F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.offsetAndRotation(-1.0F, 0.0F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
 

@@ -53,7 +53,7 @@ import static mokiyoki.enhancedanimals.init.FoodSerialiser.catFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CAT;
 
 public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnimalTamableInterface {
-
+    //avalible UUID spaces : [ S X 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(EnhancedCat.class, EntityDataSerializers.OPTIONAL_UUID);
     protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(EnhancedCat.class, EntityDataSerializers.BYTE);
 
@@ -123,7 +123,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private final int IDX_WHITE_9 = 8;
     private final int IDX_WHITE_10 = 9;
     private static final String[] CAT_TEXTURES_WHITE = new String[] {
-            "", "white_grade2.png", "white_grade3.png", "white_grade4.png", "white_grade5.png", "white_grade6.png", "white_grade7.png", "white_grade8.png", "white_grade9.png", "solid_base.png"
+            "", "whitegrade2/white_grade2.png",
+            "whitegrade3/grade_3_body_1.png",
+            "whitegrade4/grade_4_body_1.png", "whitegrade5/grade_5_body_1.png", "whitegrade6/grade_6_body_1.png",
+            "whitegrade7/grade_7_body_1.png", "whitegrade8/grade_8_body_1.png", "whitegrade9/grade_9_body_1.png", "solid_base.png"
     };
 
     private static final String[] CAT_TEXTURES_NOSE = new String[] {
@@ -187,6 +190,15 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "", "base_ticked_tabby1.png"
     };
 
+    private static final String[] CAT_TEXTURES_INHIBITOR = new String[] {
+            "", "base_inhibitor_shading1.png", "base_smoke1.png"
+    };
+    private static final String[] CAT_TEXTURES_CHARCOAL = new String[] {
+            "", "base_charcoal.png"
+    };
+    private static final String[] CAT_TEXTURES_KARPATI = new String[] {
+            "", "karpati.png"
+    };
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     @OnlyIn(Dist.CLIENT)
@@ -302,15 +314,15 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.PIG_AMBIENT;
+        return SoundEvents.CAT_AMBIENT;
     }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.PIG_HURT;
+        return SoundEvents.CAT_HURT;
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PIG_DEATH;
+        return SoundEvents.CAT_DEATH;
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
@@ -452,6 +464,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
         return getCompiledTextures("enhanced_cat");
     }
 
+    private void clampRGB(float[] color) {
+        for (int i = 0; i <= 2; i++) {
+            if (color[i] > 1.0F) {
+                color[i] = 1.0F;
+            } else if (color[i] < 0.0F) {
+                color[i] = 0.0F;
+            }
+        }
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
@@ -470,8 +492,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
             float[] colorpointRed = { 0.085F, 0.14F, 0.945F };
 
-            float[] leftEye = { 0.169F, 0.61F, 0.675F };
-            float[] rightEye = { leftEye[0], leftEye[1], leftEye[2] };
+            float[] eyeColor = { 0.205F, 0.61F, 0.675F };
 
             //GENES
             int tabby = IDX_MACKEREL_TABBY;
@@ -481,8 +502,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int black = IDX_BLACK_SOLID;
             int colorpoint = 0;
             int white = 0;
+            int karpati = 0;
             int whiteExtension = 1; // starting at 1 to be consistent with grades of white.
             boolean agouti = true;
+            boolean charcoal = false;
+            int inhibitor = 0;
 
             if (aGenes[12] == 2 || aGenes[13] == 2) {
                 whiteExtension+=2;
@@ -524,7 +548,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     white = IDX_WHITE_10;
                     break;
             }
-
+            if (aGenes[22] == 2 || aGenes[23] == 2) {
+                //karpati
+                karpati = 1;
+            }
             // Tabby Types
             if (aGenes[2] == 2 && aGenes[3] == 2) {
                 //classic tabby
@@ -569,6 +596,13 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 if (black != 0)
                     noseRGB = 1;
             }
+            else if ((aGenes[0] == 3 || aGenes[1] == 3) && (aGenes[0] == 2 || aGenes[1] == 2)) {
+                //het non agouti, het ALC produces charcoal phenotype
+                charcoal = true;
+                noseRGB = 1;
+                melanin[1] -= 0.1F;
+                blackTabbyColor[1] -= 0.1F;
+            }
 
             if (aGenes[8] == 2 || aGenes[9] == 2) {
                 ticked = 1;
@@ -579,7 +613,21 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     tabby = IDX_HET_TICKED_TABBY;
                 }
             }
-
+            // Inhibitor
+            if (aGenes[24] == 2 || aGenes[25] == 2) {
+                melanin[1] = 0.05F;
+                pheomelanin[1] = 0.05F;
+                if (agouti) {
+                    // Silver
+                    melanin[2] += 0.15F;
+                    pheomelanin[2] += 0.15F;
+                    inhibitor = 1;
+                }
+                else {
+                    // Smoke
+                    inhibitor = 2;
+                }
+            }
             // Colorpoint
             if (aGenes[18] > 1 && aGenes[19] > 1) {
                 if (aGenes[18] == 2 && aGenes[19] == 2) {
@@ -600,7 +648,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 else if ((aGenes[18] == 3 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 3)) {
                     colorpoint = 6;
                 }
-
+                noseRGB = 4;
                 if (aGenes[18] == 4 && aGenes[19] == 4) {
                     // Homozygous Mocha
                     noseRGB = 3;
@@ -611,12 +659,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 melanin[1] += agouti ? -0.1F : 0.4F;
                 melanin[2] += 0.05F;
 
-                leftEye[0] = 0.55F;
-                rightEye[0] = 0.55F;
-                leftEye[1] -= 0.215F;
-                rightEye[1] -= 0.215F;
-                leftEye[2] += 0.22F;
-                rightEye[2] += 0.22F;
+//                eyeColor[0] = 0.55F;
+//                eyeColor[1] -= 0.215F;
+//                eyeColor[2] += 0.22F;
             }
 
             //Bengal Modifier
@@ -662,15 +707,76 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 }
             }
 
+            char[] uuidArry = getStringUUID().toCharArray();
+            /*
+             * RANDOM TEXTURES
+             *
+             * UUID Spaces used:
+             * [0] - Gender
+             * [1] - Body White
+             * [2] - Head White
+             */
+
+            int randBodyWhite = uuidArry[1];
+            int randHeadWhite = uuidArry[2];
+
+            switch (white) {
+                case IDX_WHITE_2:
+
+                    break;
+            }
+
+            int eyeHue = 0; // negative = orange, positive = green
+            for (int i = 50; i < 60; i++) {
+                if (aGenes[i] == 2) {
+                    eyeHue--;
+                }
+                else if (aGenes[i] == 3) {
+                    eyeHue++;
+                }
+            }
+
+            int eyeLightness = 0;
+            for (int i = 60; i < 72; i++) {
+                if (aGenes[i] == 2) {
+                    eyeLightness += i < 66 ? 1 : -1;
+                }
+            }
+
+            int eyeSaturation = 0;
+            for (int i = 72; i < 80; i++) {
+                if (aGenes[i] == 2) {
+                    eyeSaturation += 1;
+                }
+            }
+
+            eyeColor[0] += eyeHue*0.0130F;
+
+            eyeColor[1] += eyeSaturation*0.025F;
+
+            eyeColor[1] -= eyeLightness*0.005F;
+            eyeColor[2] += eyeLightness*0.0225F;
+
 
             float[] blackUnderbelly = { melanin[0], melanin[1]+0.03F, melanin[2]+0.1F };
             float[] redUnderbelly = { pheomelanin[0], pheomelanin[1]-0.1F, pheomelanin[2]+0.1F };
 
+            clampRGB(blackUnderbelly);
+            clampRGB(redUnderbelly);
+            clampRGB(melanin);
+            clampRGB(pheomelanin);
+            clampRGB(eyeColor);
+            clampRGB(blackTabbyColor);
+            clampRGB(redTabbyColor);
+            clampRGB(colorpointBlack);
+            clampRGB(colorpointRed);
+            clampRGB(colorpointTabby);
+
             int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
             int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
 
-            int leftEyeRGB = Colouration.HSBtoARGB(leftEye[0], leftEye[1], leftEye[2]);
-            int rightEyeRGB = Colouration.HSBtoARGB(rightEye[0], rightEye[1], rightEye[2]);
+            int leftEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
+            int rightEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
 
             int blackTabbyRGB = Colouration.HSBtoARGB(blackTabbyColor[0], blackTabbyColor[1], blackTabbyColor[2]);
             int blackUnderbellyRGB = Colouration.HSBtoARGB(blackUnderbelly[0], blackUnderbelly[1], blackUnderbelly[2]);
@@ -689,7 +795,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     //Light Brick
                     Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
                     //Pink
-                    Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F)
+                    Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F),
+                    //Brown
+                    Colouration.HSBtoARGB(0.02F, 0.321F, 0.231F),
             };
 
 
@@ -710,6 +818,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 TextureGrouping redBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RED, CAT_TEXTURES_FUR, 1, l -> l !=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[1], "b-ub", redUnderbellyRGB);
+                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_INHIBITOR, inhibitor, l -> l !=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
                 if (ticked != 0) {
                     addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "r-ttb", redTabbyRGB);
@@ -739,12 +848,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 blackGroup.addGrouping(blackMaskGroup);
                 TextureGrouping blackBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_BLACK, CAT_TEXTURES_FUR, 1, l -> l !=0);
+                addTextureToAnimalTextureGrouping(blackBaseGroup, CAT_TEXTURES_INHIBITOR, inhibitor, l -> l !=0);
                 if (agouti) {
                     addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[1], "b-ub", blackUnderbellyRGB);
                     addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
                     if (ticked != 0) {
                         addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "b-ttb", blackTabbyRGB);
                     }
+                }
+                if (charcoal) {
+                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_CHARCOAL[1], "b-alc", blackTabbyRGB);
                 }
                 blackGroup.addGrouping(blackBaseGroup);
 
@@ -790,10 +903,15 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 //            }
 
             //WHITE LAYER
-            if (white != 0) {
+            if (white != 0 || karpati != 0) {
                 TextureGrouping hairWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                addTextureToAnimalTextureGrouping(hairWhiteGroup, CAT_TEXTURES_WHITE, white, true);
-                addTextureToAnimalTextureGrouping(hairWhiteGroup, CAT_TEXTURES_FUR, 1, true);
+                TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_KARPATI, karpati, l -> l != 0);
+                TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(whiteTextureGroup, CAT_TEXTURES_FUR, 1, true);
+                hairWhiteGroup.addGrouping(whiteMaskGroup);
+                hairWhiteGroup.addGrouping(whiteTextureGroup);
                 hairTexGroup.addGrouping(hairWhiteGroup);
             }
 

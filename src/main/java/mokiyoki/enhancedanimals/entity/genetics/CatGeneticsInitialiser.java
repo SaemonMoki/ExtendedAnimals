@@ -196,6 +196,29 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[21] = (1);
         }
 
+        // Roan/Karpati (dominant)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[22] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[23] = (1);
+        }
+
+        // Inhibitor (dominant)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[24] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[25] = (1);
+        }
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
 
@@ -219,27 +242,30 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
 //                autosomalGenes[i] = (1);
 //            }
 //        }
-//        //Furnishings (temporary gene for testing)
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//            autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//        } else {
-//            autosomalGenes[42] = (1);
-//        }
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//            autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//        } else {
-//            autosomalGenes[43] = (1);
-//        }
-
-        // Fur Density [1-10]
-        // Fur Fur-nishings [1-2]
-
-        //head width gene placeholder
-        autosomalGenes[44] = 1;
-        autosomalGenes[45] = 1;
-        //head height gene placeholder
-        autosomalGenes[46] = 1;
-        autosomalGenes[47] = 1;
+        //Eye Coloration [neutral/yellow, orange, green]
+        for (int i = 50; i < 60; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        //Eye Lightness (60-65 = lighter, 66-72 = darker)
+        for (int i = 60; i < 72; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        //Eye Vibrance  [wildtype, more saturated]
+        for (int i = 72; i < 80; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
 
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

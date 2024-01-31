@@ -208,7 +208,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[23] = (1);
         }
 
-        // Inhibitor (dominant)
+        // Inhibitor/Silver (dominant)
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -242,6 +242,66 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
 //                autosomalGenes[i] = (1);
 //            }
 //        }
+        //Smaller Eyes [1-5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[40] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[40] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[41] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[41] = (1);
+        }
+
+        //Eye Roundness Adder [1-3]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[42] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[43] = (1);
+        }
+
+        //Eye Roundness Adder [1-5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[44] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[44] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[45] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[45] = (1);
+        }
+
+        //Eye Roundness Subtractor [1-3]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[46] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[47] = (1);
+        }
+
+        //Eye Roundness Subtractor [1-5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[48] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[48] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[49] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[49] = (1);
+        }
+
         //Eye Coloration [neutral/yellow, orange, green]
         for (int i = 50; i < 60; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -262,6 +322,32 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         for (int i = 72; i < 80; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+
+        //Snout Length [normal, longest, longer, shorter, shortest]
+        for (int i = 100; i < 108; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        //Snout Width [normal, thinnest, thinner, wider, widest]
+        for (int i = 108; i < 116; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+
+        //Snout Size [normal, smaller, larger]
+        for (int i = 116; i < 120; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(3) + 1);
             } else {
                 autosomalGenes[i] = (1);
             }

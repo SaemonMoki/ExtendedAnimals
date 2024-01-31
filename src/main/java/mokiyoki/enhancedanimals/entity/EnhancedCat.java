@@ -114,21 +114,45 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private final int IDX_WHITE_2 = 1;
-    private final int IDX_WHITE_3 = 2;
-    private final int IDX_WHITE_4 = 3;
-    private final int IDX_WHITE_5 = 4;
-    private final int IDX_WHITE_6 = 5;
-    private final int IDX_WHITE_7 = 6;
-    private final int IDX_WHITE_8 = 7;
-    private final int IDX_WHITE_9 = 8;
-    private final int IDX_WHITE_10 = 9;
+    private final int IDX_WHITE_3 = IDX_WHITE_2+1;
+    private final int IDX_WHITE_4 = IDX_WHITE_3+4;
+    private final int IDX_WHITE_5 = IDX_WHITE_4+3;
+    private final int IDX_WHITE_6 = IDX_WHITE_5+7;
+    private final int IDX_WHITE_7 = IDX_WHITE_6+9;
+    private final int IDX_WHITE_8 = IDX_WHITE_7+8;
+    private final int IDX_WHITE_9 = IDX_WHITE_8+9;
+    private final int IDX_WHITE_10 = IDX_WHITE_9+1;
     private static final String[] CAT_TEXTURES_WHITE = new String[] {
             "", "whitegrade2/white_grade2.png",
-            "whitegrade3/grade_3_body_1.png",
-            "whitegrade4/grade_4_body_1.png", "whitegrade5/grade_5_body_1.png", "whitegrade6/grade_6_body_1.png",
-            "whitegrade7/grade_7_body_1.png", "whitegrade8/grade_8_body_1.png", "whitegrade9/grade_9_body_1.png", "solid_base.png"
+            "whitegrade3/grade_3_body_1.png", "whitegrade3/grade_3_body_2.png", "whitegrade3/grade_3_body_3.png", "whitegrade3/grade_3_body_4.png",
+            "whitegrade4/grade_4_body_1.png", "whitegrade4/grade_4_body_2.png", "whitegrade4/grade_4_body_3.png",
+            "whitegrade5/grade_5_body_1.png", "whitegrade5/grade_5_body_2.png", "whitegrade5/grade_5_body_3.png", "whitegrade5/grade_5_body_4.png", "whitegrade5/grade_5_body_5.png", "whitegrade5/grade_5_body_6.png", "whitegrade5/grade_5_body_7.png",
+            "whitegrade6/grade_6_body_1.png", "whitegrade6/grade_6_body_2.png", "whitegrade6/grade_6_body_3.png", "whitegrade6/grade_6_body_4.png", "whitegrade6/grade_6_body_5.png", "whitegrade6/grade_6_body_6.png", "whitegrade6/grade_6_body_7.png", "whitegrade6/grade_6_body_8.png", "whitegrade6/grade_6_body_9.png",
+            "whitegrade7/grade_7_body_1.png", "whitegrade7/grade_7_body_2.png", "whitegrade7/grade_7_body_3.png", "whitegrade7/grade_7_body_4.png", "whitegrade7/grade_7_body_5.png", "whitegrade7/grade_7_body_6.png", "whitegrade7/grade_7_body_7.png", "whitegrade7/grade_7_body_8.png",
+            "whitegrade8/grade_8_body_1.png", "whitegrade8/grade_8_body_2.png", "whitegrade8/grade_8_body_3.png", "whitegrade8/grade_8_body_4.png", "whitegrade8/grade_8_body_5.png", "whitegrade8/grade_8_body_6.png", "whitegrade8/grade_8_body_7.png", "whitegrade8/grade_8_body_8.png", "whitegrade8/grade_8_body_9.png",
+            "whitegrade9/grade_9_body_1.png",
+            "solid_base.png"
     };
+    private final int IDX_HEADWHITE_2 = 1;
+    private final int IDX_HEADWHITE_3 = IDX_HEADWHITE_2 + 1;
+    private final int IDX_HEADWHITE_4 = IDX_HEADWHITE_3 + 11;
+    private final int IDX_HEADWHITE_5 = IDX_HEADWHITE_4 + 1;
+    private final int IDX_HEADWHITE_6 = IDX_HEADWHITE_5 + 5;
+    private final int IDX_HEADWHITE_7 = IDX_HEADWHITE_6 + 5;
+    private final int IDX_HEADWHITE_8  = IDX_HEADWHITE_7 + 5;
+    private final int IDX_HEADWHITE_9  = IDX_HEADWHITE_8;
 
+    private static final String[] CAT_TEXTURES_HEADWHITE = new String[] {
+            "", "",
+            "whitegrade3/grade_3_head_1.png", "whitegrade3/grade_3_head_2.png", "whitegrade3/grade_3_head_3.png", "whitegrade3/grade_3_head_4.png", "whitegrade3/grade_3_head_5.png", "whitegrade3/grade_3_head_6.png", "whitegrade3/grade_3_head_7.png", "whitegrade3/grade_3_head_8.png", "whitegrade3/grade_3_head_8.png", "whitegrade3/grade_3_head_9.png", "whitegrade3/grade_3_head_10.png", "whitegrade3/grade_3_head_11.png",
+            "whitegrade4/grade_4_head_1.png",
+            "whitegrade5/grade_5_head_1.png", "whitegrade5/grade_5_head_2.png", "whitegrade5/grade_5_head_3.png", "whitegrade5/grade_5_head_4.png", "whitegrade5/grade_5_head_5.png",
+            "whitegrade6/grade_6_head_1.png", "whitegrade6/grade_6_head_2.png", "whitegrade6/grade_6_head_3.png", "whitegrade6/grade_6_head_4.png", "whitegrade6/grade_6_head_5.png",
+            "whitegrade7/grade_7_head_1.png", "whitegrade7/grade_7_head_2.png", "whitegrade7/grade_7_head_3.png", "whitegrade7/grade_7_head_4.png", "whitegrade7/grade_7_head_5.png",
+            //"whitegrade8/grade_8_head_1.png",
+            "whitegrade9/grade_9_head_1.png", "whitegrade9/grade_9_head_2.png", "whitegrade9/grade_9_head_3.png", "whitegrade9/grade_9_head_4.png", "whitegrade9/grade_9_head_5.png", "whitegrade9/grade_9_head_6.png", "whitegrade9/grade_9_head_7.png", "whitegrade9/grade_9_head_8.png", "whitegrade9/grade_9_head_9.png", "whitegrade9/grade_9_head_10.png", "whitegrade9/grade_9_head_11.png",
+            "solid_base.png"
+    };
     private static final String[] CAT_TEXTURES_NOSE = new String[] {
             "nose.png"
     };
@@ -194,7 +218,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "", "base_inhibitor_shading1.png", "base_smoke1.png"
     };
     private static final String[] CAT_TEXTURES_CHARCOAL = new String[] {
-            "", "base_charcoal.png"
+            "", "charcoal.png"
     };
     private static final String[] CAT_TEXTURES_KARPATI = new String[] {
             "", "karpati.png"
@@ -482,7 +506,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int[] sGenes = getSharedGenes().getSexlinkedGenes();
             //COLORATION
             float[] melanin = { 0.075F, 0.325F, 0.316F };
-            float[] blackTabbyColor = { 0.072F, 0.22F, 0.080F };
+            float[] blackTabbyColor = { 0.072F, 0.22F, 0.071F };
 
             float[] pheomelanin = { 0.078F, 0.623F, 0.798F };
             float[] redTabbyColor = {  0.048F, 0.623F, 0.628F };
@@ -502,6 +526,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int black = IDX_BLACK_SOLID;
             int colorpoint = 0;
             int white = 0;
+            int headWhite = 0;
             int karpati = 0;
             int whiteExtension = 1; // starting at 1 to be consistent with grades of white.
             boolean agouti = true;
@@ -593,13 +618,16 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 //non agouti
                 agouti = false;
                 melanin[2] = 0.071F;
-                if (black != 0)
+                if (black != 0) {
                     noseRGB = 1;
+                }
             }
             else if ((aGenes[0] == 3 || aGenes[1] == 3) && (aGenes[0] == 2 || aGenes[1] == 2)) {
                 //het non agouti, het ALC produces charcoal phenotype
                 charcoal = true;
-                noseRGB = 1;
+                if (black != 0) {
+                    noseRGB = 1;
+                }
                 melanin[1] -= 0.1F;
                 blackTabbyColor[1] -= 0.1F;
             }
@@ -615,12 +643,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
             // Inhibitor
             if (aGenes[24] == 2 || aGenes[25] == 2) {
-                melanin[1] = 0.05F;
-                pheomelanin[1] = 0.05F;
+                melanin[1] *= 0.8F;
+                pheomelanin[1] *= 0.8F;
                 if (agouti) {
                     // Silver
                     melanin[2] += 0.15F;
-                    pheomelanin[2] += 0.15F;
+                    //pheomelanin[2] += 0.15F;
                     inhibitor = 1;
                 }
                 else {
@@ -635,18 +663,29 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 }
                 else if (aGenes[18] == 3 && aGenes[19] == 3) {
                     colorpoint = 2;
+//                    melanin[1] += 0.05F;
+                    pheomelanin[2] += 0.15F;
+                    pheomelanin[1] -= 0.15F;
                 }
                 else if (aGenes[18] == 4 && aGenes[19] == 4) {
                     colorpoint = 3;
                 }
                 else if ((aGenes[18] == 2 && aGenes[19] == 3) || (aGenes[18] == 3 && aGenes[19] == 2)) {
                     colorpoint = 4;
+                    if (agouti) {
+                        melanin[1] += 0.1F;
+                    }
+                    pheomelanin[2] += 0.15F;
+                    pheomelanin[1] -= 0.15F;
                 }
                 else if ((aGenes[18] == 2 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 2)) {
                     colorpoint = 5;
                 }
                 else if ((aGenes[18] == 3 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 3)) {
                     colorpoint = 6;
+                    melanin[1] += 0.05F;
+                    pheomelanin[2] += 0.15F;
+                    pheomelanin[1] -= 0.15F;
                 }
                 noseRGB = 4;
                 if (aGenes[18] == 4 && aGenes[19] == 4) {
@@ -658,10 +697,15 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 melanin[0] -= 0.02F;
                 melanin[1] += agouti ? -0.1F : 0.4F;
                 melanin[2] += 0.05F;
-
-//                eyeColor[0] = 0.55F;
-//                eyeColor[1] -= 0.215F;
-//                eyeColor[2] += 0.22F;
+                blackTabbyColor[0] = 0.073F;
+                blackTabbyColor[1] += 0.4F;
+                blackTabbyColor[2] += 0.05F;
+//                redTabbyColor[0] = (redTabbyColor[0] + pheomelanin[0])*0.5F;
+//                redTabbyColor[1] = (redTabbyColor[1] + pheomelanin[1])*0.5F;
+//                redTabbyColor[2] = (redTabbyColor[2] + pheomelanin[2])*0.5F;
+                eyeColor[0] = 0.55F;
+                eyeColor[1] -= 0.215F;
+                eyeColor[2] += 0.22F;
             }
 
             //Bengal Modifier
@@ -722,7 +766,33 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
             switch (white) {
                 case IDX_WHITE_2:
-
+                    break;
+                case IDX_WHITE_3:
+                    white = IDX_WHITE_3 + (randBodyWhite % 4);
+                    headWhite = IDX_HEADWHITE_3 + (randHeadWhite % 11);
+                    break;
+                case IDX_WHITE_4:
+                    white = IDX_WHITE_4 + (randBodyWhite % 3);
+                    //headWhite = IDX_HEADWHITE_4 + (randHeadWhite % 1);
+                    break;
+                case IDX_WHITE_5:
+                    white = IDX_WHITE_5 + (randBodyWhite % 7);
+                    headWhite = IDX_HEADWHITE_5 + (randHeadWhite % 5);
+                    break;
+                case IDX_WHITE_6:
+                    white = IDX_WHITE_6 + (randBodyWhite % 9);
+                    headWhite = IDX_HEADWHITE_6 + (randHeadWhite % 5);
+                    break;
+                case IDX_WHITE_7:
+                    white = IDX_WHITE_7 + (randBodyWhite % 8);
+                    headWhite = IDX_HEADWHITE_7 + (randHeadWhite % 5);
+                    break;
+                case IDX_WHITE_8:
+                    white = IDX_WHITE_8 + (randBodyWhite % 9);
+                    headWhite = IDX_HEADWHITE_8 + (randHeadWhite % 11);
+                    break;
+                case IDX_WHITE_9:
+                    headWhite = IDX_HEADWHITE_9 + (randHeadWhite % 11);
                     break;
             }
 
@@ -787,6 +857,8 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int colorpointBlackRGB = Colouration.HSBtoARGB(colorpointBlack[0], colorpointBlack[1], colorpointBlack[2]);
             int colorpointRedRGB = Colouration.HSBtoARGB(colorpointRed[0], colorpointRed[1], colorpointRed[2]);
             int colorpointTabbyRGB = Colouration.HSBtoARGB(colorpointTabby[0], colorpointTabby[1], colorpointTabby[2]);
+
+            int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
             int[] noseColors = {
                     //Brick
                     Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
@@ -869,6 +941,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     colorpointGroup.addGrouping(colorpointMaskGroup);
 
                     TextureGrouping colorpointTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
                     addTextureToAnimalTextureGrouping(colorpointTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_FUR[1], "cp", colorpointBlackRGB);
                     if (agouti) {
                         addTextureToAnimalTextureGrouping(colorpointTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "cp-tb"+tabby, colorpointTabbyRGB);
@@ -907,9 +980,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 TextureGrouping hairWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_HEADWHITE, headWhite, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_KARPATI, karpati, l -> l != 0);
                 TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                addTextureToAnimalTextureGrouping(whiteTextureGroup, CAT_TEXTURES_FUR, 1, true);
+                addTextureToAnimalTextureGrouping(whiteTextureGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_FUR[1], "w", whiteRGB);
                 hairWhiteGroup.addGrouping(whiteMaskGroup);
                 hairWhiteGroup.addGrouping(whiteTextureGroup);
                 hairTexGroup.addGrouping(hairWhiteGroup);
@@ -934,9 +1008,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             addTextureToAnimalTextureGrouping(detailGroupBase, CAT_TEXTURES_PUPILS, 0, true);
             addTextureToAnimalTextureGrouping(detailGroupBase, TexturingType.APPLY_RGB, CAT_TEXTURES_NOSE[0], "nose", noseColors[noseRGB]);
             detailGroup.addGrouping(detailGroupBase);
-            if (white != 0) {
+            if (headWhite != 0) {
                 TextureGrouping detailGroupWhite = new TextureGrouping(TexturingType.MASK_GROUP);
-                addTextureToAnimalTextureGrouping(detailGroupWhite, CAT_TEXTURES_WHITE, white, true);
+                addTextureToAnimalTextureGrouping(detailGroupWhite, CAT_TEXTURES_HEADWHITE, headWhite, true);
                 addTextureToAnimalTextureGrouping(detailGroupWhite, TexturingType.APPLY_RGB, CAT_TEXTURES_NOSE[0], "nose", noseColors[3]);
                 detailGroup.addGrouping(detailGroupWhite);
             }

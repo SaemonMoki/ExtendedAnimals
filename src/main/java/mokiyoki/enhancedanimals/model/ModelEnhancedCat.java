@@ -313,7 +313,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
-                        .addBox(1.5F, 0.0F, 0.0F, 3, 8, 4)
+                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4)
 //                        .texOffs(108, 122)
 //                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4)
                 ,
@@ -619,7 +619,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             float ear1Scale = 1F; //min 0.8
             //float eyeSpacing = (cat.eyeRoundness * 0.35F) * 0.0625F;
             float eyeSize = 1F;
-            float earSpacing = 1;
+            float earSpacing = 1F;
+            float tailBaseScale = 1F + (cat.bodyType*0.4F);
             float[] tailScales = {0F, 0.05F, 0.05F, 0.1F, 0.1F, 0.02F, 0.0F};
             mapOfScale.put("bHead", ModelHelper.createScalings(bHeadScale, 0F,0F,0F));
             mapOfScale.put("head", ModelHelper.createScalings(1F+headWidth, 1F, 1F, 0F,0F,0F));
@@ -658,6 +659,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             //mapOfScale.put("eyeL2", ModelHelper.createScalings((1F/eyeWidth)*dilation, 1.0F, 1.0F, (1.0F-dilation)*-0.065F, 0.0F, 0.0F));
             //mapOfScale.put("eyeR2", ModelHelper.createScalings((1F/eyeWidth)*dilation, 1.0F, 1.0F, (1.0F-dilation)*0.065F, 0.0F, 0.0F));
 
+            mapOfScale.put("tail0", ModelHelper.createScalings(tailBaseScale + (cat.furLength), 0F,0F,0F));
             for (int i = 0; i < 7; i++) {
                 mapOfScale.put("tail"+i, ModelHelper.createScalings(1F + (cat.furLength*tailScales[i]), 0F,0F,0F));
             }
@@ -677,10 +679,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         Map<String, Vector3f> map = data.offsets;
         map.put("bSnoutPos", this.getPosVector(theSnout));
         map.put("bLegBL", this.getRotationVector(theLegBackLeft));
+        map.put("bLegBLPos", this.getPosVector(theLegBackLeft));
         map.put("bLegBR", this.getRotationVector(theLegBackRight));
+        map.put("bLegBRPos", this.getPosVector(theLegBackRight));
         map.put("bLegBBL", this.getRotationVector(theLegBottomBackLeft));
         map.put("bLegBBR", this.getRotationVector(theLegBottomBackRight));
-        map.put("bLegBLPos", this.getPosVector(theLegBackLeft));
         map.put("bTail", this.getRotationVector(theTail));
         map.put("bEarLPos", this.getPosVector(theEarL));
         map.put("bEarRPos", this.getPosVector(theEarR));
@@ -700,7 +703,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             theTail.setXRot(Mth.HALF_PI*-0.5F);
             tail[3].setXRot(Mth.HALF_PI*0.5F);
             tail[6].setXRot(Mth.HALF_PI*-0.5F);
-            theLegBackLeft.setX(-1.5F - (cat.bodyType));
+            theLegBackLeft.setX(-1.5F - (cat.bodyType*0.5F));
+            theLegBackRight.setX(1.5F + (cat.bodyType*0.5F));
 //            theEarL.setX(1.25F+(cat.earSpacing*1.25F));
 //            theEarR.setX(-1.25F-(cat.earSpacing*1.25F));
 //            theEarL.setY(-0.4F);
@@ -710,16 +714,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         } else {
             theSnout.setPos(map.get("bSnoutPos"));
             theLegBackLeft.setRotation(map.get("bLegBL"));
+            theLegBackLeft.setPos(map.get("bLegBLPos"));
             theLegBackRight.setRotation(map.get("bLegBR"));
+            theLegBackRight.setPos(map.get("bLegBRPos"));
             theLegBottomBackLeft.setRotation(map.get("bLegBBL"));
             theLegBottomBackRight.setRotation(map.get("bLegBBR"));
-            theLegBackLeft.setPos(map.get("bLegBLPos"));
             theTail.setRotation(map.get("bTail"));
             theEarL.setPos(map.get("bEarLPos"));
             theEarR.setPos(map.get("bEarRPos"));
             theEarL.setRotation(map.get("bEarLRot"));
             theEarR.setRotation(map.get("bEarRRot"));
-            for (int i = 0; i < 7; i++) {
+            for (int i = 1; i < 7; i++) {
                 tail[i].setRotation(map.get("tail"+i));
             }
         }

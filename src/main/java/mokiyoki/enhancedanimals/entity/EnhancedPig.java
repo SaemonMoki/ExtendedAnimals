@@ -840,6 +840,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
+            int[] gene = getSharedGenes().getAutosomalGenes();
             int eyes = 0;
             int red = 1;
             int black = 0;
@@ -858,7 +859,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int whiteExtension = 0;
             int whiteSplash = 0;
             int white = 0;
-            int spotPower = 0;
+            // if negative, tamworth; if positive, kitlg/allspots
+            int spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
             boolean roan = false;
             boolean whitePoints = false;
             boolean tusks = false;
@@ -872,7 +874,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             float maxRed = 0.020F;
             float maxYellow = 0.101F;
 
-            int[] gene = getSharedGenes().getAutosomalGenes();
             float[] melanin = {0.036F, 0.5F, 0.071F};
             float[] pheomelanin = { 0.049F, 0.683F, 0.558F };
 
@@ -920,12 +921,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             //brindle
             if (gene[0] == 3 && gene[1] == 3) {
                 // allspots
-                if (gene[64] == 2 && gene[65] == 2 && gene[62] != 2 && gene[63] != 2) {
+                if (spotPower == 2) {
                     pheomelanin[0] = 0.086F;
                     pheomelanin[1] = 0.100F;
                     pheomelanin[2] = 0.90F;
                 }
-                else if ((gene[64] == 2 || gene[65] == 2) && gene[62] != 2 && gene[63] != 2) {
+                else if (spotPower == 1) {
                     pheomelanin[0] = 0.086F;
                     pheomelanin[1] = 0.534F;
                     pheomelanin[2] = 0.69F;
@@ -1240,8 +1241,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             } else if (gene[0] == 3 || gene[1] == 3) {
                 //brindle
                 brindle = true;
-                // if negative, tamworth; if positive, kitlg/allspots
-                spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
                 if (gene[0] == 3 && gene[1] == 3) {
                     //homozygous brindle
                     black = idx_brindle;

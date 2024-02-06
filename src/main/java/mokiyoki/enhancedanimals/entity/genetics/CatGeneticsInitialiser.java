@@ -327,6 +327,30 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             }
         }
 
+        //Body Length Subtractor
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[96] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[96] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[97] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[97] = (2);
+        }
+
+        //Body Length Subtractor
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[98] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[98] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[99] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[99] = (2);
+        }
+
         //Snout Length [normal, longest, longer, shorter, shortest]
         for (int i = 100; i < 108; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -351,6 +375,51 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             } else {
                 autosomalGenes[i] = (1);
             }
+        }
+
+        //Body Type Adder [normal to cobby]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[120] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[120] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[121] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[121] = (1);
+        }
+        //Body Type Adder [normal to cobby]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[122] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[122] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[123] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[123] = (1);
+        }
+        //Body Type Subtractor [normal to lanky]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[124] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[124] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[125] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[125] = (1);
+        }
+        //Body Type Subtractor [normal to lanky]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[126] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[126] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[127] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[127] = (1);
         }
 
         return new Genes(sexlinkedGenes, autosomalGenes);

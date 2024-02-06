@@ -13,7 +13,8 @@ public class CatPhenotype implements Phenotype {
     public float eyeSize = 1.0F;
     public float earSpacing = 1.0F;
     public float bodyType = 0.0F; //Positive - shorter rounder; Negative - longer skinnier
-
+    public boolean isCobby = false;
+    public float bodyLength = 0.0F;
     public CatPhenotype(int[] gene,char uuid) {
         longHaired = (gene[32] > 1 && gene[33] > 1);
 
@@ -80,12 +81,13 @@ public class CatPhenotype implements Phenotype {
         eyeRoundness -= ((gene[46] + gene[47])-2) * 0.125F;
         eyeRoundness -= ((gene[48] + gene[49])-2) * 0.0625F;
 
-        //Body Type Test Toggle
-        if (gene[120] == 2) { //cobby
-            bodyType = 1.0F;
-        }
-        else if (gene[120] == 3) { //oriental
-            bodyType = -1.0F;
-        }
+        //Body Type
+        bodyType = ((gene[120]+gene[121]+gene[122]+gene[123])-4F)/16F;
+        bodyType -= ((gene[124]+gene[125]+gene[126]+gene[127])-4F)/16F;
+
+        isCobby = bodyType > 0F;
+
+        bodyLength = (1F - (((gene[96]+gene[97]+gene[98]+gene[99]-4)/16F)*0.20F));
+        //backLegZ += bodyType * 0.5F;
     }
 }

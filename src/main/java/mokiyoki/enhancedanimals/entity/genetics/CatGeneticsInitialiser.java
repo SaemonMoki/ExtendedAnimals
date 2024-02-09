@@ -326,6 +326,41 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
                 autosomalGenes[i] = (1);
             }
         }
+        //Head Size 1 [normal, smaller, bigger]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[90] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[90] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[91] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[91] = (1);
+        }
+
+        //Head Size 2 [normal, smaller, bigger]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[92] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[92] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[93] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[93] = (1);
+        }
+
+        //Head Width Adder
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[94] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[94] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[95] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[95] = (1);
+        }
 
         //Body Length Subtractor
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -422,6 +457,52 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[127] = (1);
         }
 
+        //Ear Spacing 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[128] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[128] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[129] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[129] = (1);
+        }
+
+        //Ear Spacing 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[130] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[130] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[131] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[131] = (1);
+        }
+
+        //Ear Width 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[132] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[132] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[133] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[133] = (1);
+        }
+        //Ear Width 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[134] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[134] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[135] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[135] = (1);
+        }
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 

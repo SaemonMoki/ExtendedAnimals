@@ -610,33 +610,24 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             }
 
             boolean isCobby = cat.isCobby;
-            float bHeadScale = 1.025F + cat.furLength*0.15F + (cat.bodyType*(isCobby ? 0.05F : 0.025F));
-            float headWidth = cat.bodyType*(isCobby ? 0.3F : 0.1F);
-            float eyesWidth = isCobby ? 0F : headWidth;
-            float neckScale = 1F + cat.furLength*0.25F;
-            float neckWidth = (cat.bodyType * (isCobby ? 0.4F : 0.25F) );
-            float neckHeight = (cat.bodyType * (isCobby ? 0F : 0.15F) );
+            float eyesWidth = Math.min(cat.headWidth, 1F);
             float lowerLegScale = 1F + (cat.furLength*0.25F)+((cat.bodyType*(isCobby ? 0.25F : 0.2F)));
             float upperLegScale = 1F + cat.furLength*0.35F;
             float upperLegHeight = 1F + cat.furLength*0.1F;
-            float bodyFrontScale = 1F + (cat.furLength*0.4F);
-            float bodyBackScale = 1F + (cat.furLength*0.35F);
-            float bodyWidth = (cat.bodyType*(isCobby ? 0.5F : 0.1F));
-            //float bodyLength = isCobby ? (1F - (cat.bodyType*0.15F)) : 1F;
             float eyeWidth = (1F - (cat.eyeRoundness > 0F ? cat.eyeRoundness * 0.35F : 0F)) * (cat.eyeSize);
             float eyeThickness = (1F + (cat.eyeRoundness * 0.225F)) * (cat.eyeSize);
             float earLength = 1F;
             float ear1Scale = 1F; //min 0.8
-            //float eyeSpacing = (cat.eyeRoundness * 0.35F) * 0.0625F;
             float eyeSize = 1F;
             float earSpacing = 1F;
             float tailThickness = 1F + (cat.bodyType * (isCobby ? 0.35F : 0.4F) );
             float[] tailFluffScales = {0F, 0.05F, 0.05F, 0.1F, 0.1F, 0.02F, 0.0F};
-            mapOfScale.put("bHead", ModelHelper.createScalings(bHeadScale, 0F,0F,0F));
-            mapOfScale.put("head", ModelHelper.createScalings(1F+headWidth, 1F, 1F, 0F,0F,0F));
-            mapOfScale.put("eyes", ModelHelper.createScalings(1F+eyesWidth, 1F, 1F, 0F,0F,0F));
+            mapOfScale.put("bHead", ModelHelper.createScalings(cat.headSize, 0F,0F,0F));
+            mapOfScale.put("head", ModelHelper.createScalings(cat.headWidth, 1F, 1F, 0F,0F,0F));
+            mapOfScale.put("eyes", ModelHelper.createScalings(eyesWidth, 1F, 1F, 0F,0F,0F));
             mapOfScale.put("bSnout", ModelHelper.createScalings(cat.snoutWidth, cat.snoutLength, 1F, 0F,0F,0F));
-            mapOfScale.put("neck", ModelHelper.createScalings(neckScale+neckWidth, neckScale+neckHeight, 1.0F, 0F,0F,0F));
+            mapOfScale.put("mouth", ModelHelper.createScalings(cat.jawScale, 1F, cat.jawScale, 0F,0F,0F));
+            mapOfScale.put("neck", ModelHelper.createScalings(cat.neckWidth, cat.neckHeight, 1.0F, 0F,0F,0F));
             List<Float> legScalings = ModelHelper.createScalings(lowerLegScale, 1F, lowerLegScale, 0F,0F,0F);
             mapOfScale.put("legBFL", legScalings);
             mapOfScale.put("legBBL", legScalings);
@@ -648,11 +639,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("bPawBR", legScalings);
             mapOfScale.put("legFL", legScalings);
             mapOfScale.put("legFR", legScalings);
-            List<Float> thighScalings = ModelHelper.createScalings(upperLegScale+(bodyWidth*0.75F), upperLegHeight, upperLegScale+(bodyWidth*0.1F), 0F, 0F, 0F);
+            List<Float> thighScalings = ModelHelper.createScalings(upperLegScale+(cat.bodyWidth*0.75F), upperLegHeight, upperLegScale+(cat.bodyWidth*0.1F), 0F, 0F, 0F);
             mapOfScale.put("legBL", thighScalings);
             mapOfScale.put("legBR", thighScalings);
-            List<Float> bodyScalingF = ModelHelper.createScalings(bodyFrontScale+bodyWidth, cat.bodyLength, bodyFrontScale, 0F, 0F, 0F);
-            List<Float> bodyScalingB = ModelHelper.createScalings(bodyBackScale+bodyWidth, cat.bodyLength, bodyBackScale, 0F, 0F, 0F);
+            List<Float> bodyScalingF = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
+            List<Float> bodyScalingB = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
             mapOfScale.put("bodyF", bodyScalingF);
             mapOfScale.put("bodyFurF", bodyScalingF);
             mapOfScale.put("bodyB", bodyScalingB);
@@ -662,19 +653,19 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("eyeR0", eye0Scaling);
             List<Float> earTransform = ModelHelper.createScalings(1F, earLength, 1F, 0F, 0F,0F);
             List<Float> ear1Transform = ModelHelper.createScalings(1F, earLength*ear1Scale, 1F, 0F, 0F,0F);
+            List<Float> ear2Transform = ModelHelper.createScalings(1F+cat.earFlare, earLength, 1F, 0F, 0F,0F);
             mapOfScale.put("earL0", earTransform);
             mapOfScale.put("earL1", ear1Transform);
-            mapOfScale.put("earL2", earTransform);
+            mapOfScale.put("earL2", ear2Transform);
+            mapOfScale.put("earL3", ear2Transform);
             mapOfScale.put("earR0", earTransform);
             mapOfScale.put("earR1", ear1Transform);
-            mapOfScale.put("earR2", earTransform);
-            //mapOfScale.put("eyeL2", ModelHelper.createScalings((1F/eyeWidth)*dilation, 1.0F, 1.0F, (1.0F-dilation)*-0.065F, 0.0F, 0.0F));
-            //mapOfScale.put("eyeR2", ModelHelper.createScalings((1F/eyeWidth)*dilation, 1.0F, 1.0F, (1.0F-dilation)*0.065F, 0.0F, 0.0F));
+            mapOfScale.put("earR2", ear2Transform);
+            mapOfScale.put("earR3", ear2Transform);
 
             for (int i = 0; i < 7; i++) {
                 mapOfScale.put("tail"+i, ModelHelper.createScalings(tailThickness + (cat.furLength*tailFluffScales[i]), 1F + (cat.furLength*tailFluffScales[i]), tailThickness + (cat.furLength*tailFluffScales[i]), 0F,0F,0F));
             }
-
 
             poseStack.pushPose();
             poseStack.scale(scale, scale, scale);
@@ -711,6 +702,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             CatPhenotype cat = catModelData.getPhenotype();
+            float earAngle = (Mth.HALF_PI*1.1F*cat.earSpacing);
             theSnout.setZ(-3.5F);
             theLegBackLeft.setXRot(Mth.PI*-0.05F);
             theLegBackRight.setXRot(Mth.PI*-0.05F);
@@ -722,12 +714,12 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             theLegBackRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
             theLegFrontLeft.setX(-1.5F - (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
             theLegFrontRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
-//            theEarL.setX(1.25F+(cat.earSpacing*1.25F));
-//            theEarR.setX(-1.25F-(cat.earSpacing*1.25F));
-//            theEarL.setY(-0.4F);
-//            theEarR.setY(-0.4F);
-//            theEarL.setZRot(Mth.HALF_PI*0.9F*cat.earSpacing);
-//            theEarR.setZRot(Mth.HALF_PI*0.9F*-cat.earSpacing);
+            theEarL.setX((cat.headWidth*1.25F)+(cat.earSpacing*1.25F*cat.headWidth)+(Mth.sin(earAngle)*0.5F));
+            theEarR.setX((cat.headWidth*-1.25F)-(cat.earSpacing*1.25F*cat.headWidth)-(Mth.sin(earAngle)*0.5F));
+            theEarL.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earAngle)*0.75F));
+            theEarR.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earAngle)*0.75F));
+            theEarL.setZRot(earAngle);
+            theEarR.setZRot(-earAngle);
         } else {
             theSnout.setPos(map.get("bSnoutPos"));
             theLegBackLeft.setRotation(map.get("bLegBL"));

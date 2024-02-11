@@ -11,16 +11,22 @@ public class CatPhenotype implements Phenotype {
     public float bodyWidth = 1F;
     public float snoutLength = 1.0F;
     public float snoutWidth = 1.0F;
+    public float snoutScale = 1.0F;
     public float eyeRoundness = 0.0F;
     public float eyeSize = 1.0F;
     public float earSpacing = 0.0F;
-    public float earFlare = 1.0F;
+    public float earFlare = 0.0F;
+    public float earSize = 0.0F;
+    public float earLength = 0.0F;
+    public float earRoundness = 1.0F;
     public float jawScale = 1.25F;
     public float bodyType = 0.0F; //Positive - shorter rounder; Negative - longer skinnier
     public boolean isCobby = false;
     public float bodyLength = 0.0F;
     public float neckWidth = 1.0F;
     public float neckHeight = 1.0F;
+
+    public int bobtail = 0;
 
     public CatPhenotype(int[] gene, char uuid) {
         longHaired = (gene[32] > 1 && gene[33] > 1);
@@ -64,12 +70,10 @@ public class CatPhenotype implements Phenotype {
         for (int i = 116; i < 120; i++) {
             switch (gene[i]) {
                 case 2 -> { //Smaller
-                    snoutWidth -= 0.015F;
-                    snoutLength -= 0.015F;
+                    snoutScale -= 0.015F;
                 }
                 case 3 -> { //Larger
-                    snoutWidth += 0.015F;
-                    snoutLength += 0.015F;
+                    snoutScale += 0.015F;
                 }
             }
         }
@@ -121,6 +125,12 @@ public class CatPhenotype implements Phenotype {
         earSpacing = (gene[128]+gene[129]+gene[130]+gene[131]-4)/16F;
         earFlare = (gene[132]+gene[133]+gene[134]+gene[135]-4)/8F;
         earSpacing += earFlare/2F;
+
+        earLength = (gene[136]+gene[137]+gene[138]+gene[139]-4)/16F;
+        earRoundness = (gene[140]+gene[141]+gene[142]+gene[143]-4)/16F;
+        earSize = ((gene[144]+gene[145]-(gene[146]+gene[147]))-4)/8F;
+
+        this.bobtail = (gene[26]==2 || gene[27]==2) ? (uuid % 4) + 1 : 0;
 
     }
 }

@@ -209,6 +209,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "het_spotted_het_bm.png", "het_spotted_homo_bm.png",
             "spotted_het_bm.png", "spotted_homo_bm.png", "het_ticked_bm.png"
     };
+    private static final String[] CAT_TEXTURES_RED_TABBY_MASK = new String[] {
+            "solid_base.png", "flamepoint_tabbymask.png"
+    };
 
     private static final String[] CAT_TEXTURES_TICKED = new String[] {
             "", "base_ticked_tabby1.png"
@@ -453,9 +456,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     public void lethalGenes(){
-
-        //TODO lethal genes go here
-
+        int[] gene = this.genetics.getAutosomalGenes();
+        if(gene[26] == 2 && gene[27] == 2) {
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
     public void ate() {
@@ -759,6 +763,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
              * [0] - Gender
              * [1] - Body White
              * [2] - Head White
+             *
+             *
+             * [5] - Bobtail
              */
 
             int randBodyWhite = uuidArry[1];
@@ -891,15 +898,18 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RED, CAT_TEXTURES_FUR, 1, l -> l !=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[1], "b-ub", redUnderbellyRGB);
                 addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_INHIBITOR, inhibitor, l -> l !=0);
-                addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
                 if (ticked != 0) {
                     addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "r-ttb", redTabbyRGB);
                 }
                 redGroup.addGrouping(redBaseGroup);
+                TextureGrouping redTabbyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                addTextureToAnimalTextureGrouping(redTabbyGroup, CAT_TEXTURES_RED_TABBY_MASK, colorpoint != 0 ? 1 : 0, l -> true);
+                addTextureToAnimalTextureGrouping(redTabbyGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
+                redGroup.addGrouping(redTabbyGroup);
                 if (colorpoint != 0) {
                     TextureGrouping colorpointGroup = new TextureGrouping(TexturingType.MASK_GROUP);
 
-                    TextureGrouping colorpointMaskGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                    TextureGrouping colorpointMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(colorpointMaskGroup, CAT_TEXTURES_COLORPOINT_RED, colorpoint, true);
                     colorpointGroup.addGrouping(colorpointMaskGroup);
 
@@ -922,11 +932,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_BLACK, CAT_TEXTURES_FUR, 1, l -> l !=0);
                 addTextureToAnimalTextureGrouping(blackBaseGroup, CAT_TEXTURES_INHIBITOR, inhibitor, l -> l !=0);
                 if (agouti) {
-                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[1], "b-ub", blackUnderbellyRGB);
-                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
                     if (ticked != 0) {
                         addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "b-ttb", blackTabbyRGB);
                     }
+                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[1], "b-ub", blackUnderbellyRGB);
+                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "b-tb"+tabby, blackTabbyRGB);
                 }
                 if (charcoal) {
                     addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_CHARCOAL[1], "b-alc", blackTabbyRGB);
@@ -944,7 +954,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
                     addTextureToAnimalTextureGrouping(colorpointTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_FUR[1], "cp", colorpointBlackRGB);
                     if (agouti) {
-                        addTextureToAnimalTextureGrouping(colorpointTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "cp-tb"+tabby, colorpointTabbyRGB);
+                            addTextureToAnimalTextureGrouping(colorpointTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "cp-tb"+tabby, colorpointTabbyRGB);
                     }
                     colorpointGroup.addGrouping(colorpointTintGroup);
                     blackGroup.addGrouping(colorpointGroup);

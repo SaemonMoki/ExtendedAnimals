@@ -208,7 +208,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[23] = (1);
         }
 
-        // Inhibitor/Silver (dominant)
+        // Inhibitor/Silver [dominant]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -218,6 +218,18 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             autosomalGenes[25] = (1);
+        }
+
+        // Manx Bobtail [homo lethal]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[26] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[27] = (1);
         }
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
@@ -503,6 +515,79 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[135] = (1);
         }
+
+        //Ear Length 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[136] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[136] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[137] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[137] = (1);
+        }
+
+        //Ear Length 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[138] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[138] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[139] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[139] = (1);
+        }
+
+        //Ear Roundness 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[140] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[140] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[141] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[141] = (1);
+        }
+
+        //Ear Roundness 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[142] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[142] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[143] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[143] = (1);
+        }
+
+        //Ear Size+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[144] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[144] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[145] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[145] = (1);
+        }
+
+        //Ear Size-
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[146] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[146] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[147] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[147] = (1);
+        }
+
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 

@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
 //import mokiyoki.enhancedanimals.init.breeds.CatBreeds;
+import mokiyoki.enhancedanimals.init.breeds.CatBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -17,8 +18,8 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
     List<Breed> breeds = new ArrayList<>();
 
     public CatGeneticsInitialiser() {
-        //this.breeds.add(CatBreeds.Black);
-        //this.breeds.add(CatBreeds.BritishShorthair);
+        this.breeds.add(CatBreeds.BLACK);
+        this.breeds.add(CatBreeds.BRITISHSHORTHAIR);
         //this.breeds.add(CatBreeds.Calico);
         //this.breeds.add(CatBreeds.Jellie);
         //this.breeds.add(CatBreeds.Persian);
@@ -230,6 +231,18 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             autosomalGenes[27] = (1);
+        }
+
+        // Dilute [Wildtype, dilute]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[28] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[29] = (1);
         }
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning

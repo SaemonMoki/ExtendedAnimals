@@ -228,15 +228,15 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
 
         base.addOrReplaceChild("cheekFluffL", CubeListBuilder.create()
-                        .texOffs(64, 123)
-                        .addBox(0F, -1.5F, 0F,4, 5, 0, new CubeDeformation(0F, 0F, 0F)),
-                PartPose.offsetAndRotation(2.5F, 0.0F, -4.25F, 0.0F, -Mth.PI*0.25F, 0.0F)
+                        .texOffs(64, 122)
+                        .addBox(-0.5F, -2F, 0F,3, 6, 0, new CubeDeformation(-0.5F, -0.5F, 0F)),
+                PartPose.offsetAndRotation(2.5F, 0.0F, (-5F/6F * 5)+0.5F, 0.0F, -Mth.PI*0.25F, 0.0F)
         );
 
         base.addOrReplaceChild("cheekFluffR", CubeListBuilder.create()
-                        .texOffs(56, 123)
-                        .addBox(-4F, -1.5F, 0F,4, 5, 0, new CubeDeformation(0F, 0F, 0F)),
-                PartPose.offsetAndRotation(-2.5F, 0.0F, -4.25F, 0.0F, Mth.PI*0.25F, 0.0F)
+                        .texOffs(57, 122)
+                        .addBox(-2.5F, -2F, 0F,3, 6, 0, new CubeDeformation(-0.5F, -0.5F, 0F)),
+                PartPose.offsetAndRotation(-2.5F, 0.0F, (-5F/6F * 5)+0.5F, 0.0F, Mth.PI*0.25F, 0.0F)
         );
 
         /**

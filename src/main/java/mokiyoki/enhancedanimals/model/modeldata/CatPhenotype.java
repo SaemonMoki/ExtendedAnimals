@@ -39,7 +39,7 @@ public class CatPhenotype implements Phenotype {
         }
 
         //furnishings
-        furnishings = (gene[42] == 2 && gene[43] == 2);
+        furnishings = true;
         //headWidth = (gene[44] == 2 || gene[45] == 2) ? 1F : 0F;
 
         // snout length genes

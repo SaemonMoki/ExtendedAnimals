@@ -258,8 +258,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("bodyFurF", CubeListBuilder.create()
                         .texOffs(5, 115)
-                        .addBox(-3.0F, 0F, -10.0F, 6, 10, 3, new CubeDeformation(-0.5F, -0.5F, 0.0F)),
-                PartPose.offsetAndRotation(0F, 0F, -9.5F, Mth.HALF_PI, 0.0F, 0.0F)
+                        .addBox(-3.0F, 0F, -10F, 6, 10, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.ZERO
         );
         base.addOrReplaceChild("bodyB", CubeListBuilder.create()
                         .texOffs(36, 0)
@@ -271,8 +271,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("bodyFurB", CubeListBuilder.create()
                         .texOffs(33, 118)
-                        .addBox(-3.0F, -0.5F, -10.0F, 6, 7, 3, new CubeDeformation(-0.5F, -0.5F, 0.0F)),
-                PartPose.rotation(Mth.HALF_PI, 0.0F, 0.0F)
+                        .addBox(-3.0F, -6.5F, -10F, 6, 7, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.ZERO
         );
 
         /**
@@ -400,8 +400,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         for (int i = 0; i < 7; i++) {
             base.addOrReplaceChild("tailFur"+i, CubeListBuilder.create()
                             .texOffs(119, 124-(i*4))
-                            .addBox(-1.0F, -2.25F, 1.0F, 2, 2, 2, new CubeDeformation(i%2==0?0.0F:0.01F, 0.0F, 0.0F)),
-                    PartPose.offset(0.0F, 0.0F, i == 0 ? 1.0F : 0.0F)
+                            .addBox(-1.0F, -2F, 1.0F, 2, 2, 2),
+//                    PartPose.offset(0.0F, 0.0F, i == 0 ? 1.0F : 0.0F)
+                    PartPose.ZERO
             );
         }
 
@@ -499,7 +500,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 theTailBones[i-1].addChild(theTailBones[i]);
             }
             theTailBones[i].addChild(tail[i]);
-            theTailBones[i].addChild(tailFur[i]);
+            tail[i].addChild(tailFur[i]);
         }
 
         theCat.addChild(theBodyBack);
@@ -539,9 +540,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theNeck.addChild(neck);
 
         theBodyFront.addChild(bodyFront);
-        theBodyFront.addChild(bodyFurFront);
+        bodyFront.addChild(bodyFurFront);
         theBodyBack.addChild(bodyBack);
-        theBodyBack.addChild(bodyFurBack);
+        bodyBack.addChild(bodyFurBack);
 
         theLegFrontLeft.addChild(legFrontLeft);
         theLegFrontRight.addChild(legFrontRight);
@@ -654,9 +655,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             List<Float> bodyScalingF = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
             List<Float> bodyScalingB = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
             mapOfScale.put("bodyF", bodyScalingF);
-            mapOfScale.put("bodyFurF", bodyScalingF);
+            //mapOfScale.put("bodyFurF", bodyScalingF);
             mapOfScale.put("bodyB", bodyScalingB);
-            mapOfScale.put("bodyFurB", bodyScalingB);
+            //mapOfScale.put("bodyFurB", bodyScalingB);
             List<Float> eye0Scaling = ModelHelper.createScalings(eyeWidth * eyeSize, eyeThickness, eyeSize, 0F, 0F, 0F);
             mapOfScale.put("eyeL0", eye0Scaling);
             mapOfScale.put("eyeR0", eye0Scaling);

@@ -67,7 +67,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart legFrontLeft;
     private static WrappedModelPart legFrontRight;
     private static WrappedModelPart legBackLeft;
+    private static WrappedModelPart legFurBackLeft;
     private static WrappedModelPart legBackRight;
+    private static WrappedModelPart legFurBackRight;
 
     private static WrappedModelPart legFrontLeftBottom;
     private static WrappedModelPart legFrontRightBottom;
@@ -306,18 +308,22 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 /** Top */
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(36, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4)
-//                        .texOffs(104, 122)
-//                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4)
-                ,
+                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
+                        .texOffs(104, 122)
+                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4)
-//                        .texOffs(108, 122)
-//                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4)
-                ,
+                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("legFurBR", CubeListBuilder.create()
+                        .texOffs(108, 122)
+                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.ZERO
         );
                 /** Bottom */
@@ -483,7 +489,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         toesFrontRight = new WrappedModelPart("toesFR", base);
 
         legBackLeft = new WrappedModelPart("legBL", base);
+        legFurBackLeft = new WrappedModelPart("legFurBL", base);
         legBackRight = new WrappedModelPart("legBR", base);
+        legFurBackRight = new WrappedModelPart("legFurBR", base);
         legBackLeftBottom = new WrappedModelPart("legBBL", base);
         legBackRightBottom = new WrappedModelPart("legBBR", base);
         pawBackLeft = new WrappedModelPart("pawBL", base);
@@ -557,7 +565,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         thePawFrontRight.addChild(toesFrontRight);
 
         theLegBackLeft.addChild(legBackLeft);
+        legBackLeft.addChild(legFurBackLeft);
         theLegBackRight.addChild(legBackRight);
+        legBackRight.addChild(legFurBackRight);
 
         theLegBottomBackLeft.addChild(legBackLeftBottom);
         theLegBottomBackRight.addChild(legBackRightBottom);

@@ -1571,6 +1571,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
             }
             else if (white == idx_belt) {
+                //random belt
                 if (whiteExtension == 2) {
                     int d = uuidArry[3] % 3;
                     white = idx_belt + 3 + d;
@@ -1590,12 +1591,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 white = idx_patch_belt + d3;
             }
             else if (white == idx_patch_bigbelt) {
-                //random patch belt
+                //random patch bigbelt
                 int d3 = uuidArry[3] % 4;
                 white = idx_patch_bigbelt + d3;
             }
             else if (white == idx_patch_hereford) {
-                //random patch belt
+                //random patch hereford
                 int d3 = uuidArry[3] % 5;
                 white = idx_patch_hereford + d3;
             }
@@ -1611,6 +1612,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 whiteTail = 1 + d4;
             }
             else if (whiteSplash == idx_hereford_belly_med) {
+                //random med hereford
                 int d4 = uuidArry[5] % 2;
                 int d3 = uuidArry[3] % 3;
                 int d2 = uuidArry[2] % 4;
@@ -1620,6 +1622,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 whiteTail = 1 + d4;
             }
             else if (whiteSplash == idx_hereford_belly_high) {
+                //random high hereford
                 int d4 = uuidArry[5] % 2;
                 int d3 = uuidArry[3] % 5;
                 int d2 = uuidArry[2] % 6;

@@ -312,7 +312,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
         base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
-                        .texOffs(104, 122)
+                        .texOffs(105, 110)
                         .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.ZERO
         );

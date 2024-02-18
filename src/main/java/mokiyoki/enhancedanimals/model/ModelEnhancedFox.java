@@ -317,7 +317,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 //            this.body.show(fox.shape == 0);
 
 
-            float finalFoxSize = ((3.0F * foxModelData.size * foxModelData.growthAmount) + foxModelData.size) / 4.0F;
+            float finalFoxSize = ((3.0F * foxModelData.size * foxModelData.growthAmount) + foxModelData.size) / 4.0F;  // body part scaling
 
             poseStack.pushPose();
             poseStack.scale(finalFoxSize, finalFoxSize, finalFoxSize);
@@ -329,7 +329,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         }
     }
 
-// ANIMATION - currently uses pig animations i think, but the part names should all be changed
+// ANIMATION
 
     protected void saveAnimationValues(FoxModelData data, FoxPhenotype fox) {
         Map<String, Vector3f> map = data.offsets;

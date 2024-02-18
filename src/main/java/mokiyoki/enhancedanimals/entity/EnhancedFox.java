@@ -141,7 +141,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         int napmod = this.random.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 0.8D));
         this.goalSelector.addGoal(2, new EnhancedPanicGoal(this, 1.25D));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.25D, 1.25D, null));
         this.goalSelector.addGoal(4, new EnhancedAvoidEntityGoal<>(this, EnhancedLlama.class, 10.0F, 1.25D, 1.25D, null));
@@ -214,6 +214,24 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
         super.usePlayerItem(player, hand, itemStack);
     }
+
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_FOX_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (item == Items.NAME_TAG) {
+            itemStack.interactLivingEntity(entityPlayer, this, hand);
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(entityPlayer, hand);
+    }
+
 
     @Override
     public void aiStep() {
@@ -489,21 +507,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
         return this.colouration;
     }
-
-
-
-    @Override
-    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
-        ItemStack itemStack = entityPlayer.getItemInHand(hand);
-        Item item = itemStack.getItem();
-
-        if (item == ModItems.ENHANCED_FOX_EGG.get()) {
-            return InteractionResult.SUCCESS;
-        }
-
-        return super.mobInteract(entityPlayer, hand);
-    }
-
 
 
     public void addAdditionalSaveData(CompoundTag compound) {

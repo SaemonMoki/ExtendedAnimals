@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.model.modeldata;
 
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
-    public boolean furnishings;
+    public boolean furnishings = false;
     public float furLength = 0.0F;
     public float furDensity;
     public float headSize = 1.025F;
@@ -39,7 +39,6 @@ public class CatPhenotype implements Phenotype {
         }
 
         //furnishings
-        furnishings = true;
         //headWidth = (gene[44] == 2 || gene[45] == 2) ? 1F : 0F;
 
         // snout length genes

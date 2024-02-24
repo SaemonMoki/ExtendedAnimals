@@ -233,7 +233,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[27] = (1);
         }
 
-        // Dilute [Wildtype, dilute]
+        // Dilute/Blue [Wildtype, dilute]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -244,6 +244,18 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[29] = (1);
         }
+        // CORIN [Wildtype, sunshine]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[30] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[31] = (1);
+        }
+
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
 

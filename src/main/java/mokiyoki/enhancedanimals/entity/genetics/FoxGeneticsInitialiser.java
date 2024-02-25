@@ -33,10 +33,23 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     @Override
     public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
-        int[] autosomalGenes = new int[Reference.FOX_AUTOSOMAL_GENES_LENGTH];  // value is 4 rn
+        int[] autosomalGenes = new int[Reference.FOX_AUTOSOMAL_GENES_LENGTH];  // value is 100 rn
         Biome biome = biomeHolder.value();
 
         // note here with values
+
+        int wildType = 2;
+        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
+            wildType = 1;
+        }
+        if (isFlat) {
+            int randomizeWT = ThreadLocalRandom.current().nextInt(4);
+            if (randomizeWT <= 2) {
+                wildType = randomizeWT;
+            }
+        }
+
+
 
         /**
          * MC1R - Extension
@@ -84,6 +97,96 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[3] = (1);
         }
 
+
+        /**
+         * SILVER GUARD HAIRS
+         *    4 : S  - wildtype: no silvering
+         *    5 : s - more silvering
+         */
+       // SILVERING [ Wildtype, silvering ]
+
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+//        } else {
+//            autosomalGenes[4] = (2);
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+//        } else {
+ //           autosomalGenes[5] = (2);
+//        }
+
+        // [1:wildtype, 2:faded silver, 3:full silver
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[4] = 1;
+            switch (Biome.getBiomeCategory(biomeHolder)) {
+                case PLAINS, DESERT -> autosomalGenes[4] = 1;
+                case ICY -> autosomalGenes[4] = 2;
+                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[4] = 3;
+            }
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[5] = 1;
+            switch (Biome.getBiomeCategory(biomeHolder)) {
+                case PLAINS, DESERT -> autosomalGenes[5] = 1;
+                case ICY -> autosomalGenes[5] = 2;
+                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[5] = 3;
+            }
+        }
+
+
+
+
+
+        //eye size? 1-5
+    //    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+    //        autosomalGenes[6] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    //    } else {
+    //        autosomalGenes[6] = (1);
+    //    }
+    //    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+    //        autosomalGenes[7] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    //    } else {
+    //        autosomalGenes[7] = (1);
+    //    }
+
+
+        // genes 6 and 7?
+
+        //Eye Coloration [neutral/yellow, orange, green]
+        for (int i = 50; i < 60; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        //Eye Lightness (60-65 = lighter, 66-72 = darker)
+        for (int i = 60; i < 72; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        //Eye Vibrance  [wildtype, more saturated]
+        for (int i = 72; i < 80; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+
+
+
+        // ear size, spacing, angle
 
 
 

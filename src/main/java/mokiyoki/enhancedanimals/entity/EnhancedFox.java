@@ -78,6 +78,14 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             "", "red_1.png", "gold_1.png", "cross_1.png", "cross_2.png", "silver_1.png", "silver_2.png", "silver_3.png"
     };
 
+    private static final String[] FOX_TEXTURES_EYE_L = new String[] {
+            "eye_left.png"
+    };
+
+    private static final String[] FOX_TEXTURES_EYE_R = new String[] {
+            "eye_right.png"
+    };
+
  //   private static final String[] FOX_TEXTURES_PATTERN = new String[] {
  //           "", "b_blackbelly_0.png", "b_blackandtan_0.png", "b_english_blue.png",
   //          "b_blackbelly_1.png", "b_blackbelly_2.png", "b_blackbelly_3.png", "b_blackbelly_4.png", "b_blackbelly_5.png",
@@ -89,13 +97,15 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
   //          "skin_pink.png"
   //  };
 
- //   private static final String[] FOX_TEXTURES_FUR = new String[] {
-  //          "c_fur_wooly.png"
-  //  };
+    // SILVERING guard hairs  - layer on top of base, 40% opacity with screen effect if possible, influenced by phaeomelanin (light pigment)
+ private static final String[] FOX_TEXTURES_SILVERING = new String[] {
+            "", "silvering_1.png", "silvering_2.png"
+    };
 
  //   private static final String[] FOX_TEXTURES_EYES = new String[] {
  //           "eyes_black.png"
  //   };
+
 
 
     // will come back to this once i have more genetic info - sex linked genes?
@@ -207,12 +217,8 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     public static AttributeSupplier.Builder prepareAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.28D);
-    }
-
-    @Override
-    protected void usePlayerItem(Player player, InteractionHand hand, ItemStack itemStack) {
-        super.usePlayerItem(player, hand, itemStack);
+                .add(Attributes.MOVEMENT_SPEED, 0.28D)
+                .add(Attributes.ATTACK_DAMAGE, 2.0D);
     }
 
     @Override
@@ -250,6 +256,13 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         int[] gene = this.genetics.getAutosomalGenes();
     //        this.remove(RemovalReason.KILLED);
     }
+
+    @Override
+    protected int getNumberOfChildren() {
+//        int[] genes = this.genetics.getAutosomalGenes();
+        return (ThreadLocalRandom.current().nextInt(3)) + 3;
+    }
+
 
 //    @Override
 //    protected int getNumberOfChildren() {
@@ -326,8 +339,12 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.SHEEP_STEP, 1.5F, 1.0F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.5F);
         }
+    }
+
+    protected float getSoundVolume() {
+        return 0.4F;
     }
 
  // dye and wool color was here
@@ -365,7 +382,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
         return getCompiledTextures("enhanced_fox");
     }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
@@ -378,15 +394,30 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         this.setTexturePaths();
     }
 
+    private void clampRGB(float[] color) {
+        for (int i = 0; i <= 2; i++) {
+            if (color[i] > 1.0F) {
+                color[i] = 1.0F;
+            } else if (color[i] < 0.0F) {
+                color[i] = 0.0F;
+            }
+        }
+    }
+
+
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
             int[] gene = getSharedGenes().getAutosomalGenes();
+            //int[] aGenes = getSharedGenes().getAutosomalGenes();
 
-           // int skin = 0;
-           // int fur = 0;
-            //int eyes = 0;
+            float[] eyeColor = { 0.45F, 0.85F, 0.46F };
+
+            // int skin = 0;
+            // int fur = 0;
+            int silvering = 0;
+            // int eyes = 0;
             int extension = 0;
             int agouti = 0;
             int basecoat = 0;
@@ -456,10 +487,113 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 basecoat = 9;  // aaee - double silver         silver3.png
             }
 
+            /**
+             * SILVER GUARD HAIRS
+             *    gene 4 : wildtype: no silvering
+             *    gene 5 : more silvering
+             */
+            // SILVERING guard hairs  - layer on top of base
+            // [ ]
+            //if (gene[4] == 1 && gene[5] == 1) {          // both = 1
+            //    silvering = 1;  // ss full silvering
+            //} else if ((gene[4] == 1 || gene[5] == 2) || (gene[4] == 2 || gene[5] == 1)) {   // either
+            //    silvering = 2;  // Ss faded silvering
+            //} else {                                     // if neither = 1
+            //    silvering = 3;  //
+            //}
 
+
+            //basic silvering - need default to be no silvering
+            // should be:  SS = no silver , Ss = faded silver , ss = full silver
+            // right now in the init, [gene] = 2 (or should I use 1?)
+
+            if (gene[4] == 2 && gene[5] == 2){  // SS?
+                silvering = 1;  //
+            } else if (gene[4] == 1 && gene[5] == 2) {  // Ss?
+                silvering = 2;  //
+            }
+
+
+            if (extension==1 && agouti==2) {  // gold foxes
+            eyeColor[0] = 0.10F;  // hue
+            eyeColor[1] -= 0.215F;  // sat
+            eyeColor[2] += 0.22F;  // lightness
+
+             }
+
+        //    if (age < 108000) {
+        //        eyeColor[0] = 0.55F;  // hue
+        //        eyeColor[1] -= 0.215F;  // sat
+        //        eyeColor[2] += 0.22F;  // lightness
+
+        //    }
+
+
+            int eyeHue = 0; // negative = orange, positive = green
+            for (int i = 50; i < 60; i++) {
+                if (gene[i] == 2) {
+                    eyeHue--;
+                }
+                else if (gene[i] == 3) {
+                    eyeHue++;
+                }
+            }
+
+            int eyeLightness = 0;
+            for (int i = 60; i < 72; i++) {
+                if (gene[i] == 2) {
+                    eyeLightness += i < 66 ? 1 : -1;
+                }
+            }
+
+            int eyeSaturation = 0;
+            for (int i = 72; i < 80; i++) {
+                if (gene[i] == 2) {
+                    eyeSaturation += 1;
+                }
+            }
+
+            eyeColor[0] += eyeHue*0.0030F; // 0.0130F
+
+            eyeColor[1] += eyeSaturation*0.025F; //0.025F
+
+            eyeColor[1] -= eyeLightness*0.005F; // 0.005F
+            eyeColor[2] += eyeLightness*0.0225F; // 0.0225F
+
+
+            clampRGB(eyeColor);
+
+
+            int leftEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
+            int rightEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
+
+        // CAT NOSE COLOR example
+            // Colouration.HSBtoARGB(0.13F [HUE], 0.02F [SATURATION], 0.96F [BRIGHTNESS]);
+        //    int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
+        //    int[] noseColors = {
+                    //Brick 0
+        //            Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
+                    //Black 1
+        //            Colouration.HSBtoARGB(0.0F, 0.051F, 0.231F),
+                    //Light Brick 2
+        //            Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
+                    //Pink 3
+        //            Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F),
+                    //Brown 4
+        //            Colouration.HSBtoARGB(0.02F, 0.321F, 0.231F),
+        //    };
+
+            this.colouration.setLeftEyeColour(leftEyeRGB);
+            this.colouration.setRightEyeColour(rightEyeRGB);
+
+
+
+        // FAWN SPOTS
+            // 1 - no spots, default and dominant  2 - ear spots, homo?  3 - body spots, homo? 4 - ear and body spots, homo, rare?
+
+
+            // EXAMPLE for making sure a trait occurs when several others do
             // if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
-            //
-            //
             // }
 
 
@@ -469,8 +603,8 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             // groups: parent (add everything at end), skin, hair, foundation, eyes and paws at end in parent
             // grouping for pigs: skin (merge), hair (merge and mask), white markings, overlay - coat texture,
 
-            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create parent group
-            TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP);     //MASK_GROUP  hair
+            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create parent group as merge
+            TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP);     // hair group as mask
 
             TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create foundation group
             addTextureToAnimalTextureGrouping(foundationGroup, FOX_TEXTURES_BASECOAT, basecoat, l -> l != 0);  // create basecoat group
@@ -478,12 +612,17 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             parentGroup.addGrouping(hairGroup);  // hair added to parent
 
-            TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_FUR, fur, null);
+            TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // add detail group as merge
+            //  if (silvering!=0) {}
+            addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SILVERING, silvering, l -> l != 0); // create silvering group - put in hair group later
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);
-            addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_left.png", getColour(this.growthAmount()));
-            addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_right.png", getColour(this.growthAmount()));
-            parentGroup.addGrouping(detailGroup);
+            //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_left.png", getColour(this.growthAmount()));
+            //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_right.png", getColour(this.growthAmount()));
+
+            addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, FOX_TEXTURES_EYE_L, 0, l-> true);
+            addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, FOX_TEXTURES_EYE_R, 0, l -> true);
+
+            parentGroup.addGrouping(detailGroup); // detail added to parent
 
             this.setTextureGrouping(parentGroup);  // finalizes texture grouping
         }
@@ -492,9 +631,16 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     @Override
     protected void setAlphaTexturePaths() {}
 
-    private int getColour(float age) {
-        return age < 0.2F ? 9608151 : 14712338;
-    }
+ //   private int getColour(float age) {
+ //       return age < 0.2F ? 9608151 : 14712338;  // if age is less than 0.2, execute [if true] : [if false]
+ //   }
+
+
+ //   if (age < 108000) {
+ //       eyeColor[0] = 0.55F;  // hue
+ //       eyeColor[1] -= 0.215F;  // sat
+ //       eyeColor[2] += 0.22F;  // lightness
+ //   }
 
     @Override
     public Colouration getRgb() {

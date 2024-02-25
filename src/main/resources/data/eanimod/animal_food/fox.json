@@ -95,7 +95,7 @@
     {
       "registryName": "eanimod:cookedrabbit_small",
       "hungerRestored": 750,
-      "isBreedingItem": false
+      "isBreedingItem": true
     }
   ]
 }

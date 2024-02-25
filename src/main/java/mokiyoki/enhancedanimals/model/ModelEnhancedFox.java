@@ -84,9 +84,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
                         .texOffs(57, 58)
                         .addBox(-3.5F, 0.0F, 0.0F, 2, 1, 1, new CubeDeformation(0.01F))  // right
                         .texOffs(59, 50)
-                        .addBox(2.0F, 0.0F, -0.05F, 1, 1, 0, new CubeDeformation(0.01F))  // PUPIL left
+                        .addBox(1.5F, 0.0F, -0.05F, 1, 1, 0, new CubeDeformation(0.01F))  // PUPIL left
                         .texOffs(59, 52)
-                        .addBox(-3.0F, 0.0F, -0.05F, 1, 1, 0, new CubeDeformation(0.01F)),  // PUPIL right
+                        .addBox(-2.5F, 0.0F, -0.05F, 1, 1, 0, new CubeDeformation(0.01F)),  // PUPIL right
                 PartPose.offset(0.0F, 0.0F, -6.0F)
         );
 
@@ -130,7 +130,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 // NECK
         base.addOrReplaceChild("neck", CubeListBuilder.create()
                         .texOffs(2, 10)
-                        .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7, new CubeDeformation(0.01F)),
+                        .addBox(-3.5F, -7.0F, -1.0F, 7, 9, 7, new CubeDeformation(0.1F)), //0.01F
                 PartPose.ZERO
         );
 

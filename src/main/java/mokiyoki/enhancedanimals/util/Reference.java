@@ -21,5 +21,5 @@ public class Reference {
     public static final int HORSE_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 12;
     public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 46;
-    public static final int FOX_AUTOSOMAL_GENES_LENGTH = 4; //number of genes and alleles - size of int array that holds genes
+    public static final int FOX_AUTOSOMAL_GENES_LENGTH = 100; //number of genes and alleles - size of int array that holds genes
 }

@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model.modeldata;
 
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
+    public boolean hairless = true;
     public boolean furnishings = false;
     public float furLength = 0.0F;
     public float furDensity;
@@ -26,6 +27,8 @@ public class CatPhenotype implements Phenotype {
     public float neckWidth = 1.0F;
     public float neckHeight = 1.0F;
 
+    public float lowerLegScale = 1.0F;
+    public float tailThickness = 1.0F;
     public int bobtail = 0;
 
     public CatPhenotype(int[] gene, char uuid) {
@@ -102,6 +105,11 @@ public class CatPhenotype implements Phenotype {
         neckWidth = 1F + (furLength * 0.25F) + (bodyType * (isCobby ? 0.4F : 0.25F));
         neckHeight = 1F + (furLength * 0.25F) + (bodyType * (isCobby ? 0F : 0.15F));
 
+
+        lowerLegScale = 1F + (furLength*0.25F)+((bodyType*(isCobby ? 0.25F : 0.2F)));
+
+        tailThickness = 1F + (bodyType * (isCobby ? 0.35F : 0.4F) );
+
         for (int i = 90; i < 94; i++) {
             switch (gene[i]) {
                 case 2 -> { //Smaller
@@ -113,6 +121,14 @@ public class CatPhenotype implements Phenotype {
                     neckWidth += 0.02F;
                 }
             }
+        }
+
+        if (hairless) {
+            tailThickness *= 0.75F;
+            headSize *= 0.85F;
+            neckWidth *= 0.85F;
+            neckHeight *= 0.85F;
+            lowerLegScale *= 0.85F;
         }
 
         bodyWidth = (bodyType * (isCobby ? 0.5F : 0.1F));

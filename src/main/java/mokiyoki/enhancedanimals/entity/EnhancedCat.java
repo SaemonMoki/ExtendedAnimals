@@ -109,7 +109,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] CAT_TEXTURES_UNDERBELLY = new String[] {
-            "", "underbelly.png", "underbelly_sunshine.png"
+            "underbelly_skin.png", "underbelly.png", "underbelly_sunshine.png"
     };
 
     private final int IDX_BLACK_SOLID = 1;
@@ -181,7 +181,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] CAT_TEXTURES_FUR_OVERLAY = new String[] {
-            "", "hair_short_overlay.png",
+            "", "hair_short_overlay.png", "coat_sphinx.png"
     };
 
     private static final String[] CAT_TEXTURES_COLORPOINT_BLACK = new String[] {
@@ -198,33 +198,32 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private final int IDX_MACKEREL_TABBY = 1;
-    private final int IDX_CLASSIC_TABBY = 2;
-    private final int IDX_HET_SPOTTED_TABBY = 3;
-    private final int IDX_HOMO_SPOTTED_TABBY = 4;
-    private final int IDX_HET_TICKED_TABBY = 5;
-    private final int IDX_HOMO_TICKED_TABBY = 6;
-    private final int IDX_MACKEREL_HET_BM = 7;
-    private final int IDX_MACKEREL_HOMO_BM = 8;
-    private final int IDX_CLASSIC_HET_BM = 9;
-    private final int IDX_CLASSIC_HOMO_BM = 10;
-    private final int IDX_HET_SPOTTED_HET_BM = 11;
-    private final int IDX_HET_SPOTTED_HOMO_BM = 12;
-    private final int IDX_SPOTTED_HET_BM = 13;
-    private final int IDX_SPOTTED_HOMO_BM = 14;
-    private final int IDX_HET_TICKED_BM = 15;
+    private final int IDX_CLASSIC_TABBY = IDX_MACKEREL_TABBY + 1;
+    private final int IDX_HET_SPOTTED_TABBY = IDX_CLASSIC_TABBY + 1;
+    private final int IDX_HOMO_SPOTTED_TABBY = IDX_HET_SPOTTED_TABBY + 1;
+    private final int IDX_HET_TICKED_TABBY = IDX_HOMO_SPOTTED_TABBY + 1;
+    private final int IDX_HOMO_TICKED_TABBY = IDX_HET_TICKED_TABBY + 1;
+    private final int IDX_MACKEREL_BM = IDX_HOMO_TICKED_TABBY + 1;
+    private final int IDX_CLASSIC_BM = IDX_MACKEREL_BM + 4;
+    private final int IDX_HET_SPOTTED_BM = IDX_CLASSIC_BM + 4;
+    private final int IDX_SPOTTED_BM = IDX_HET_SPOTTED_BM + 4;
+    private final int IDX_HET_TICKED_BM = IDX_SPOTTED_BM + 4;
     private static final String[] CAT_TEXTURES_TABBY = new String[] {
-            "", "mackerel_tabby1.png", "classic_tabby1.png", "het_spotted_tabby1.png", "homo_spotted_tabby1.png",
-            "het_ticked_tabby1.png", "homo_ticked_tabby1.png",
-            "mackerel_het_bm.png", "mackerel_homo_bm.png", "classic_het_bm.png", "classic_homo_bm.png",
-            "het_spotted_het_bm.png", "het_spotted_homo_bm.png",
-            "spotted_het_bm.png", "spotted_homo_bm.png", "het_ticked_bm.png"
+            "", "tabby/mackerel_tabby1.png", "tabby/classic_tabby1.png", "tabby/het_spotted_tabby1.png", "tabby/homo_spotted_tabby1.png",
+            "tabby/het_ticked_tabby1.png", "tabby/homo_ticked_tabby1.png",
+            "tabby/bm_mackerel_grade1.png", "tabby/bm_mackerel_grade2.png", "tabby/bm_mackerel_grade3.png", "tabby/bm_mackerel_grade4.png",
+            "tabby/bm_marble_grade1.png", "tabby/bm_mackerel_grade2.png", "tabby/bm_mackerel_grade3.png", "tabby/bm_mackerel_grade4.png",
+            "tabby/bm_broken_grade1.png", "tabby/bm_broken_grade2.png", "tabby/bm_broken_grade3.png", "tabby/bm_broken_grade4.png",
+            "tabby/bm_spotted_grade1.png", "tabby/bm_spotted_grade2.png", "tabby/bm_spotted_grade3.png", "tabby/bm_spotted_grade4.png",
+            "tabby/bm_het_ticked.png"
+
     };
     private static final String[] CAT_TEXTURES_RED_TABBY_MASK = new String[] {
             "solid_base.png", "flamepoint_tabbymask.png"
     };
 
-    private static final String[] CAT_TEXTURES_TICKED = new String[] {
-            "", "base_ticked_tabby1.png"
+    private static final String[] CAT_TEXTURES_TABBY_BASE = new String[] {
+            "", "base_agouti.png", "base_agouti_ticked.png"
     };
 
     private static final String[] CAT_TEXTURES_INHIBITOR_SHADING = new String[] {
@@ -557,9 +556,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             float[] eyeColor = { 0.205F, 0.61F, 0.675F };
 
             //GENES
-            int hairless = 1;
+            int hairless = 0;
             int tabby = IDX_MACKEREL_TABBY;
-            int ticked = 0;
+            int agoutiBase = 1;
             int noseRGB = 0;
             int paws = 1;
             int black = IDX_BLACK_SOLID;
@@ -574,6 +573,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int corin = 0;
             int underbelly = 1;
             int mealy = 0;
+            int coatType = 1;
 
             if (aGenes[12] == 2 || aGenes[13] == 2) {
                 whiteExtension+=2;
@@ -675,7 +675,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
 
             if (aGenes[8] == 2 || aGenes[9] == 2) {
-                ticked = 1;
+                agoutiBase = 2;
                 if (aGenes[8] == aGenes[9]) {
                     tabby = IDX_HOMO_TICKED_TABBY;
                 }
@@ -793,39 +793,22 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
             //Bengal Modifier
             if (aGenes[20] == 2 || aGenes[21] == 2) {
+                int bmQuality = aGenes[20] == aGenes[21] ? 1 : 0;
+                bmQuality += aGenes[34] == 2 ? 1 : 0;
+                bmQuality += aGenes[35] == 2 ? 1 : 0;
                 if (aGenes[20] == aGenes[21]) {
-                    //homo
                     switch (tabby) {
                         case IDX_MACKEREL_TABBY:
-                            tabby = IDX_MACKEREL_HOMO_BM;
+                            tabby = IDX_MACKEREL_BM + bmQuality;
                             break;
                         case IDX_CLASSIC_TABBY:
-                            tabby = IDX_CLASSIC_HOMO_BM;
+                            tabby = IDX_CLASSIC_BM + bmQuality;
                             break;
                         case IDX_HET_SPOTTED_TABBY:
-                            tabby = IDX_HET_SPOTTED_HOMO_BM;
+                            tabby = IDX_HET_SPOTTED_BM + bmQuality;
                             break;
                         case IDX_HOMO_SPOTTED_TABBY:
-                            tabby = IDX_SPOTTED_HOMO_BM;
-                            break;
-                        case IDX_HET_TICKED_TABBY:
-                            tabby = IDX_HET_TICKED_BM;
-                            break;
-                    }
-                } else {
-                    //het
-                    switch (tabby) {
-                        case IDX_MACKEREL_TABBY:
-                            tabby = IDX_MACKEREL_HET_BM;
-                            break;
-                        case IDX_CLASSIC_TABBY:
-                            tabby = IDX_CLASSIC_HET_BM;
-                            break;
-                        case IDX_HET_SPOTTED_TABBY:
-                            tabby = IDX_HET_SPOTTED_HET_BM;
-                            break;
-                        case IDX_HOMO_SPOTTED_TABBY:
-                            tabby = IDX_SPOTTED_HET_BM;
+                            tabby = IDX_SPOTTED_BM + bmQuality;
                             break;
                         case IDX_HET_TICKED_TABBY:
                             tabby = IDX_HET_TICKED_BM;
@@ -916,6 +899,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 //                corinTabbyColor[0] += 0.010F;
                 corinTabbyColor[1] -= 0.40F;
                 corinTabbyColor[2] += 0.2F;
+            }
+
+            if (aGenes[32] == 2 && aGenes[33] == 2) {
+                //Sphynx
+                hairless = 1;
+                coatType = 2;
             }
 
             int eyeHue = 0; // negative = orange, positive = green
@@ -1017,8 +1006,22 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
             if (black != 0) {
                 TextureGrouping skinBlackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                    addTextureToAnimalTextureGrouping(skinBlackGroup, CAT_TEXTURES_BLACK, black, true);
-                    addTextureToAnimalTextureGrouping(skinBlackGroup, CAT_TEXTURES_SKIN, 2, l -> true);
+                    TextureGrouping skinBlackMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                        addTextureToAnimalTextureGrouping(skinBlackMaskGroup, CAT_TEXTURES_BLACK, black, true);
+                    skinBlackGroup.addGrouping(skinBlackMaskGroup);
+                    TextureGrouping skinBlackBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                        addTextureToAnimalTextureGrouping(skinBlackBaseGroup, CAT_TEXTURES_SKIN, 2, l -> true);
+                    skinBlackGroup.addGrouping(skinBlackBaseGroup);
+                    if (agouti) {
+                        TextureGrouping skinBlackUnderbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_UNDERBELLY, 0, l -> true);
+                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_SKIN, 0, l -> true);
+                        skinBlackGroup.addGrouping(skinBlackUnderbellyGroup);
+//                        TextureGrouping skinBlackAgoutiGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+//                            addTextureToAnimalTextureGrouping(skinBlackAgoutiGroup, CAT_TEXTURES_TABBY, tabby, l -> true);
+//                            addTextureToAnimalTextureGrouping(skinBlackAgoutiGroup, CAT_TEXTURES_SKIN, 2, l -> true);
+//                        skinBlackGroup.addGrouping(skinBlackAgoutiGroup);
+                    }
                 skinGroup.addGrouping(skinBlackGroup);
             }
             if (white != 0) {
@@ -1045,9 +1048,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[underbelly], "r-ub"+underbelly, redUnderbellyRGB);
                 addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_INHIBITOR_SHADING, inhibitor, l -> l !=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_MEALY, mealy, l -> l !=0);
-                if (ticked != 0) {
-                    addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TICKED[ticked], "r-ttb", redTabbyRGB);
-                }
+                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_TABBY_BASE, agoutiBase, l->l!=0);
                 if (inhibitor == 1) {
                     addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_INHIBITOR_SHADING[inhibitor], "b-inh", blackTabbyRGB);
                 }
@@ -1097,9 +1098,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 if (agouti) {
                     TextureGrouping agoutiGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                     TextureGrouping agoutiMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    if (ticked != 0) {
-                        addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TICKED, ticked, l->l !=0);
-                    }
+//                    addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TABBY_BASE, agoutiBase, l->l!=0);
                     addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TABBY, tabby, l->l !=0);
 
                     addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_CHARCOAL, 1, charcoal);
@@ -1154,7 +1153,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
 
             TextureGrouping hairOverlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(hairOverlayGroup, CAT_TEXTURES_FUR_OVERLAY, 1, true);
+            addTextureToAnimalTextureGrouping(hairOverlayGroup, CAT_TEXTURES_FUR_OVERLAY, coatType, true);
             hairTexGroup.addGrouping(hairOverlayGroup);
 
 

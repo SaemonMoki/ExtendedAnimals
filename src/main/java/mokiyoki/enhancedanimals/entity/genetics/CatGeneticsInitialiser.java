@@ -29,6 +29,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         //this.breeds.add(CatBreeds.BrownTabby);
         //this.breeds.add(CatBreeds.Tuxedo);
         //this.breeds.add(CatBreeds.White);
+        this.breeds.add(CatBreeds.ORIENTALSHORTHAIR);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -256,6 +257,29 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[31] = (1);
         }
 
+        // Hairless [Wildtype, sphynx]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[32] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[33] = (1);
+        }
+
+        // Bengal Modifier Quality [wildtype, Quality+]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[34] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[35] = (1);
+        }
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
 
@@ -423,7 +447,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[99] = (2);
         }
 
-        //Snout Length [normal, longest, longer, shorter, shortest]
+        //Muzzle Length [normal, longest, longer, shorter, shortest]
         for (int i = 100; i < 108; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(5) + 1);
@@ -431,7 +455,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
                 autosomalGenes[i] = (1);
             }
         }
-        //Snout Width [normal, thinnest, thinner, wider, widest]
+        //Muzzle Width [normal, thinnest, thinner, wider, widest]
         for (int i = 108; i < 116; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(5) + 1);
@@ -440,7 +464,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             }
         }
 
-        //Snout Size [normal, smaller, larger]
+        //Muzzle Size [normal, smaller, larger]
         for (int i = 116; i < 120; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(3) + 1);

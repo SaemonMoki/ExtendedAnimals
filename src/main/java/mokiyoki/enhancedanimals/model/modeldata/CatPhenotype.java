@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.model.modeldata;
 
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
-    public boolean hairless = true;
+    public boolean hairless = false;
     public boolean furnishings = false;
     public float furLength = 0.0F;
     public float furDensity;
@@ -122,6 +122,12 @@ public class CatPhenotype implements Phenotype {
                 }
             }
         }
+
+        if (gene[32] == 2 && gene[33] == 2) {
+            // Sphynx Hairlessness
+            hairless = true;
+        }
+
 
         if (hairless) {
             tailThickness *= 0.75F;

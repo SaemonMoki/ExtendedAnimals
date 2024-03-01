@@ -214,7 +214,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "tabby/bm_mackerel_grade1.png", "tabby/bm_mackerel_grade2.png", "tabby/bm_mackerel_grade3.png", "tabby/bm_mackerel_grade4.png",
             "tabby/bm_marble_grade1.png", "tabby/bm_mackerel_grade2.png", "tabby/bm_mackerel_grade3.png", "tabby/bm_mackerel_grade4.png",
             "tabby/bm_broken_grade1.png", "tabby/bm_broken_grade2.png", "tabby/bm_broken_grade3.png", "tabby/bm_broken_grade4.png",
-            "tabby/bm_spotted_grade1.png", "tabby/bm_spotted_grade2.png", "tabby/bm_spotted_grade3.png", "tabby/bm_spotted_grade4.png",
+            "tabby/bm_spotted_grade1_1.png", "tabby/bm_spotted_grade2_1.png", "tabby/bm_spotted_grade3_1.png", "tabby/bm_spotted_grade4_1.png",
             "tabby/bm_het_ticked.png"
 
     };

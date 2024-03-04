@@ -280,6 +280,17 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[35] = (1);
         }
+        // Glitter [wildtype, glitter]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[36] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[37] = (1);
+        }
         // leaving a gap here for more basic stuff.
         // because i like the basic color genes being towards the beginning
 

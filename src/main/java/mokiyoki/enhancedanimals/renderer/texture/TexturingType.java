@@ -10,6 +10,8 @@ public enum TexturingType {
     CUTOUT_GROUP, //a layer that merges its textures to cutout the textures in its sub-group
     DYE_GROUP,
 
+    OVERLAY_GROUP, // applies the overlay blend mode
+
     /*******/
 
     //Layer texturing types

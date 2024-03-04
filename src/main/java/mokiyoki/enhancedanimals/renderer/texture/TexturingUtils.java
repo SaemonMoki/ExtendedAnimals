@@ -131,6 +131,14 @@ public class TexturingUtils {
         }
     }
 
+    public static void applyOverlayBlend(NativeImage baseImage, List<NativeImage> appliedImages) {
+        for(int i = 0; i < baseImage.getHeight(); ++i) {
+            for(int j = 0; j < baseImage.getWidth(); ++j) {
+                overlayPixel(baseImage, j, i, retrieveColColours(appliedImages, j, i));
+            }
+        }
+    }
+
     private static List<Integer> retrieveColColours(List<NativeImage> appliedImages, int j, int i) {
         List<Integer> colColours = new ArrayList<>();
 
@@ -165,6 +173,8 @@ public class TexturingUtils {
         int i1 = (int)(outRed * 255.0F);
         baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
+
+
 
     private static void maskAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
         int i = nativeImage.getPixelRGBA(xIn, yIn);
@@ -212,6 +222,35 @@ public class TexturingUtils {
 
         baseImage.setPixelRGBA(xIn, yIn, combine((int)(cleanColourValue(alpha*255.0F)), (int)cleanColourValue(blue), (int)cleanColourValue(green), (int)cleanColourValue(red)));
     }
+
+    private static void overlayPixel(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {
+        int i = baseImage.getPixelRGBA(xIn, yIn);
+
+        float size = 1.0F / (colIns.size()+1.0F);
+        float alphaA = getA(i) * COLOUR_DEGREE;
+        float redA = getR(i)  * COLOUR_DEGREE;
+        float greenA = getG(i) * COLOUR_DEGREE;
+        float blueA = getB(i) * COLOUR_DEGREE;
+
+        for (Integer layerColor : colIns) {
+            float alphaB = getA(layerColor) * COLOUR_DEGREE;;
+            float redB = getR(layerColor) * COLOUR_DEGREE;
+            float greenB = getG(layerColor) * COLOUR_DEGREE;
+            float blueB = getB(layerColor) * COLOUR_DEGREE;
+            redA = overlayColor(redA, redB, alphaB);
+            greenA = overlayColor(greenA, greenB, alphaB);
+            blueA = overlayColor(blueA, blueB, alphaB);
+        }
+
+        baseImage.setPixelRGBA(xIn, yIn, combine((int)(cleanColourValue(alphaA*255.0F)), (int)cleanColourValue(blueA*255.0F), (int)cleanColourValue(greenA*255.0F), (int)cleanColourValue(redA*255.0F)));
+    }
+
+    private static float overlayColor(float a, float b, float alpha) {
+        float out = a < 0.5F ? 2F*a*b : 1.0F-(2.0F*(1.0F-a)*(1.0F-b));
+        return ((1F-alpha)*a) + (alpha*out);
+    }
+
+
 
     //Blends the supplied image with a specified bgr
     private static void blendBGR(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {

@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.model.modeldata;
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
     public boolean hairless = false;
-    public boolean furnishings = false;
+    public boolean furnishings = true;
     public float furLength = 0.0F;
     public float furDensity;
     public float headSize = 1.025F;

@@ -906,9 +906,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 corinTabbyColor[2] += 0.2F;
             }
 
-            if (glitter !=0 ) {
-                melanin[2] += 0.175F;
-                pheomelanin[2] += 0.3F;
+            if (aGenes[36] == 2 && aGenes[37] == 2) {
+                glitter = 1;
+                if (agouti) {
+                    melanin[2] += 0.25F;
+                }
+                pheomelanin[2] += 0.25F;
             }
 
             if (aGenes[32] == 2 && aGenes[33] == 2) {
@@ -1058,7 +1061,6 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 TextureGrouping redBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RED, CAT_TEXTURES_BASE, 0, l -> true);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[underbelly], "r-ub"+underbelly, redUnderbellyRGB);
-                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_INHIBITOR_SHADING, inhibitor, l -> l !=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_MEALY, mealy, l -> l !=0);
 //                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_TABBY_BASE, agoutiBase, l->l!=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY_BASE[agoutiBase], "r-agb"+agoutiBase, redTabbyRGB);

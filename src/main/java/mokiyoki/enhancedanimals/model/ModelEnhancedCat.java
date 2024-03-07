@@ -279,7 +279,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("neckRuff", CubeListBuilder.create()
                         .texOffs(56, 117)
-                        .addBox(-4.0F, 0.0F, -5.0F, 8, 0, 5, new CubeDeformation(-0.5F, 0F, -0.5F)),
+                        .addBox(-4.0F, 0.0F, -5.0F, 8, 0, 5, new CubeDeformation(-0.25F, 0F, -0.25F)),
                 PartPose.offsetAndRotation(0F, 0.5F, -3.5F, Mth.HALF_PI*-0.15F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("bodyB", CubeListBuilder.create()
@@ -327,8 +327,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 /** Top */
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(36, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
-                PartPose.ZERO
+                        .addBox(-1.5F, 0.0F, 2.0F, 3, 8, 4),
+                PartPose.offset(0F,0F, -2)
         );
         base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
                         .texOffs(105, 110)
@@ -337,8 +337,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
-                PartPose.ZERO
+                        .addBox(-1.5F, 0.0F, 2.0F, 3, 8, 4),
+                PartPose.offset(0F,0F, -2)
         );
         base.addOrReplaceChild("legFurBR", CubeListBuilder.create()
                         .texOffs(108, 122)

@@ -36,7 +36,7 @@ public interface EnhancedAnimalTamableInterface {
     public void setOrderedToSit(boolean sitting);
 
     @Nullable
-    public MinecraftServer getServer();
+    public MinecraftServer enhancedGetServer();
 
     public default void addTamableSaveData(CompoundTag compound) {
         if (this.getOwnerUUID() != null) {
@@ -52,7 +52,7 @@ public interface EnhancedAnimalTamableInterface {
             uuid = compound.getUUID("Owner");
         } else {
             String s = compound.getString("Owner");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.enhancedGetServer(), s);
         }
 
         if (uuid != null) {

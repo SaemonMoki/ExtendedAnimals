@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Cat;
@@ -80,6 +81,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
         //this.reassessTameGoals();
     }
 
+    @Nullable
+    public MinecraftServer enhancedGetServer() {
+        return super.getServer();
+    }
+
     public void setOrderedToSit(boolean sitting) {
         this.orderedToSit = sitting;
     }
@@ -123,7 +129,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private final int IDX_WHITE_2 = 1;
     private final int IDX_WHITE_3 = IDX_WHITE_2+1;
     private final int IDX_WHITE_4 = IDX_WHITE_3+4;
-    private final int IDX_WHITE_5 = IDX_WHITE_4+3;
+    private final int IDX_WHITE_5 = IDX_WHITE_4+5;
     private final int IDX_WHITE_6 = IDX_WHITE_5+7;
     private final int IDX_WHITE_7 = IDX_WHITE_6+9;
     private final int IDX_WHITE_8 = IDX_WHITE_7+8;
@@ -132,7 +138,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private static final String[] CAT_TEXTURES_WHITE = new String[] {
             "", "whitegrade2/white_grade2.png",
             "whitegrade3/grade_3_body_1.png", "whitegrade3/grade_3_body_2.png", "whitegrade3/grade_3_body_3.png", "whitegrade3/grade_3_body_4.png",
-            "whitegrade4/grade_4_body_1.png", "whitegrade4/grade_4_body_2.png", "whitegrade4/grade_4_body_3.png",
+            "whitegrade4/grade_4_body_1.png", "whitegrade4/grade_4_body_2.png", "whitegrade4/grade_4_body_3.png", "whitegrade4/grade_4_body_4.png", "whitegrade4/grade_4_body_5.png",
             "whitegrade5/grade_5_body_1.png", "whitegrade5/grade_5_body_2.png", "whitegrade5/grade_5_body_3.png", "whitegrade5/grade_5_body_4.png", "whitegrade5/grade_5_body_5.png", "whitegrade5/grade_5_body_6.png", "whitegrade5/grade_5_body_7.png",
             "whitegrade6/grade_6_body_1.png", "whitegrade6/grade_6_body_2.png", "whitegrade6/grade_6_body_3.png", "whitegrade6/grade_6_body_4.png", "whitegrade6/grade_6_body_5.png", "whitegrade6/grade_6_body_6.png", "whitegrade6/grade_6_body_7.png", "whitegrade6/grade_6_body_8.png", "whitegrade6/grade_6_body_9.png",
             "whitegrade7/grade_7_body_1.png", "whitegrade7/grade_7_body_2.png", "whitegrade7/grade_7_body_3.png", "whitegrade7/grade_7_body_4.png", "whitegrade7/grade_7_body_5.png", "whitegrade7/grade_7_body_6.png", "whitegrade7/grade_7_body_7.png", "whitegrade7/grade_7_body_8.png",
@@ -143,7 +149,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private final int IDX_HEADWHITE_2 = 1;
     private final int IDX_HEADWHITE_3 = IDX_HEADWHITE_2 + 1;
     private final int IDX_HEADWHITE_4 = IDX_HEADWHITE_3 + 11;
-    private final int IDX_HEADWHITE_5 = IDX_HEADWHITE_4 + 1;
+    private final int IDX_HEADWHITE_5 = IDX_HEADWHITE_4 + 6;
     private final int IDX_HEADWHITE_6 = IDX_HEADWHITE_5 + 5;
     private final int IDX_HEADWHITE_7 = IDX_HEADWHITE_6 + 5;
     private final int IDX_HEADWHITE_8  = IDX_HEADWHITE_7 + 5;
@@ -152,7 +158,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private static final String[] CAT_TEXTURES_HEADWHITE = new String[] {
             "", "",
             "whitegrade3/grade_3_head_1.png", "whitegrade3/grade_3_head_2.png", "whitegrade3/grade_3_head_3.png", "whitegrade3/grade_3_head_4.png", "whitegrade3/grade_3_head_5.png", "whitegrade3/grade_3_head_6.png", "whitegrade3/grade_3_head_7.png", "whitegrade3/grade_3_head_8.png", "whitegrade3/grade_3_head_8.png", "whitegrade3/grade_3_head_9.png", "whitegrade3/grade_3_head_10.png", "whitegrade3/grade_3_head_11.png",
-            "whitegrade4/grade_4_head_1.png",
+            "whitegrade4/grade_4_head_1.png", "whitegrade4/grade_4_head_2.png", "whitegrade4/grade_4_head_3.png", "whitegrade4/grade_4_head_4.png", "whitegrade4/grade_4_head_5.png", "whitegrade4/grade_4_head_6.png",
             "whitegrade5/grade_5_head_1.png", "whitegrade5/grade_5_head_2.png", "whitegrade5/grade_5_head_3.png", "whitegrade5/grade_5_head_4.png", "whitegrade5/grade_5_head_5.png",
             "whitegrade6/grade_6_head_1.png", "whitegrade6/grade_6_head_2.png", "whitegrade6/grade_6_head_3.png", "whitegrade6/grade_6_head_4.png", "whitegrade6/grade_6_head_5.png",
             "whitegrade7/grade_7_head_1.png", "whitegrade7/grade_7_head_2.png", "whitegrade7/grade_7_head_3.png", "whitegrade7/grade_7_head_4.png", "whitegrade7/grade_7_head_5.png",
@@ -586,7 +592,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     whiteExtension+=3;
                 }
             }
-            for (int i = 14; i < 17; i++) {
+            for (int i = 14; i < 18; i++) {
                 if (aGenes[i] == 2) {
                     whiteExtension++;
                 }
@@ -846,24 +852,24 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     headWhite = IDX_HEADWHITE_3 + (randHeadWhite % 11);
                     break;
                 case IDX_WHITE_4:
-                    white = IDX_WHITE_4 + (randBodyWhite % 3);
-                    //headWhite = IDX_HEADWHITE_4 + (randHeadWhite % 1);
+                    white = IDX_WHITE_4 + (randBodyWhite % 5);
+                    headWhite = IDX_HEADWHITE_3 + (randHeadWhite % (11+6));
                     break;
                 case IDX_WHITE_5:
                     white = IDX_WHITE_5 + (randBodyWhite % 7);
-                    headWhite = IDX_HEADWHITE_5 + (randHeadWhite % 5);
+                    headWhite = IDX_HEADWHITE_3 + (randHeadWhite % (11+6+5+5));
                     break;
                 case IDX_WHITE_6:
                     white = IDX_WHITE_6 + (randBodyWhite % 9);
-                    headWhite = IDX_HEADWHITE_6 + (randHeadWhite % 5);
+                    headWhite = IDX_HEADWHITE_5 + (randHeadWhite % (5+5+5+11));
                     break;
                 case IDX_WHITE_7:
                     white = IDX_WHITE_7 + (randBodyWhite % 8);
-                    headWhite = IDX_HEADWHITE_7 + (randHeadWhite % 5);
+                    headWhite = IDX_HEADWHITE_6 + (randHeadWhite % (5+5+11));
                     break;
                 case IDX_WHITE_8:
                     white = IDX_WHITE_8 + (randBodyWhite % 9);
-                    headWhite = IDX_HEADWHITE_8 + (randHeadWhite % 11);
+                    headWhite = IDX_HEADWHITE_6 + (randHeadWhite % (5+5+11));
                     break;
                 case IDX_WHITE_9:
                     headWhite = IDX_HEADWHITE_9 + (randHeadWhite % 11);
@@ -1039,8 +1045,13 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
             if (white != 0) {
                 TextureGrouping skinWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                    addTextureToAnimalTextureGrouping(skinWhiteGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);
-                    addTextureToAnimalTextureGrouping(skinWhiteGroup, CAT_TEXTURES_SKIN, 0, l -> true);
+                TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_HEADWHITE, headWhite, l -> l != 0);
+                skinWhiteGroup.addGrouping(whiteMaskGroup);
+                TextureGrouping whiteTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(whiteTexGroup, CAT_TEXTURES_SKIN, 0, l -> true);
+                skinWhiteGroup.addGrouping(whiteTexGroup);
                 skinGroup.addGrouping(skinWhiteGroup);
             }
             //addTextureToAnimalTextureGrouping(skinGroup, CAT_TEXTURES_SKIN, 0, l -> true);

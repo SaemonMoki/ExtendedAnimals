@@ -21,7 +21,6 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -998,7 +997,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             renderTabs(matrixStack, i, j, 0, 0, 256, 256);
 
             if (this.enhancedAnimalInfo.created && !this.photoModeEnabled) {
-                InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
+                renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
             }
 
             if (!this.chestTabEnabled && !this.photoModeEnabled) {
@@ -1102,6 +1101,46 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
     }
 
+    public void renderEntityInInventory(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity p_98856_) {
+        float $$6 = (float)Math.atan((double)(facingDirectionX / 40.0F));
+        float $$7 = (float)Math.atan((double)(facingDirectionY / 40.0F));
+        PoseStack poseStack = RenderSystem.getModelViewStack();
+        poseStack.pushPose();
+        poseStack.translate((double)xPos, (double)yPose, 1050.0);
+        poseStack.scale(1.0F, 1.0F, -1.0F);
+        RenderSystem.applyModelViewMatrix();
+        PoseStack poseStack1 = new PoseStack();
+        poseStack1.translate(0.0, 0.0, 1000.0);
+        poseStack1.scale((float)scale, (float)scale, (float)scale);
+        Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
+        Quaternion quaternion1 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
+        quaternion.mul(quaternion1);
+        poseStack1.mulPose(quaternion);
+        float $$12 = p_98856_.yBodyRot;
+        float $$13 = p_98856_.getYRot();
+        float $$14 = p_98856_.getXRot();
+        p_98856_.yBodyRot = 180.0F + $$6 * 20.0F;
+        p_98856_.setYRot(180.0F + $$6 * 40.0F);
+        p_98856_.setXRot(-$$7 * 20.0F);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher $$17 = Minecraft.getInstance().getEntityRenderDispatcher();
+        quaternion1.conj();
+        $$17.overrideCameraOrientation(quaternion1);
+        $$17.setRenderShadow(false);
+        MultiBufferSource.BufferSource $$18 = Minecraft.getInstance().renderBuffers().bufferSource();
+        RenderSystem.runAsFancy(() -> {
+            $$17.render(p_98856_, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack1, $$18, 15728880);
+        });
+        $$18.endBatch();
+        $$17.setRenderShadow(true);
+        p_98856_.yBodyRot = $$12;
+        p_98856_.setYRot($$13);
+        p_98856_.setXRot($$14);
+        poseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        Lighting.setupFor3DItems();
+    }
+
     public void renderEntityPhotoMode(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity entity) {
         float f = (float)Math.atan((facingDirectionX / 40.0F));
         float f1 = (float)Math.atan((facingDirectionY / 40.0F));
@@ -1127,8 +1166,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         entity.yBodyRot = 180.0F + f * 20.0F;
         entity.setYRot(180.0F + f * 40.0F);
         entity.setXRot(-f1 * 20.0F);
-        entity.yHeadRot = entity.getYRot();
-        entity.yHeadRotO = entity.getYRot();
+        entity.yHeadRot = 180.0F + f * 20.0F;
+//        entity.yHeadRotO = 180.0F + f * 20.0F;
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         quaternion1.conj();

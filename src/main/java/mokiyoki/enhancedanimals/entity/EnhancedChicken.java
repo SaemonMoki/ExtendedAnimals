@@ -1,16 +1,13 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.ECRoost;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Dynamic;
+import mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain;
 import mokiyoki.enhancedanimals.ai.general.*;
-import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
-import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
-import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModSounds;
+import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
@@ -18,13 +15,14 @@ import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.animal.Fox;
-import net.minecraft.world.entity.animal.Ocelot;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
@@ -68,15 +66,10 @@ import javax.annotation.Nullable;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
-import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_NO_PASSENGER_SCHEDULE;
-import static mokiyoki.enhancedanimals.util.scheduling.Schedules.LOOK_FOR_NEST_SCHEDULE;
-import static mokiyoki.enhancedanimals.util.scheduling.Schedules.CROW_SCHEDULE;
-import static mokiyoki.enhancedanimals.util.scheduling.Schedules.START_PREEN_SCHEDULE;
-import static mokiyoki.enhancedanimals.util.scheduling.Schedules.STOP_PREEN_SCHEDULE;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.*;
 
 
-import net.minecraft.world.entity.ai.goal.FloatGoal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +87,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private static final EntityDataAccessor<Boolean> BROODY = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<BlockPos> NEST_POS = SynchedEntityData.defineId(EnhancedChicken.class, EntityDataSerializers.BLOCK_POS);
 
+
+    //Brain Modules
+
+    protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
+
+    //--------
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -258,9 +258,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public float oFlapSpeed;
     public float oFlap;
     private float wingRotDelta = 1.0F;
-    private int timeUntilNextEgg;
-    private float currentNestScore;
-    protected GrazingGoal grazingGoal;
+    public int timeUntilNextEgg;
+    public float currentNestScore;
 
     public EnhancedFollowParentGoal followParentGoal;
     public boolean chickenJockey;
@@ -276,43 +275,52 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = (int) (this.random.nextInt(this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get()); //TODO make some genes to alter these numbers
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.createNewHungerLimit();
     }
-
-    @Override
-    protected void registerGoals() {
-        int napmod = this.random.nextInt(1200);
-        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
-        this.followParentGoal = new EnhancedFollowParentGoal(this, 1.1D, 0.5D);
-//        this.ecSandBath = new ECSandBath(this);
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
-        this.goalSelector.addGoal(6, this.followParentGoal);
-        this.goalSelector.addGoal(6, new GoToNestGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new ECRoost(this));
-        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
-        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
-        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
-//        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(12, this.grazingGoal);
-        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, EnhancedChicken.class, 6.0F));
-        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
-
-    }
-
     protected void customServerAiStep() {
-        this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
-//        this.sandBathTimer = this.ecSandBath.getSandBathTimer();
+        this.getBrain().tick((ServerLevel)this.level, this);
+//        ChickenBrain.updateActivity(this);
+        if (!this.isNoAi()) {
+            if (this.isAnimalSleeping()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.SLEEPING.get(), true);
+            }
+            if (this.isBrooding()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.BROODING.get(), true);
+            } else {
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODING.get());
+            }
+            if (this.isAnimalSleeping()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get(), true);
+            }
+            if (this.isInWaterOrRain() && !this.isInWater()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get(), true);
+                this.scheduledToRun.put(CHECK_RAIN_STOPPED_SCHEDULE.funcName, CHECK_RAIN_STOPPED_SCHEDULE.function.apply(300));
+            }
+            if (this.getHunger() > hungerLimit) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.HUNGRY.get(), true);
+            }
+            if (this.level.isDay() && this.isRoosting()) {
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.ROOSTING.get());
+                this.setRoosting(false);
+            }
+
+        }
+
         super.customServerAiStep();
     }
+
+    protected Brain.Provider<EnhancedChicken> brainProvider() {
+        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+    }
+
+    protected Brain<?> makeBrain(Dynamic<?> p_149138_) {
+        return ChickenBrain.makeBrain(this.brainProvider().makeBrain(p_149138_));
+    }
+
+    public Brain<EnhancedChicken> getBrain() {
+        return (Brain<EnhancedChicken>)super.getBrain();
+    }
+    
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
@@ -443,7 +451,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         setNest(new BlockPos(x, y, z));
     }
 
-    private BlockPos getNest() {
+    public BlockPos getNest() {
         return this.entityData.get(NEST_POS);
     }
 
@@ -620,6 +628,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
             float eggTimeVariance = 0.1F; //TODO egg time variation genetics?
             this.timeUntilNextEgg = (int) (eggLayingTime()*(1.0F-eggTimeVariance) + this.random.nextInt((int) (eggLayingTime()*(eggTimeVariance*2))));
+        }
+
+        if (this.isBroody()) {
+            if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
+                if (nestEntity.incubate()) {
+                    nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+                    this.setBroody(false);
+                    this.setBrooding(false);
+                }
+            }
         }
     }
 
@@ -1080,7 +1098,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.currentNestScore = compound.getFloat("NestQuality");
         this.setNest(compound.getInt("NestPosX"), compound.getInt("NestPosY"), compound.getInt("NestPosZ"));
         this.setBroody(compound.getBoolean("Broody"));
-        if (this.isBroody()) this.setBrooding(true);
+        if (this.isBroody()) this.setBrooding(true); else this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODING.get());
+        this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
+        this.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
+
+
     }
 
     @Nullable

@@ -132,6 +132,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //Hunger
     protected float hunger = 0F;
+    protected int hungerLimit = 0;
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
     protected int animalEatingTimer;
@@ -506,12 +507,20 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
     }
 
+    public boolean isRainingInLevel() {
+        return this.getLevel().getLevelData().isRaining();
+    }
+
     public AIStatus getAIStatus() {
         return this.currentAIStatus;
     }
 
     public void setAIStatus(AIStatus aiStatus) {
         this.currentAIStatus = aiStatus;
+    }
+
+    public void createNewHungerLimit() {
+        this.hungerLimit = this.getHungerLimit() + ThreadLocalRandom.current().nextInt(1000);
     }
 
     public int getHungerLimit() {

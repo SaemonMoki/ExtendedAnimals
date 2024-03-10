@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.util.scheduling;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,6 +84,14 @@ public enum Schedules {
                 }
             }, LivingEntity::isAlive)
         ),
+
+    CHECK_RAIN_STOPPED_SCHEDULE("CheckRainStoppedSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (!eaa.getLevel().getLevelData().isRaining()) {
+                    eaa.getBrain().eraseMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get());
+                }
+            }, EnhancedAnimalAbstract::isRainingInLevel)
+    ),
 
     DISMOUNT_SCHEDULE("DismountSchedule", (ticks) -> new AnimalScheduledFunction(ticks, LivingEntity::stopRiding)),
 

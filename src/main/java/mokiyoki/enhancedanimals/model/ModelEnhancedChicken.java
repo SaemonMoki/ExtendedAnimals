@@ -1462,8 +1462,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Comb
              */
-            if (chicken.isCombed() && chickenModelData.growthAmount>0.25F){
-                theComb.show();
+            if (chicken.comb != Comb.NONE && chickenModelData.growthAmount>0.25F){
 
                 if (chicken.waddleSize >= 2) {
                     if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
@@ -1485,111 +1484,114 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     }
                 }
 
-                if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combSingleXs.show();
-                            combRootSingleXs.show();
-                            break;
-                        case 1:
-                            combSingleS.show();
-                            combRootSingleS.show();
-                            break;
-                        case 2:
-                            combSingleM.show();
-                            combRootSingleM.show();
-                            break;
-                        case 3:
-                            combSingleL.show();
-                            combRootSingleL.show();
-                            break;
-                        case 4:
-                        default:
-                            combSingleXl.show();
-                            combRootSingleXl.show();
-                            break;
+                if (chicken.isCombed()) {
+                    theComb.show();
+                    if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
+                        switch (chicken.combSize) {
+                            case 0:
+                                combSingleXs.show();
+                                combRootSingleXs.show();
+                                break;
+                            case 1:
+                                combSingleS.show();
+                                combRootSingleS.show();
+                                break;
+                            case 2:
+                                combSingleM.show();
+                                combRootSingleM.show();
+                                break;
+                            case 3:
+                                combSingleL.show();
+                                combRootSingleL.show();
+                                break;
+                            case 4:
+                            default:
+                                combSingleXl.show();
+                                combRootSingleXl.show();
+                                break;
 
+                        }
+                    } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
+                        switch (chicken.combSize) {
+                            case 0:
+                                combRoseTallS.show();
+                                combRootRoseTallS.show();
+                                break;
+                            case 1:
+                            case 2:
+                            case 3:
+                                combRoseTallM.show();
+                                combRootRoseTallM.show();
+                                break;
+                            case 4:
+                            default:
+                                combRoseTallL.show();
+                                combRootRoseTallL.show();
+                                break;
+                        }
+                    } else if (chicken.comb == Comb.ROSE_TWO) {
+                        switch (chicken.combSize) {
+                            case 0:
+                                combRoseFlatS.show();
+                                combRootRoseFlatS.show();
+                                break;
+                            case 1:
+                            case 2:
+                            case 3:
+                                combRoseFlatM.show();
+                                combRootRoseFlatM.show();
+                                break;
+                            case 4:
+                            default:
+                                combRoseFlatL.show();
+                                combRootRoseFlatL.show();
+                                break;
+                        }
+                    } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
+                        switch (chicken.combSize) {
+                            case 1:
+                            case 2:
+                                combPeaS.show();
+                                combRootPeaS.show();
+                                break;
+                            case 3:
+                                combPeaM.show();
+                                combRootPeaM.show();
+                                break;
+                            case 4:
+                            default:
+                                combPeaL.show();
+                                combRootPeaL.show();
+                                break;
+                        }
+                    } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
+                        switch (chicken.combSize) {
+                            case 1:
+                            case 2:
+                                combWalnutS.show();
+                                break;
+                            case 3:
+                                combWalnutM.show();
+                                break;
+                            case 4:
+                            default:
+                                combWalnutL.show();
+                                break;
+                        }
+                    } else if (chicken.comb == Comb.V) {
+                        combV.show();
                     }
-                } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combRoseTallS.show();
-                            combRootRoseTallS.show();
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                            combRoseTallM.show();
-                            combRootRoseTallM.show();
-                            break;
-                        case 4:
-                        default:
-                            combRoseTallL.show();
-                            combRootRoseTallL.show();
-                            break;
+
+                    if (chicken.duplex) {
+                        combDuplex.show();
                     }
-                } else if (chicken.comb == Comb.ROSE_TWO) {
-                    switch (chicken.combSize) {
-                        case 0:
-                            combRoseFlatS.show();
-                            combRootRoseFlatS.show();
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                            combRoseFlatM.show();
-                            combRootRoseFlatM.show();
-                            break;
-                        case 4:
-                        default:
-                            combRoseFlatL.show();
-                            combRootRoseFlatL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
-                    switch (chicken.combSize) {
-                        case 1:
-                        case 2:
-                            combPeaS.show();
-                            combRootPeaS.show();
-                            break;
-                        case 3:
-                            combPeaM.show();
-                            combRootPeaM.show();
-                            break;
-                        case 4:
-                        default:
-                            combPeaL.show();
-                            combRootPeaL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
-                    switch (chicken.combSize) {
-                        case 1:
-                        case 2:
-                            combWalnutS.show();
-                            break;
-                        case 3:
-                            combWalnutM.show();
-                            break;
-                        case 4:
-                        default:
-                            combWalnutL.show();
-                            break;
-                    }
-                } else if (chicken.comb == Comb.V) {
-                    combV.show();
                 }
 
-//                if (chicken.butterCup) {
-                    combDuplex.show();
-//                }
-
                 if (chickenModelData.extraGrowth < 1.0F) {
-                    mapOfScale.put("bComb", ModelHelper.createScalings(chickenModelData.isFemale ? chickenModelData.extraGrowth -(0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth, 0.0F, 0.0F, 0.0F));
+                    if (chicken.isCombed()) mapOfScale.put("bComb", ModelHelper.createScalings(chickenModelData.isFemale ? chickenModelData.extraGrowth -(0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth, 0.0F, 0.0F, 0.0F));
                     mapOfScale.put("bWaddles", ModelHelper.createScalings(1.0F, chickenModelData.isFemale ? this.chickenModelData.extraGrowth - (0.2F*this.chickenModelData.extraGrowth): this.chickenModelData.extraGrowth, 1.0F, 0.0F, 0.0F, 0.0F));
                 } else if (chickenModelData.isFemale) {
-                    mapOfScale.put("bComb", ModelHelper.createScalings(0.8F, 0.0F, 0.0F, 0.0F));
+                    if (chicken.isCombed()) mapOfScale.put("bComb", ModelHelper.createScalings(0.8F, 0.0F, 0.0F, 0.0F));
                     mapOfScale.put("bWaddles", ModelHelper.createScalings(1.0F, 0.8F, 1.0F, 0.0F, 0.0F, 0.0F));
                 }
 

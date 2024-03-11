@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +97,15 @@ public class TexturingUtils {
         return textureImage;
     }
 
+    public static NativeImage applyBGRABlend(NativeImage textureImage, int rgba) {
+        for(int i = 0; i < textureImage.getHeight(); ++i) {
+            for (int j = 0; j < textureImage.getWidth(); ++j) {
+                blendBGRA(j, i, rgba, textureImage);
+            }
+        }
+        return textureImage;
+    }
+
     public static NativeImage applyHueShift(NativeImage textureImage, int ahsb) {
 //        if (ahsb!=0) {
             for(int i = 0; i < textureImage.getHeight(); ++i) {
@@ -107,10 +117,28 @@ public class TexturingUtils {
         return textureImage;
     }
 
+    public static NativeImage applyPheomelanin(NativeImage image, List<NativeImage> groupImages) {
+        for(int i = 0; i < image.getHeight(); ++i) {
+            for (int j = 0; j < image.getWidth(); ++j) {
+//                blendPheomelanin(j, i, image);
+                stackPheomelanin(j, i, image, retrieveColColours(groupImages, j, i));
+            }
+        }
+        return image;
+    }
+
     public static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage) {
         for(int i = 0; i < appliedImage.getHeight(); ++i) {
             for(int j = 0; j < appliedImage.getWidth(); ++j) {
                 layerPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
+            }
+        }
+    }
+
+    public static void multiplyPixelLayer(NativeImage baseImage, NativeImage appliedImage) {
+        for(int i = 0; i < appliedImage.getHeight(); ++i) {
+            for(int j = 0; j < appliedImage.getWidth(); ++j) {
+                blendRGB(j, i, appliedImage.getPixelRGBA(j, i), baseImage);
             }
         }
     }
@@ -217,15 +245,16 @@ public class TexturingUtils {
     private static void blendBGR(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
 
-        float r = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
-        float g = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
-        float b = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
         float originalAlpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
-        float originalBlue = (float)(i >> 16 & 255) * COLOUR_DEGREE;
-        float originalGreen = (float)(i >> 8 & 255) * COLOUR_DEGREE;
-        float originalRed = (float)(i >> 0 & 255) * COLOUR_DEGREE;
 
         if(originalAlpha != 0.0) {
+            float r = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
+            float g = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
+            float b = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
+            float originalBlue = (float)(i >> 16 & 255) * COLOUR_DEGREE;
+            float originalGreen = (float)(i >> 8 & 255) * COLOUR_DEGREE;
+            float originalRed = (float)(i >> 0 & 255) * COLOUR_DEGREE;
+
             float f10 = b * 255 * originalBlue;
             float f11 = g * 255 * originalGreen;
             float f12 = r * 255 * originalRed;
@@ -239,19 +268,51 @@ public class TexturingUtils {
         }
     }
 
+    private static void blendBGRA(int xIn, int yIn, int rgba, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        float originalAlpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
+
+        if(originalAlpha != 0.0F) {
+            float a = (float)(rgba >> 24 & 255) * COLOUR_DEGREE;
+            if (a != 0.0F) {
+                float r = (float) (rgba >> 16 & 255) * COLOUR_DEGREE;
+                float g = (float) (rgba >> 8 & 255) * COLOUR_DEGREE;
+                float b = (float) (rgba >> 0 & 255) * COLOUR_DEGREE;
+                float originalBlue = (float) (i >> 16 & 255) * COLOUR_DEGREE;
+                float originalGreen = (float) (i >> 8 & 255) * COLOUR_DEGREE;
+                float originalRed = (float) (i >> 0 & 255) * COLOUR_DEGREE;
+
+                float f10 = b * 255 * originalBlue;
+                float f11 = g * 255 * originalGreen;
+                float f12 = r * 255 * originalRed;
+
+                int j = (int) (originalAlpha * a * 255);
+                int k = (int) (f10);
+                int l = (int) (f11);
+                int i1 = (int) (f12);
+
+                nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+            } else {
+                nativeimage.setPixelRGBA(xIn, yIn, 0);
+            }
+        }
+    }
+
     //Blends the supplied image with a specified rbg
     private static void blendRGB(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
 
-        float f1 = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
-        float f2 = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
-        float f3 = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
         float originalAlpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
-        float r = (float)(i >> 16 & 255) * COLOUR_DEGREE;
-        float f6 = (float)(i >> 8 & 255) * COLOUR_DEGREE;
-        float f7 = (float)(i >> 0 & 255) * COLOUR_DEGREE;
 
         if(originalAlpha != 0.0) {
+            float f1 = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
+            float f2 = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
+            float f3 = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
+            float r = (float)(i >> 16 & 255) * COLOUR_DEGREE;
+            float f6 = (float)(i >> 8 & 255) * COLOUR_DEGREE;
+            float f7 = (float)(i >> 0 & 255) * COLOUR_DEGREE;
+
             float f10 = f1 * 255 * r;
             float f11 = f2 * 255 * f6;
             float f12 = f3 * 255 * f7;
@@ -361,6 +422,49 @@ public class TexturingUtils {
         } else {
             nativeimage.setPixelRGBA(x, y, 0);
         }
+    }
+
+    private static void stackPheomelanin(int x, int y, NativeImage image, List<Integer> rgbStack) {
+        float[] colour = blendPheomelanin(x, y, image);
+
+        for (Integer c : rgbStack) {
+            float[] i = new float[] {0.0F, 0.0F, 0.0F, (float)(c >> 24 & 255) * COLOUR_DEGREE};
+            if (i[3] != 0.0F) {
+                Color.RGBtoHSB(c & 255, c >> 8 & 255, c >> 16 & 255, i);
+                i[0] += (0.1666F-i[0]) * (1.0F-i[3]);
+                float mod = i[3]*(i[1]);
+                colour[0] = colour[0] == 0.0F? i[0] : (colour[0]*(1.0F-mod)) + (i[0]*mod);
+                colour[1] = (colour[1]*(1.0F-i[3])) + (i[1]*i[3]);
+                colour[2] = (colour[2] + i[2])*0.5F;
+                colour[3] += (1.0F-colour[3])*i[3];
+            }
+        }
+
+        int rgb = Color.HSBtoRGB(Math.max(colour[0], 0.0F), colour[1], colour[2]);
+        int r = rgb >> 16 & 255;
+        int g = rgb >> 8 & 255;
+        int b = rgb & 255;
+
+        image.setPixelRGBA(x, y, (int)(colour[3]*255) << 24 | b << 16 | g << 8 | r);
+
+    }
+
+    private static float[] blendPheomelanin(int x, int y, NativeImage image) {
+        int i = image.getPixelRGBA(x, y);
+
+        float alpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
+
+        if(alpha != 0.0) {
+            float[] colour = Color.RGBtoHSB(i & 255, i >> 8 & 255, i >> 16 & 255, null);
+
+            colour[0] += (0.1666F-colour[0])*(1.0F-alpha);
+//            colour[1] += (1.0F-colour[1])*0.5F*(1.0F-(alpha));
+            colour[2] += (1.0F-colour[2])*(1.0F-(alpha));
+
+            return new float[] {colour[0], colour[1], colour[2], alpha};
+        }
+
+        return new float[] {0.1666F, 0.5F, 0.5F, 0.0F};
     }
 
     private static void shadeFeather(NativeImage baseImage) {

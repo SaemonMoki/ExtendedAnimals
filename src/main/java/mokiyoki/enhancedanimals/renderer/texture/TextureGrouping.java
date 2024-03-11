@@ -56,6 +56,7 @@ public class TextureGrouping {
                 case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
                 case APPLY_SHADING -> applyShading(baseImage, groupImages);
                 case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
+                case APPLY_PHEOMELANIN -> generatePheomelanin(baseImage, groupImages);
 //                case SHADE_FEATHERS -> shadeFeathers(baseImage, groupImages);
             }
 
@@ -63,6 +64,10 @@ public class TextureGrouping {
         }
 
         return null;
+    }
+
+    private void generatePheomelanin(NativeImage baseImage, List<NativeImage> groupImages) {
+        applyPheomelanin(baseImage, groupImages);
     }
 
     private void shadeFeathers(NativeImage baseImage, List<NativeImage> groupImages) {
@@ -212,6 +217,12 @@ public class TextureGrouping {
         }
     }
 
+    private void multiplyGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
+        for (NativeImage applyImage : groupImages) {
+            multiplyPixelLayer(compiledImage, applyImage);
+        }
+    }
+
     private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
         if (!groupImages.isEmpty()) {
             NativeImage mergeGroup = groupImages.get(0);
@@ -234,35 +245,17 @@ public class TextureGrouping {
 
     private void applyLayerSpecifics(TextureLayer layer, Colouration colouration) {
         switch(layer.getTexturingType()) {
-            case APPLY_RED:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getPheomelaninColour()));
-                break;
-            case APPLY_BLACK:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getMelaninColour()));
-                break;
-            case APPLY_COLLAR_COLOUR:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getCollarColour()));
-                break;
-            case APPLY_BRIDLE_COLOUR:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getBridleColour()));
-                break;
-            case APPLY_SADDLE_COLOUR:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getSaddleColour()));
-                break;
-            case APPLY_DYE:
-                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getDyeColour()));
-                break;
-            case APPLY_EYE_LEFT_COLOUR:
-                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getLeftEyeColour()));
-                break;
-            case APPLY_EYE_RIGHT_COLOUR:
-                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getRightEyeColour()));
-                break;
-            case APPLY_RGB:
-                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
-                break;
-            case APPLY_SHIFT:
-                layer.setTextureImage(applyHueShift(layer.getTextureImage(), layer.getRGB()));
+            case APPLY_RED -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getPheomelaninColour()));
+            case APPLY_BLACK -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getMelaninColour()));
+            case APPLY_COLLAR_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getCollarColour()));
+            case APPLY_BRIDLE_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getBridleColour()));
+            case APPLY_SADDLE_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getSaddleColour()));
+            case APPLY_DYE -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getDyeColour()));
+            case APPLY_EYE_LEFT_COLOUR -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getLeftEyeColour()));
+            case APPLY_EYE_RIGHT_COLOUR -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getRightEyeColour()));
+            case APPLY_RGB -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
+            case APPLY_RGBA -> layer.setTextureImage(applyBGRABlend(layer.getTextureImage(), layer.getRGB()));
+            case APPLY_SHIFT -> layer.setTextureImage(applyHueShift(layer.getTextureImage(), layer.getRGB()));
         }
     }
 

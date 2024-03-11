@@ -1677,22 +1677,38 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 /**
                  *      Crest
                  */
-                if (chickenModelData.collar) {
-                   //TODO remove this
-//                   crestSmall.show();
-//                   if (chicken.isCombed()) {
-//                       mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.5F, 0.5F, 0.0F, 0.0F, -0.125F));
-//                       if (chicken.butterCup) {
-//                           mapOfScale.put("combDuplex", mapOfScale.get("comb"));
-//                       }
-//                   }
-                } else {
-                    if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && this.chickenModelData.growthAmount > 0.5F)) {
-                        crestSmall.show();
-                    } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
-                        crestMedium.show();
-                    } else if (chicken.crestType == Crested.BIG_CREST) {
-                        crestLarge.show();
+                if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && this.chickenModelData.growthAmount > 0.5F)) {
+                    crestSmall.show();
+                    if (chicken.isCombed() && chicken.comb != Comb.V) {
+                        if (!chicken.comb.hasPeaComb()) {
+                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.85F - (0.4F*(chicken.combSize/4F)), 0.85F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
+                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.85F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
+                            if (chicken.duplex) {
+                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                            }
+                        }
+                    }
+                } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
+                    crestMedium.show();
+                    if (chicken.isCombed() && chicken.comb != Comb.V) {
+                        if (!chicken.comb.hasPeaComb()) {
+                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.75F - (0.4F*(chicken.combSize/4F)), 0.75F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
+                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.75F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
+                            if (chicken.duplex) {
+                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                            }
+                        }
+                    }
+                } else if (chicken.crestType == Crested.BIG_CREST) {
+                    crestLarge.show();
+                    if (chicken.isCombed() && chicken.comb != Comb.V) {
+                        if (!chicken.comb.hasPeaComb()) {
+                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.65F - (0.4F*(chicken.combSize/4F)), 0.65F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
+                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.65F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
+                            if (chicken.duplex) {
+                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                            }
+                        }
                     }
                 }
 
@@ -1748,10 +1764,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                  */
 
                 cushion.show();
-                if (!chicken.tailless) {
-                    theTailCoverts.show();
-                    tailNub.hide();
-                }
+                tailNub.hide();
+                theTailCoverts.show(!chicken.tailless);
 
                 /**
                  *      feather shape variation
@@ -1908,7 +1922,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theTailCoverts.setY(2.0F - (chicken.tailAngle*2.5F));
 
             theTail.setXRot(0.6F - (chicken.tailAngle*0.8F));
-            theTail.setY(-4.0F - (chicken.tailAngle));
+            theTail.setY(-(4.0F + chicken.tailAngle));
+            theTail.setZ(/*chicken.tailAngle*1.5F*/1.5F);
 
 
             theWingLeft.setY(chicken.wingPlacement);
@@ -1920,7 +1935,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theFootLeft.setY((15.5F-chicken.height) + 7.0F);
             theFootRight.setY(theFootLeft.getY());
             pantsLeft.setY(17.5F-chicken.height);
-            setComb(chicken.butterCup, chicken.comb);
+            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType);
 
             if (chicken.ear != EarType.NONE) {
                 if (chicken.earSize == 13 && chicken.ear == EarType.ROUND) {
@@ -1972,23 +1987,29 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         tailNub.setY((theSaddle.getZ()-1.0F)*0.4F);
     }
 
-    private static void setComb(boolean duplex, Comb combType) {
+    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType) {
         theComb.setY(-2.0F);
         if (duplex) {
             switch (combType) {
                 case SINGLE -> {
-                    comb.setZRot(Mth.HALF_PI*-0.5F);
+                    comb.setRotation(size * Mth.HALF_PI*0.02F, size * Mth.HALF_PI*-0.02F, Mth.HALF_PI*-(0.5F-(0.075F*size)));
                 }
                 case ROSE_ONE, ROSE_TWO -> {
-                    comb.setZRot(Mth.HALF_PI*-0.25F);
+                    comb.setRotation(0.0F, size * Mth.HALF_PI*-0.02F, Mth.HALF_PI*-0.25F);
                 }
+                case WALNUT -> comb.setRotation(0.0F, 0.0F, 0.0F);
                 default -> {
-                    comb.setZRot(Mth.HALF_PI*-0.125F);
+                    comb.setRotation(0.0F, 0.0F, Mth.HALF_PI*-0.125F);
                 }
             }
             combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
         } else {
-            comb.setZRot(0.0F);
+            comb.setRotation(0.0F, 0.0F, 0.0F);
+        }
+
+        if (crestType != Crested.NONE) {
+            comb.setXRot(comb.getXRot() + 0.785F);
+            theCrest.setXRot(-comb.getXRot()*0.5F);
         }
     }
 
@@ -1998,13 +2019,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         if (this.chickenModelData != null) {
             ChickenPhenotype chicken = this.chickenModelData.getPhenotype();
             readInitialAnimationValues(this.chickenModelData, chicken);
-
-//            if (chickenModelData.collar) {
-//                comb.setXRot(Mth.HALF_PI*0.5F);
-//            } else {
-//                comb.setXRot(0.0F);
-//            }
-            setComb(true, chicken.comb);
 
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
@@ -2157,7 +2171,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             tailAngleAnimation(currentTailAngle);
                         }
                     } else {
-                        tailAngleAnimation(1.5F);
+                        tailAngleAnimation(1.0F);
                     }
                     tailDefault();
                 }
@@ -2667,6 +2681,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         if (theSaddle.getXRot()==val1 && theSaddle.getZ()==val2 && theSaddle.getYRot()==0.0F) return true;
         theSaddle.setXRot(this.lerpTo(theSaddle.getXRot(),val1));
         theSaddle.setZ(this.lerpTo(theSaddle.getZ(),val2));
+//        theTail.setY(-4.0F + angle);
         return false;
     }
 

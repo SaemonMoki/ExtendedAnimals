@@ -9,8 +9,6 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.FootFeathe
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class ChickenPhenotype implements Phenotype {
     public Crested crestType = Crested.NONE;
     public FootFeathers footFeatherType = FootFeathers.NONE;

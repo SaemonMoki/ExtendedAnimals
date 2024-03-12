@@ -81,7 +81,7 @@ public class CatPhenotype implements Phenotype {
         }
 
         // Eye Size Subtractors
-        eyeSize -= ((gene[40] + gene[41]) - 2) * 0.0125F;
+        eyeSize -= ((gene[40] + gene[41]) - 2) * 0.02F;
         if (eyeSize > 1F) {
             eyeSize = 1F;
         }

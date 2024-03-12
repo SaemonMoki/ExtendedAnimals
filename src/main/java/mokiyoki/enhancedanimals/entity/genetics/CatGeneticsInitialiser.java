@@ -648,6 +648,28 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[147] = (1);
         }
 
+        //Mealy 1 [wildtype, enhanced, reduced]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[148] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[148] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[149] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[149] = (1);
+        }
+        //Mealy 2 [wildtype, enhanced, reduced]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[150] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[150] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[151] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[151] = (1);
+        }
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 

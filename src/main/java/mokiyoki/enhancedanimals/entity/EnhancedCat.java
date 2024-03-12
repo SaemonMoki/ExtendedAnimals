@@ -582,7 +582,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             int inhibitor = 0;
             int corin = 0;
             int underbelly = 1;
-            int mealy = 0;
+            int mealy = 3;
             int coatType = 1;
             int glitter = 1;
 
@@ -696,6 +696,24 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
 
             if (agouti) {
+                //Mealy
+                if (aGenes[148] == 2 || aGenes[149] == 2) {
+                    mealy += 1;
+                }
+                else if (aGenes[148] == 3 || aGenes[149] == 3) {
+                    mealy -= 1;
+                    if (aGenes[148] == aGenes[149]) {
+                        mealy -= 1;
+                    }
+                }
+                if (aGenes[150] == 2 || aGenes[151] == 2) {
+                    mealy += 1;
+                }
+                else if (aGenes[150] == 3 && aGenes[151] == 3) {
+                    mealy -= 1;
+                }
+
+                //CORIN
                 if (aGenes[30] == 2 && aGenes[31] == 2) {
                     // Sunshine
                     corin = 1;
@@ -1072,7 +1090,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 TextureGrouping redBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RED, CAT_TEXTURES_BASE, 0, l -> true);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_UNDERBELLY[underbelly], "r-ub"+underbelly, redUnderbellyRGB);
-                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_MEALY, mealy, l -> l !=0);
+                if (agouti) {
+                    addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_MEALY, mealy, l -> l != 0);
+                }
 //                addTextureToAnimalTextureGrouping(redBaseGroup, CAT_TEXTURES_TABBY_BASE, agoutiBase, l->l!=0);
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY_BASE[agoutiBase], "r-agb"+agoutiBase, redTabbyRGB);
 

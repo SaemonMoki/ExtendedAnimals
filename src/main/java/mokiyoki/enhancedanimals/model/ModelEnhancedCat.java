@@ -332,8 +332,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
                         .texOffs(105, 110)
-                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
-                PartPose.offset(0F,0F, -2)
+                        .addBox(-1.5F, 8.0F, 2.0F, 0, 2, 4),
+                PartPose.offset(0F,0F, 0F)
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
@@ -342,8 +342,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         );
         base.addOrReplaceChild("legFurBR", CubeListBuilder.create()
                         .texOffs(108, 122)
-                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4),
-                PartPose.offset(0F,0F, -2)
+                        .addBox(1.5F, 8.0F, 2.0F, 0, 2, 4),
+                PartPose.offset(0F,0F, 0F)
         );
                 /** Bottom */
         base.addOrReplaceChild("legBBL", CubeListBuilder.create()

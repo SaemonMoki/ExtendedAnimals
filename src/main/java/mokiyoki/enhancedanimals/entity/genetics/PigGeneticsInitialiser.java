@@ -65,7 +65,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *  4 : e Red (Duroc, all red breeds) Disables black pigment creation
          */
 
-        //Extension [ Dom.Black(MCR1), Wildtype+, brindle(spots), red, Dominant.Black(MCR2) ]
+        //Extension [ Dom.Black(MCR1), Wildtype+, brindle(spots), red, (Dominant.Black(MCR2)) ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -165,7 +165,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *    12  I^L  Lethal : Homozygous Lethal
          */
 
-        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White, Dom.White2, Dom.White3, Belted2, WhiteSpots2, Patch, Lethal ]
+        //KIT [ Legacy-Dom.White, Belted, wildtype+, Legacy-Patch, Roan, Dom.White, (Dom.White2), (Dom.White3), Belted2, Tuxedo, Patch, Lethal ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(8) + 2);
             if (autosomalGenes[12]>=4) autosomalGenes[12]+=1;
@@ -187,7 +187,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //White points seems to function as a secondary white extension; likely adds additional copies of DUP2
-        //White Points [ Wildtype+, tuxedo, white points ]
+        //White Points [ Wildtype+, legacy-tuxedo, white points ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
             if (autosomalGenes[14]==2) autosomalGenes[14]+=1;
@@ -275,7 +275,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[35] = (2);
         }
 
-        //baldness [ Bald, wildtype ]
+        //baldness [ bald, Wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
@@ -297,13 +297,13 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //wooly [ thicker hair, wildtype, curly wool ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             autosomalGenes[38] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             autosomalGenes[39] = (2);
@@ -417,17 +417,17 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //body type [wildtype(middle), smallest to largest]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(7) + 1);
+//        } else {
             autosomalGenes[56] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[57] = (ThreadLocalRandom.current().nextInt(7) + 1);
-
-        } else {
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[57] = (ThreadLocalRandom.current().nextInt(7) + 1);
+//
+//        } else {
             autosomalGenes[57] = (1);
-        }
+//        }
 
         //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

@@ -857,6 +857,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
+            int[] gene = getSharedGenes().getAutosomalGenes();
             int eyes = 0;
             int red = 1;
             int black = 0;
@@ -875,7 +876,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int whiteExtension = 0;
             int whiteSplash = 0;
             int white = 0;
-            int spotPower = 0;
+            // if negative, tamworth; if positive, kitlg/allspots
+            int spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
             boolean roan = false;
             boolean whitePoints = false;
             boolean tusks = false;
@@ -889,7 +891,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             float maxRed = 0.020F;
             float maxYellow = 0.101F;
 
-            int[] gene = getSharedGenes().getAutosomalGenes();
             float[] melanin = {0.036F, 0.5F, 0.071F};
             float[] pheomelanin = { 0.049F, 0.683F, 0.558F };
 
@@ -937,12 +938,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             //brindle
             if (gene[0] == 3 && gene[1] == 3) {
                 // allspots
-                if (gene[64] == 2 && gene[65] == 2 && gene[62] != 2 && gene[63] != 2) {
+                if (spotPower == 2) {
                     pheomelanin[0] = 0.086F;
                     pheomelanin[1] = 0.100F;
                     pheomelanin[2] = 0.90F;
                 }
-                else if ((gene[64] == 2 || gene[65] == 2) && gene[62] != 2 && gene[63] != 2) {
+                else if (spotPower == 1) {
                     pheomelanin[0] = 0.086F;
                     pheomelanin[1] = 0.534F;
                     pheomelanin[2] = 0.69F;
@@ -1257,8 +1258,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             } else if (gene[0] == 3 || gene[1] == 3) {
                 //brindle
                 brindle = true;
-                // if negative, tamworth; if positive, kitlg/allspots
-                spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
                 if (gene[0] == 3 && gene[1] == 3) {
                     //homozygous brindle
                     black = idx_brindle;
@@ -1489,13 +1488,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             else {
                 //grey
                 skin = 2;
-//                if ( spotPower < 0 ) {
-//                    //tamworth causes pink skin
-//                    skin = 1;
-//                }
             }
-            if ((gene[62] + gene[63]) > (gene[64] + gene[65])) { //tamworth causes pink skin, even on black pigs
+            if (gene[62] == 2 || gene[63] == 2) { //tamworth causes pink skin, even on black pigs
                 skin = 1;
+                if (spotPower < 0) {
+                    skinBlack = 1;
+                }
             }
 
             //random brindle
@@ -1590,6 +1588,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
             }
             else if (white == idx_belt) {
+                //random belt
                 if (whiteExtension == 2) {
                     int d = uuidArry[3] % 3;
                     white = idx_belt + 3 + d;
@@ -1609,12 +1608,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 white = idx_patch_belt + d3;
             }
             else if (white == idx_patch_bigbelt) {
-                //random patch belt
+                //random patch bigbelt
                 int d3 = uuidArry[3] % 4;
                 white = idx_patch_bigbelt + d3;
             }
             else if (white == idx_patch_hereford) {
-                //random patch belt
+                //random patch hereford
                 int d3 = uuidArry[3] % 5;
                 white = idx_patch_hereford + d3;
             }
@@ -1630,6 +1629,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 whiteTail = 1 + d4;
             }
             else if (whiteSplash == idx_hereford_belly_med) {
+                //random med hereford
                 int d4 = uuidArry[5] % 2;
                 int d3 = uuidArry[3] % 3;
                 int d2 = uuidArry[2] % 4;
@@ -1639,6 +1639,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 whiteTail = 1 + d4;
             }
             else if (whiteSplash == idx_hereford_belly_high) {
+                //random high hereford
                 int d4 = uuidArry[5] % 2;
                 int d3 = uuidArry[3] % 5;
                 int d2 = uuidArry[2] % 6;
@@ -1783,14 +1784,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
                 hairTexGroup.addGrouping(redGroup);
 
-                TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (whitebelly != 0) {
                     addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
                 }
                 else if (swallowbelly != 0) {
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_SWALLOWBELLY[swallowbelly], "sb", swallowbellyRGB);
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, this.isBaby() ? 2 : 1, l -> true);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
+                    if (roan) {
+                        addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, this.isBaby() ? 2 : 1, l -> true);
+                    }
                 }
 
                 int agoutiTex = 0;

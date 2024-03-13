@@ -327,22 +327,22 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 /** Top */
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(36, 42)
-                        .addBox(-1.5F, 0.0F, 2.0F, 3, 8, 4),
-                PartPose.offset(0F,0F, -2)
+                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.offset(0F,0F, 0F)
         );
         base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
                         .texOffs(105, 110)
-                        .addBox(-1.5F, 8.0F, 2.0F, 0, 2, 4),
+                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.offset(0F,0F, 0F)
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
-                        .addBox(-1.5F, 0.0F, 2.0F, 3, 8, 4),
-                PartPose.offset(0F,0F, -2)
+                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.offset(0F,0F, 0F)
         );
         base.addOrReplaceChild("legFurBR", CubeListBuilder.create()
                         .texOffs(108, 122)
-                        .addBox(1.5F, 8.0F, 2.0F, 0, 2, 4),
+                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.offset(0F,0F, 0F)
         );
                 /** Bottom */
@@ -662,7 +662,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             boolean isCobby = cat.isCobby;
             float eyesWidth = Math.min(cat.headWidth, 1F);
-            float upperLegScale = 1F + cat.furLength*0.35F;
+            //float upperLegScale = 1F + cat.furLength*0.5F;
             float upperLegHeight = 1F + cat.furLength*0.1F;
             float eyeWidth = (1F - (cat.eyeRoundness > 0F ? cat.eyeRoundness * 0.2F : 0F)) * (cat.eyeSize);
             float eyeThickness = (1F + (cat.eyeRoundness * 0.275F)) * (cat.eyeSize);
@@ -689,11 +689,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("bPawBR", legScalings);
             mapOfScale.put("legFL", legScalings);
             mapOfScale.put("legFR", legScalings);
-            List<Float> thighScalings = ModelHelper.createScalings(upperLegScale+(cat.bodyWidth*0.75F), upperLegHeight, upperLegScale+(cat.bodyWidth*0.1F), 0F, 0F, 0F);
+            List<Float> thighScalings = ModelHelper.createScalings(1F+(cat.bodyWidth)+(cat.furLength*0.5F), upperLegHeight, 1F+(cat.bodyWidth*0.1F)+(cat.furLength*0.125F), 0F, 0F, 0F);
             mapOfScale.put("legBL", thighScalings);
             mapOfScale.put("legBR", thighScalings);
-            List<Float> bodyScalingF = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
-            List<Float> bodyScalingB = ModelHelper.createScalings(1F+cat.bodyWidth, cat.bodyLength, 1F, 0F, 0F, 0F);
+            List<Float> bodyScalingF = ModelHelper.createScalings(1F+cat.bodyWidth+(cat.furLength*0.5F), cat.bodyLength, 1F, 0F, 0F, 0F);
+            List<Float> bodyScalingB = ModelHelper.createScalings(1F+cat.bodyWidth+(cat.furLength*0.5F), cat.bodyLength, 1F, 0F, 0F, 0F);
             mapOfScale.put("bodyF", bodyScalingF);
             //mapOfScale.put("bodyFurF", bodyScalingF);
             mapOfScale.put("bodyB", bodyScalingB);

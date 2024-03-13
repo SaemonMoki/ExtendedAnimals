@@ -228,11 +228,11 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[26] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//        } else {
             autosomalGenes[27] = (1);
-        }
+//        }
 
         // Dilute/Blue [Wildtype, dilute]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

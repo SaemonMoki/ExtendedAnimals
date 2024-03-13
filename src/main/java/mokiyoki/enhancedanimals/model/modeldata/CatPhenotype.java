@@ -34,10 +34,10 @@ public class CatPhenotype implements Phenotype {
     public CatPhenotype(int[] gene, char uuid) {
         longHaired = (gene[32] > 1 && gene[33] > 1);
 
-        furLength = 0.0F;
+        //furLength = 0.0F;
         if (longHaired) {
             for (int i = 34; i < 42; i++) {
-                furLength += gene[i] / 80F;
+                //furLength += gene[i] / 80F;
             }
         }
 
@@ -135,6 +135,7 @@ public class CatPhenotype implements Phenotype {
             neckWidth *= 0.85F;
             neckHeight *= 0.85F;
             lowerLegScale *= 0.85F;
+            furnishings = false;
         }
 
         bodyWidth = (bodyType * (isCobby ? 0.5F : 0.1F));

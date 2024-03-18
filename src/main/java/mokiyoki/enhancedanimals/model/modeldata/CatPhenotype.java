@@ -3,9 +3,10 @@ package mokiyoki.enhancedanimals.model.modeldata;
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
     public boolean hairless = false;
-    public boolean furnishings = true;
+    public int furnishings = 0;
     public float furLength = 0.0F;
-    public float furDensity;
+    public float furDensity = 0.0F;
+    public float furInflation;
     public float headSize = 1.025F;
     public float headWidth = 1.0F;
     public float headHeight = 0.0F;
@@ -26,23 +27,26 @@ public class CatPhenotype implements Phenotype {
     public float bodyLength = 0.0F;
     public float neckWidth = 1.0F;
     public float neckHeight = 1.0F;
-
     public float lowerLegScale = 1.0F;
     public float tailThickness = 1.0F;
     public int bobtail = 0;
 
     public CatPhenotype(int[] gene, char uuid) {
-        longHaired = (gene[32] > 1 && gene[33] > 1);
+        longHaired = (gene[152] > 1 && gene[153] > 1);
 
-        //furLength = 0.0F;
         if (longHaired) {
-            for (int i = 34; i < 42; i++) {
-                //furLength += gene[i] / 80F;
+            for (int i = 154; i < 162; i++) {
+                furLength += gene[i] / 80F;
             }
-        }
+            if (furLength >= 0.66F) {
+                furnishings = 3;
+            } else if (furLength >= 0.33F) {
+                furnishings = 2;
+            } else {
+                furnishings = 1;
+            }
 
-        //furnishings
-        //headWidth = (gene[44] == 2 || gene[45] == 2) ? 1F : 0F;
+        }
 
         // snout length genes
         for (int i = 100; i < 108; i++) {
@@ -123,11 +127,12 @@ public class CatPhenotype implements Phenotype {
             }
         }
 
+        furInflation = furLength * (1F+furDensity);
+
         if (gene[32] == 2 && gene[33] == 2) {
             // Sphynx Hairlessness
             hairless = true;
         }
-
 
         if (hairless) {
             tailThickness *= 0.75F;
@@ -135,7 +140,8 @@ public class CatPhenotype implements Phenotype {
             neckWidth *= 0.85F;
             neckHeight *= 0.85F;
             lowerLegScale *= 0.85F;
-            furnishings = false;
+            furInflation = 0F;
+            furnishings = 0;
         }
 
         bodyWidth = (bodyType * (isCobby ? 0.5F : 0.1F));

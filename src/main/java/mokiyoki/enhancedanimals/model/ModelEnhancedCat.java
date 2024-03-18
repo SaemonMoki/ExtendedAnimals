@@ -63,10 +63,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart earFluffR;
     private static WrappedModelPart mouth;
     private static WrappedModelPart bodyFront;
-    private static WrappedModelPart bodyFurFront;
+    private static WrappedModelPart bodyFurFrontShort;
+    private static WrappedModelPart bodyFurFrontMed;
+    private static WrappedModelPart bodyFurFrontLong;
     private static WrappedModelPart neckRuff;
     private static WrappedModelPart bodyBack;
-    private static WrappedModelPart bodyFurBack;
+    private static WrappedModelPart bodyFurBackShort;
+    private static WrappedModelPart bodyFurBackMed;
+    private static WrappedModelPart bodyFurBackLong;
     private static WrappedModelPart legFrontLeft;
     private static WrappedModelPart legFrontRight;
     private static WrappedModelPart legBackLeft;
@@ -272,11 +276,22 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .addBox(-3.0F, 0F, -7.5F, 6, 10, 8, deformation),
                 PartPose.offsetAndRotation(0F, 0F, -9.5F, Mth.HALF_PI, 0.0F, 0.0F)
         );
-        base.addOrReplaceChild("bodyFurF", CubeListBuilder.create()
+        base.addOrReplaceChild("bodyFurFShort", CubeListBuilder.create()
                         .texOffs(5, 115)
-                        .addBox(-3.0F, 0F, -10F, 6, 10, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
-                PartPose.ZERO
+                        .addBox(-3.0F, 0F, -3.0F, 6, 10, 3,  new CubeDeformation(-0.5F, -0.5F, -0.5F)),
+                PartPose.offset(0F, 0F, -6.5F)
         );
+        base.addOrReplaceChild("bodyFurFMed", CubeListBuilder.create()
+                        .texOffs(5, 115)
+                        .addBox(-3.0F, 0F, -3.0F, 6, 10, 3,  new CubeDeformation(-0.5F, -0.5F, -0.25F)),
+                PartPose.offset(0F, 0F, -6.75F)
+        );
+        base.addOrReplaceChild("bodyFurFLong", CubeListBuilder.create()
+                        .texOffs(5, 115)
+                        .addBox(-3.0F, 0F, -3.0F, 6, 10, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.offset(0F, 0F, -7.0F)
+        );
+
         base.addOrReplaceChild("neckRuff", CubeListBuilder.create()
                         .texOffs(56, 117)
                         .addBox(-4.0F, 0.0F, -5.0F, 8, 0, 5, new CubeDeformation(-0.25F, 0F, -0.25F)),
@@ -286,16 +301,26 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(36, 0)
                         .addBox(-3.0F, -6.5F, -7.5F, 6, 7, 8, deformation)
                         .texOffs(29, 15)
-                        .addBox(-3.0F, -0.5F, -4.55F, 6, 4, 5, deformation)
-                ,
+//                        .addBox(-3.0F, -0.5F, -4.55F, 6, 4, 5, deformation),
+                        .addBox(-3.0F, -0.5F, -5F, 6, 3, 5, deformation),
                 PartPose.offsetAndRotation(0F,0F, 6.0F, Mth.HALF_PI, 0.0F, 0.0F)
         );
-        base.addOrReplaceChild("bodyFurB", CubeListBuilder.create()
-                        .texOffs(33, 118)
-                        .addBox(-3.0F, -6.5F, -10F, 6, 7, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
-                PartPose.ZERO
-        );
 
+        base.addOrReplaceChild("bodyFurBShort", CubeListBuilder.create()
+                        .texOffs(33, 118)
+                        .addBox(-3.0F, -6.5F, -3.0F, 6, 7, 3,  new CubeDeformation(-0.5F, -0.5F, -0.5F)),
+                PartPose.offset(0F, 0F, -6.5F)
+        );
+        base.addOrReplaceChild("bodyFurBMed", CubeListBuilder.create()
+                        .texOffs(33, 118)
+                        .addBox(-3.0F, -6.5F, -3.0F, 6, 7, 3,  new CubeDeformation(-0.5F, -0.5F, -0.25F)),
+                PartPose.offset(0F, 0F, -6.75F)
+        );
+        base.addOrReplaceChild("bodyFurBLong", CubeListBuilder.create()
+                        .texOffs(33, 118)
+                        .addBox(-3.0F, -6.5F, -3.0F, 6, 7, 3,  new CubeDeformation(-0.5F, -0.5F, 0.0F)),
+                PartPose.offset(0F, 0F, -7.0F)
+        );
         /**
          *      Legs
          */
@@ -327,22 +352,22 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 /** Top */
         base.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(36, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
-                PartPose.offset(0F,0F, 0F)
+                        .addBox(-3F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.offset(1.5F,0F, 0F)
         );
         base.addOrReplaceChild("legFurBL", CubeListBuilder.create()
                         .texOffs(105, 110)
-                        .addBox(-1.5F, 8.0F, 0.0F, 0, 2, 4),
+                        .addBox(-3F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.offset(0F,0F, 0F)
         );
         base.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(50, 42)
-                        .addBox(-1.5F, 0.0F, 0.0F, 3, 8, 4),
-                PartPose.offset(0F,0F, 0F)
+                        .addBox(0F, 0.0F, 0.0F, 3, 8, 4),
+                PartPose.offset(-1.5F,0F, 0F)
         );
         base.addOrReplaceChild("legFurBR", CubeListBuilder.create()
                         .texOffs(108, 122)
-                        .addBox(1.5F, 8.0F, 0.0F, 0, 2, 4),
+                        .addBox(3F, 8.0F, 0.0F, 0, 2, 4),
                 PartPose.offset(0F,0F, 0F)
         );
                 /** Bottom */
@@ -499,10 +524,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         cheekFluffRight = new WrappedModelPart("cheekFluffR", base);
 
         bodyFront = new WrappedModelPart("bodyF", base);
-        bodyFurFront = new WrappedModelPart("bodyFurF", base);
+        bodyFurFrontShort = new WrappedModelPart("bodyFurFShort", base);
+        bodyFurFrontMed = new WrappedModelPart("bodyFurFMed", base);
+        bodyFurFrontLong = new WrappedModelPart("bodyFurFLong", base);
         neckRuff = new WrappedModelPart("neckRuff", base);
         bodyBack = new WrappedModelPart("bodyB", base);
-        bodyFurBack = new WrappedModelPart("bodyFurB", base);
+        bodyFurBackShort = new WrappedModelPart("bodyFurBShort", base);
+        bodyFurBackMed = new WrappedModelPart("bodyFurBMed", base);
+        bodyFurBackLong = new WrappedModelPart("bodyFurBLong", base);
 
         legFrontLeft = new WrappedModelPart("legFL", base);
         legFrontRight = new WrappedModelPart("legFR", base);
@@ -574,10 +603,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theNeck.addChild(neck);
 
         theBodyFront.addChild(bodyFront);
-        bodyFront.addChild(bodyFurFront);
+        bodyFront.addChild(bodyFurFrontShort);
+        bodyFront.addChild(bodyFurFrontMed);
+        bodyFront.addChild(bodyFurFrontLong);
         bodyFront.addChild(neckRuff);
         theBodyBack.addChild(bodyBack);
-        bodyBack.addChild(bodyFurBack);
+        bodyBack.addChild(bodyFurBackShort);
+        bodyBack.addChild(bodyFurBackMed);
+        bodyBack.addChild(bodyFurBackLong);
 
         theLegFrontLeft.addChild(legFrontLeft);
         theLegFrontRight.addChild(legFrontRight);
@@ -639,17 +672,23 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 mapOfScale.put("eyeR2", ModelHelper.createScalings(2f*dilation, 1.0F, 1.0F, (1.0F-dilation)*0.065F, 0.0F, 0.0F));
             }
 
-            this.bodyFurFront.show(cat.furnishings);
-            this.neckRuff.show(cat.furnishings);
-            this.bodyFurBack.show(cat.furnishings);
-            this.cheekFluffLeft.show(cat.furnishings);
-            this.legFurBackLeft.show(cat.furnishings);
-            this.legFurBackRight.show(cat.furnishings);
-            this.earFluffL.show(cat.furnishings);
-            this.earFluffR.show(cat.furnishings);
-            this.cheekFluffRight.show(cat.furnishings);
+//            this.theLegBackRight.show(false);
+//            this.theLegBackLeft.show(false);
+            this.bodyFurFrontShort.show(cat.furnishings == 1);
+            this.bodyFurFrontMed.show(cat.furnishings == 2);
+            this.bodyFurFrontLong.show(cat.furnishings == 3);
+            this.bodyFurBackShort.show(cat.furnishings == 1);
+            this.bodyFurBackMed.show(cat.furnishings == 2);
+            this.bodyFurBackLong.show(cat.furnishings == 3);
+            this.neckRuff.show(cat.furnishings > 1);
+            this.cheekFluffLeft.show(cat.furnishings > 0);
+            this.cheekFluffRight.show(cat.furnishings > 0);
+            this.legFurBackLeft.show(cat.furnishings > 0);
+            this.legFurBackRight.show(cat.furnishings > 0);
+            this.earFluffL.show(cat.furnishings > 0);
+            this.earFluffR.show(cat.furnishings > 0);
             for (int i = 0; i < 7; i++) {
-                this.tailFur[i].show(cat.furnishings);
+                this.tailFur[i].show(cat.furnishings > 0);
             }
 
             this.tail[6].show(cat.bobtail == 0);
@@ -701,20 +740,23 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             List<Float> eye0Scaling = ModelHelper.createScalings(eyeWidth * eyeSize, eyeThickness, eyeSize, 0F, 0F, 0F);
             mapOfScale.put("eyeL0", eye0Scaling);
             mapOfScale.put("eyeR0", eye0Scaling);
-            List<Float> bEarTransform = ModelHelper.createScalings(earSize, 0F, 0F,0F);
-            List<Float> earTransform = ModelHelper.createScalings(1F, earLength, 1F, 0F, 0F,0F);
-            List<Float> ear1Transform = ModelHelper.createScalings(1F, earLength+ear1Scale, 1F, 0F, 0F,0F);
-            List<Float> ear2Transform = ModelHelper.createScalings(1F+cat.earFlare, earLength, 1F, 0F, 0F,0F);
-            mapOfScale.put("bEarL", bEarTransform);
-            mapOfScale.put("bEarR", bEarTransform);
-            mapOfScale.put("earL0", earTransform);
-            mapOfScale.put("earL1", ear1Transform);
-            mapOfScale.put("earL2", ear2Transform);
-            mapOfScale.put("earL3", ear2Transform);
-            mapOfScale.put("earR0", earTransform);
-            mapOfScale.put("earR1", ear1Transform);
-            mapOfScale.put("earR2", ear2Transform);
-            mapOfScale.put("earR3", ear2Transform);
+            List<Float> bEarScaling = ModelHelper.createScalings(earSize, 0F, 0F,0F);
+            List<Float> earScaling = ModelHelper.createScalings(1F, earLength, 1F, 0F, 0F,0F);
+            List<Float> ear1Scaling = ModelHelper.createScalings(1F, earLength+ear1Scale, 1F, 0F, 0F,0F);
+            List<Float> ear2Scaling = ModelHelper.createScalings(1F+cat.earFlare, earLength, 1F, 0F, 0F,0F);
+            mapOfScale.put("bEarL", bEarScaling);
+            mapOfScale.put("bEarR", bEarScaling);
+            mapOfScale.put("earL0", earScaling);
+            mapOfScale.put("earL1", ear1Scaling);
+            mapOfScale.put("earL2", ear2Scaling);
+            mapOfScale.put("earL3", ear2Scaling);
+            mapOfScale.put("earR0", earScaling);
+            mapOfScale.put("earR1", ear1Scaling);
+            mapOfScale.put("earR2", ear2Scaling);
+            mapOfScale.put("earR3", ear2Scaling);
+            List<Float> bodyFurScaling = ModelHelper.createScalings(1F, 1F, 1F, 0F, 0F,0F);
+            mapOfScale.put("bodyFurF", bodyFurScaling);
+            mapOfScale.put("bodyFurB", bodyFurScaling);
 
             for (int i = 0; i < 7; i++) {
                 mapOfScale.put("tail"+i, ModelHelper.createScalings(cat.tailThickness + (cat.furLength*tailFluffScales[i]), 1F + (cat.furLength*tailFluffScales[i]), cat.tailThickness + (cat.furLength*tailFluffScales[i]), 0F,0F,0F));
@@ -765,10 +807,10 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             theTailBones[3].setXRot(Mth.HALF_PI*0.5F);
             theTailBones[6].setXRot(Mth.HALF_PI*-0.5F);
             theBodyFront.setZ((9.25F*(1F-cat.bodyLength)) + (6.25F*(1F-cat.bodyLength)));
-            theLegBackLeft.setX(-1.5F - (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
-            theLegBackRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
-            theLegFrontLeft.setX(-1.5F - (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
-            theLegFrontRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
+//            theLegBackLeft.setX(-1.5F - (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
+//            theLegBackRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
+//            theLegFrontLeft.setX(-1.5F - (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
+//            theLegFrontRight.setX(1.5F + (cat.bodyType*(cat.isCobby ? 0.375F : 0.075F)*1.5F));
             theEarL.setX((cat.headWidth*1.25F)+(cat.earSpacing*1.25F*cat.headWidth)+(Mth.sin(earAngle)*0.5F));
             theEarR.setX((cat.headWidth*-1.25F)-(cat.earSpacing*1.25F*cat.headWidth)-(Mth.sin(earAngle)*0.5F));
             theEarL.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earAngle)*0.75F));

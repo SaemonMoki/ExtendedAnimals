@@ -291,29 +291,11 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[37] = (1);
         }
-        // leaving a gap here for more basic stuff.
-        // because i like the basic color genes being towards the beginning
 
-        // M1-5 are recessive and are all indistinguishable phenotypically
-        // Long Hair [Shorthair+, M1, M2, M3, M4, M5]
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//            autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(5) + 1);
-//        } else {
-//            autosomalGenes[32] = (1);
-//        }
-//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//            autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(5) + 1);
-//        } else {
-//            autosomalGenes[33] = (1);
-//        }
-//        // Fur Length [1-10] (34-41)
-//        for (int i = 34; i < 42; i++) {
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-//                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
-//            } else {
-//                autosomalGenes[i] = (1);
-//            }
-//        }
+        //Unused 38-39
+        autosomalGenes[38] = (1);
+        autosomalGenes[39] = (1);
+
         //Smaller Eyes [1-5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[40] = (ThreadLocalRandom.current().nextInt(5) + 1);
@@ -669,6 +651,27 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[151] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
             autosomalGenes[151] = (1);
+        }
+
+//      M1-5 are recessive and are all indistinguishable phenotypically
+//      Long Hair [Shorthair+, M1, M2, M3, M4, M5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[152] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[152] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[153] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[153] = (1);
+        }
+        // Fur Length [1-10] (154-162)
+        for (int i = 154; i < 162; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
         }
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

@@ -6,7 +6,7 @@ public class CatPhenotype implements Phenotype {
     public int furnishings = 0;
     public float furLength = 0.0F;
     public float furDensity = 0.0F;
-    public float furInflation;
+    public float furSize = 0.0F;
     public float headSize = 1.025F;
     public float headWidth = 1.0F;
     public float headHeight = 0.0F;
@@ -33,6 +33,10 @@ public class CatPhenotype implements Phenotype {
 
     public CatPhenotype(int[] gene, char uuid) {
         longHaired = (gene[152] > 1 && gene[153] > 1);
+
+        for (int i = 162; i < 170; i++) {
+            furDensity += gene[i] / 80F;
+        }
 
         if (longHaired) {
             for (int i = 154; i < 162; i++) {
@@ -106,14 +110,6 @@ public class CatPhenotype implements Phenotype {
 
         headSize = 1.025F + (bodyType * (isCobby ? 0.05F : 0.025F));
 
-        neckWidth = 1F + (furLength * 0.25F) + (bodyType * (isCobby ? 0.4F : 0.25F));
-        neckHeight = 1F + (furLength * 0.25F) + (bodyType * (isCobby ? 0F : 0.15F));
-
-
-        lowerLegScale = 1F + (furLength*0.25F)+((bodyType*(isCobby ? 0.25F : 0.2F)));
-
-        tailThickness = 1F + (bodyType * (isCobby ? 0.35F : 0.4F) );
-
         for (int i = 90; i < 94; i++) {
             switch (gene[i]) {
                 case 2 -> { //Smaller
@@ -127,12 +123,21 @@ public class CatPhenotype implements Phenotype {
             }
         }
 
-        furInflation = furLength * (1F+furDensity);
+        furSize = furDensity * 0.5F * (1F+furLength);
 
         if (gene[32] == 2 && gene[33] == 2) {
             // Sphynx Hairlessness
             hairless = true;
         }
+
+        tailThickness = 1F + (bodyType * (isCobby ? 0.35F : 0.4F) );
+        neckWidth = 1F + (bodyType * (isCobby ? 0.4F : 0.25F));
+        neckHeight = 1F + (bodyType * (isCobby ? 0F : 0.15F));
+        lowerLegScale = 1F + ((bodyType*(isCobby ? 0.25F : 0.2F)));
+
+        bodyWidth = (bodyType * (isCobby ? 0.5F : 0.1F));
+        headWidth = 1F + (bodyType * (isCobby ? 0.3F : 0.1F)) + ((gene[94] + gene[95] - 2) * 0.01F);
+        bodyLength = (1F - (((gene[96] + gene[97] + gene[98] + gene[99] - 4) / 16F) * 0.20F));
 
         if (hairless) {
             tailThickness *= 0.75F;
@@ -140,15 +145,15 @@ public class CatPhenotype implements Phenotype {
             neckWidth *= 0.85F;
             neckHeight *= 0.85F;
             lowerLegScale *= 0.85F;
-            furInflation = 0F;
+            furSize = 0F;
             furnishings = 0;
         }
-
-        bodyWidth = (bodyType * (isCobby ? 0.5F : 0.1F));
-
-        headWidth = 1F + (bodyType * (isCobby ? 0.3F : 0.1F)) + ((gene[94] + gene[95] - 2) * 0.01F);
-
-        bodyLength = (1F - (((gene[96] + gene[97] + gene[98] + gene[99] - 4) / 16F) * 0.20F));
+        else {
+            neckWidth += (furSize * 0.20F);
+            neckHeight += (furSize * 0.025F);
+            lowerLegScale += (furSize * 0.25F);
+            tailThickness += (furSize * 0.25F);
+        }
 
         earSpacing = (gene[128]+gene[129]+gene[130]+gene[131]-4)/16F;
         earFlare = (gene[132]+gene[133]+gene[134]+gene[135]-4)/8F;

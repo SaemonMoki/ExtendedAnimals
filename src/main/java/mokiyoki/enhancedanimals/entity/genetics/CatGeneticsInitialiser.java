@@ -20,6 +20,8 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
     public CatGeneticsInitialiser() {
         this.breeds.add(CatBreeds.BLACK);
         this.breeds.add(CatBreeds.BRITISHSHORTHAIR);
+        this.breeds.add(CatBreeds.SIBERIAN);
+        this.breeds.add(CatBreeds.MAXHAIR);
         //this.breeds.add(CatBreeds.Calico);
         //this.breeds.add(CatBreeds.Jellie);
         //this.breeds.add(CatBreeds.Persian);
@@ -656,17 +658,25 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
 //      M1-5 are recessive and are all indistinguishable phenotypically
 //      Long Hair [Shorthair+, M1, M2, M3, M4, M5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[152] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            autosomalGenes[152] = (ThreadLocalRandom.current().nextInt(6) + 1);
         } else {
             autosomalGenes[152] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[153] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            autosomalGenes[153] = (ThreadLocalRandom.current().nextInt(6) + 1);
         } else {
             autosomalGenes[153] = (1);
         }
         // Fur Length [1-10] (154-162)
         for (int i = 154; i < 162; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
+            } else {
+                autosomalGenes[i] = (1);
+            }
+        }
+        // Fur Density [1-10] (162-170)
+        for (int i = 162; i < 170; i++) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(10) + 1);
             } else {

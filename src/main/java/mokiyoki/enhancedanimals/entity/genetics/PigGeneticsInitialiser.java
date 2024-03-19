@@ -771,6 +771,31 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
+        //Snout Angle 1 [Wildtype, neutral, tilted upwards]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[202] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[202] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[203] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[203] = (1);
+        }
+
+        //Snout Angle 2 [Wildtype, neutral, tilted upwards]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[204] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[204] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[205] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            autosomalGenes[205] = (1);
+        }
+
+
         return new Genes(autosomalGenes);
     }
 }

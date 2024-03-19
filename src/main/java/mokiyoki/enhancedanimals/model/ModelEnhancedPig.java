@@ -756,7 +756,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.theLegFrontLeft.setXRot(-Mth.HALF_PI);
             this.theLegFrontRight.setXRot(-Mth.HALF_PI);
             this.snout.setXRot(pig.snoutAngle);
-            this.snout.setZ(5F*pig.snoutAngle);
+            this.snout.setZ(pig.snoutAngle < 0F ? 5F*pig.snoutAngle : 0F);
             this.theLegBackLeft.setXRot(-Mth.HALF_PI);
             this.theLegBackRight.setXRot(-Mth.HALF_PI);
             this.theLegBackLeft.setY((pig.bodyLength+1)+pig.buttTranslation);

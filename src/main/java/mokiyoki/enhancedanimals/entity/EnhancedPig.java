@@ -2043,6 +2043,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 genes[i] = 4;
             }
         }
+        for (int i = 202; i < 206; i++) {
+            if (genes[i] <= 0) {
+                genes[i] = 2;
+            }
+        }
         super.geneFixer();
     }
 

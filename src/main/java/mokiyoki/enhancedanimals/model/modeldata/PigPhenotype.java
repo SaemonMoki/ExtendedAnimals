@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class PigPhenotype implements Phenotype {
     public float snoutLength;
     public float tailCurlAmount;
     public int shape;
+    public float snoutAngle = 0*Mth.HALF_PI*-0.05F;
 
     public float muscle = 0.0F;
     public float fat = 0.0F;

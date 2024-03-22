@@ -328,7 +328,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F))
                         .mirror(false)
                         .addBox(1.0F, 0.0F, -1.0F, 1, 2, 2, new CubeDeformation(-0.25F)),
-                PartPose.offset(0.0F, 0.5F, -0.625F)
+                PartPose.offset(0.0F, -0.75F, -0.625F)
         );
         base.addOrReplaceChild("earM",
                 CubeListBuilder.create()
@@ -1463,6 +1463,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         earXLarge.show();
                     }
                 }
+
                 if (earScale.isEmpty()) {
                     if (chickenModelData.extraGrowth < 1.0F) {
                         float growth = chickenModelData.isFemale ? chickenModelData.extraGrowth - (0.2F*chickenModelData.extraGrowth) : chickenModelData.extraGrowth;

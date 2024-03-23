@@ -403,7 +403,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("waddlesB",
                     CubeListBuilder.create()
                             .texOffs(0, 1)
-                            .addBox(-1.5F, 0.0F, -1.0F, 3, 1, 1),
+                            .addBox(-0.825F, -0.2F, -2.0F, 1.5F, 1, 1),
                     PartPose.ZERO
         );
 
@@ -455,13 +455,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          *      Crests
          */
         base.addOrReplaceChild("crestS", CubeListBuilder.create()
-                        .texOffs(1, 39)
-                        .addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, new CubeDeformation(0.1F)),
+                        .texOffs(0, 38)
+                        .addBox(-2.0F, -3.0F, -2.0F, 4, 4, 4, new CubeDeformation(-0.4F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("crestM", CubeListBuilder.create()
-                        .texOffs(1, 39)
-                        .addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, new CubeDeformation(0.6F)),
+                        .texOffs(0, 38)
+                        .addBox(-2.0F, -3.0F, -2.0F, 4, 4, 4, new CubeDeformation(0.1F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("crestL", CubeListBuilder.create()
@@ -1968,7 +1968,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theFootRight.setY(theFootLeft.getY());
 
             bootsLeft.setY(17.5F-chicken.height);
-            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType);
+            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed());
 
             if (chicken.ear != EarType.NONE) {
                 if (chicken.earSize == 13 && chicken.ear == EarType.ROUND) {
@@ -2018,29 +2018,33 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         tailNub.setY((theSaddle.getZ()-1.0F)*0.4F);
     }
 
-    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType) {
-        theComb.setY(-2.0F);
-        if (duplex) {
-            switch (combType) {
-                case SINGLE -> {
-                    comb.setRotation(size * Mth.HALF_PI*0.02F, size * Mth.HALF_PI*-0.02F, Mth.HALF_PI*-(0.5F-(0.075F*size)));
+    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed) {
+        if (combed) {
+            theComb.setY(-2.0F);
+            if (duplex) {
+                switch (combType) {
+                    case SINGLE -> {
+                        comb.setRotation(size * Mth.HALF_PI * 0.02F, size * Mth.HALF_PI * -0.02F, Mth.HALF_PI * -(0.5F - (0.075F * size)));
+                    }
+                    case ROSE_ONE, ROSE_TWO -> {
+                        comb.setRotation(0.0F, size * Mth.HALF_PI * -0.02F, Mth.HALF_PI * -0.25F);
+                    }
+                    case WALNUT -> comb.setRotation(0.0F, 0.0F, 0.0F);
+                    default -> {
+                        comb.setRotation(0.0F, 0.0F, Mth.HALF_PI * -0.125F);
+                    }
                 }
-                case ROSE_ONE, ROSE_TWO -> {
-                    comb.setRotation(0.0F, size * Mth.HALF_PI*-0.02F, Mth.HALF_PI*-0.25F);
-                }
-                case WALNUT -> comb.setRotation(0.0F, 0.0F, 0.0F);
-                default -> {
-                    comb.setRotation(0.0F, 0.0F, Mth.HALF_PI*-0.125F);
-                }
+                combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
+            } else {
+                comb.setRotation(0.0F, 0.0F, 0.0F);
             }
-            combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
-        } else {
-            comb.setRotation(0.0F, 0.0F, 0.0F);
-        }
 
-        if (crestType != Crested.NONE) {
-            comb.setXRot(comb.getXRot() + 0.785F);
-            theCrest.setXRot(-comb.getXRot()*0.5F);
+            if (crestType != Crested.NONE) {
+                comb.setXRot(comb.getXRot() + 0.785F);
+                theCrest.setXRot(-comb.getXRot() * 0.5F);
+            }
+        } else {
+            theCrest.setXRot(0.0F);
         }
     }
 

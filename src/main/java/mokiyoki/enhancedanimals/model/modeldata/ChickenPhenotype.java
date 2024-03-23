@@ -428,7 +428,7 @@ public class ChickenPhenotype implements Phenotype {
         return this.beard != Beard.NONE;
     }
 
-    public boolean isCombed() { return this.comb != Comb.NONE && this.comb != Comb.BREDA_COMBLESS; }
+    public boolean isCombed() { return !(this.comb == Comb.NONE || this.comb == Comb.BREDA_COMBLESS); }
 
     public boolean hasLongLegs() { return this.longLegs != 0; }
 

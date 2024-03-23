@@ -72,7 +72,7 @@ public class ChickenTexture {
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                         chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", pattern);
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
-                        calculatePatternRGB(chicken, patternFeatherGroup, pattern, sGene, gene, isFemale, isNakedNeck);
+                        calculatePatternRGB(chicken, patternFeatherGroup, patternCutOutGroup, pattern, sGene, gene, isFemale, isNakedNeck);
                         featherGroup.addGrouping(patternFeatherGroup);
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
@@ -839,7 +839,7 @@ public class ChickenTexture {
             if (!pattern.isEmpty() || mottled || charcoal) {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled);
+                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
                 if (charcoal) {
                     String charcoalType = "pattern/";
@@ -849,10 +849,19 @@ public class ChickenTexture {
                     chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "", false);
                 }
                 patternFeatherGroup.addGrouping(patternCutOutGroup);
-                calculatePatternRGB(chicken, patternFeatherGroup, pattern, sGene, gene, isFemale, isNakedNeck);
+                calculatePatternRGB(chicken, patternFeatherGroup, patternCutOutGroup, pattern, sGene, gene, isFemale, isNakedNeck);
                 featherGroup.addGrouping(patternFeatherGroup);
             }
-            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", mottled);
+            if (mottled) {
+                if (gene[22]==2 || gene[23]==2) {
+                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", true);
+                }
+                if (gene[22]==3 || gene[23]==3) {
+                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/whitehead.png", true);
+                }
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", false);
+            }
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/barred.png", isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2);
         } else {
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);
@@ -1084,7 +1093,7 @@ public class ChickenTexture {
         return a << 24 | b << 16 | g << 8 | r;
     }
 
-    private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping patternFeatherGroup, String pattern, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
+    private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping patternFeatherGroup, TextureGrouping patternCutOutGroup, String pattern, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
         float patternHue = 0.7F;
         float patternSaturation = 0.0F;
         float patternValue = 0.01F;
@@ -1096,12 +1105,14 @@ public class ChickenTexture {
         boolean paint = gene[38] == 1 || gene[39] == 1;
 
         if (gene[40] == 2 || gene[41] == 2) {
-            if (gene[40] == gene[41]) { splash = true; }
-                //Blue
-                patternHue = 0.6F;
-                patternSaturation = 0.2F;
-                patternValue = 0.4F;
-                iridescenceAlpha = 0.0F;
+            if (gene[40] == gene[41]) {
+                splash = true;
+            }
+            //Blue
+            patternHue = 0.6F;
+            patternSaturation = 0.2F;
+            patternValue = 0.4F;
+            iridescenceAlpha = 0.0F;
         }
 
         if (sGene[2] == 2 && (isFemale || sGene[3] == 2)) {
@@ -1113,7 +1124,7 @@ public class ChickenTexture {
             iridescenceHueShift = 0.05F;
         }
 
-        if (!(paint && gene[38]==gene[39])) {
+        if (!(paint && gene[38] == gene[39])) {
             if (gene[38] == 4 || gene[39] == 4) {
                 //het Smokey
                 paint = false;
@@ -1131,13 +1142,13 @@ public class ChickenTexture {
                     if (gene[38] == gene[39]) {
                         //Khaki
                         patternHue = 0.1F;
-                        patternSaturation += (patternSaturation + 1.0F) * 0.5F;
+                        patternSaturation = 0.5F;
                         patternValue += (patternValue + 1.0F) * 0.5F;
                         iridescenceAlpha = 0.0F;
                     } else {
                         //Dun
                         patternHue = 0.05F;
-                        patternSaturation += patternSaturation + ((1.0F-patternSaturation)*0.50F);
+                        patternSaturation = 0.5F;
                         patternValue += (patternValue + 1.0F) * 0.25F;
                         iridescenceAlpha = 0.3F;
                         iridescenceHueShift = 0.05F;
@@ -1146,24 +1157,26 @@ public class ChickenTexture {
             }
         }
 
-        if (gene[36]== 2 && gene[37]==2) {
+        if (gene[36] == 2 && gene[37] == 2) {
             //Lavender
-            patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F))*0.25F;
-            patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation,0.5F)))));
+            patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F)) * 0.25F;
+            patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation, 0.5F)))));
             iridescenceAlpha = 0.0F;
         }
 
         TextureGrouping baseMelanin = new TextureGrouping(TexturingType.MERGE_GROUP);
         chicken.addIndividualTextureToAnimalTextureGrouping(baseMelanin, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(patternHue, patternSaturation, patternValue));
-        if ((gene[106]==1||gene[107]==1)&&chicken.growthAmount()>0.35F) {
-            TextureGrouping iridescenceMask = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping iridescence = new TextureGrouping(TexturingType.MERGE_GROUP);
-            chicken.addTextureToAnimalTextureGrouping(iridescence, TexturingType.APPLY_SHIFT, "feather_colour/"+ (isFemale?"iridescence_female":(isNakedNeck?"nakedneck_iridescence_male":"iridescence_male")) +".png", isFemale? "f" : (isNakedNeck?"nm":"m"), (int)((1.0F-iridescenceAlpha)*255) << 8 | (int)(iridescenceHueShift*255));
-            iridescenceMask.addGrouping(iridescence);
-            chicken.addTextureToAnimalTextureGrouping(iridescenceMask, "pattern/"+pattern+".png");
 
-        }
         patternFeatherGroup.addGrouping(baseMelanin);
+
+        if (iridescenceAlpha!=0.0F && (gene[106]==1||gene[107]==1) && chicken.growthAmount()>0.35F) {
+            TextureGrouping iriFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+            TextureGrouping iri = new TextureGrouping(TexturingType.MERGE_GROUP);
+            chicken.addTextureToAnimalTextureGrouping(iri, TexturingType.APPLY_SHIFT, "feather_colour/" + (isFemale ? "iridescence_female" : (isNakedNeck ? "nakedneck_iridescence_male" : "iridescence_male")) + ".png", isFemale ? "f" : (isNakedNeck ? "nm" : "m"), (int) ((1.0F - iridescenceAlpha) * 255) << 8 | (int) (iridescenceHueShift * 255));
+            iriFeatherGroup.addGrouping(patternCutOutGroup);
+            iriFeatherGroup.addGrouping(iri);
+            patternFeatherGroup.addGrouping(iriFeatherGroup);
+        }
 
             if (splash) {
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);

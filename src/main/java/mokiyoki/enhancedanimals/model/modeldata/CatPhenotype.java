@@ -14,6 +14,7 @@ public class CatPhenotype implements Phenotype {
     public float snoutLength = 1.0F;
     public float snoutWidth = 1.0F;
     public float snoutScale = 1.0F;
+    public float noseScale = 1.25F;
     public float eyeRoundness = 0.0F;
     public float eyeSize = 1.0F;
     public float earSpacing = 0.0F;
@@ -42,6 +43,7 @@ public class CatPhenotype implements Phenotype {
             for (int i = 154; i < 162; i++) {
                 furLength += gene[i] / 80F;
             }
+
             if (furLength >= 0.66F) {
                 furnishings = 3;
             } else if (furLength >= 0.33F) {
@@ -149,8 +151,8 @@ public class CatPhenotype implements Phenotype {
             furnishings = 0;
         }
         else {
-            neckWidth += (furSize * 0.20F);
-            neckHeight += (furSize * 0.025F);
+            neckWidth += (furSize * 0.225F);
+            neckHeight += (furSize * 0.02F);
             lowerLegScale += (furSize * 0.25F);
             tailThickness += (furSize * 0.25F);
         }

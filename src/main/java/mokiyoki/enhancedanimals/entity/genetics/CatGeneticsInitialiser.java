@@ -683,6 +683,17 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
                 autosomalGenes[i] = (1);
             }
         }
+        //Nose Size Adder
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[170] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[170] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[171] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[171] = (1);
+        }
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 

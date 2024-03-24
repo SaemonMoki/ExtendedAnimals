@@ -113,6 +113,7 @@ public class ChickenBrain {
                         ImmutableMap.of(
                                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
+                                ModMemoryModuleTypes.PAUSE_WALKING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.BROODING.get(), MemoryStatus.VALUE_ABSENT
@@ -179,6 +180,7 @@ public class ChickenBrain {
     private static boolean canMoveOrLookAround(EnhancedChicken chicken) {
         return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get()) &&
+               !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_WALKING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get());
     }

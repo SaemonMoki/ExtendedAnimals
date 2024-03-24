@@ -91,7 +91,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //Brain Modules
 
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
-    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
 
     //--------------
 
@@ -141,7 +141,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.getHunger() > hungerLimit) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.HUNGRY.get(), true);
             }
-            if (this.level.isDay() && this.isRoosting()) {
+            if (this.level.isDay() && (this.isRoosting() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get()))) {
                 this.getBrain().eraseMemory(ModMemoryModuleTypes.ROOSTING.get());
                 this.setRoosting(false);
             }
@@ -377,7 +377,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         this.level.playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
                     }
                     if (this.crowTick <= 5) {
-                        this.currentAIStatus = AIStatus.NONE;
+                        this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
                     }
                 }
             } else {
@@ -412,7 +412,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {
+        if (!this.isBaby() && (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
             }

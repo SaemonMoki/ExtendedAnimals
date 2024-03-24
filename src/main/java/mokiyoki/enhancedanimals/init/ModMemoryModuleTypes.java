@@ -20,6 +20,7 @@ public class ModMemoryModuleTypes {
 
     public static final RegistryObject<MemoryModuleType<Boolean>> HAS_EGG = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("has_egg", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> PAUSE_BRAIN = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("pause_brain", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
+    public static final RegistryObject<MemoryModuleType<Boolean>> PAUSE_WALKING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("pause_walking", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Integer>> PAUSE_BETWEEN_EATING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("pause_between_eating", () -> new MemoryModuleType<Integer>(Optional.of(Codec.INT)));
     public static final RegistryObject<MemoryModuleType<Boolean>> FOCUS_BRAIN = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("focus_brain", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_SHELTER = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_shelter", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));

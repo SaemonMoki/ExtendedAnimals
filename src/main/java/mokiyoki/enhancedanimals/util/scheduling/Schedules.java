@@ -42,7 +42,9 @@ public enum Schedules {
             new AnimalScheduledFunction(ticks, (eaa) -> {
                 if (eaa instanceof EnhancedChicken) {
                     eaa.level.broadcastEntityEvent(eaa, (byte)12);
-                    eaa.setAIStatus(AIStatus.FOCUSED);
+                    eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                    eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+                    eaa.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_WALKING.get(), true);
                 }
             })),
     STOP_PREEN_SCHEDULE("StopPreenSchedule", (ticks) ->

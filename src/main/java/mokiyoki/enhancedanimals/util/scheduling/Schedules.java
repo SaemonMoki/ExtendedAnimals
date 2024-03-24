@@ -1,12 +1,12 @@
 package mokiyoki.enhancedanimals.util.scheduling;
 
-import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -34,7 +34,9 @@ public enum Schedules {
             if (eaa instanceof EnhancedChicken) {
                 eaa.level.broadcastEntityEvent(eaa, (byte)11);
                 ((EnhancedChicken)eaa).crowTick = 120;
-                eaa.setAIStatus(AIStatus.FOCUSED);
+                eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+                eaa.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_WALKING.get(), true);
             }
         })),
 
@@ -51,7 +53,7 @@ public enum Schedules {
             new AnimalScheduledFunction(ticks, (eaa) -> {
                 if (eaa instanceof EnhancedChicken) {
                     eaa.level.broadcastEntityEvent(eaa, (byte)13);
-                    eaa.setAIStatus(AIStatus.NONE);
+                    eaa.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
                 }
             })),
 

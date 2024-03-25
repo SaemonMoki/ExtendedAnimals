@@ -141,6 +141,19 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
 
+        // Marble [ Wildtype, marble ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[6] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[7] = (1);
+        }
 
 
 
@@ -184,6 +197,19 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
+
+
+        // Dilute/Blue [Wildtype, dilute(2)]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[28] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[29] = (1);
+        }
 
 
         // ear size, spacing, angle

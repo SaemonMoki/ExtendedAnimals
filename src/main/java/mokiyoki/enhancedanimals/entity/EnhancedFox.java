@@ -71,8 +71,9 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     // white spotting on different body parts? face, legs, body, ears etc.
     // coat texture - thick vs thin
     // Silvering - handle some with code?
-    // eyes - blue, shades of orange / reddish, brown, possibly green?
+    // eyes - shades of orange / reddish, brown - blue or green, or het, for certain genes
     // paws - pads (pink or dark)
+    // skin - shades of black, brown, pink, or two colors
 
     private static final String[] FOX_TEXTURES_BASECOAT = new String[] {
             "", "red_1.png", "gold_1.png", "cross_1.png", "cross_2.png", "silver_1.png", "silver_2.png", "silver_3.png"
@@ -86,6 +87,23 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             "eye_right.png"
     };
 
+    private final int IDX_MARBLE_1 = 1; // start at 1, het
+    private final int IDX_MARBLE_2 = IDX_MARBLE_1 + 2; // 2 textures after marble_1, homo
+
+    private static final String[] FOX_TEXTURES_MARBLE = new String[] {
+            "", "marble_het_1.png", "marble_het_2.png", "marble_homo_1.png", "marble_homo_2.png"
+    };
+
+    private static final String[] FOX_TEXTURES_RINGNECK = new String[] {
+            "", "ringneck_1.png", "ringneck_2.png", "ringneck_3.png", "ringneck_5.png"
+    };
+
+    private static final String[] FOX_TEXTURES_WHITEMARK = new String[] {
+            "", "whitemark_1.png", "whitemark_2.png", "whitemark_3.png", "whitemark_4.png", "whitemark_5.png", "whitemark_6.png"
+    };
+
+
+
  //   private static final String[] FOX_TEXTURES_PATTERN = new String[] {
  //           "", "b_blackbelly_0.png", "b_blackandtan_0.png", "b_english_blue.png",
   //          "b_blackbelly_1.png", "b_blackbelly_2.png", "b_blackbelly_3.png", "b_blackbelly_4.png", "b_blackbelly_5.png",
@@ -93,18 +111,16 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
   //          "b_blue_german.png", "b_light_blue.png", "b_paddington_blue.png", "b_solid.png"
   //  };
 
-  //  private static final String[] FOX_TEXTURES_SKIN = new String[] {
-  //          "skin_pink.png"
-  //  };
+    private static final String[] FOX_TEXTURES_NOSE = new String[] {
+            "nose_base.png"
+    };
+
 
     // SILVERING guard hairs  - layer on top of base, 40% opacity with screen effect if possible, influenced by phaeomelanin (light pigment)
- private static final String[] FOX_TEXTURES_SILVERING = new String[] {
+    private static final String[] FOX_TEXTURES_SILVERING = new String[] {
             "", "silvering_1.png", "silvering_2.png"
     };
 
- //   private static final String[] FOX_TEXTURES_EYES = new String[] {
- //           "eyes_black.png"
- //   };
 
 
 
@@ -394,7 +410,17 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         this.setTexturePaths();
     }
 
-    private void clampRGB(float[] color) {
+    private void clampRGB(float[] color, boolean clampHue) {
+        if (clampHue) {
+            float minHue = 0.020F;
+            float maxHue = 0.101F;
+            if (color[0] < minHue) {
+                color[0] = minHue;
+            }
+            else if (color[0] > maxHue) {
+                color[0] = maxHue;
+            }
+        }
         for (int i = 0; i <= 2; i++) {
             if (color[i] > 1.0F) {
                 color[i] = 1.0F;
@@ -402,6 +428,9 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 color[i] = 0.0F;
             }
         }
+    }
+    private void clampRGB(float[] color) {
+        clampRGB(color, true);
     }
 
 
@@ -412,17 +441,43 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             int[] gene = getSharedGenes().getAutosomalGenes();
             //int[] aGenes = getSharedGenes().getAutosomalGenes();
 
-            float[] eyeColor = { 0.45F, 0.85F, 0.46F };
+            float[] eyeColor = { 0.075F, 0.61F, 0.675F };  //0.45F, 0.85F, 0.46F , 0.205F, 0.61F, 0.675F
 
-            // int skin = 0;
-            // int fur = 0;
+            float[] melanin = { 0.063F, 0.15F, 0.15F };  // 27, 32.5, 26  dark green  0.075F, 0.325F, 0.26F
+            float[] pheomelanin = { 0.566F, 1.28F, 0.33F }; //blueish  0.078F, 0.623F, 0.798F
+
+
+            int noseRGB = 1;  // default black
+
+            int marble = 0;
+
             int silvering = 0;
-            // int eyes = 0;
+
             int extension = 0;
             int agouti = 0;
             int basecoat = 0;
 
             char[] uuidArry = getStringUUID().toCharArray();
+
+            /*
+             * RANDOM TEXTURES
+             *
+             * UUID Spaces used:
+             * [0] - Gender?
+             * [1] - Marble
+             */
+
+            int randMarble = uuidArry[1];
+
+            // 1 blank, 2 het, 2 homo
+            switch (marble) {
+                case IDX_MARBLE_1:
+                    marble = IDX_MARBLE_1 + (randMarble % 2);   // het
+                    break;
+                case IDX_MARBLE_2:
+                    marble = IDX_MARBLE_2 + (randMarble % 2);   // homo
+                    break;
+            }
 
             /**
              * MC1R - Extension
@@ -487,6 +542,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 basecoat = 9;  // aaee - double silver         silver3.png
             }
 
+
+
+
+
+
             /**
              * SILVER GUARD HAIRS
              *    gene 4 : wildtype: no silvering
@@ -513,11 +573,31 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 silvering = 2;  //
             }
 
+            // Marble - incomplete dominant?
+            if (gene[6] == 2 && gene[7] == 2){  // homo
+                marble = 1;
+            } else if (gene[6] == 2 || gene[7] == 2) {  // het
+                marble = 2;
+            }
+
+
+            //  Dilute/Blue  - both need to =2 to be dilute - dilutes eye color, not texture?
+            if (gene[28]==2 && gene[29]==2) {
+                eyeColor[0] = 0.23F;  // hue
+                melanin[1] -= 0.35F;  //sat  1.35F
+                melanin[2] += 0.16F;  //light  1.16F
+                pheomelanin[0] += 0.010F;  //hue
+                pheomelanin[1] -= 0.25F;  //sat  1.25F
+                pheomelanin[2] += 0.52F;  //light .12  1.52F
+                noseRGB = 3;
+            }
+
+
 
             if (extension==1 && agouti==2) {  // gold foxes
             eyeColor[0] = 0.10F;  // hue
-            eyeColor[1] -= 0.215F;  // sat
-            eyeColor[2] += 0.22F;  // lightness
+            eyeColor[1] += 0.310F;  // sat
+            eyeColor[2] -= 0.32F;  // lightness .22
 
              }
 
@@ -553,38 +633,51 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 }
             }
 
-            eyeColor[0] += eyeHue*0.0030F; // 0.0130F
+            eyeColor[0] += eyeHue*0.0130F;
 
-            eyeColor[1] += eyeSaturation*0.025F; //0.025F
+            eyeColor[1] += eyeSaturation*0.025F;
 
-            eyeColor[1] -= eyeLightness*0.005F; // 0.005F
-            eyeColor[2] += eyeLightness*0.0225F; // 0.0225F
+            eyeColor[1] -= eyeLightness*0.005F;
+            eyeColor[2] += eyeLightness*0.0225F;
 
 
-            clampRGB(eyeColor);
+            clampRGB(eyeColor, false);
+
+            clampRGB(melanin);
+            clampRGB(pheomelanin);
+
+
 
 
             int leftEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
             int rightEyeRGB = Colouration.HSBtoARGB(eyeColor[0], eyeColor[1], eyeColor[2]);
 
+            int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
+            int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
+
         // CAT NOSE COLOR example
             // Colouration.HSBtoARGB(0.13F [HUE], 0.02F [SATURATION], 0.96F [BRIGHTNESS]);
         //    int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
-        //    int[] noseColors = {
+
+            // change later! cats colors as test
+            int[] noseColors = {
                     //Brick 0
-        //            Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
+                    Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
                     //Black 1
-        //            Colouration.HSBtoARGB(0.0F, 0.051F, 0.231F),
+                    Colouration.HSBtoARGB(0.0F, 0.051F, 0.231F),
                     //Light Brick 2
-        //            Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
+                    Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
                     //Pink 3
-        //            Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F),
+                    Colouration.HSBtoARGB(0.987F, 0.404F, 0.861F),
                     //Brown 4
-        //            Colouration.HSBtoARGB(0.02F, 0.321F, 0.231F),
-        //    };
+                    Colouration.HSBtoARGB(0.02F, 0.321F, 0.231F),
+            };
 
             this.colouration.setLeftEyeColour(leftEyeRGB);
             this.colouration.setRightEyeColour(rightEyeRGB);
+
+            this.colouration.setMelaninColour(melaninRGB);
+            this.colouration.setPheomelaninColour(pheomelaninRGB);
 
 
 
@@ -613,14 +706,17 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             parentGroup.addGrouping(hairGroup);  // hair added to parent
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // add detail group as merge
+            addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_MARBLE, marble, l -> l != 0);
             //  if (silvering!=0) {}
             addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SILVERING, silvering, l -> l != 0); // create silvering group - put in hair group later
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);
             //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_left.png", getColour(this.growthAmount()));
             //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_right.png", getColour(this.growthAmount()));
 
+            addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_NOSE[0], "nose", noseColors[noseRGB]);
             addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, FOX_TEXTURES_EYE_L, 0, l-> true);
             addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, FOX_TEXTURES_EYE_R, 0, l -> true);
+
 
             parentGroup.addGrouping(detailGroup); // detail added to parent
 

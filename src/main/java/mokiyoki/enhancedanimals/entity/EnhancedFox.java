@@ -88,8 +88,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     };
 
     private final int IDX_MARBLE_1 = 1; // start at 1, het
-    private final int IDX_MARBLE_2 = IDX_MARBLE_1 + 2; // 2 textures after marble_1, homo
-
+    private final int IDX_MARBLE_2 = IDX_MARBLE_1 + 2; // 2 textures after marble_1 start, homo
     private static final String[] FOX_TEXTURES_MARBLE = new String[] {
             "", "marble_het_1.png", "marble_het_2.png", "marble_homo_1.png", "marble_homo_2.png"
     };
@@ -575,9 +574,9 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             // Marble - incomplete dominant?
             if (gene[6] == 2 && gene[7] == 2){  // homo
-                marble = 1;
+                marble = IDX_MARBLE_2;   // 3
             } else if (gene[6] == 2 || gene[7] == 2) {  // het
-                marble = 2;
+                marble = IDX_MARBLE_1;   // 1
             }
 
 

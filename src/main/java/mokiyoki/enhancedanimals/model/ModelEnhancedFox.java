@@ -69,8 +69,8 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -6.0F, 3.5F, Mth.HALF_PI*-0.55F, 0.0F, 0.0F));
         base.addOrReplaceChild("bSnout", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -6.0F));
         base.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.5F, -1.3F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI*0.5F));  //
-        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.5F, -1.3F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI*-0.5F));
+        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.5F, -1.3F, -0.8F, 0.0F, 0.0F, Mth.HALF_PI*0.5F));  //
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.5F, -1.3F, -0.8F, 0.0F, 0.0F, Mth.HALF_PI*-0.5F));
         base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, -7.25F));
         base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-2.25F, 3.0F, 5.0F));

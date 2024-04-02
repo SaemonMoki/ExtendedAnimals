@@ -26,7 +26,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class ChickenBrain {
-    private static final UniformInt ADULT_FOLLOW_RANGE = UniformInt.of(5, 16);
+    private static final UniformInt ADULT_FOLLOW_RANGE = UniformInt.of(1, 8);
 
     public static Brain<?> makeBrain(Brain<EnhancedChicken> chickenBrain) {
         initCoreActivity(chickenBrain);
@@ -101,8 +101,8 @@ public class ChickenBrain {
 
     private static void initIdleActivity(Brain<EnhancedChicken> brain) {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
-                Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(30, 60))),
-                Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(30, 60))),
+                Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
+                Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
                 Pair.of(1, new AnimalMakeLove(ModEntities.ENHANCED_CHICKEN.get(), 1.0F)),
                 Pair.of(2, new RunOne<>(ImmutableList.of(
                         Pair.of(new FollowTemptation(ChickenBrain::getSpeedModifier), 1),

@@ -373,7 +373,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {
-                    if (this.crowTick == 60) { //TODO this is the start of the crow, change to whatever is needed to match the animation
+                    if (this.crowTick == 60 && !this.isAnimalSleeping()) { //TODO this is the start of the crow, change to whatever is needed to match the animation
                         this.level.playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
                     }
                     if (this.crowTick <= 5) {

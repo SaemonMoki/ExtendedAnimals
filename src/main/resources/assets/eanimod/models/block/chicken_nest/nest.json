@@ -2,7 +2,7 @@
 	"texture_size": [48, 48],
 	"textures": {
 		"0": "eanimod:block/chicken_nest/nest",
-		"particle": "block/texture"
+		"particle": "eanimod:block/chicken_nest/nest"
 	},
 	"elements": [
 		{

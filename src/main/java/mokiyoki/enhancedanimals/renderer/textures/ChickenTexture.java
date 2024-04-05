@@ -1045,7 +1045,6 @@ public class ChickenTexture {
     }
 
     private static int calculateAutosomalRedRGB(int[] sGene, int[] gene, boolean isFemale) {
-//        int colour = 16777215;
         float h = 0.0F;
         float s = 1.0F;
         float b = 1.0F;

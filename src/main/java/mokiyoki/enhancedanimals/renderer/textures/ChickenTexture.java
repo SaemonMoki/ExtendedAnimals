@@ -1153,7 +1153,7 @@ public class ChickenTexture {
                             // Choc Lavender Blue
                             patternHue = 0.0222F;
                             patternSaturation = 0.09F;
-                            patternValue = 0.8F;
+                            patternValue = 0.85F;
                             iridescenceAlpha = 0.05F;
                             iridescenceHueShift = 0.05F;
                         }
@@ -1167,14 +1167,14 @@ public class ChickenTexture {
                                     // Choc Lavender Khaki
                                     patternHue = 0.0416F;
                                     patternSaturation = 0.1F;
-                                    patternValue = 0.87F;
+                                    patternValue = 0.92F;
                                     iridescenceAlpha = 0.05F;
                                     iridescenceHueShift = 0.05F;
                                 } else {
                                     // Choc Lavender Dun
                                     patternHue = 0.0222F;
                                     patternSaturation = 0.12F;
-                                    patternValue = 0.8F;
+                                    patternValue = 0.85F;
                                     iridescenceAlpha = 0.05F;
                                     iridescenceHueShift = 0.05F;
                                 }
@@ -1185,12 +1185,12 @@ public class ChickenTexture {
                             if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
                                 patternHue = 0.0222F;
                                 patternSaturation = 0.0F;
-                                patternValue = 0.85F;
+                                patternValue = 0.9F;
                                 iridescenceAlpha = 0.0F;
                             } else {
                                 patternHue = 0.0222F;
                                 patternSaturation = 0.09F;
-                                patternValue = 0.8F;
+                                patternValue = 0.85F;
                                 iridescenceAlpha = 0.0F;
                             }
                         }

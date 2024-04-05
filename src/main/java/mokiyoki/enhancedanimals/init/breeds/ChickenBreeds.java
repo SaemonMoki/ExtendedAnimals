@@ -14,7 +14,7 @@ public final class ChickenBreeds {
 
     public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
-                       new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5")));
+                       new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5").add(228,"2","2","2","2","1","1","1","1","1","1")));
 
     public static final Breed WHITE_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("WhiteLeghorn", Breed.Rarity.ORDINARY)
             .setGeneSketch(GeneSet.LEGHORNWHITE.get()));
@@ -80,7 +80,7 @@ public final class ChickenBreeds {
                     new GeneSketch().add(20, "1", "1", "5").add(38, "2").add(42, "2").add(44, "2", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1|2", "1-3", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "1", "1")));
 
     public static final Breed ORPINGTON = new Breed(new Breed.Properties().setData("Orpington", Biomes.DESERT, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(6, "1").add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
+            .setGeneSketch(new GeneSketch(6, "1").add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1").add(228,"1","1","1","1","2","2","2","2","2","2")));
 
     public static final Breed BUFF_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("BuffOrpington", Breed.Rarity.ORDINARY)
             .setGeneSketch(GeneSet.BUFF.get()));
@@ -110,7 +110,7 @@ public final class ChickenBreeds {
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED,GeneSet.CHOCOLATE).get()));
 
     public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.WINDSWEPT_SAVANNA, Breed.Rarity.UNCOMMON)
-            .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
+            .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1").add(228,"1","1","1","1","2","2","2","2","2","2")));
 
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.FLUFFYLEGS,GeneSet.SINGLE,GeneSet.CRESTLESS,GeneSet.BEARDED).get()));

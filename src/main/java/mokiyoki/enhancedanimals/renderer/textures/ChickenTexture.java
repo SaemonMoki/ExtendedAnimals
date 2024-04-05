@@ -72,7 +72,7 @@ public class ChickenTexture {
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                         chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", pattern);
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
-                        calculatePatternRGB(chicken, patternFeatherGroup, sGene, gene, isFemale, isNakedNeck);
+                        calculatePatternRGB(chicken, patternFeatherGroup, patternCutOutGroup, pattern, sGene, gene, isFemale, isNakedNeck);
                         featherGroup.addGrouping(patternFeatherGroup);
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
@@ -94,7 +94,8 @@ public class ChickenTexture {
                     int darkbrown = 4 - (gene[98] + gene[99]);
                     int melanized = 4 - (gene[30] + gene[31]);
                     int extension = Math.max(gene[24], gene[25]) == 5 ? 5 : Math.min(gene[24], gene[25]);
-                    //this is for het extension but that's for later
+
+//                    //this is for het extension but that's for later
 //                if (gene[24]!=gene[25]) {
 //                extension*=10;
 //                    extension+=extension==50? Math.min(gene[24],gene[25]) : Math.max(gene[24],gene[25]);
@@ -122,6 +123,7 @@ public class ChickenTexture {
                                                 autosomalRed = ground;
                                             }
                                             case 4 -> {
+                                                ground = isNakedNeck ? "nakedneck_duckwing_female" : "duckwing_female";
                                                 pattern = isNakedNeck ? "nakedneck_brown_female" : "brown_female";
                                                 autosomalRed = pattern;
                                             }
@@ -206,6 +208,7 @@ public class ChickenTexture {
                                             case 5 -> pattern = "solid"; //TODO should be a leaky black.
                                             case 1, 2, 3, 4 -> pattern = "blacktail"; //TODO investigate how this should actually look
                                         }
+                                        autosomalRed = "duckwing_male";
                                     }
                                 } else {
                                     //melanized
@@ -252,7 +255,7 @@ public class ChickenTexture {
                                         } else {
                                             switch (extension) {
                                                 case 5, 1 -> pattern = "solid";
-                                                case 2 -> pattern = "quail";
+                                                case 2 -> pattern = "quail_male";
                                                 case 3 -> pattern = "blacktail";
                                                 case 4 -> pattern = "lakenvelder_male";
                                             }
@@ -279,7 +282,7 @@ public class ChickenTexture {
                                                     autosomalRed = "duckwing_male";
                                                 }
                                                 case 2, 3, 4 -> {
-                                                    pattern = "blacktail";
+                                                    pattern = "columbian";
                                                     autosomalRed = "duckwing_male";
                                                 }
                                             }
@@ -298,7 +301,7 @@ public class ChickenTexture {
                                                 autosomalRed = "duckwing_female";
                                             }
                                             case 2, 3, 4 ->
-                                                    pattern = isNakedNeck ? "nakedneck_columbian_female" : "columbian_female";
+                                                    pattern = "quail_female";
                                         }
                                     } else {
                                         switch (extension) {
@@ -370,7 +373,7 @@ public class ChickenTexture {
                                     } else {
                                         switch (extension) {
                                             case 1, 5 -> pattern = "solid";
-                                            case 2, 3, 4 -> pattern = "quail";
+                                            case 2, 3, 4 -> pattern = "quail_male";
                                         }
                                     }
                                 }
@@ -635,16 +638,66 @@ public class ChickenTexture {
                             }
                         }
                     }
-                    if (isNakedNeck) {
-                        if (ground.startsWith("duckwing")) {
-                            ground = "nakedneck_" + ground;
+//                    if (isNakedNeck) {
+//                        if (ground.startsWith("duckwing")) {
+//                            ground = "nakedneck_" + ground;
+//                        }
+//                        if (!femFeathers && !autosomalRed.equals("solid")) {
+//                            autosomalRed = autosomalRed.startsWith("wheaten") ? "nakedneck_wheaten_male" : "nakedneck_duckwing_male";
+//                        }
+//                    }
+
+                    switch (extension) {
+                        case 5 -> {
+                            pattern = "black/";
+                            ground = femFeathers? "duckwing_female" : "duckwing_male";
                         }
-                        if (!femFeathers && !autosomalRed.equals("solid")) {
-                            autosomalRed = autosomalRed.startsWith("wheaten") ? "nakedneck_wheaten_male" : "nakedneck_duckwing_male";
+                        case 1 -> {
+                            pattern = "birchen/";
+                            ground = femFeathers? "duckwing_female" : "duckwing_male";
                         }
+                        case 2 -> {
+                            pattern = "duckwing/";
+                            ground = femFeathers? "duckwing_female" : "duckwing_male";
+                        }
+                        case 3 -> {
+                            pattern = "wheaten/";
+                            ground = femFeathers? "wheaten_female" : "duckwing_male";
+                        }
+                        case 4 -> {
+                            pattern = "brown/";
+                            ground = femFeathers? "duckwing_female" : "duckwing_male";
+                        }
+                    }
+                    switch (columbian) {
+                        case 0 -> pattern += "noncolumbian/";
+                        case 1 -> pattern += "hetcolumbian/";
+                        case 2 -> pattern +=    "columbian/";
+                    }
+                    switch (darkbrown) {
+                        case 0 -> pattern += "nondarkbrown/";
+                        case 1 -> pattern += "hetdarkbrown/";
+                        case 2 -> pattern +=    "darkbrown/";
+                    }
+                    switch (patternGene) {
+                        case 0 -> pattern += "nonpattern/";
+                        case 1 -> pattern += "hetpattern/";
+                        case 2 -> pattern +=    "pattern/";
+                    }
+                    switch (melanized) {
+                        case 0 -> pattern += "nonmelanized/";
+                        case 1 -> pattern += "hetmelanized/";
+                        case 2 -> pattern +=    "melanized/";
+                    }
+
+                    pattern += femFeathers ? "female" : "male";
+
+                    if (gene[170]==1 || gene[171]==1) {
+                        autosomalRed = pattern;
                     }
 
                 }
+
 
                 if (isFemale || (gene[196] == 2 || gene[197] == 2)) {
                     tailType = "0_female";
@@ -728,26 +781,18 @@ public class ChickenTexture {
                 if (gene[224] == 2 || gene[225] == 2) facefeathers++;
                 if (gene[226] == 2 || gene[227] == 2) facefeathers++;
 
-
-//            TextureGrouping featherGenerator = new TextureGrouping(TexturingType.SHADE_FEATHERS);
                 setEarShape(parentGroup, chicken, gene, earSize);
                 TextureGrouping featherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 setFeatherCoverage(chicken, gene, isNakedNeck, facefeathers, tailType, tailSickle, featherGroup, isFemale);
-                setBaseFeatherColour(chicken, isFemale, sGene, gene, autosomalRed, ground, featherGroup);
+                setBaseFeatherColour(chicken, isFemale, femFeathers, sGene, gene, autosomalRed, ground, featherGroup);
                 setPatternColour(chicken, isFemale, sGene, gene, isNakedNeck, pattern, mottled, charcoal, femFeathers, featherGroup);
+                chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/rooster_fluff.png", !isFemale);
                 chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/feather_noise.png");
                 parentGroup.addGrouping(featherGroup);
-
-//            chicken.addTextureToAnimalTextureGrouping(detailGroup, "map/mottle.png");
-
-//            featherGenerator.addGrouping(parentGroup);
-//            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feather_map.png");
-//            chicken.addTextureToAnimalTextureGrouping(featherGenerator, "map/feathers/male_sickle_thin_long.png");
-
             }
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            setSkinColour(chicken, isFemale, sGene, gene, detailGroup);
+            setSkinColour(chicken, isFemale, sGene, gene, detailGroup, chicken.growthAmount());
             setEarColour(chicken, isFemale, sGene, gene, earColour, detailGroup);
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale));
             parentGroup.addGrouping(detailGroup);
@@ -756,10 +801,13 @@ public class ChickenTexture {
         }
     }
 
-    private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup) {
+    private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateSkinRGB(sGene, gene, isFemale));
-        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", calculateShanksRGB(sGene, gene, isFemale));
+        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShanksRGB(sGene, gene, isFemale));
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
+        if (age < 0.25F) {
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", calculateSkinRGB(sGene, gene, isFemale));
+        }
     }
 
     private static void setEarColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, int earColour, TextureGrouping detailGroup) {
@@ -792,38 +840,54 @@ public class ChickenTexture {
             if (!pattern.isEmpty() || mottled || charcoal) {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles.png", mottled);
+                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
                 if (charcoal) {
-                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/charcoal_" + (femFeathers ? "female" : "male") + ".png", femFeathers ? "f" : "m");
+                    String charcoalType = "pattern/";
+                    charcoalType+= femFeathers ? "cha_female.png" : "cha_male.png";
+                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, charcoalType, charcoalType.substring(17,18));
                 } else {
                     chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "", false);
                 }
                 patternFeatherGroup.addGrouping(patternCutOutGroup);
-                calculatePatternRGB(chicken, patternFeatherGroup, sGene, gene, isFemale, isNakedNeck);
+                calculatePatternRGB(chicken, patternFeatherGroup, patternCutOutGroup, pattern, sGene, gene, isFemale, isNakedNeck);
                 featherGroup.addGrouping(patternFeatherGroup);
             }
-            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles.png", mottled);
+            if (mottled) {
+                if (gene[22]==2 || gene[23]==2) {
+                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", true);
+                }
+                if (gene[22]==3 || gene[23]==3) {
+                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/whitehead.png", true);
+                }
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", false);
+            }
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/barred.png", isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2);
         } else {
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);
         }
     }
 
-    private static void setBaseFeatherColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, String autosomalRed, String ground, TextureGrouping featherGroup) {
+    private static void setBaseFeatherColour(EnhancedChicken chicken, boolean isFemale, boolean femfeathers, int[] sGene, int[] gene, String autosomalRed, String ground, TextureGrouping featherGroup) {
         TextureGrouping baseFeatherColour = new TextureGrouping(TexturingType.MERGE_GROUP);
+        TextureGrouping groundGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        baseFeatherColour.addGrouping(groundGroup);
         if (ground.isEmpty()) {
-            chicken.addIndividualTextureToAnimalTextureGrouping(baseFeatherColour, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", calculateGroundRGB(sGene, gene, isFemale));
+            chicken.addIndividualTextureToAnimalTextureGrouping(groundGroup, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", calculateGroundRGB(sGene, gene, isFemale));
         } else {
-            chicken.addTextureToAnimalTextureGrouping(baseFeatherColour, "feather_colour/feather_base.png");
-            chicken.addTextureToAnimalTextureGrouping(baseFeatherColour, TexturingType.APPLY_RGB, "feather_colour/ground/" + ground + ".png", ground, calculateGroundRGB(sGene, gene, isFemale));
+            chicken.addTextureToAnimalTextureGrouping(groundGroup, "feather_colour/feather_base.png");
+            chicken.addTextureToAnimalTextureGrouping(groundGroup, TexturingType.APPLY_RGB, "feather_colour/ground/" + ground + ".png", ground, calculateGroundRGB(sGene, gene, isFemale));
         }
         if (!autosomalRed.isEmpty() && (gene[20] == 1 || gene[21] == 1)) {
             if (gene[170] == 1 || gene[171] == 1) {
-                chicken.addTextureToAnimalTextureGrouping(baseFeatherColour, TexturingType.APPLY_RGB, "feather_colour/autosomal_red/" + autosomalRed + ".png", autosomalRed, calculateAutosomalRedRGB(gene, isFemale));
-                if (gene[30] == 1 || gene[31] == 1) {
-                    chicken.addTextureToAnimalTextureGrouping(baseFeatherColour, TexturingType.APPLY_RGB, "feather_colour/autosomal_red/" + autosomalRed + ".png", autosomalRed, calculateAutosomalRedRGB(gene, isFemale));
-                }
+                TextureGrouping autosomalRedGroup = new TextureGrouping(sGene[0]==1||(!isFemale&&sGene[1]==1)?TexturingType.MERGE_GROUP:TexturingType.APPLY_PHEOMELANIN);
+                int red = calculateAutosomalRedRGB(sGene, gene, isFemale);
+                    chicken.addTextureToAnimalTextureGrouping(autosomalRedGroup, TexturingType.APPLY_RGBA, "feather_colour/autosomal_red/" + autosomalRed + ".png", autosomalRed, red);
+                    if (gene[34] == 1 || gene[35] == 1) {
+                        chicken.addTextureToAnimalTextureGrouping(autosomalRedGroup, TexturingType.APPLY_RGBA, "feather_colour/autosomal_red/" + autosomalRed + ".png", autosomalRed, red);
+                    }
+                baseFeatherColour.addGrouping(autosomalRedGroup);
             }
         }
         featherGroup.addGrouping(baseFeatherColour);
@@ -844,23 +908,23 @@ public class ChickenTexture {
         chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/feathers.png");
 
             if (!tailType.isEmpty()) {
-                boolean tail = ThreadLocalRandom.current().nextBoolean();
 
                 int tailLength = 1;
                 if (gene[198]==2&&gene[199]==2) tailLength +=1;
                 if (gene[180]==2&&gene[181]==2) tailLength +=1;
                 if (gene[182]==2&&gene[183]==2) tailLength -=1;
 
-                int tailNumber = gene[278]==1||gene[279]==1?6:(gene[278]==2||gene[279]==2?7:8);
+                int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
                 for (int i = 0; i <= tailNumber; i++) {
-                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                    if (i == 0) {
+                        /**
+                         *      This one controls the sickle feather
+                         */
+                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                    } else {
+                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                    }
                 }
-//            chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tail_" + tailType + ".png", tailType);
-//            if (!tailSickle.isEmpty()) {
-//                chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/tailsickle_" + tailSickle + ".png", tailSickle);
-//            } else {
-//                chicken.addTextureToAnimalTextureGrouping(featherMask, "", false);
-//            }
         }
         featherGroup.addGrouping(featherMask);
     }
@@ -926,175 +990,692 @@ public class ChickenTexture {
     }
 
     private static int calculateGroundRGB(int[] sGene, int[] gene, boolean isFemale) {
-        int colour = 16777215;
         if (gene[20] != 1 && gene[21] != 1) return 16777215;
-        if (isFemale) {
-            if (sGene[0] == 1) {
-                colour = gene[31]==1 || gene[32]==1 ? 12475671 : 14066221;
-            }
-        } else {
-            if (sGene[0] == 1 || sGene[1] == 1) {
-                if (sGene[0]==sGene[1]) {
-                    colour = gene[31]==1 || gene[32]==1 ? 12475671 : 14066221;
-                } else {
-                    colour = gene[31]==1 || gene[32]==1 ? 14066221 : 13808740;
-                }
-            }
 
-            if (gene[170]==1 || gene[171]==1) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
+        float h = 0.141F;
+        float s = isFemale? 0.76F : 1.0F;
+        float b = isFemale? 0.9F : 1.0F;
 
-                b -= (int)(b*0.25F);
-
-                colour = r << 16 | g << 8 | Math.max(b,0);
+        if (sGene[0]==2||(!isFemale&&sGene[1]==2)) {
+            if (isFemale||sGene[0]==sGene[1]) {
+                return Colouration.HSBtoARGB(h, 0.0F, b);
+            } else {
+                s = 0.6F;
             }
         }
 
-        if (colour!=16777215) {
-            //Dilute
-            if (gene[32] != 3 || gene[33] != 3) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
-
-                b += (int) ((255 - b) * 0.1F);
-                g += (int) ((255 - g) * 0.2F);
-                r += (int) ((255 - r) * (gene[32]==1||gene[33]==1?0.2F:0.3F));
-
-                colour = Math.min(r, 255) << 16 | Math.min(g, 255) << 8 | Math.min(b, 255);
-            }
-
-            //Lavender
-            if (gene[36] == 2 && gene[37] == 2) {
-                int b = colour & 255;
-                int g = colour >> 8 & 255;
-                int r = colour >> 16 & 255;
-
-                b += (int) ((255 - b) * 0.65F);
-                g += (int) ((255 - g) * 0.7F);
-                r += (int) ((255 - r) * 0.7F);
-
-                colour = r << 16 | g << 8 | b;
-            }
+        //mahogany
+        if (gene[34]==1||gene[35]==1) {
+            h *= gene[34]==gene[35]?0.75F:0.8F;
+            s += (1.0F-s)*0.25F;
         }
 
-        return colour;
+        //autosomal red
+        if (gene[170]==1||gene[171]==1) {
+            h *= gene[170]==gene[171] ? 0.92F : 0.95F;
+            if (s != 1.0F) {
+                s += (1.0F-s) * (gene[170]==gene[171]?0.75F:0.5F);
+            }
+        } else if (!isFemale) {
+            h *= 0.85F;
+        }
+
+        //Lavender
+        if (gene[36]==2&&gene[37]==2) {
+            s *= 0.5F;
+        }
+
+        //dilute / retired-cream
+        if (gene[32]!=3||gene[33]!=3) {
+            h += (0.141F-h)*0.5F;
+            s *= 0.7F;
+        }
+
+        if (gene[284]!=3||gene[285]!=3) {
+            s *= 0.65F;
+            b *= 0.95F;
+        }
+
+        //dominant white
+        if (gene[38]==1||gene[39]==1) {
+            s *= gene[38]==gene[39] ? 0.8F : 0.9F;
+        }
+
+        return Colouration.HSBtoARGB(h, s, b);
     }
 
-    private static int calculateAutosomalRedRGB(int[] gene, boolean isFemale) {
-        int colour = 16777215;
+    private static int calculateAutosomalRedRGB(int[] sGene, int[] gene, boolean isFemale) {
+//        int colour = 16777215;
+        float h = 0.0F;
+        float s = 1.0F;
+        float b = 1.0F;
+
         if (isFemale) {
             if (gene[170] == 1 || gene[171] == 1) {
-                colour = gene[170]==gene[171]?10769441:16760196;
+//                if (gene[170]==gene[171]) {
+                    //homoautosomal red
+                    if (gene[34] == 1 || gene[35] == 1) {
+                        //mahogany
+                        if (sGene[0] == 1) {
+                            // 10503750
+                            s = 0.39F;
+                            b = 0.45F;
+                        } else {
+                            // 10774594
+                            h = 0.0638F;
+                            s = 0.43F;
+                            b = 0.45F;
+                        }
+                    } else {
+                        if (sGene[0] == 1) {
+                            // 10774594
+                            h = 0.0638F;
+                            s = 0.43F;
+                            b = 0.45F;
+                        } else {
+                            // 10051657
+                            h = 0.0472F;
+                            s = 0.35F;
+                            b = 0.44F;
+                        }
+                    }
+                /*} else {
+                    //hetautosomal red
+                    if (gene[34]==1 || gene[35]==1) {
+                        //mahogany
+                        colour = sGene[0] == 1 ? 10503750 : 10503750;
+                    } else {
+                        colour = sGene[0] == 1 ? 12426889 : 12425353;
+                    }
+                }*/
             }
         } else {
-            if (gene[170] == 1 || gene[171] == 1) {
-                if (gene[170]==gene[171]) {
-                    //gold
-                    colour = gene[31]==1 || gene[32]==1 ? 5639947 : 8658186;
-                } else {
-                    //lemon
-                    colour = gene[31]==1 || gene[32]==1 ? 8658186 : 10769441;
-                }
+//            if (gene[170] == 1 || gene[171] == 1) {
+//                if (gene[170]==gene[171]) {
+//                    //gold
+            if (gene[34]==1 || gene[35]==1) {
+                // 5639947
+                h = 0.0083F;
+                s = 0.52F;
+                b = 0.60F;
+
+            } else {
+                // 7541259
+                h = 0.0111F;
+                s = 0.90F;
+                b = 0.45F;
+
             }
+//                    colour = gene[34]==1 || gene[35]==1 ? 5639947 : 7541259;
+//                } else {
+//                    //lemon
+//                    colour = gene[34]==1 || gene[35]==1 ? 8658186 : 10769441;
+//                }
+//            }
         }
 
-        if (colour!=16777215) {
+        float a = gene[170] == gene[171] ? 1.0F : 0.75F;
+
+        if (b!=1.0F) {
             //Lavender
             if (gene[36] == 2 && gene[37] == 2) {
-                int r = colour & 255;
-                int g = colour >> 8 & 255;
-                int b = colour >> 16 & 255;
+                a *= 0.33F;
+//                s *= 0.5F;
+//                b += (1.0F-b)*0.5F;
 
-                r += (int) ((255 - r) * 0.70F);
-                g += (int) ((255 - g) * 0.70F);
-                b += (int) ((255 - b) * 0.65F);
-
-                colour = b << 16 | g << 8 | r;
+//                r += (int) ((255 - r) * 0.70F);
+//                g += (int) ((255 - g) * 0.70F);
+//                b += (int) ((255 - b) * 0.65F);
             }
         }
 
-        return colour;
+        return Colouration.HSBAtoARGB(h, s, b, a);
     }
 
-    private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping patternFeatherGroup, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
-        float patternHue = 0.7F;
-        float patternSaturation = 0.0F;
-        float patternValue = 0.01F;
+    private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping patternFeatherGroup, TextureGrouping patternCutOutGroup, String pattern, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
+        float patternHue = 0.07F;
+        float patternSaturation = 0.05F;
+        float patternValue = 0.075F;
 
-        float iridescenceAlpha = 1.0F;
+        float iridescenceAlpha = 0.75F;
         float iridescenceHueShift = 0.0F;
 
-        boolean splash = false;
+        boolean choc = sGene[2] == 2 && (isFemale || sGene[3] == 2);
+        boolean lav = gene[36] == 2 && gene[37] == 2;
+        boolean splash = gene[40] == 2 || gene[41] == 2;
         boolean paint = gene[38] == 1 || gene[39] == 1;
 
-        if (gene[40] == 2 || gene[41] == 2) {
-            if (gene[40] == gene[41]) {
-                splash = true;
-            }
-                //Blue
-                patternHue = 0.6F;
-                patternSaturation = 0.2F;
-                patternValue = 0.4F;
-                iridescenceAlpha = 0.0F;
-        }
-
-        if (sGene[2] == 2 && (isFemale || sGene[3] == 2)) {
-            //Choc
-            patternHue = 0.05F;
-            patternSaturation += patternSaturation + ((1.0F-patternSaturation)*0.75F);
-            patternValue += (patternValue + 1.0F) * 0.25F;
-            iridescenceAlpha = 0.5F;
-            iridescenceHueShift = 0.05F;
-        }
-
-        if (!(paint && gene[38]==gene[39])) {
-            if (gene[38] == 4 || gene[39] == 4) {
-                //het Smokey
-                paint = false;
-                if (gene[38] != 2 && gene[39] != 2) {
-                    //Smokey
-                    patternHue = 0.58F;
-                    patternSaturation = 0.15F;
-                    patternValue = 0.4F;
-                    iridescenceAlpha = 0.0F;
+        if (choc) {
+            if (lav) {
+                if (splash) {
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Choc Lavender Blue
+                            patternHue = 0.0222F;
+                            patternSaturation = 0.09F;
+                            patternValue = 0.85F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Choc Lavender Khaki
+                                    patternHue = 0.0416F;
+                                    patternSaturation = 0.1F;
+                                    patternValue = 0.92F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Choc Lavender Dun
+                                    patternHue = 0.0222F;
+                                    patternSaturation = 0.12F;
+                                    patternValue = 0.85F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Choc Lavender Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                patternHue = 0.0222F;
+                                patternSaturation = 0.0F;
+                                patternValue = 0.9F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                patternHue = 0.0222F;
+                                patternSaturation = 0.09F;
+                                patternValue = 0.85F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
                 } else {
-                    iridescenceAlpha = 0.02F;
+                    // Choc Lavender
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Choc Lavender
+                            patternHue = 0.0222F;
+                            patternSaturation = 0.09F;
+                            patternValue = 0.65F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Choc Lavender Khaki
+                                    patternHue = 0.0416F;
+                                    patternSaturation = 0.1F;
+                                    patternValue = 0.75F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Choc Lavender Dun
+                                    patternHue = 0.0222F;
+                                    patternSaturation = 0.12F;
+                                    patternValue = 0.62F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Choc Lavender Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                patternHue = 0.0222F;
+                                patternSaturation = 0.0F;
+                                patternValue = 0.7F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                patternHue = 0.0222F;
+                                patternSaturation = 0.09F;
+                                patternValue = 0.65F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
                 }
-            } else if (gene[38] != 1 && gene[39] != 1) {
-                if (gene[38] == 3 || gene[39] == 3) {
-                    if (gene[38] == gene[39]) {
-                        //Khaki
-                        patternHue = 0.1F;
-                        patternSaturation += (patternSaturation + 1.0F) * 0.5F;
-                        patternValue += (patternValue + 1.0F) * 0.5F;
-                        iridescenceAlpha = 0.0F;
-                    } else {
-                        //Dun
-                        patternHue = 0.05F;
-                        patternSaturation += patternSaturation + ((1.0F-patternSaturation)*0.50F);
-                        patternValue += (patternValue + 1.0F) * 0.25F;
-                        iridescenceAlpha = 0.3F;
-                        iridescenceHueShift = 0.05F;
+            } else {
+                if (splash) {
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Choc Blue
+                            patternHue = 0.0694F;
+                            patternSaturation = 0.37F;
+                            patternValue = 0.51F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Choc Blue Khaki
+                                    patternHue = 0.0944F;
+                                    patternSaturation = 0.22F;
+                                    patternValue = 0.67F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Choc Blue Dun
+                                    patternHue = 0.0611F;
+                                    patternSaturation = 0.39F;
+                                    patternValue = 0.52F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Choc Blue Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                patternHue = 0.0694F;
+                                patternSaturation = 0.16F;
+                                patternValue = 0.56F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                patternHue = 0.0694F;
+                                patternSaturation = 0.37F;
+                                patternValue = 0.51F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
+                } else {
+                    // Choc
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Choc
+                            patternHue = 0.0472F;
+                            patternSaturation = 0.56F;
+                            patternValue = 0.28F;
+                            iridescenceAlpha = 0.1F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Choc Khaki
+                                    patternHue = 0.0833F;
+                                    patternSaturation = 0.38F;
+                                    patternValue = 0.65F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Choc Dun
+                                    patternHue = 0.0472F;
+                                    patternSaturation = 0.56F;
+                                    patternValue = 0.39F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Choc Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                patternHue = 0.0472F;
+                                patternSaturation = 0.23F;
+                                patternValue = 0.44F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                patternHue = 0.0472F;
+                                patternSaturation = 0.56F;
+                                patternValue = 0.28F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (lav) {
+                if (splash) {
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Lavender Blue
+                            patternHue = 0.6666F;
+                            patternSaturation = 0.06F;
+                            patternValue = 0.85F;
+                            iridescenceAlpha = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Lavender Blue Khaki
+                                    patternHue = 0.5F;
+                                    patternSaturation = 0.01F;
+                                    patternValue = 0.9F;
+                                    iridescenceAlpha = 0.05F;
+                                } else {
+                                    // Lavender Blue Dun
+                                    patternHue = 0.75F;
+                                    patternSaturation = 0.065F;
+                                    patternValue = 0.87F;
+                                    iridescenceAlpha = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Lavender Blue Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                patternHue = 0.6666F;
+                                patternSaturation = 0.01F;
+                                patternValue = 0.9F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                //het
+                                patternHue = 0.6666F;
+                                patternSaturation = 0.055F;
+                                patternValue = 0.85F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
+                } else {
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Lavender
+                            patternHue = 0.0722F;
+                            patternSaturation = 0.02F;
+                            patternValue = 0.6F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Lavender Khaki
+                                    patternHue = 0.9999F;
+                                    patternSaturation = 0.03F;
+                                    patternValue = 0.7F;
+                                    iridescenceAlpha = 0.0F;
+                                } else {
+                                    // Lavender Dun
+                                    patternHue = 0.9333F;
+                                    patternSaturation = 0.035F;
+                                    patternValue = 0.6F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.025F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Lavender Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                //homo
+                                patternHue = 0.0722F;
+                                patternSaturation = 0.02F;
+                                patternValue = 0.67F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                //het
+                                patternHue = 0.0722F;
+                                patternSaturation = 0.02F;
+                                patternValue = 0.6F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (splash) {
+                    switch (Math.max(gene[38], gene[39])) {
+                        default -> {
+                            // Blue
+                            patternHue = 0.6222F;
+                            patternSaturation = 0.1F;
+                            patternValue = 0.40F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
+                        case 3 -> {
+                            if (paint) {
+                                // White
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Blue Khaki
+                                    patternHue = 0.09F;
+                                    patternSaturation = 0.15F;
+                                    patternValue = 0.65F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Blue Dun
+                                    patternHue = 0.08F;
+                                    patternSaturation = 0.24F;
+                                    patternValue = 0.53F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Blue Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                //homo
+                                patternHue = 0.6166F;
+                                patternSaturation = 0.07F;
+                                patternValue = 0.54F;
+                                iridescenceAlpha = 0.0F;
+                                paint = false;
+                            } else {
+                                //het
+                                patternHue = 0.61F;
+                                patternSaturation = 0.09F;
+                                patternValue = 0.45F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
+                    }
+                } else {
+                    // Black
+                    switch (Math.max(gene[38], gene[39])) {
+                        case 3 -> {
+                            // Dun
+                            if (paint) {
+                                patternValue = 1.0F;
+                                iridescenceAlpha = 0.0F;
+                            } else {
+                                if (gene[38]==gene[39]) {
+                                    // Khaki
+                                    patternHue = 0.0861F;
+                                    patternSaturation = 0.3F;
+                                    patternValue = 0.53F;
+                                    iridescenceAlpha = 0.05F;
+                                    iridescenceHueShift = 0.05F;
+                                } else {
+                                    // Dun
+                                    patternHue = 0.0694F;
+                                    patternSaturation = 0.36F;
+                                    patternValue = 0.26F;
+                                    iridescenceAlpha = 0.1F;
+                                    iridescenceHueShift = 0.05F;
+                                }
+                            }
+                        }
+                        case 4 -> {
+                            // Smokey
+                            if (gene[38]==gene[39] || paint || chicken.growthAmount()<0.5F) {
+                                //homo
+                                patternHue = 0.0725F;
+                                patternSaturation = 0.07F;
+                                patternValue = 0.35F;
+                                iridescenceAlpha = 0.0F;
+                                paint = false;
+                            } else {
+                                //het
+                                patternHue = 0.0725F;
+                                patternSaturation = 0.07F;
+                                patternValue = 0.12F;
+                                iridescenceAlpha = 0.0F;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        if (gene[36]== 2 && gene[37]==2) {
-            //Lavender
-            patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F))*0.25F;
-            patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation,0.5F)))));
-            iridescenceAlpha = 0.0F;
+        if (splash = splash && gene[40]==gene[41]) {
+            patternSaturation *= 0.8F;
+            patternValue *=0.8F;
         }
+
+//        if (sGene[2] == 2 && (isFemale || sGene[3] == 2)) {
+//            //Choc
+//            if (gene[40] == 2 || gene[41] == 2) {
+//                //Blue
+//                if (gene[40] == gene[41]) {
+//                    splash = true;
+//                }
+//                patternHue = 0.6F;
+//                patternSaturation = 0.2F;
+//                patternValue = 0.4F;
+//                iridescenceAlpha = 0.2F;
+//            } else {
+//                // CHOCOLATE
+//                patternHue = 0.065F;
+//                patternValue += (patternValue + 1.0F) * 0.2F;
+//                patternSaturation = 0.5F - (patternSaturation * 1.5F);
+//                iridescenceAlpha *= 0.25F;
+//                iridescenceHueShift = 0.05F;
+//            }
+//        } else {
+//            //non choc
+//            if (gene[40] == 2 || gene[41] == 2) {
+//                //Blue
+//                if (gene[40] == gene[41]) {
+//                    splash = true;
+//                }
+//                patternHue = 0.6F;
+//                patternSaturation = 0.2F;
+//                patternValue = 0.4F;
+//                iridescenceAlpha = 0.2F;
+//            } else {
+//                if (!(paint && gene[38] == gene[39])) {
+//                    // Dom white group
+//                    if (gene[36] == 2 && gene[37] == 2) {
+//                        // dom white group + lav
+//                        if (gene[38] == 4 || gene[39] == 4) {
+//                            //het Smokey
+//                            paint = false;
+//                            iridescenceAlpha = 0.0F;
+//                            if (gene[38] != 2 && gene[39] != 2) {
+//                                //Smokey
+//                                patternHue = 0.58F;
+//                                patternSaturation = 0.1F;
+//                                patternValue = 0.7F;
+//                                iridescenceAlpha = 0.0F;
+//                            }
+//                        } else if (gene[38] != 1 && gene[39] != 1) {
+//                            if (gene[38] == 3 || gene[39] == 3) {
+//                                if (gene[38] == gene[39]) {
+//                                    //Khaki
+//                                    patternHue = 0.1F;
+//                                    patternSaturation = 0.5F;
+//                                    patternValue += (patternValue + 1.0F) * 0.5F;
+//                                    iridescenceAlpha = 0.0F;
+//                                } else {
+//                                    //Dun
+//                                    patternHue = 0.05F;
+//                                    patternSaturation = 0.5F;
+//                                    patternValue += (patternValue + 1.0F) * 0.25F;
+//                                    iridescenceAlpha = 0.3F;
+//                                    iridescenceHueShift = 0.05F;
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        //non lavender
+//                        if (gene[38] == 4 || gene[39] == 4) {
+//                            //het Smokey
+//                            paint = false;
+//                            iridescenceAlpha = 0.0F;
+//                            if (gene[38] != 2 && gene[39] != 2) {
+//                                //Smokey
+//                                patternHue = 0.58F;
+//                                patternSaturation = 0.15F;
+//                                patternValue = 0.4F;
+//                                iridescenceAlpha = 0.0F;
+//                            }
+//                        } else if (gene[38] != 1 && gene[39] != 1) {
+//                            if (gene[38] == 3 || gene[39] == 3) {
+//                                if (gene[38] == gene[39]) {
+//                                    //Khaki
+//                                    patternHue = 0.1F;
+//                                    patternSaturation = 0.5F;
+//                                    patternValue += (patternValue + 1.0F) * 0.5F;
+//                                    iridescenceAlpha = 0.0F;
+//                                } else {
+//                                    //Dun
+//                                    patternHue = 0.05F;
+//                                    patternSaturation = 0.5F;
+//                                    patternValue += (patternValue + 1.0F) * 0.25F;
+//                                    iridescenceAlpha = 0.3F;
+//                                    iridescenceHueShift = 0.05F;
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    //non dom white group
+//                    if (gene[36] == 2 && gene[37] == 2) {
+//                        //Lavender
+//                        patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F)) * 0.25F;
+//                        patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation, 0.5F)))));
+//                        iridescenceAlpha = 0.0F;
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (gene[36] == 2 && gene[37] == 2) {
+//            //Lavender
+//            patternSaturation = (Math.min(patternSaturation + 0.2F, 1.0F)) * 0.25F;
+//            patternValue += (float) ((1.0F - patternValue) * (0.75F + (0.5 * (Math.min(patternSaturation, 0.5F)))));
+//            iridescenceAlpha = 0.0F;
+//        }
 
         TextureGrouping baseMelanin = new TextureGrouping(TexturingType.MERGE_GROUP);
         chicken.addIndividualTextureToAnimalTextureGrouping(baseMelanin, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(patternHue, patternSaturation, patternValue));
 
-        if ((gene[106]==1||gene[107]==1)&&chicken.growthAmount()>0.35F) chicken.addTextureToAnimalTextureGrouping(baseMelanin, TexturingType.APPLY_SHIFT, "feather_colour/"+ (isFemale?"iridescence_female":(isNakedNeck?"nakedneck_iridescence_male":"iridescence_male")) +".png", isFemale? "f" : (isNakedNeck?"nm":"m"), (int)((1.0F-iridescenceAlpha)*255) << 8 | (int)(iridescenceHueShift*255));
         patternFeatherGroup.addGrouping(baseMelanin);
+
+        if (iridescenceAlpha!=0.0F && (gene[106]==1||gene[107]==1) && chicken.growthAmount()>0.35F) {
+            TextureGrouping iriFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+            TextureGrouping iri = new TextureGrouping(TexturingType.MERGE_GROUP);
+            chicken.addTextureToAnimalTextureGrouping(iri, TexturingType.APPLY_SHIFT, "feather_colour/" + (isFemale ? "iridescence_female" : (isNakedNeck ? "nakedneck_iridescence_male" : "iridescence_male")) + ".png", isFemale ? "f" : (isNakedNeck ? "nm" : "m"), (int) ((1.0F - iridescenceAlpha) * 255) << 8 | (int) (iridescenceHueShift * 255));
+            iriFeatherGroup.addGrouping(patternCutOutGroup);
+            iriFeatherGroup.addGrouping(iri);
+            patternFeatherGroup.addGrouping(iriFeatherGroup);
+        }
 
             if (splash) {
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);

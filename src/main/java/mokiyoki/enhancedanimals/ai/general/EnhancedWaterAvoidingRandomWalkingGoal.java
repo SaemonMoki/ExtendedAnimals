@@ -27,7 +27,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomS
 
     @Override
     public boolean canUse() {
-        if (this.mob.isVehicle()) {
+        if (this.mob.isVehicle() || ((EnhancedAnimalAbstract)this.mob).getAIStatus() == AIStatus.FOCUSED) {
             return false;
         } else {
             if (!this.forceTrigger) {

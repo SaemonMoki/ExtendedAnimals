@@ -9,8 +9,6 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.FootFeathe
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class ChickenPhenotype implements Phenotype {
     public Crested crestType = Crested.NONE;
     public FootFeathers footFeatherType = FootFeathers.NONE;
@@ -18,12 +16,13 @@ public class ChickenPhenotype implements Phenotype {
     public int earSize = 0;
     public Comb comb = Comb.SINGLE;
     public Beard beard;
-    public boolean butterCup = false;
+    public boolean duplex = false;
     public boolean isVultureHocked;
     public boolean isScaleless;
     public NakedNeckType nakedNeckType;
     public boolean earTufts;
     public boolean rumpless;
+    public boolean tailless;
     public boolean longHockFeathers;
     public boolean creeper;
     private int longLegs = 0;
@@ -41,6 +40,7 @@ public class ChickenPhenotype implements Phenotype {
     public float height;
     private boolean silkie;
     public float fluffiness;
+    public final float neckPoof;
     public float meatiness;
 
     public ChickenPhenotype(Genes genes, boolean isFemale) {
@@ -94,53 +94,57 @@ public class ChickenPhenotype implements Phenotype {
             }
         }
 
-        if ((gene[50] == 2 || gene[51] == 2) && !(gene[50] == 1 || gene[51] == 1)) {
-            if (gene[46] == 3 && gene[47] == 3 && gene[48] == 2 && gene[49] == 2) {
-                //v comb
-                this.comb = Comb.V;
-            } else {
-                if (gene[48] == 2 && gene[49] == 2) {
-                    //only waddles
-                    this.comb = Comb.NONE;
-                }
-            }
+        if (gene[294] == 2 && gene[295] == 2) {
+            this.comb = Comb.BREDA_COMBLESS;
         } else {
-            if (gene[48] == 1 || gene[49] == 1) {
-                if (gene[46] == 3 && gene[47] == 3) {
-                    //peacomb
-                    this.comb = Comb.PEA;
+            if ((gene[50] == 2 || gene[51] == 2) && !(gene[50] == 1 || gene[51] == 1)) {
+                if (gene[46] == 3 && gene[47] == 3 && gene[48] == 2 && gene[49] == 2) {
+                    //v comb
+                    this.comb = Comb.V;
                 } else {
-                    //walnut
-                    this.comb = Comb.WALNUT;
+                    if (gene[48] == 1 || gene[49] == 1) {
+                        //only waddles
+                        this.comb = Comb.NONE;
+                    }
                 }
             } else {
-                if (gene[46] == 3 && gene[47] == 3) {
-                    //single comb
-                    this.comb = Comb.SINGLE;
-                } else if (gene[46] == 1 || gene[47] == 1) {
-                    //rose comb
+                if (gene[48] == 1 || gene[49] == 1) {
+                    if (gene[46] == 3 && gene[47] == 3) {
+                        //peacomb
+                        this.comb = Comb.PEA;
+                    } else {
+                        //walnut
+                        this.comb = Comb.WALNUT;
+                    }
+                } else {
+                    if (gene[46] == 3 && gene[47] == 3) {
+                        //single comb
+                        this.comb = Comb.SINGLE;
+                    } else if (gene[46] == 1 || gene[47] == 1) {
+                        //rose comb
 //                        if (gene[46] == 3 || gene[47] == 3) {
 //                            this.comb = Comb.HET_ROSE_ONE;
 //                        } else {
-                    this.comb = Comb.ROSE_ONE;
+                        this.comb = Comb.ROSE_ONE;
 //                        }
-                } else {
-                    //rose comb2
+                    } else {
+                        //rose comb2
 //                        if (gene[46] == 3 || gene[47] == 3) {
 //                            this.comb = Comb.HET_ROSE_TWO;
 //                        } else {
-                    this.comb = Comb.ROSE_TWO;
+                        this.comb = Comb.ROSE_TWO;
 //                        }
+                    }
                 }
-            }
 
-            if (gene[50] == 2 || gene[51] == 2) {
-                this.butterCup = true;
-                this.combSize = -1;
-            } else {
-                this.butterCup = gene[50] == 3 || gene[51] == 3;
-            }
+                if (gene[50] == 2 || gene[51] == 2) {
+                    this.duplex = true;
+                    this.combSize = -1;
+                } else {
+                    this.duplex = gene[50] == 3 || gene[51] == 3;
+                }
 
+            }
         }
 
         if ((gene[86] == 1 && gene[87] == 1) || (gene[86] == 3 && gene[87] == 3)){
@@ -274,36 +278,34 @@ public class ChickenPhenotype implements Phenotype {
             this.longLegs++;
         }
 
-        //      wingAngle  [ 0 to 1.5 ]
-        if (gene[88] == 2) {
-            this.wingAngle = this.wingAngle + 0.1F;
-        } else if (gene[88] == 3) {
-            this.wingAngle = this.wingAngle + 0.15F;
-        }
-        if (gene[89] == 2) {
-            this.wingAngle = this.wingAngle + 0.1F;
-        } else if (gene[89] == 3) {
-            this.wingAngle = this.wingAngle + 0.15F;
-        }
+        this.wingAngle = getWingAngle(gene);
 
-        if (gene[94] == 2 && gene[95] == 2) {
-            this.wingAngle = this.wingAngle * 1.2F;
-        } else if (gene[94] == 3 && gene[95] == 3) {
-            this.wingAngle = this.wingAngle * 1.5F;
-        } else if (gene[94] != 1 && gene[95] != 1) {
-            this.wingAngle = this.wingAngle * 1.1F;
+        this.bodyAngle = getBodyAngle(gene);
+        this.bodyY = this.bodyAngle * 2.9F;
+        this.bodyZ = this.bodyAngle;
+
+        this.neckAngle = getNeckAngle(gene);
+
+        if (this.creeper) {
+            this.height = this.hasLongLegs() ? 18.5F : 19.5F;
+        } else {
+            this.height = this.hasLongLegs() ? 15.5F : 17.5F;
         }
 
-        if (gene[96] == 2 && gene[97] == 2) {
-            this.wingAngle = this.wingAngle * 1.2F;
-        } else if(gene[96] == 3 && gene[97] == 3) {
-            this.wingAngle = this.wingAngle * 1.5F;
-        } else if(gene[96] != 1 || gene[97] != 1) {
-            this.wingAngle = this.wingAngle * 1.1F;
-        }
+        this.silkie = gene[106] == 1 || gene[107] == 1;
 
-        this.wingAngle = -this.wingAngle;
+        this.fluffiness = getFluffiness(gene);
 
+        this.neckPoof = getNeckPoof(gene);
+
+        this.meatiness = getMeatiness(gene);
+
+        this.tailAngle = getTailAngle(gene);
+
+        this.tailless = sGene[20] == 2 || (!isFemale && sGene[21] == 2);
+    }
+
+    private static float getBodyAngle(int[] gene) {
         float bodyAngle = 1.5F;
         for (int i = 186; i < 196; i+=2) {
             if (gene[i] == 2 && gene[i+1] == 2) {
@@ -315,35 +317,89 @@ public class ChickenPhenotype implements Phenotype {
             if (gene[i]==2) bodyAngle *= 0.9F;
         }
 
-        bodyAngle = -1.5F+bodyAngle;
+        return -1.5F+bodyAngle;
+    }
 
-        this.bodyAngle = bodyAngle;
-        this.bodyY = bodyAngle * 2.9F;
-        this.bodyZ = bodyAngle;
-
+    private static float getNeckAngle(int[] gene) {
         float neckAngle = 1.0F;
 
         for (int i = 10; i<20; i++) {
             if (gene[i]==2) neckAngle *= 0.8F;
         }
+        return neckAngle;
+    }
 
-        this.neckAngle = neckAngle;
-
-        if (this.creeper) {
-            this.height = this.hasLongLegs() ? 18.5F : 19.5F;
-        } else {
-            this.height = this.hasLongLegs() ? 15.5F : 17.5F;
+    private static float getWingAngle(int[] gene) {
+        //      wingAngle  [ 0 to 1.5 ]
+        float wingAngle = 0.0F;
+        if (gene[88] == 2) {
+            wingAngle = wingAngle + 0.1F;
+        } else if (gene[88] == 3) {
+            wingAngle = wingAngle + 0.15F;
+        }
+        if (gene[89] == 2) {
+            wingAngle = wingAngle + 0.1F;
+        } else if (gene[89] == 3) {
+            wingAngle = wingAngle + 0.15F;
         }
 
-        this.silkie = gene[106] == 1 || gene[107] == 1;
+        if (gene[94] == 2 && gene[95] == 2) {
+            wingAngle = wingAngle * 1.2F;
+        } else if (gene[94] == 3 && gene[95] == 3) {
+            wingAngle = wingAngle * 1.5F;
+        } else if (gene[94] != 1 && gene[95] != 1) {
+            wingAngle = wingAngle * 1.1F;
+        }
 
+        if (gene[96] == 2 && gene[97] == 2) {
+            wingAngle = wingAngle * 1.2F;
+        } else if(gene[96] == 3 && gene[97] == 3) {
+            wingAngle = wingAngle * 1.5F;
+        } else if(gene[96] != 1 || gene[97] != 1) {
+            wingAngle = wingAngle * 1.1F;
+        }
+        return -wingAngle;
+    }
+
+    private static float getTailAngle(int[] gene) {
+        float tailAngle = 0.5F;
+        for (int i = 258; i<268; i++) {
+            if (gene[i]==2) tailAngle -= 0.05F;
+        }
+
+        for (int i = 268; i<278; i++) {
+            if (gene[i]==2) tailAngle += 0.05F;
+        }
+        return tailAngle;
+    }
+
+    private static float getFluffiness(int[] gene) {
         float fluffiness = 0.0F;
         for (int i = 228; i<248; i++) {
-            if (gene[i]==2) fluffiness += 0.1F;
+            if (i<235) {
+                if (gene[i]==1) fluffiness += 0.1F;
+            } else {
+                if (gene[i]==2) fluffiness += 0.1F;
+            }
+        }
+        return fluffiness;
+    }
+
+    private static float getNeckPoof(int[] gene) {
+        float poof = 0.0F;
+
+        for (int i = 288; i<294; i++) {
+            if (gene[i]==2) poof+=0.05F;
         }
 
-        this.fluffiness = fluffiness;
+        if (gene[286]==2 && gene[287]==2) {
+            poof+=(0.5F-poof)*0.5F;
+        }
 
+        return poof;
+    }
+
+    private static float getMeatiness(int[] gene) {
         float meatiness = 0.5F;
         if (gene[146] == 2 && gene[147] == 2) {
             if (gene[148] != 2 || gene[149] != 2) {
@@ -358,28 +414,21 @@ public class ChickenPhenotype implements Phenotype {
         }
 
         for (int i = 0; i<10; i++) {
-            if (gene[i]==2) meatiness *= 0.93F;
+            if (i<5) {
+                if (gene[i]==1) meatiness *= 0.93F;
+            } else {
+                if (gene[i]==2) meatiness *= 0.93F;
+            }
         }
 
-        this.meatiness = meatiness;
-
-        float tailAngle = 0.5F;
-        for (int i = 258; i<268; i++) {
-            if (gene[i]==2) tailAngle -= 0.05F;
-        }
-
-        for (int i = 268; i<278; i++) {
-            if (gene[i]==2) tailAngle += 0.05F;
-        }
-
-        this.tailAngle = tailAngle;
+        return meatiness;
     }
 
     public boolean isBearded() {
         return this.beard != Beard.NONE;
     }
 
-    public boolean isCombed() { return this.comb != Comb.NONE && this.comb != Comb.BREDA_COMBLESS; }
+    public boolean isCombed() { return !(this.comb == Comb.NONE || this.comb == Comb.BREDA_COMBLESS); }
 
     public boolean hasLongLegs() { return this.longLegs != 0; }
 

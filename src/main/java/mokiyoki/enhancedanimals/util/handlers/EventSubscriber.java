@@ -18,15 +18,12 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
-import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
-import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -179,7 +176,7 @@ public class EventSubscriber {
                 if (((EnhancedChicken) entity).isChickenJockey()) {
                     ((EnhancedChicken) entity).scheduleDespawn(4000);
                 }
-                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(12000));
+                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
             }
         }
     }

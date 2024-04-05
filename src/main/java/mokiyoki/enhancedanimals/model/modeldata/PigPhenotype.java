@@ -1,5 +1,9 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
+
+import java.util.List;
+
 public class PigPhenotype implements Phenotype {
     public float earFlopMod;
     public int earSizeMod = 0;
@@ -9,11 +13,74 @@ public class PigPhenotype implements Phenotype {
     public float tailCurlAmount;
     public int shape;
 
+    public float muscle = 0.0F;
+    public float fat = 0.0F;
+
+    public int bodyLength; //in pixels
+    public float lengthScaling;
+    public float bodyScale;
+    public float bodyWidth;
+    public float bodyZ;
+    public float buttScale;
+    public float buttTranslation; //also used for legs
+    public float wool = 0.0F;
+    public List<Float> bodyScalings;
+    public List<Float> neckScalings;
+    public List<Float> buttScalings;
+    public List<Float> cheekScalings;
+    public List<Float> earScalings;
+    public List<Float> headScalings;
+
     public PigPhenotype(int[] gene,char uuid) {
         this.tailCurl = Character.isLetter(uuid);
 
         float earSize = 0.0F;
         float earFlop = 1.0F;
+        for (int i = 166; i < 172; i++) {
+            if (gene[i] != 1) {
+                muscle += (gene[i] / 80.0F);
+            }
+        }
+        if (gene[172] == 2 || gene[173] == 2) {
+            muscle += 0.25F;
+        }
+
+        for (int i = 174; i < 182; i++) {
+            if (gene[i] != 1) {
+                fat += gene[i];
+            }
+        }
+        fat = (fat - 32.0F)/40.0F;
+
+        int length = gene[182] + gene[183] + gene[184] + gene[185] + gene[186] + gene[187] + gene[188] + gene[189];
+
+        this.bodyLength = 13;
+        if (length > 60) {
+            this.bodyLength = 14;
+        }
+        else if (length <= 20) {
+            this.bodyLength = 12;
+        }
+
+        this.lengthScaling = ((length-32)/40.0F)*0.22F;
+        this.buttTranslation = ((bodyLength)*this.lengthScaling);
+        this.bodyScale = 1.0F + (this.fat*0.15F) + (this.wool*0.7F) - (this.muscle*0.02F);
+        this.buttScale = 1.0F + (this.muscle*0.07F) + (this.fat*0.08F) + (this.wool*0.7F);
+
+
+        if (gene[36] != 1 && gene[37] != 1) {
+            if (gene[38] == 3 || gene[39] == 3) {
+                if (gene[40] == 1 && gene[41] == 1) {
+                    this.wool = 0.1F;
+                }
+                else if (gene[40] == 1 || gene[41] == 1) {
+                    this.wool = 0.07F;
+                }
+            }
+        }
+
+
+
         //SSC1
         if (gene[68] == 2 || gene[69] == 2) {
             earSize = earSize + 0.12F;
@@ -191,6 +258,34 @@ public class PigPhenotype implements Phenotype {
 //            }
         this.shape = 2;
 
+        float shoulderScale = 1.0F + (this.muscle*0.075F) + (this.fat*0.05F) + (this.wool*0.7F);
+        float shoulderWidth = (this.muscle*0.035F) + (this.fat*0.055F);
+        float shoulderHeight = (this.muscle*0.055F);
+        float buttWidth = (this.muscle*0.050F) + (this.fat*0.025F);
+        this.bodyWidth = (this.fat*0.025F) + (this.muscle*0.01F);
+        float shoulderZ = (this.muscle*0.025F);
+        bodyZ = (this.muscle * 0.015F);
+        if (this.fat > 0) {
+            bodyZ += -(this.fat * 0.08F);
+        }
+        else {
+            shoulderHeight += (this.fat * 0.05F);
+            shoulderZ += (this.fat * 0.04F);
+        }
+        float headWidth = (this.fat*0.055F);
+        float headY = (this.muscle*0.040F);
+        float headScaling = 1.0F;
+        if (this.lengthScaling < 0) {
+            headScaling += this.lengthScaling;
+        }
+        float cheekFat = (this.fat*0.012F);
+
+        bodyScalings = ModelHelper.createScalings(this.bodyScale + this.bodyWidth, this.bodyScale+this.lengthScaling, this.bodyScale, 0.0F, 0.0F, bodyZ);
+        neckScalings = ModelHelper.createScalings(shoulderScale + shoulderWidth, shoulderScale, shoulderScale+shoulderHeight, 0.0F, 0.0F, shoulderZ);
+        buttScalings = ModelHelper.createScalings(this.buttScale+buttWidth, 1.0F, this.buttScale, 0.0F, 0.0F, 0.0F);
+        cheekScalings = ModelHelper.createScalings(1+this.wool+(cheekFat*2.0F)-(this.snoutLength*0.125F), 1+this.wool+cheekFat, 1+this.wool+cheekFat, 0.0F, 0.0F, 0.0F);
+        earScalings = ModelHelper.createScalings(1+this.wool, 1+this.wool, 1+this.wool, 0.0F, 0.0F, 0.0F);
+        headScalings = ModelHelper.createScalings(headScaling+headWidth, headScaling, headScaling, 0.0F, 0.0F, headY);
         this.hasWaddles = gene[32] == 1 || gene[33] == 1;
     }
 }

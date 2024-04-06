@@ -187,7 +187,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] CAT_TEXTURES_FUR_OVERLAY = new String[] {
-            "", "hair_short_overlay.png", "coat_sphinx.png"
+            "", "hair_short_overlay.png", "coat_sphynx.png"
     };
 
     private static final String[] CAT_TEXTURES_GLITTER = new String[] {
@@ -1202,7 +1202,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             }
 
             //WHITE LAYER
-            if (white != 0 || karpati != 0) {
+            if (white != 0 || karpati != 0 || hairless == 2) {
                 TextureGrouping hairWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);

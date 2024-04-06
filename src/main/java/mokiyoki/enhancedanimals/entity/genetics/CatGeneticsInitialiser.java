@@ -298,7 +298,6 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         autosomalGenes[38] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[39] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
-
         //Smaller Eyes [1-5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[40] = (ThreadLocalRandom.current().nextInt(5) + 1);

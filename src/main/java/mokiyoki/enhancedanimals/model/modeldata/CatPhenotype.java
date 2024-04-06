@@ -31,6 +31,8 @@ public class CatPhenotype implements Phenotype {
     public float lowerLegScale = 1.0F;
     public float tailThickness = 1.0F;
     public int bobtail = 0;
+    public boolean curledEars = false;
+    public boolean foldedEars = true;
 
     public CatPhenotype(int[] gene, char uuid) {
         longHaired = (gene[152] > 1 && gene[153] > 1);
@@ -163,9 +165,10 @@ public class CatPhenotype implements Phenotype {
 
         earLength = (gene[136]+gene[137]+gene[138]+gene[139]-4)/16F;
         earRoundness = (gene[140]+gene[141]+gene[142]+gene[143]-4)/16F;
-        earSize = ((gene[144]+gene[145]-(gene[146]+gene[147]))-4)/8F;
+        earSize = ((gene[144]+gene[145])-(gene[146]+gene[147]))/8F;
 
         this.bobtail = (gene[26]==2 || gene[27]==2) ? (uuid % 4) + 1 : 0;
 
+        this.curledEars = gene[172]==2 || gene[173]==2;
     }
 }

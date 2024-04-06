@@ -111,7 +111,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             "skin_pink.png", "skin_orange.png", "skin_black.png", "skin_blue.png"
     };
     private static final String[] CAT_TEXTURES_FUR = new String[] {
-            "solid_base.png", "hairless_nose_patch.png"
+            "solid_base.png", "hairless_nose_patch.png", "hair_lykoi.png"
     };
 
     private static final String[] CAT_TEXTURES_UNDERBELLY = new String[] {
@@ -193,6 +193,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     private static final String[] CAT_TEXTURES_GLITTER = new String[] {
             "", "glitter2.png"
     };
+    private static final String[] CAT_TEXTURES_TABBY_DETAIL = new String[] {
+            "", "tabby_ear_fade.png"
+    };
 
     private static final String[] CAT_TEXTURES_COLORPOINT_BLACK = new String[] {
             "", "colorpoint.png", "sepia.png", "mocha.png", "colorpoint_sepia.png", "colorpoint_mocha.png", "sepia_mocha.png"
@@ -248,6 +251,9 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
     };
     private static final String[] CAT_TEXTURES_KARPATI = new String[] {
             "", "karpati.png"
+    };
+    private static final String[] CAT_TEXTURES_LYKOI = new String[] {
+            "", "lykoi_roan.png"
     };
 
     private static final String[] CAT_TEXTURES_CORIN = new String[] {
@@ -943,6 +949,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 hairless = 1;
                 coatType = 2;
             }
+            else if (aGenes[38] == 2 && aGenes[39] == 2) {
+                //Lykoi
+                hairless = 2;
+            }
 
             int eyeHue = 0; // negative = orange, positive = green
             for (int i = 50; i < 60; i++) {
@@ -1054,10 +1064,6 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                             addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_UNDERBELLY, 0, l -> true);
                             addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_SKIN, 0, l -> true);
                         skinBlackGroup.addGrouping(skinBlackUnderbellyGroup);
-//                        TextureGrouping skinBlackAgoutiGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-//                            addTextureToAnimalTextureGrouping(skinBlackAgoutiGroup, CAT_TEXTURES_TABBY, tabby, l -> true);
-//                            addTextureToAnimalTextureGrouping(skinBlackAgoutiGroup, CAT_TEXTURES_SKIN, 2, l -> true);
-//                        skinBlackGroup.addGrouping(skinBlackAgoutiGroup);
                     }
                 skinGroup.addGrouping(skinBlackGroup);
             }
@@ -1106,6 +1112,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 redGroup.addGrouping(redGlitterGroup);
                 TextureGrouping redTabbyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 addTextureToAnimalTextureGrouping(redTabbyGroup, CAT_TEXTURES_RED_TABBY_MASK, colorpoint != 0 ? 1 : 0, l -> true);
+                addTextureToAnimalTextureGrouping(redTabbyGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY_DETAIL[1], "r-tbd", redTabbyRGB);
                 addTextureToAnimalTextureGrouping(redTabbyGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
                 redGroup.addGrouping(redTabbyGroup);
                 if (colorpoint != 0) {
@@ -1155,6 +1162,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     TextureGrouping agoutiGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                     TextureGrouping agoutiMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TABBY_BASE, agoutiBase, l->l!=0);
+                    addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TABBY_DETAIL, 1, l->l !=0);
                     addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_TABBY, tabby, l->l !=0);
 
                     addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_CHARCOAL, 1, charcoal);
@@ -1200,6 +1208,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_WHITE, white, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_HEADWHITE, headWhite, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_KARPATI, karpati, l -> l != 0);
+                addTextureToAnimalTextureGrouping(whiteMaskGroup, CAT_TEXTURES_LYKOI, 1, hairless == 2);
                 TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteTextureGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_BASE[0], "w", whiteRGB);
                 hairWhiteGroup.addGrouping(whiteMaskGroup);

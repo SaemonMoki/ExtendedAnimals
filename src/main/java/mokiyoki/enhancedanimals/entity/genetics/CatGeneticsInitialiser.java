@@ -294,9 +294,10 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[37] = (1);
         }
 
-        //Unused 38-39
-        autosomalGenes[38] = (1);
-        autosomalGenes[39] = (1);
+        //Lykoi [Wildtype, lykoi]
+        autosomalGenes[38] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[39] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
 
         //Smaller Eyes [1-5]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -693,6 +694,31 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[171] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
             autosomalGenes[171] = (1);
+        }
+
+        // Curled Ears [wildtype, Curl]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[172] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[172] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[173] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[173] = (1);
+        }
+
+        // Folded Ears [wildtype, Fold]
+        // Probably lethal
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[174] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[174] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[175] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[175] = (1);
         }
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

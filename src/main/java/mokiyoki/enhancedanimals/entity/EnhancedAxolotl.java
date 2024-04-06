@@ -94,6 +94,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
@@ -411,6 +412,22 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         }
 
         this.setAnimalSize(size);
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        axolotl.setGenes(babyGenes);
+        axolotl.setSharedGenes(babyGenes);
+        axolotl.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        axolotl.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        axolotl.setGrowingAge();
+        axolotl.setBirthTime();
+        axolotl.initilizeAnimalSize();
+        axolotl.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        axolotl.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return axolotl;
     }
 
     @Override

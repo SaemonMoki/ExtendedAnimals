@@ -624,6 +624,26 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         return ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
     }
 
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedrabbit.setGenes(babyGenes);
+        enhancedrabbit.setSharedGenes(babyGenes);
+        enhancedrabbit.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedrabbit.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedrabbit.setParent(this.getUUID().toString());
+        enhancedrabbit.setGrowingAge();
+        enhancedrabbit.setBirthTime();
+        enhancedrabbit.initilizeAnimalSize();
+        enhancedrabbit.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedrabbit.setMaxCoatLength();
+        enhancedrabbit.currentCoatLength = 0;
+        enhancedrabbit.setCoatLength(0);
+        enhancedrabbit.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedrabbit;
+    }
+
     protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);

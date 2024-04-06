@@ -386,6 +386,27 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         }
     }
 
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedllama.setGenes(babyGenes);
+        enhancedllama.setSharedGenes(babyGenes);
+        enhancedllama.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedllama.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedllama.setParent(this.getUUID().toString());
+        enhancedllama.setAge(-enhancedllama.getAdultAge());
+        enhancedllama.setBirthTime();
+        enhancedllama.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedllama.initilizeAnimalSize();
+        enhancedllama.setStrengthAndInventory();
+        enhancedllama.setMaxCoatLength();
+        enhancedllama.currentCoatLength = 0;
+        enhancedllama.setCoatLength(0);
+        enhancedllama.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedllama;
+    }
+
     protected void createAndSpawnEnhancedChild(Level inWorld) {
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);

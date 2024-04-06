@@ -93,7 +93,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     }
 
     protected float lerpTo(float speed, float currentRot, float goalRot) {
-        return Mth.rotLerp(speed, currentRot, goalRot);
+        return Mth.abs(currentRot - goalRot) < 0.0001F ? goalRot : Mth.rotLerp(speed, currentRot, goalRot);
     }
 
     protected void lerpPart(WrappedModelPart part, float xGoalRot, float yGoalRot, float zGoalRot) {

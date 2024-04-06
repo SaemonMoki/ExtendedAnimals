@@ -317,6 +317,24 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     protected void runExtraIdleTimeTick() {
     }
 
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        enhancedhorse.setGenes(babyGenes);
+        enhancedhorse.setSharedGenes(babyGenes);
+        enhancedhorse.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedhorse.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedhorse.setParent(this.getUUID().toString());
+        enhancedhorse.setGrowingAge();
+        enhancedhorse.setBirthTime();
+        enhancedhorse.initilizeAnimalSize();
+        enhancedhorse.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedhorse.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        enhancedhorse.configureAI();
+        return enhancedhorse;
+    }
+
     protected void createAndSpawnEnhancedChild(Level inWorld) {
         EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);

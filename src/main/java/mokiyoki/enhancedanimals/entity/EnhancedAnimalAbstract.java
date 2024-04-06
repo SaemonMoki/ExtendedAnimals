@@ -132,6 +132,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //Hunger
     protected float hunger = 0F;
+    protected int hungerLimit = 0;
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
     protected int animalEatingTimer;
@@ -191,7 +192,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @Nullable
     private CompoundTag leashNBTTag;
 
-    Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
+    public Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
 
     /*
     Entity Construction
@@ -329,7 +330,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //called during construction to set up the animal size
     public abstract void initilizeAnimalSize();
 
-    //method to create the new child
+    //method to create a new child
+    protected abstract EnhancedAnimalAbstract createEnhancedChild(Level world, EnhancedAnimalAbstract otherParent);
+
+    //method to create and spawn the new child
     protected abstract void createAndSpawnEnhancedChild(Level world);
 
     //used to set if an animal runs the pregnancy code
@@ -422,6 +426,24 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 //        }
 //    }
 
+    public EnhancedAnimalAbstract getMother() {
+            List<? extends EnhancedAnimalAbstract> list = this.level.getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
+            EnhancedAnimalAbstract animalEntity = null;
+            double d0 = Double.MAX_VALUE;
+
+            for (EnhancedAnimalAbstract animalentity1 : list) {
+                if (animalentity1.getUUID().toString().equals(motherUUID)) {
+                    double d1 = this.distanceToSqr(animalentity1);
+                    if (!(d1 > d0)) {
+                        d0 = d1;
+                        animalEntity = animalentity1;
+                    }
+                }
+            }
+
+            return animalEntity;
+    }
+
     protected void setParent(String parentUUID) {
 //        this.parent = parent;
         this.motherUUID = parentUUID;
@@ -485,12 +507,20 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
     }
 
+    public boolean isRainingInLevel() {
+        return this.getLevel().getLevelData().isRaining();
+    }
+
     public AIStatus getAIStatus() {
         return this.currentAIStatus;
     }
 
     public void setAIStatus(AIStatus aiStatus) {
         this.currentAIStatus = aiStatus;
+    }
+
+    public void createNewHungerLimit() {
+        this.hungerLimit = this.getHungerLimit() + ThreadLocalRandom.current().nextInt(1000);
     }
 
     public int getHungerLimit() {
@@ -1296,7 +1326,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         enhancedAnimalChild.setGenes(babyGenes);
         enhancedAnimalChild.setSharedGenes(babyGenes);
         enhancedAnimalChild.initilizeAnimalSize();
-        enhancedAnimalChild.setAge(childAge); // 3 days
+        enhancedAnimalChild.setAge(childAge);
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
@@ -1320,6 +1350,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
+        if (this == ageable) {
+            return createEnhancedChild(serverWorld, (EnhancedAnimalAbstract) ageable);
+        }
+
         if (this.getAdultAge() <= this.getEnhancedAnimalAge()) {
             if (EanimodCommonConfig.COMMON.omnigenders.get()) {
                 if (this.pregnant) {

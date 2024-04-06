@@ -15,7 +15,6 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,11 +125,18 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedMooshroom mooshroom = (EnhancedMooshroom) super.createEnhancedChild(level, otherParent);
+        mooshroom.setMooshroomType(this.getChildMushroomType(((EnhancedMooshroom) otherParent).getMooshroomType()));
+        return mooshroom;
+    }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((this.mateMushroomType)));
-        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
+        enhancedmooshroom.setMooshroomType(this.getChildMushroomType((this.mateMushroomType)));
+        defaultCreateAndSpawn(enhancedmooshroom, level, babyGenes, -this.getAdultAge());
         enhancedmooshroom.configureAI();
         this.level.addFreshEntity(enhancedmooshroom);
     }
@@ -283,7 +289,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return null;
     }
 
-    private Type setChildMushroomType(Type otherMooshroom) {
+    private Type getChildMushroomType(Type otherMooshroom) {
         Type thisMooshroom = this.getMooshroomType();
         if (thisMooshroom == otherMooshroom && this.random.nextInt(1024) == 0) {
             return thisMooshroom == Type.BROWN ? Type.RED : Type.BROWN;

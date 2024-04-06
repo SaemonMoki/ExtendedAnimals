@@ -81,7 +81,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
     @Override
     public boolean canUse() {
-        if (this.creature.isVehicle() || ((EnhancedAnimalAbstract)this.creature).isAnimalSleeping()) {
+        if (this.creature.isVehicle() || ((EnhancedAnimalAbstract)this.creature).isAnimalSleeping() || ((EnhancedAnimalAbstract)this.creature).getAIStatus() == AIStatus.FOCUSED) {
             return false;
         } else {
 

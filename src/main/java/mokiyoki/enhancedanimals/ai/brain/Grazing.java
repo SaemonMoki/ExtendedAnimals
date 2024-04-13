@@ -75,7 +75,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
             return true;
         }
 
-        for (int i = 0; i < geneticAnimal.getRandom().nextInt(3)+1; i++) {
+        for (int i = 0; i < geneticAnimal.getRandom().nextInt(3)+3; i++) {
             Vec3 randomDirVec = LandRandomPos.getPosAway(geneticAnimal, 10, 7, getDirectionVec(geneticAnimal));
             if (randomDirVec != null && isEdibleBlock(serverLevel, new BlockPos(randomDirVec))) {
                 eatingDestinations.add(new BlockPos(randomDirVec));
@@ -100,6 +100,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
         geneticAnimal.getBrain().eraseMemory(ModMemoryModuleTypes.SEEKING_FOOD.get());
         geneticAnimal.getBrain().eraseMemory(ModMemoryModuleTypes.HUNGRY.get());
         geneticAnimal.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), geneticAnimal.getRandom().nextInt(400, 800));
+        this.eatingDestinations.clear();
         this.searchingForFood = false;
         this.seekingHay = false;
         this.eating = false;

@@ -22,10 +22,11 @@ import java.util.Random;
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
     private static final int incubationTime = EanimodCommonConfig.COMMON.incubationDaysChicken.get()==0?1:EanimodCommonConfig.COMMON.incubationDaysChicken.get();
-    private int incubation = incubationTime;
+    private int incubation;
 
     public ChickenNestTileEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(ModTileEntities.CHICKEN_NEST_TILE_ENTITY.get(), p_155229_, p_155230_);
+        this.incubation = incubationTime == 0 ? 24000 : incubationTime;
     }
 
     @Override
@@ -34,27 +35,34 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (compound.contains("Items", 9)) {
             ContainerHelper.loadAllItems(compound, this.items);
-            this.incubation = (int) compound.getFloat("incubation") * incubationTime;
+            this.incubation = (int) (compound.getFloat("incubation") * incubationTime);
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, this.items, false);
-        compound.putFloat("incubation", incubationPercent());
+        if (!isEmpty()) {
+            ContainerHelper.saveAllItems(compound, this.items, false);
+            compound.putFloat("incubation", incubationPercent());
+        }
+
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        ContainerHelper.saveAllItems(tag, this.items, true);
-        tag.putFloat("incubation", incubationPercent());
+        if (!isEmpty()) {
+            ContainerHelper.saveAllItems(tag, this.items, true);
+            tag.putFloat("incubation", incubationPercent());
+        }
         return tag;
     }
 
     public boolean incubate() {
-        this.incubation--;
+        if (!isEmpty()) {
+            this.incubation--;
+        }
         return this.incubation < 0;
     }
 

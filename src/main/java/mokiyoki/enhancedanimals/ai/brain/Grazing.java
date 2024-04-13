@@ -88,6 +88,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
     @Override
     protected void start(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal, long gameTime) {
         geneticAnimal.getBrain().setMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get(), true);
+        geneticAnimal.getBrain().setMemory(ModMemoryModuleTypes.SEEKING_FOOD.get(), true);
         this.searchingForFood = true;
         this.pauseAfterEating = 0;
         this.maxTicks = 400 + gameTime;
@@ -96,6 +97,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
     @Override
     protected void stop(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal, long gameTime) {
         geneticAnimal.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
+        geneticAnimal.getBrain().eraseMemory(ModMemoryModuleTypes.SEEKING_FOOD.get());
         geneticAnimal.getBrain().eraseMemory(ModMemoryModuleTypes.HUNGRY.get());
         geneticAnimal.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), geneticAnimal.getRandom().nextInt(400, 800));
         this.searchingForFood = false;

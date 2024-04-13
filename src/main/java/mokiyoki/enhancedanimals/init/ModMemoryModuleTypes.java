@@ -24,6 +24,7 @@ public class ModMemoryModuleTypes {
     public static final RegistryObject<MemoryModuleType<Integer>> PAUSE_BETWEEN_EATING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("pause_between_eating", () -> new MemoryModuleType<Integer>(Optional.of(Codec.INT)));
     public static final RegistryObject<MemoryModuleType<Boolean>> FOCUS_BRAIN = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("focus_brain", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_SHELTER = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_shelter", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
+    public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_FOOD = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_food", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> BROODING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("brooding", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> ROOSTING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("roosting", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SLEEPING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("sleeping", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));

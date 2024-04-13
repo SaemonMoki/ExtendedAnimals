@@ -446,18 +446,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         double d0;
         double d1;
 
-        if (this.menu.enhancedAnimal.canHaveChest()) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                d0 = p_mouseClicked_1_ - (double) (i + 140);
-                d1 = p_mouseClicked_3_ - (double) (j - 28);
-                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
-                    this.chestTabEnabled = false;
-                    this.photoModeEnabled = false;
-                    this.menu.getAnimal().isInPhotoMode = false;
-                    toggleSlots();
-                    return true;
-                }
+        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            d0 = p_mouseClicked_1_ - (double) (i + 140);
+            d1 = p_mouseClicked_3_ - (double) (j - 28);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
+                this.chestTabEnabled = false;
+                this.photoModeEnabled = false;
+                this.menu.getAnimal().isInPhotoMode = false;
+                toggleSlots();
+                return true;
+            }
 
+            if (this.menu.enhancedAnimal.canHaveChest()) {
                 d0 = p_mouseClicked_1_ - (double) (i + 111);
                 d1 = p_mouseClicked_3_ - (double) (j - 28);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
@@ -467,17 +467,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     toggleSlots();
                     return true;
                 }
+            }
 
+        } else {
+            d0 = p_mouseClicked_1_ - (double) (i + 176);
+            d1 = p_mouseClicked_3_ - (double) (j + 42);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                this.chestTabEnabled = false;
+                toggleSlots();
+                return true;
+            }
 
-            } else {
-                d0 = p_mouseClicked_1_ - (double) (i + 176);
-                d1 = p_mouseClicked_3_ - (double) (j + 42);
-                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
-                    this.chestTabEnabled = false;
-                    toggleSlots();
-                    return true;
-                }
-
+            if (this.menu.enhancedAnimal.canHaveChest()) {
                 d0 = p_mouseClicked_1_ - (double) (i + 176);
                 d1 = p_mouseClicked_3_ - (double) (j + 17);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
@@ -684,6 +685,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
                     if (selectedImage instanceof File) {
                         previousSelectionWasFile = true;
+
                         InputStream inputStream = Files.newInputStream(((File)selectedImage).toPath());
 
                         NativeImage nativeImage = NativeImage.read(inputStream);
@@ -692,7 +694,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                         this.backgroundHeight = nativeImage.getHeight();
 
                         DynamicTexture dynamicTexture = new DynamicTexture(nativeImage);
-                        BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(((File)selectedImage).getName(), dynamicTexture);
+
+                        BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(((File)selectedImage).getName().toLowerCase(), dynamicTexture);
 
                     } else if (selectedImage instanceof ResourceLocation) {
                         previousSelectionWasFile = false;
@@ -704,8 +707,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     }
 
 
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
 
             }
 
@@ -1225,6 +1227,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     @Override
     public void onClose() {
         this.menu.getAnimal().isInPhotoMode = false;
+        Minecraft.getInstance().getTextureManager().release(BACKGROUND_TEXTURE);
         super.onClose();
     }
 

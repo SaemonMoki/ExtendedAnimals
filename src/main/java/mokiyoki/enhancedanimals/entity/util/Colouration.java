@@ -222,6 +222,17 @@ public class Colouration {
         return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
     }
 
+    public static int HSBAtoARGB(float hue, float saturation, float brightness, float alpha) {
+        hue = Math.min(hue, 1.0F);
+        saturation = Math.min(saturation, 1.0F);
+        brightness = Math.min(brightness, 1.0F);
+        int[] rgb = getRGBFromHSB(hue, saturation, brightness);
+
+        int a = (int)(alpha * 255.0f);
+
+        return a << 24 | rgb[0] << 16 | rgb[1] << 8 | rgb[2];
+    }
+
     public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
         hue = Math.min(hue, 1.0F);
         saturation = Math.min(saturation, 1.0F);

@@ -329,9 +329,9 @@ public class TexturingUtils {
     private static void blendAH(int x, int y, int ah, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(x, y);
 
-        int a = ah >> 8 & 255;
-        if (a!=255) {
-            if (a!=0) {
+        int a = 255 - (ah >> 8 & 255);
+        if (a!=0) {
+            if (a!=255) {
                 a = (int)(((float)a*COLOUR_DEGREE)*((float)(i >> 24 & 255) * COLOUR_DEGREE)*255F);
                 int h = ah & 255;
 

@@ -403,7 +403,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("waddlesB",
                     CubeListBuilder.create()
                             .texOffs(0, 1)
-                            .addBox(-0.825F, -0.2F, -2.0F, 1.5F, 1, 1),
+                            .addBox(-0.75F, -0.2F, -2.0F, 1.5F, 1, 1),
                     PartPose.ZERO
         );
 
@@ -1952,6 +1952,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
             theTailCoverts.setXRot(0.5F - (chicken.tailAngle*0.6F));
             theTailCoverts.setY(2.0F - (chicken.tailAngle*2.5F));
+            theTailCoverts.setZ(data.isFemale||data.growthAmount!=1.0F?2.0F:1.5F);
 
             theTail.setXRot(0.6F - (chicken.tailAngle*0.8F));
             theTail.setY(-(4.0F + chicken.tailAngle));

@@ -93,10 +93,24 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             "", "marble_het_1.png", "marble_het_2.png", "marble_homo_1.png", "marble_homo_2.png"
     };
 
+    private static final String[] FOX_TEXTURES_GEORGIANWHITE = new String[] {
+            "", "georgian_white_1.png"
+    };
     private static final String[] FOX_TEXTURES_RINGNECK = new String[] {
             "", "ringneck_1.png", "ringneck_2.png", "ringneck_3.png", "ringneck_5.png"
     };
 
+    private static final String[] FOX_TEXTURES_BURGUNDY = new String[] {
+            "", "burgundy_testoverlay2.png"
+    };
+
+    private final int IDX_PLATINUM_1 = 1; // start at 1, het
+    private static final String[] FOX_TEXTURES_PLATINUM = new String[] {
+            "", "platinum_1.png", "platinum_2.png", "platinum_3.png", "platinum_5.png", "platinum_5.png"
+    };
+
+    private final int IDX_WHITEMARK_1 = 1; // start at 1, het
+    private final int IDX_WHITEMARK_2 = IDX_WHITEMARK_1 + 3; // 3 textures after marble_1 start, homo
     private static final String[] FOX_TEXTURES_WHITEMARK = new String[] {
             "", "whitemark_1.png", "whitemark_2.png", "whitemark_3.png", "whitemark_4.png", "whitemark_5.png", "whitemark_6.png"
     };
@@ -267,9 +281,13 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void lethalGenes() {
-        int[] gene = this.genetics.getAutosomalGenes();
-    //        this.remove(RemovalReason.KILLED);
+    public void lethalGenes(){
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[10] == 2 && genes[11] == 2) {   // georgian white
+            this.remove(RemovalReason.KILLED);
+        } else if (genes[12] == 2 && genes[13] == 2) {  // plat
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
     @Override
@@ -440,21 +458,28 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             int[] gene = getSharedGenes().getAutosomalGenes();
             //int[] aGenes = getSharedGenes().getAutosomalGenes();
 
-            float[] eyeColor = { 0.075F, 0.61F, 0.675F };  //0.45F, 0.85F, 0.46F , 0.205F, 0.61F, 0.675F
+            // COLORATION
+            // hue, saturation, brightness
+            float[] eyeColor = { 0.075F, 0.70F, 0.675F };  //0.45F, 0.85F, 0.46F , 0.205F, 0.61F, 0.675F
 
             float[] melanin = { 0.063F, 0.15F, 0.15F };  // 27, 32.5, 26  dark green  0.075F, 0.325F, 0.26F
             float[] pheomelanin = { 0.566F, 1.28F, 0.33F }; //blueish  0.078F, 0.623F, 0.798F
 
+            int burgundy = 0;
 
             int noseRGB = 1;  // default black
 
             int marble = 0;
+            int georgianwhite = 0;
+            int whitemark = 0;
+            int platinum = 0;
 
             int silvering = 0;
 
             int extension = 0;
             int agouti = 0;
             int basecoat = 0;
+
 
             char[] uuidArry = getStringUUID().toCharArray();
 
@@ -464,19 +489,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
              * UUID Spaces used:
              * [0] - Gender?
              * [1] - Marble
+             * [2] - Whitemark
+             * [3] - Platinum
              */
 
-            int randMarble = uuidArry[1];
 
-            // 1 blank, 2 het, 2 homo
-            switch (marble) {
-                case IDX_MARBLE_1:
-                    marble = IDX_MARBLE_1 + (randMarble % 2);   // het
-                    break;
-                case IDX_MARBLE_2:
-                    marble = IDX_MARBLE_2 + (randMarble % 2);   // homo
-                    break;
-            }
 
             /**
              * MC1R - Extension
@@ -541,7 +558,13 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 basecoat = 9;  // aaee - double silver         silver3.png
             }
 
-
+            // BURGUNDY - recessive, affects black pigment
+            // hue sat bright
+            if (gene[14] == 2 && gene[15] == 2){  // homo rec
+                melanin[0] -= 0.5F;
+                melanin[1] += 1.0F;
+                melanin[2] += 2.5F;
+            }
 
 
 
@@ -577,6 +600,66 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 marble = IDX_MARBLE_2;   // 3
             } else if (gene[6] == 2 || gene[7] == 2) {  // het
                 marble = IDX_MARBLE_1;   // 1
+            }
+
+            int randMarble = uuidArry[1];
+
+            // 1 blank, 2 het, 2 homo
+            switch (marble) {
+                case IDX_MARBLE_1:
+                    marble = IDX_MARBLE_1 + (randMarble % 2);   // het
+                    break;
+                case IDX_MARBLE_2:
+                    marble = IDX_MARBLE_2 + (randMarble % 2);   // homo
+                    break;
+            }
+
+
+            //blueish  0.078F, 0.623F, 0.798F
+
+            // Platinum - incomplete dominant
+            if (gene[12] == 2 || gene[13] == 2){
+                platinum = IDX_PLATINUM_1;
+                eyeColor[0] = 0.60F;  // hue
+                eyeColor[1] -= 0.08F;  // sat
+                eyeColor[2] += 0.45F;  // lightness .22
+                noseRGB = 3;
+            }
+
+            int randPlatinum = uuidArry[3];
+
+            // 1 blank, 5 het
+            switch (platinum) {
+                case IDX_PLATINUM_1:
+                    platinum = IDX_PLATINUM_1 + (randPlatinum % 5);
+                    break;
+            }
+
+
+
+            // Whitemark - dominant
+            if (gene[8] == 2 && gene[9] == 2){  // homo WW
+                whitemark = IDX_WHITEMARK_2;   // 3
+            } else if (gene[8] == 2 || gene[9] == 2) {  // het Ww
+                whitemark = IDX_WHITEMARK_1;   // 1
+            }
+
+            int randWhitemark = uuidArry[2];
+
+            // 1 blank, 3 het, 3 homo
+            switch (whitemark) {
+                case IDX_WHITEMARK_1:
+                    whitemark = IDX_WHITEMARK_1 + (randWhitemark % 3);   // het
+                    break;
+                case IDX_WHITEMARK_2:
+                    whitemark = IDX_WHITEMARK_2 + (randWhitemark % 3);   // homo
+                    break;
+            }
+
+
+            // georgian white  - het expressed, homo lethal
+            if (gene[10] == 2 || gene[11] == 2){  // gwgw
+                georgianwhite = 1;
             }
 
 
@@ -654,16 +737,18 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             int melaninRGB = Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]);
             int pheomelaninRGB = Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
 
+
         // CAT NOSE COLOR example
             // Colouration.HSBtoARGB(0.13F [HUE], 0.02F [SATURATION], 0.96F [BRIGHTNESS]);
         //    int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
 
             // change later! cats colors as test
+            // hue, saturation, brightness
             int[] noseColors = {
                     //Brick 0
                     Colouration.HSBtoARGB(0.0F, 0.429F, 0.494F),
                     //Black 1
-                    Colouration.HSBtoARGB(0.0F, 0.051F, 0.231F),
+                    Colouration.HSBtoARGB(0.0F, 0.051F, 0.030F),
                     //Light Brick 2
                     Colouration.HSBtoARGB(0.0F, 0.439F, 0.594F),
                     //Pink 3
@@ -690,10 +775,16 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
 
 // Texture Grouping
-            // apply basecoats as foundation
+            // future:
+            //
+            // basecoats
+            // dilutions
+            // black markings
+            // platinum
+            // white markings
+
             // merge, alpha, mask
             // groups: parent (add everything at end), skin, hair, foundation, eyes and paws at end in parent
-            // grouping for pigs: skin (merge), hair (merge and mask), white markings, overlay - coat texture,
 
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create parent group as merge
             TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP);     // hair group as mask
@@ -705,7 +796,10 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             parentGroup.addGrouping(hairGroup);  // hair added to parent
 
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // add detail group as merge
+            addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_PLATINUM, platinum, l -> l != 0);
             addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_MARBLE, marble, l -> l != 0);
+            addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_GEORGIANWHITE, georgianwhite, l -> l != 0);
+            addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_WHITEMARK, whitemark, l -> l != 0);
             //  if (silvering!=0) {}
             addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SILVERING, silvering, l -> l != 0); // create silvering group - put in hair group later
             //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);

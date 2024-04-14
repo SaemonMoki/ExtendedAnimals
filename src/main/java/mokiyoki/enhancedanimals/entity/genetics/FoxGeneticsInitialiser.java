@@ -155,6 +155,61 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[7] = (1);
         }
 
+        // Whitemark [ Wildtype, wm ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[8] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[9] = (1);
+        }
+
+        // Georgian White [ Wildtype, GW ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[10] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[11] = (1);
+        }
+
+        // Platinum [ Wildtype, plat ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[12] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[13] = (1);
+        }
+
+        // Burgundy [ Wildtype, burgundy ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[14] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[15] = (1);
+        }
 
 
         //eye size? 1-5

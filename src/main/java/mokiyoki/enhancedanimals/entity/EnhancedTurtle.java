@@ -136,7 +136,9 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public float getScale() {
-        return this.isGrowing() ? (0.2F + (0.8F * (this.growthAmount()))) : 1.0F;
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.2F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -248,6 +250,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @Override
     protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeTurtle.get();}
 
+    @Override
+    protected int getFullSizeAge() {
+        return (int)(this.getAnimalSize() > 1.0F ? getAdultAge() * this.getAnimalSize() : getAdultAge());
+    }
+
     public void setHasScute() {
         this.hasScute = this.getEnhancedAnimalAge() < 24000;
     }
@@ -291,7 +298,18 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     public void initilizeAnimalSize() {
-        this.setAnimalSize(1.0F);
+        int[] gene = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        for (int i = 14; i < 30; i++) {
+            if (i<20) {
+                if (gene[i] == 2) size -= 0.05F;
+            } else {
+                if (gene[i] == 2) size += 0.05F;
+            }
+        }
+
+        this.setAnimalSize(gene[12]==1||gene[13]==1 ? size : size*0.6F);
     }
 
     @Override

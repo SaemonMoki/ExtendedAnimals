@@ -196,7 +196,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
                 this.body.show();
             }
 
-            float size = ((1.0F + (turtleModelData.growthAmount * 11.0F))/12.0F) * turtleModelData.size;
+            float size =turtleModelData.growthAmount<1.0F? ((1.0F + (turtleModelData.growthAmount * 11.0F))/12.0F) * (turtleModelData.size+((1.0F-turtleModelData.size)*(1.0F-turtleModelData.growthAmount))) : turtleModelData.size;
 
             if (turtleModelData.growthAmount < 1.0F) {
                 float bh = (1.0F-turtleModelData.growthAmount)*0.5F;

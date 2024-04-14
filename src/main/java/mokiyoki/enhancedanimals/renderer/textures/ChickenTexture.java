@@ -648,7 +648,7 @@ public class ChickenTexture {
 //                    }
 
                     switch (extension) {
-                        case 5 -> {
+                        default -> {
                             pattern = "black/";
                             ground = femFeathers? "duckwing_female" : "duckwing_male";
                         }
@@ -670,31 +670,29 @@ public class ChickenTexture {
                         }
                     }
                     switch (columbian) {
-                        case 0 -> pattern += "noncolumbian/";
+                        default -> pattern += "noncolumbian/";
                         case 1 -> pattern += "hetcolumbian/";
                         case 2 -> pattern +=    "columbian/";
                     }
                     switch (darkbrown) {
-                        case 0 -> pattern += "nondarkbrown/";
+                        default -> pattern += "nondarkbrown/";
                         case 1 -> pattern += "hetdarkbrown/";
                         case 2 -> pattern +=    "darkbrown/";
                     }
                     switch (patternGene) {
-                        case 0 -> pattern += "nonpattern/";
+                        default -> pattern += "nonpattern/";
                         case 1 -> pattern += "hetpattern/";
                         case 2 -> pattern +=    "pattern/";
                     }
                     switch (melanized) {
-                        case 0 -> pattern += "nonmelanized/";
+                        default -> pattern += "nonmelanized/";
                         case 1 -> pattern += "hetmelanized/";
                         case 2 -> pattern +=    "melanized/";
                     }
 
                     pattern += femFeathers ? "female" : "male";
 
-                    if (gene[170]==1 || gene[171]==1) {
-                        autosomalRed = pattern;
-                    }
+                    autosomalRed = gene[170]==1 || gene[171]==1? pattern : "";
 
                 }
 

@@ -376,7 +376,7 @@ public class ChickenPhenotype implements Phenotype {
     private static float getFluffiness(int[] gene) {
         float fluffiness = 0.0F;
         for (int i = 228; i<248; i++) {
-            if (i<235) {
+            if (i<=235) {
                 if (gene[i]==1) fluffiness += 0.1F;
             } else {
                 if (gene[i]==2) fluffiness += 0.1F;
@@ -414,7 +414,7 @@ public class ChickenPhenotype implements Phenotype {
         }
 
         for (int i = 0; i<10; i++) {
-            if (i<5) {
+            if (i<=5) {
                 if (gene[i]==1) meatiness *= 0.93F;
             } else {
                 if (gene[i]==2) meatiness *= 0.93F;

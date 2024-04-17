@@ -309,12 +309,12 @@ public class ChickenPhenotype implements Phenotype {
         float bodyAngle = 1.5F;
         for (int i = 186; i < 196; i+=2) {
             if (gene[i] == 2 && gene[i+1] == 2) {
-                bodyAngle -= 0.3F;
+                bodyAngle -= 0.1F;
             }
         }
 
         for (int i = 248; i<258; i++) {
-            if (gene[i]==2) bodyAngle *= 0.9F;
+            if (gene[i]==2) bodyAngle = (bodyAngle-0.05F)*0.9F;
         }
 
         return -1.5F+bodyAngle;

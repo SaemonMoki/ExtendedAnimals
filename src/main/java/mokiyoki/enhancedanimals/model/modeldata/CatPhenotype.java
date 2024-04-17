@@ -175,6 +175,6 @@ public class CatPhenotype implements Phenotype {
 
         this.bobtail = (gene[26]==2 || gene[27]==2) ? (uuid % 4) + 1 : 0;
 
-        this.curledEars = gene[172]==2 || gene[173]==2;
+//        this.curledEars = gene[172]==2 || gene[173]==2;
     }
 }

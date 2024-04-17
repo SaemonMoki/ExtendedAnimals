@@ -103,8 +103,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         base.addOrReplaceChild("bSnout", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.0F, -4.5F, Mth.PI*0.527F, 0.0F, 0.0F));
         base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -6.0F, Mth.PI*0.15F, 0.0F, 0.0F));
         base.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -7.0F, -Mth.PI*0.15F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
-        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.25F, -1.5F, 0.5F, 0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.25F, -1F, 0.5F, 0.0F, 0.0F, 0.0F));
+        base.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.25F, -1F, 0.5F, 0.0F, 0.0F, 0.0F));
         base.addOrReplaceChild("bBodyF", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bBodyFurF", CubeListBuilder.create(), PartPose.ZERO);
         base.addOrReplaceChild("bBodyB", CubeListBuilder.create(), PartPose.ZERO);
@@ -187,32 +187,34 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .addBox(-1.0F, -2.0F, -1.025F, 1,2,1, new CubeDeformation(0.0F, 0.0F, 0.0F))
                         .texOffs(24, 1)
                         .addBox(-1.0F, -3.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                PartPose.offsetAndRotation(0F,1F,0F, 0.0F, -Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(0F,0.5F,0F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earL1", CubeListBuilder.create()
                         .texOffs(28, 1)
-                        .addBox(0.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
+                        .addBox(0.0F, -2.5F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F))
+                        .texOffs(28, 0)
+                        .addBox(0.0F, 0.4995F, -1.025F, 1,0,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("earL4", CubeListBuilder.create() //Upper part of EarL1
                         .texOffs(21, 0)
                         .addBox(0.0F, -1F, -0.525F, 1,1,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                PartPose.offset(0F,-1.98F,0F)
+                PartPose.offset(0F,-2.48F,0F)
         );
         base.addOrReplaceChild("earL2", CubeListBuilder.create()
                         .texOffs(32, 1)
                         .addBox(0.0F, -3.0F, -0.5F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                PartPose.offsetAndRotation(1.0F, 1.0F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(1F, 0.5F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earL3", CubeListBuilder.create()
                         .texOffs(35, 4)
                         .addBox(0.0F, -0.005F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
-                PartPose.offsetAndRotation(1.0F, 0.0F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(1.0F, -0.5F, 0.0F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earFluffL", CubeListBuilder.create()
                         .texOffs(78, 125)
                         .addBox(0.0F, 0, 0, 3,3,0, new CubeDeformation(-0.25F, -0.25F, 0.0F)),
-                PartPose.offsetAndRotation(0.0F, -3.0F, -0.25F, 0.0F, Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(0.0F, -3.5F, -0.25F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
 
         base.addOrReplaceChild("earR0", CubeListBuilder.create()
@@ -220,32 +222,34 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .addBox(0.0F, -2.0F, -1.025F, 1,2,1, new CubeDeformation(0.0F, 0.0F, 0.0F))
                         .texOffs(13, 1)
                         .addBox(0.0F, -3.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                PartPose.offsetAndRotation(0F,1F,0F, 0.0F, Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(0F,0.5F,0F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earR1", CubeListBuilder.create()
                         .texOffs(9, 1)
-                        .addBox(-1.0F, -2.0F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
+                        .addBox(-1.0F, -2.5F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F))
+                        .texOffs(9, 0)
+                        .addBox(-1.0F, 0.4995F, -1.025F, 1,0,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("earR4", CubeListBuilder.create() //Upper part of EarL1
                         .texOffs(16, 0)
                         .addBox(-1.0F, -1.0F, -0.525F, 1,1,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                PartPose.offset(0F,-1.98F,0F)
+                PartPose.offset(0F,-2.48F,0F)
         );
         base.addOrReplaceChild("earR2", CubeListBuilder.create()
                         .texOffs(5, 1)
                         .addBox(-1.0F, -3F, -0.525F, 1,3,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
-                     PartPose.offsetAndRotation(-1.0F, 1.0F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
+                     PartPose.offsetAndRotation(-1.0F, 0.5F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earR3", CubeListBuilder.create()
                         .texOffs(2, 4)
                         .addBox(-1.0F, -0.005F, -1.025F, 1,1,1, new CubeDeformation(0.0F, 0.0F, 0.0F)),
-                PartPose.offsetAndRotation(-1.0F, 0.0F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(-1.0F, -0.5F, 0.0F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
         base.addOrReplaceChild("earFluffR", CubeListBuilder.create()
                         .texOffs(72, 125)
                         .addBox(-3.0F, 0, 0, 3,3,0, new CubeDeformation(-0.25F, -0.25F, 0.0F)),
-                PartPose.offsetAndRotation(0.0F, -3.0F, -0.25F, 0.0F, -Mth.PI*0.15F, 0.0F)
+                PartPose.offsetAndRotation(0.0F, -3.5F, -0.25F, 0.0F, -Mth.PI*0.15F, 0.0F)
         );
 
         /**
@@ -715,6 +719,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             float earLength = 1.0F;
             float ear4Scale = -(cat.earRoundness*0.2F); //min 0.8
             float earSize = 1+(cat.earSize*0.25F);
+            if (cat.foldedEars && cat.earSize > 0F) {
+                earSize = 1F;
+            }
             float eyeSize = 1F;
             float earSpacing = 1F;
             float[] tailFluffScales = {0.1F, 0.15F, 0.15F, 0.15F, 0.125F, 0.05F, 0.0F};
@@ -813,8 +820,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             float earYAngle = 0F;
             float earZAngle = (Mth.HALF_PI*1.1F*cat.earSpacing);
             float ear4XRot = 0F;
-            float earX = (cat.headWidth*1.25F)+(cat.earSpacing*1.25F*cat.headWidth)+(Mth.sin(earZAngle)*0.5F);
-            float earY = -1.5F;
+            float earX = (cat.headWidth*1.25F)+(cat.earSpacing*1.25F*cat.headWidth)+(earZAngle*0.4F);
+            float earY = -1F;
             float earZ = 0.5F;
             theEarL.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earZAngle)*0.75F));
             theEarR.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earZAngle)*0.75F));
@@ -826,21 +833,25 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                     earXAngle = -Mth.HALF_PI*0.25F;
                 }
             } else if (cat.foldedEars) {
-                earYAngle = Mth.HALF_PI*-0.75F;
-                earXAngle = Mth.HALF_PI*(1F+(cat.earSize*0.55F));
-                earY = -2.15F;
+                earYAngle = Mth.HALF_PI*-(0.9F);
+                earXAngle = Mth.HALF_PI*(1.225F);
+                earY = (-2.2F) - (cat.earSize*0.075F);
                 earZ = -1.75F;
-                ear4XRot = Mth.HALF_PI*0.15F;
+                ear4XRot = Mth.HALF_PI*0.15F + (Mth.HALF_PI*0.10F*cat.earSize);
                 earZAngle = 0F;
-                if (cat.earSpacing >= 0.5F) {
-                    earXAngle = Mth.HALF_PI*(1.6F + (cat.earSize*0.25F));
+                if (cat.earSpacing >= 0.375F) {
+                    earXAngle = Mth.HALF_PI*(1.7F + (cat.earSize*0.15F));
                     earYAngle = Mth.HALF_PI*-1F;
                     earX = cat.headWidth*3.05F;
-                    earY = -0.25F;
+                    earY = (-0.5F) + (cat.earSize*0.2F);
                     earZ = -2F;
                 }
-                else if (earX <= (cat.headWidth*2F)) {
-                    earX = (cat.headWidth*2F);
+                else if (cat.earSpacing <= 0.125F) {
+                    earX = (cat.headWidth*1.35F);
+                }
+                else {
+                    earX = (cat.headWidth*1.5F);
+//                    earYAngle += Mth.HALF_PI*(cat.earSize*0.25F);
                 }
             }
             theEarL.setX(earX);

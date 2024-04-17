@@ -193,22 +193,22 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
 
         bHornNub.addOrReplaceChild("nubXS", CubeListBuilder.create()
-                        .texOffs(44, 42)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 2, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubS", CubeListBuilder.create()
-                        .texOffs(44, 41)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 3, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubM", CubeListBuilder.create()
-                        .texOffs(44, 40)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 4, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubL", CubeListBuilder.create()
-                        .texOffs(44, 39)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 5, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );

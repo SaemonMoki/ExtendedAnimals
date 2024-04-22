@@ -777,18 +777,22 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
             // Colorpoint
             if (aGenes[18] > 1 && aGenes[19] > 1) {
                 if (aGenes[18] == 2 && aGenes[19] == 2) {
+                    //Colorpoint
                     colorpoint = 1;
                 }
                 else if (aGenes[18] == 3 && aGenes[19] == 3) {
+                    //Sepia
                     colorpoint = 2;
 //                    melanin[1] += 0.05F;
                     pheomelanin[2] += 0.15F;
                     pheomelanin[1] -= 0.15F;
                 }
                 else if (aGenes[18] == 4 && aGenes[19] == 4) {
+                    //Mocha
                     colorpoint = 3;
                 }
                 else if ((aGenes[18] == 2 && aGenes[19] == 3) || (aGenes[18] == 3 && aGenes[19] == 2)) {
+                    //Colorpoint/Sepia
                     colorpoint = 4;
                     if (agouti) {
                         melanin[1] += 0.1F;
@@ -797,9 +801,11 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                     pheomelanin[1] -= 0.15F;
                 }
                 else if ((aGenes[18] == 2 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 2)) {
+                    //Colorpoint/Mocha
                     colorpoint = 5;
                 }
                 else if ((aGenes[18] == 3 && aGenes[19] == 4) || (aGenes[18] == 4 && aGenes[19] == 3)) {
+                    // Sepia/Mocha
                     colorpoint = 6;
                     melanin[1] += 0.05F;
                     pheomelanin[2] += 0.15F;
@@ -813,10 +819,10 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 }
 
                 melanin[0] -= 0.02F;
-                melanin[1] += agouti ? -0.1F : 0.4F;
+                melanin[1] += agouti ? -0.175F : 0.35F;
                 melanin[2] += 0.05F;
                 blackTabbyColor[0] = 0.073F;
-                blackTabbyColor[1] += 0.4F;
+                blackTabbyColor[1] += 0.35F;
                 blackTabbyColor[2] += 0.05F;
 //                redTabbyColor[0] = (redTabbyColor[0] + pheomelanin[0])*0.5F;
 //                redTabbyColor[1] = (redTabbyColor[1] + pheomelanin[1])*0.5F;
@@ -1111,9 +1117,18 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                 redGlitterGroup.addGrouping(glitterShineGroup);
                 redGroup.addGrouping(redGlitterGroup);
                 TextureGrouping redTabbyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                addTextureToAnimalTextureGrouping(redTabbyGroup, CAT_TEXTURES_RED_TABBY_MASK, colorpoint != 0 ? 1 : 0, l -> true);
-                addTextureToAnimalTextureGrouping(redTabbyGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY_DETAIL[1], "r-tbd", redTabbyRGB);
-                addTextureToAnimalTextureGrouping(redTabbyGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_TABBY[tabby], "r-tb"+tabby, redTabbyRGB);
+                TextureGrouping agoutiMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(agoutiMaskGroup, CAT_TEXTURES_RED_TABBY_MASK, colorpoint != 0 ? 1 : 0, l -> true);
+                redTabbyGroup.addGrouping(agoutiMaskGroup);
+                TextureGrouping agoutiTexGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                TextureGrouping agoutiInnerMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(agoutiInnerMaskGroup, CAT_TEXTURES_TABBY_DETAIL[1], true);
+                addTextureToAnimalTextureGrouping(agoutiInnerMaskGroup, CAT_TEXTURES_TABBY[tabby], true);
+                agoutiTexGroup.addGrouping(agoutiInnerMaskGroup);
+                TextureGrouping agoutiTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                agoutiTexGroup.addGrouping(agoutiTintGroup);
+                addTextureToAnimalTextureGrouping(agoutiTintGroup, TexturingType.APPLY_RGB, CAT_TEXTURES_BASE[0], "r-tb", redTabbyRGB);
+                redTabbyGroup.addGrouping(agoutiTexGroup);
                 redGroup.addGrouping(redTabbyGroup);
                 if (colorpoint != 0) {
                     TextureGrouping colorpointGroup = new TextureGrouping(TexturingType.MASK_GROUP);

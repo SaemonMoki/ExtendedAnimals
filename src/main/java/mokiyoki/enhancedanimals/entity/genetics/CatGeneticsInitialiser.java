@@ -21,16 +21,16 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
         this.breeds.add(CatBreeds.BLACK);
         this.breeds.add(CatBreeds.BRITISHSHORTHAIR);
         this.breeds.add(CatBreeds.SIBERIAN);
-        this.breeds.add(CatBreeds.MAXHAIR);
-        //this.breeds.add(CatBreeds.Calico);
-        //this.breeds.add(CatBreeds.Jellie);
+        this.breeds.add(CatBreeds.CALICO);
+        this.breeds.add(CatBreeds.JELLIE);
         //this.breeds.add(CatBreeds.Persian);
-        //this.breeds.add(CatBreeds.Ragdoll);
+        this.breeds.add(CatBreeds.RAGDOLL);
         //this.breeds.add(CatBreeds.Red);
         //this.breeds.add(CatBreeds.Siamese);
         //this.breeds.add(CatBreeds.BrownTabby);
         //this.breeds.add(CatBreeds.Tuxedo);
         //this.breeds.add(CatBreeds.White);
+        //this.breeds.add(CatBreeds.MAXHAIR);
         this.breeds.add(CatBreeds.ORIENTALSHORTHAIR);
     }
 
@@ -140,6 +140,7 @@ public class CatGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[11] = (1);
         }
 
+        // TODO: Add ragdoll white alleles
         //White Markings (KIT?) [wildtype+, White Spotting]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);

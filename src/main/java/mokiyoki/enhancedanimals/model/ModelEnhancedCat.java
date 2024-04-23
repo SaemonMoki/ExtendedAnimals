@@ -737,7 +737,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("bHead", ModelHelper.createScalings(cat.headSize, 0F,0F,0F));
             mapOfScale.put("head", ModelHelper.createScalings(cat.headWidth, 1F, 1F, 0F,0F,0F));
             mapOfScale.put("eyes", ModelHelper.createScalings(eyesWidth, 1F, 1F, 0F,0F,0F));
-            mapOfScale.put("bSnout", ModelHelper.createScalings(cat.snoutWidth*cat.snoutScale, cat.snoutLength*cat.snoutScale, cat.snoutScale, 0F,0F,0F));
+            mapOfScale.put("bSnout", ModelHelper.createScalings(cat.muzzleWidth *cat.muzzleScale, cat.muzzleLength *cat.muzzleScale, cat.muzzleScale, 0F,0F,0F));
             //mapOfScale.put("mouth", ModelHelper.createScalings(cat.jawScale, 1F, cat.jawScale, 0F,0F,0F));
             mapOfScale.put("neck", ModelHelper.createScalings(cat.neckWidth, cat.neckHeight, (cat.neckWidth+1)/2F, 0F,0F,0F));
             List<Float> legScalings = ModelHelper.createScalings(cat.lowerLegScale, 1F, cat.lowerLegScale, 0F,0F,0F);

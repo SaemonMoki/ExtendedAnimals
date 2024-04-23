@@ -9,12 +9,22 @@ public class CatBreeds {
             .setGeneSketch(new GeneSketch().add(0, "1"), new GeneSketch().add(0, "2").add(12, "1", "1", "1").add(50,"2","2","1|2","1|2","1|2")));
     public static final Breed BRITISHSHORTHAIR = new Breed(new Breed.Properties().setData("BritishShorthair", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1|2").add(12, "1", "1", "1").add(28,"2").add(50,"2","2","1|2","1|2","1|2")));
-    public static final Breed ORIENTALSHORTHAIR = new Breed(new Breed.Properties().setData("OrientalShortHair", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(40, "3|4").add(46, "2|3").add(48, "4|5").add(94,"1","1","1").add(100, "1-3", "1-3", "1-3", "1-3").add(108, "2|3", "2|3", "2|3", "2|3").add(120,"1", "1", "4|5", "4|5").add(128, "1-3", "1-3", "2|3", "2|3").add(144,"3-5", "1")));
+    public static final Breed CALICO = new Breed(new Breed.Properties().setData("Calico", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch().add(0, "2,1"), new GeneSketch().add(0, "2").add(12, "2,1|2", "1|2", "1|2")));
+    public static final Breed JELLIE = new Breed(new Breed.Properties().setData("Jellie", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch().add(0, "1"), new GeneSketch().add(0, "1", "2").add(12, "2").add(24,"2").add(50,"1|3","1|3","1|3","1","1")));
+
+    public static final Breed RAGDOLL = new Breed(new Breed.Properties().setData("Ragdoll", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(12, "2", "2", "2|1,1").add(18,"2").add(32,"1").add(40, "1", "2", "3", "1", "1").add(90, "1|3").add(100,"4", "4", "4", "1", "4", "4", "4", "4").add(120, "3","2","0","0").add(128,"2").add(152, "4", "5-7","5-7","5-7","5-7", "6|7","6|7","6|7","6|7")));
+
+
     public static final Breed SIBERIAN = new Breed(new Breed.Properties().setData("Siberian", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(32,"1").add(40, "1", "2", "3", "1", "1").add(90, "1|3").add(100,"4", "4", "4", "1", "4", "4", "4", "4").add(120, "3","2","0","0").add(128,"2").add(152, "4", "10","10","10","10", "10","10","10","10")));
-    public static final Breed MAXHAIR = new Breed(new Breed.Properties().setData("MaxHair", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(152, "1-5", "10","10","10","10", "10","10","10","10")));
+    public static final Breed ORIENTALSHORTHAIR = new Breed(new Breed.Properties().setData("OrientalShortHair", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(40, "3|4").add(46, "2|3").add(48, "4|5").add(94,"1","1","1").add(100, "1-3", "1-3", "1-3", "1-3").add(108, "3", "3", "2|3", "2|3").add(120,"1", "1", "4|5", "4|5").add(128, "1-3", "1-3", "2|3", "2|3").add(144,"3-5", "1")));
+
+    //    public static final Breed MAXHAIR = new Breed(new Breed.Properties().setData("MaxHair", Biomes.FOREST, Breed.Rarity.ORDINARY)
+//            .setGeneSketch(new GeneSketch(), new GeneSketch().add(152, "1-5", "10","10","10","10", "10","10","10","10")));
 
 
 //    public static final Breed BENGAL = new Breed(new Breed.Properties().setData("Bengal", Biomes.FOREST, Breed.Rarity.ORDINARY)

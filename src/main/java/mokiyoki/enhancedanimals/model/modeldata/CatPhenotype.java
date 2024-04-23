@@ -11,9 +11,9 @@ public class CatPhenotype implements Phenotype {
     public float headWidth = 1.0F;
     public float headHeight = 0.0F;
     public float bodyWidth = 1F;
-    public float snoutLength = 1.0F;
-    public float snoutWidth = 1.0F;
-    public float snoutScale = 1.0F;
+    public float muzzleLength = 1.0F;
+    public float muzzleWidth = 1.0F;
+    public float muzzleScale = 1.0F;
     public float noseScale = 1F;
     public float eyeRoundness = 0.0F;
     public float eyeSize = 1.0F;
@@ -56,38 +56,38 @@ public class CatPhenotype implements Phenotype {
 
         }
 
-        // snout length genes
+        // muzzle length genes
         for (int i = 100; i < 108; i++) {
             switch (gene[i]) {
                 case 2 -> //Longest
-                        snoutLength += 0.037F;
+                        muzzleLength += 0.0325F;
                 case 3 -> //Longer
-                        snoutLength += 0.02F;
+                        muzzleLength += 0.02F;
                 case 4 -> //Shorter
-                        snoutLength -= 0.025F;
+                        muzzleLength -= 0.025F;
                 case 5 -> //Shortest
-                        snoutLength -= 0.0525F;
+                        muzzleLength -= 0.0525F;
             }
         }
         for (int i = 108; i < 116; i++) {
             switch (gene[i]) {
                 case 2 -> //Thinnest
-                        snoutWidth -= 0.025F;
+                        muzzleWidth -= 0.025F;
                 case 3 -> //Thinner
-                        snoutWidth -= 0.015F;
+                        muzzleWidth -= 0.015F;
                 case 4 -> //Wider
-                        snoutWidth += 0.02F;
+                        muzzleWidth += 0.02F;
                 case 5 -> //Widest
-                        snoutWidth += 0.035F;
+                        muzzleWidth += 0.035F;
             }
         }
         for (int i = 116; i < 120; i++) {
             switch (gene[i]) {
                 case 2 -> { //Smaller
-                    snoutScale -= 0.015F;
+                    muzzleScale -= 0.015F;
                 }
                 case 3 -> { //Larger
-                    snoutScale += 0.015F;
+                    muzzleScale += 0.015F;
                 }
             }
         }
@@ -120,12 +120,12 @@ public class CatPhenotype implements Phenotype {
         for (int i = 90; i < 94; i++) {
             switch (gene[i]) {
                 case 2 -> { //Smaller
-                    headSize -= 0.04F;
-                    neckWidth -= 0.02F;
+                    headSize -= 0.035F;
+                    neckWidth -= 0.015F;
                 }
                 case 3 -> { //Bigger
-                    headSize += 0.04F;
-                    neckWidth += 0.02F;
+                    headSize += 0.035F;
+                    neckWidth += 0.015F;
                 }
             }
         }
@@ -148,7 +148,7 @@ public class CatPhenotype implements Phenotype {
 
         if (hairless) {
             tailThickness *= 0.75F;
-            headSize *= 0.85F;
+            headSize *= 0.87F;
             neckWidth *= 0.85F;
             neckHeight *= 0.85F;
             lowerLegScale *= 0.85F;

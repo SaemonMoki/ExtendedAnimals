@@ -128,6 +128,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String damName = "???";
     protected Boolean isFemale;
 
+    protected Integer adultAge = null;
+
     protected Boolean breedable = true;
 
     //Hunger
@@ -543,8 +545,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //overloaded version of getAge
     public int getEnhancedAnimalAge() {
-        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.level.getLevelData().getGameTime() - Long.parseLong(getBirthTime()));
+        String birthTime = getBirthTime();
+        if (!(birthTime == null) && !birthTime.equals("") && !birthTime.equals(0)) {
+            return (int)(this.level.getLevelData().getGameTime() - Long.parseLong(birthTime));
         } else {
             setBirthTime(String.valueOf(this.level.getLevelData().getGameTime() - this.getAdultAge()));
             return this.getAdultAge();

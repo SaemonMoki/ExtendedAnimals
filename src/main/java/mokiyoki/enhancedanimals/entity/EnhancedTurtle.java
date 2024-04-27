@@ -246,7 +246,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeTurtle.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeTurtle.get();
+        return this.adultAge;
+    }
 
     public void setHasScute() {
         this.hasScute = this.getEnhancedAnimalAge() < 24000;

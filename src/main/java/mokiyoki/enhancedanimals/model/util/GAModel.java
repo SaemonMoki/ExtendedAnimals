@@ -57,7 +57,7 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
                 }
 
                 if (wrapped.boxIsRendered) {
-                    compile(wrapped.modelPart, poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    wrapped.modelPart.compile(poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
                 for(WrappedModelPart childPart : wrapped.children) {
@@ -67,12 +67,5 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
                 poseStack.popPose();
             }
         }
-    }
-
-    private void compile(ModelPart modelPart, PoseStack.Pose posestack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        for(ModelPart.Cube modelpart$cube : modelPart.cubes) {
-            modelpart$cube.compile(posestack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        }
-
     }
 }

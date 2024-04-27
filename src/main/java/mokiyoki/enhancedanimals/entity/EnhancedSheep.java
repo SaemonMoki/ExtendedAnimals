@@ -272,7 +272,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
+        return this.adultAge;
+    }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {

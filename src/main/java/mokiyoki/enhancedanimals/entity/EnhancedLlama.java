@@ -236,7 +236,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeLlama.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeLlama.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {

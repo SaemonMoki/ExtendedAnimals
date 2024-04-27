@@ -7,20 +7,29 @@ import net.minecraft.world.level.biome.Biomes;
 public class CatBreeds {
     public static final Breed BLACK = new Breed(new Breed.Properties().setData("Black", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(0, "1"), new GeneSketch().add(0, "2").add(12, "1", "1", "1").add(50,"2","2","1|2","1|2","1|2")));
-    public static final Breed BRITISHSHORTHAIR = new Breed(new Breed.Properties().setData("BritishShorthair", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1|2").add(12, "1", "1", "1").add(28,"2").add(50,"2","2","1|2","1|2","1|2")));
+    public static final Breed BRITISHSHORTHAIR = new Breed(new Breed.Properties().setData("BritishShortHairBSH", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1|2").add(12, "1", "1", "1").add(28,"2").add(50,"2","2","1|2","1|2","1|2").add(90,"3","1","2-4").add(120, "5","5")));
     public static final Breed CALICO = new Breed(new Breed.Properties().setData("Calico", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(0, "2,1"), new GeneSketch().add(0, "2").add(12, "2,1|2", "1|2", "1|2")));
     public static final Breed JELLIE = new Breed(new Breed.Properties().setData("Jellie", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch().add(0, "1"), new GeneSketch().add(0, "1", "2").add(12, "2").add(24,"2").add(50,"1|3","1|3","1|3","1","1")));
-
+            .setGeneSketch(new GeneSketch().add(0, "1"), new GeneSketch().add(0, "1", "2").add(12, "2").add(24,"2").add(50,"1|3","1|3","1|3","1","1").add(120, "2", "2-3", "1","1")));
     public static final Breed RAGDOLL = new Breed(new Breed.Properties().setData("Ragdoll", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(12, "2", "2", "2|1,1").add(18,"2").add(32,"1").add(40, "1", "2", "3", "1", "1").add(90, "1|3").add(100,"4", "4", "4", "1", "4", "4", "4", "4").add(120, "3","2","0","0").add(128,"2").add(152, "4", "5-7","5-7","5-7","5-7", "6|7","6|7","6|7","6|7")));
+    public static final Breed PERSIAN = new Breed(new Breed.Properties().setData("Persian", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(12, "1", "1", "1").add(42,"3","4|5").add(50,"2","2","1|2","1|2","1|2").add(100,"5","5","4-5","4-5", "4|5","4|5").add(120, "5","5")));
+    //Cream persian sub-breed exists for converting existing village cats
+    public static final Breed CREAM_PERSIAN = new Breed(PERSIAN, new Breed.Properties().setName("CreamPersian")
+            .setGeneSketch(new GeneSketch().add(0, "2"), new GeneSketch().add(28, "2").add(50,"3","1|3","1|3","1|3","1|3")));
 
+    public static final Breed RED = new Breed(new Breed.Properties().setData("Red", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch().add(0, "2"), new GeneSketch().add(50,"3","1|3","1|3","1|3","1|3")));
+
+    public static final Breed SIAMESE = new Breed(new Breed.Properties().setData("Siamese", Biomes.FOREST, Breed.Rarity.ORDINARY)
+            .setGeneSketch(new GeneSketch().add(0,"1"), new GeneSketch().add(0,"2").add(18,"2").add(40, "1-3").add(46, "2|3").add(48, "4|5").add(94,"1","1","1").add(100, "1-2", "1-2", "1-2", "1-2").add(108, "3", "3", "2|3", "2|3").add(120,"1", "1", "3|4", "4").add(128, "2").add(144,"2", "1")));
 
     public static final Breed SIBERIAN = new Breed(new Breed.Properties().setData("Siberian", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(32,"1").add(40, "1", "2", "3", "1", "1").add(90, "1|3").add(100,"4", "4", "4", "1", "4", "4", "4", "4").add(120, "3","2","0","0").add(128,"2").add(152, "4", "10","10","10","10", "10","10","10","10")));
-    public static final Breed ORIENTALSHORTHAIR = new Breed(new Breed.Properties().setData("OrientalShortHair", Biomes.FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed ORIENTALSHORTHAIR = new Breed(new Breed.Properties().setData("OrientalShortHairOSH", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(40, "3|4").add(46, "2|3").add(48, "4|5").add(94,"1","1","1").add(100, "1-3", "1-3", "1-3", "1-3").add(108, "3", "3", "2|3", "2|3").add(120,"1", "1", "4|5", "4|5").add(128, "1-3", "1-3", "2|3", "2|3").add(144,"3-5", "1")));
 
     //    public static final Breed MAXHAIR = new Breed(new Breed.Properties().setData("MaxHair", Biomes.FOREST, Breed.Rarity.ORDINARY)

@@ -275,7 +275,6 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 2.2D, 2.2D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Cat.class, 10.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 0.8D));

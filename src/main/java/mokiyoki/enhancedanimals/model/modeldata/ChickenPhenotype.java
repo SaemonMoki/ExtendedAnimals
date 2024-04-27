@@ -97,17 +97,6 @@ public class ChickenPhenotype implements Phenotype {
         if (gene[294] == 2 && gene[295] == 2) {
             this.comb = Comb.BREDA_COMBLESS;
         } else {
-            if ((gene[50] == 2 || gene[51] == 2) && !(gene[50] == 1 || gene[51] == 1)) {
-                if (gene[46] == 3 && gene[47] == 3 && gene[48] == 2 && gene[49] == 2) {
-                    //v comb
-                    this.comb = Comb.V;
-                } else {
-                    if (gene[48] == 1 || gene[49] == 1) {
-                        //only waddles
-                        this.comb = Comb.NONE;
-                    }
-                }
-            } else {
                 if (gene[48] == 1 || gene[49] == 1) {
                     if (gene[46] == 3 && gene[47] == 3) {
                         //peacomb
@@ -116,11 +105,8 @@ public class ChickenPhenotype implements Phenotype {
                         //walnut
                         this.comb = Comb.WALNUT;
                     }
-                } else {
-                    if (gene[46] == 3 && gene[47] == 3) {
-                        //single comb
-                        this.comb = Comb.SINGLE;
-                    } else if (gene[46] == 1 || gene[47] == 1) {
+                } else if (gene[46] != 3 || gene[47] != 3) {
+                    if (gene[46] == 1 || gene[47] == 1) {
                         //rose comb
 //                        if (gene[46] == 3 || gene[47] == 3) {
 //                            this.comb = Comb.HET_ROSE_ONE;
@@ -138,13 +124,19 @@ public class ChickenPhenotype implements Phenotype {
                 }
 
                 if (gene[50] == 2 || gene[51] == 2) {
-                    this.duplex = true;
                     this.combSize = -1;
+                    if (gene[50]!=1 && gene[51]!=1) {
+                        if (this.comb.hasPeaComb()) {
+                            this.comb = Comb.NONE;
+                        } else {
+                            this.comb = Comb.V;
+                        }
+                    } else {
+                        this.duplex = true;
+                    }
                 } else {
                     this.duplex = gene[50] == 3 || gene[51] == 3;
                 }
-
-            }
         }
 
         if ((gene[86] == 1 && gene[87] == 1) || (gene[86] == 3 && gene[87] == 3)){

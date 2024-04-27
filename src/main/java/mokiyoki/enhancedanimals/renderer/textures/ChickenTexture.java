@@ -861,7 +861,13 @@ public class ChickenTexture {
             } else {
                 chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/mottles/mottles.png", false);
             }
-            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/barred.png", isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2);
+            String barred = "";
+            if (isFemale) {
+                 if (sGene[6] == 2) barred = "barred";
+            } else if (sGene[6] == 2 || sGene[7] == 2) {
+                barred = sGene[6]==sGene[7]?"barred_double":"barred";
+            }
+            chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/"+barred+".png", barred);
         } else {
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);
         }

@@ -3,9 +3,9 @@ package mokiyoki.enhancedanimals.model.modeldata;
 import mokiyoki.enhancedanimals.util.Genes;
 
 public class AxolotlPhenotype implements Phenotype {
-    boolean glowingBody;
-    boolean glowingEyes;
-    boolean glowingGills;
+    public boolean glowingBody;
+    public boolean glowingEyes;
+    public boolean glowingGills;
     public boolean isLong;
     public AxolotlTailLength tailLength;
 

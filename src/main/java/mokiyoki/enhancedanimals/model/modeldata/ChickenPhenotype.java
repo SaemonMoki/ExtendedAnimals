@@ -52,44 +52,46 @@ public class ChickenPhenotype implements Phenotype {
         this.isVultureHocked = gene[102] == 2 && gene[103] == 2;
         this.creeper = gene[70] == 2 || gene[71] == 2;
 
-        if (gene[56] == 1 || gene[57] == 1) {
-            this.beard = this.nakedNeckType!=NakedNeckType.NONE ? Beard.NN_BEARD : Beard.BIG_BEARD;
-        } else {
-            this.beard = Beard.NONE;
-        }
-
-        //Crest type
-        if (!(gene[54] == 3 && gene[55] == 3)) {
-            if (gene[54] == 3 || gene[55] == 3) {
-                if (gene[54] == 1 || gene[55] == 1) {
-                    this.crestType = Crested.SMALL_CREST;
-                } else {
-                    this.crestType = Crested.SMALL_FORWARDCREST;
-                }
-            } else if (gene[54] != gene[55] || (gene[54] == 1 && gene[55] == 1)) {
-                this.crestType = Crested.BIG_CREST;
+        if (!this.isScaleless) {
+            if (gene[56] == 1 || gene[57] == 1) {
+                this.beard = this.nakedNeckType!=NakedNeckType.NONE ? Beard.NN_BEARD : Beard.BIG_BEARD;
             } else {
-                this.crestType = Crested.BIG_FORWARDCREST;
+                this.beard = Beard.NONE;
             }
-        }
 
-        //Foot Feather Type
-        if (!(gene[60] == 3 && gene[61] == 3)) {
-            if (gene[60] == 1 || gene[61] == 1) {
-                if (gene[58] == 2 && gene[59] == 2) {
-                    this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
-                } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                    this.footFeatherType = FootFeathers.TOEFEATHERS;
-                } else if (gene[58] == 1 || gene[59] == 1) {
-                    this.footFeatherType = FootFeathers.FOOTFEATHERS;
+            //Crest type
+            if (!(gene[54] == 3 && gene[55] == 3)) {
+                if (gene[54] == 3 || gene[55] == 3) {
+                    if (gene[54] == 1 || gene[55] == 1) {
+                        this.crestType = Crested.SMALL_CREST;
+                    } else {
+                        this.crestType = Crested.SMALL_FORWARDCREST;
+                    }
+                } else if (gene[54] != gene[55] || (gene[54] == 1 && gene[55] == 1)) {
+                    this.crestType = Crested.BIG_CREST;
+                } else {
+                    this.crestType = Crested.BIG_FORWARDCREST;
                 }
-            } else {
-                if (gene[58] == 2 && gene[59] == 2) {
-                    this.footFeatherType = FootFeathers.TOEFEATHERS;
-                } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                    this.footFeatherType = FootFeathers.FOOTFEATHERS;
-                } else if (gene[58] == 1 || gene[59] == 1) {
-                    this.footFeatherType = FootFeathers.LEGFEATHERS;
+            }
+
+            //Foot Feather Type
+            if (!(gene[60] == 3 && gene[61] == 3)) {
+                if (gene[60] == 1 || gene[61] == 1) {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                    }
+                } else {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.LEGFEATHERS;
+                    }
                 }
             }
         }

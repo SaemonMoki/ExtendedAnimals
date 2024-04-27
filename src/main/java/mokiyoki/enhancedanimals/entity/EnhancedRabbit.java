@@ -373,7 +373,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeRabbit.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeRabbit.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {

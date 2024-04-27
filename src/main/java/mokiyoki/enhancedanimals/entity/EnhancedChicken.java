@@ -215,7 +215,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeChicken.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeChicken.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {

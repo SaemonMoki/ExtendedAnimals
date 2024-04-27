@@ -50,7 +50,11 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeMoobloom.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeMoobloom.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {

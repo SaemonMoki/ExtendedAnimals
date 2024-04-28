@@ -885,7 +885,7 @@ public class ChickenTexture {
         }
         if (!autosomalRed.isEmpty() && (gene[20] == 1 || gene[21] == 1)) {
             if (gene[170] == 1 || gene[171] == 1) {
-                TextureGrouping autosomalRedGroup = new TextureGrouping(sGene[0]==1||(!isFemale&&sGene[1]==1)?TexturingType.MERGE_GROUP:TexturingType.APPLY_PHEOMELANIN);
+                TextureGrouping autosomalRedGroup = new TextureGrouping(isFemale || sGene[0]==1 || sGene[1]==1?TexturingType.MERGE_GROUP:TexturingType.APPLY_PHEOMELANIN);
                 int red = calculateAutosomalRedRGB(sGene, gene, isFemale);
                     chicken.addTextureToAnimalTextureGrouping(autosomalRedGroup, TexturingType.APPLY_RGBA, "feather_colour/autosomal_red/" + autosomalRed + ".png", autosomalRed, red);
                     if (gene[34] == 1 || gene[35] == 1) {

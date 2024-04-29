@@ -212,6 +212,11 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
 
+        // SMOKY FACTOR - increases levels of dark hairs scattered thru coat
+        // rufousing?
+
+
+
         //eye size? 1-5
     //    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
     //        autosomalGenes[6] = (ThreadLocalRandom.current().nextInt(5) + 1);
@@ -266,6 +271,20 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[29] = (1);
         }
 
+
+        //hair density [ furry, wildtype, sparse ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            autosomalGenes[34] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            autosomalGenes[35] = (2);
+        }
 
         // ear size, spacing, angle
 

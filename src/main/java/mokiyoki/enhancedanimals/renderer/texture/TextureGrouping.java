@@ -53,6 +53,7 @@ public class TextureGrouping {
                 case MERGE_GROUP -> layerGroups(baseImage, groupImages);
                 case MASK_GROUP -> maskAlpha(baseImage, groupImages);
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
+                case OVERLAY_GROUP -> blendOverlay(baseImage, groupImages);
                 case CUTOUT_GROUP -> cutoutTextures(baseImage, groupImages);
                 case APPLY_SHADING -> applyShading(baseImage, groupImages);
                 case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
@@ -232,6 +233,10 @@ public class TextureGrouping {
         applyAverageBlend(compiledImage, groupImages);
     }
 
+    private void blendOverlay(NativeImage compiledImage, List<NativeImage> groupImages) {
+        applyOverlayBlend(compiledImage, groupImages);
+    }
+
     private void applyLayerSpecifics(TextureLayer layer, Colouration colouration) {
         switch(layer.getTexturingType()) {
             case APPLY_RED:
@@ -267,7 +272,7 @@ public class TextureGrouping {
     }
 
     public void addGrouping(TextureGrouping textureGrouping) {
-            this.textureGroupings.add(textureGrouping);
+        this.textureGroupings.add(textureGrouping);
     }
 
     public void addTextureLayers(TextureLayer textureLayer) {

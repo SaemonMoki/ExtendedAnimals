@@ -431,7 +431,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedsheep.setGenes(babyGenes);
         enhancedsheep.setSharedGenes(babyGenes);
         enhancedsheep.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -966,8 +966,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
 
             boolean mealy = false;
             int pattern1 = 0;
@@ -1190,7 +1190,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public Colouration getRgb() {
-        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getSharedGenes()!=null;
+        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getGenes()!=null;
         this.colouration = super.getRgb();
 
         if(this.colouration == null) {
@@ -1198,7 +1198,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
 
         if (flag) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+            int[] gene = getGenes().getAutosomalGenes();
             float[] melanin = {0.02F, 0.5F, 0.02F};
             float[] pheomelanin = getBasePheomelanin(gene[72]);
             float[] f = getBasePheomelanin(gene[73]);

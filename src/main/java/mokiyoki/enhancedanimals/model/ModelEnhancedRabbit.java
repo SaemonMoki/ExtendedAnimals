@@ -735,7 +735,7 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new RabbitPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(6));
+        return new RabbitPhenotype(enhancedAnimal.getGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(6));
     }
 
 

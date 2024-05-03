@@ -319,7 +319,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         turtle.setGenes(babyGenes);
         turtle.setSharedGenes(babyGenes);
         turtle.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -447,8 +447,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
             int base = 0;
             int pibald = 0;
 

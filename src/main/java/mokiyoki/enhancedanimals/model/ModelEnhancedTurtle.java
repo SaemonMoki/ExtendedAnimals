@@ -279,6 +279,6 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new TurtlePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
+        return new TurtlePhenotype(enhancedAnimal.getGenes().getAutosomalGenes());
     }
 }

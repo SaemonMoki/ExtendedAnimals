@@ -320,7 +320,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedhorse.setGenes(babyGenes);
         enhancedhorse.setSharedGenes(babyGenes);
         enhancedhorse.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -418,8 +418,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] genesForText = getGenes().getAutosomalGenes();
 
             if (genesForText != null) {
                 int dun = 0;
@@ -555,7 +555,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     public Colouration getRgb() {
         this.colouration = super.getRgb();
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
-            Genes genes = getSharedGenes();
+            Genes genes = getGenes();
             if (genes != null) {
                 int[] gene = genes.getAutosomalGenes();
                 if ((gene[18] == 20 || gene[18] == 28 || gene[18] == 29) && (gene[19] == 20 || gene[19] == 28 || gene[19] == 29)) {

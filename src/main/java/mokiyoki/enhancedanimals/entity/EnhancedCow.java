@@ -396,7 +396,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedcow.setGenes(babyGenes);
         enhancedcow.setSharedGenes(babyGenes);
         enhancedcow.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -620,7 +620,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        Genes genes = getSharedGenes();
+        Genes genes = getGenes();
 
         if (genes != null) {
             calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());

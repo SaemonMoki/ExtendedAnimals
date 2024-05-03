@@ -631,7 +631,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedrabbit.setGenes(babyGenes);
         enhancedrabbit.setSharedGenes(babyGenes);
         enhancedrabbit.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -948,8 +948,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] genesForText = this.getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] genesForText = this.getGenes().getAutosomalGenes();
 
             int under = 0;
             int lower = 0;

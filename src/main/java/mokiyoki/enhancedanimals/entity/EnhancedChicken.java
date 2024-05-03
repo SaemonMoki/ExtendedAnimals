@@ -67,10 +67,6 @@ import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculat
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.*;
 
-
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -894,7 +890,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
         if (enhancedchicken != null) {
-            Genes genes = new Genes(this.genetics).makeChild(!this.getOrSetIsFemale(), otherParent.getSharedGenes(), !otherParent.getOrSetIsFemale(), Genes.Species.CHICKEN);
+            Genes genes = new Genes(this.genetics).makeChild(!this.getOrSetIsFemale(), otherParent.getGenes(), !otherParent.getOrSetIsFemale(), Genes.Species.CHICKEN);
             enhancedchicken.setGenes(genes);
             enhancedchicken.setSharedGenes(genes);
             enhancedchicken.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());

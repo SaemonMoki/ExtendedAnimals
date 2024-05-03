@@ -1156,7 +1156,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new PigPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
+        return new PigPhenotype(enhancedAnimal.getGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
     }
 
 

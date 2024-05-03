@@ -289,7 +289,7 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new HorsePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
+        return new HorsePhenotype(enhancedAnimal.getGenes().getAutosomalGenes());
     }
 }
 

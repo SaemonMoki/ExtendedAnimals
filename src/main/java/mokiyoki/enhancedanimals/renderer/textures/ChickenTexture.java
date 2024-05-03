@@ -18,10 +18,10 @@ public class ChickenTexture {
      */
 
     public static void calculateChickenTextures(EnhancedChicken chicken) {
-        if (chicken.getSharedGenes() != null) {
+        if (chicken.getGenes() != null) {
             boolean isFemale = chicken.getOrSetIsFemale();
-            int[] sGene = chicken.getSharedGenes().getSexlinkedGenes();
-            int[] gene = chicken.getSharedGenes().getAutosomalGenes();
+            int[] sGene = chicken.getGenes().getSexlinkedGenes();
+            int[] gene = chicken.getGenes().getAutosomalGenes();
 
             boolean isNakedNeck = gene[52] == 1 || gene[53] == 1;
             String pattern = "";

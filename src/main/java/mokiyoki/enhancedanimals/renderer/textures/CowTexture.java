@@ -93,8 +93,8 @@ public class CowTexture {
     };
 
     public static void calculateCowTextures(EnhancedCow cow) {
-        if (cow.getSharedGenes() != null) {
-            int[] gene = cow.getSharedGenes().getAutosomalGenes();
+        if (cow.getGenes() != null) {
+            int[] gene = cow.getGenes().getAutosomalGenes();
 
             int base = 0;
             int red = 1;

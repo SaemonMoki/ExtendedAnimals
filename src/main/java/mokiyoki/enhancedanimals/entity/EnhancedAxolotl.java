@@ -421,7 +421,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         axolotl.setGenes(babyGenes);
         axolotl.setSharedGenes(babyGenes);
         axolotl.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -558,8 +558,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
             int gills = 0;
             int gillsColour = 0;
             int gillsColour2 = 0;
@@ -648,7 +648,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        Genes genes = getSharedGenes();
+        Genes genes = getGenes();
         if (genes != null) {
             if (this.colouration.getDyeColour() == -1 || this.colouration.getLeftEyeColour() == -1 || this.colouration.getRightEyeColour() == -1 || this.colouration.getBridleColour() == -1) {
                 int[] gene = genes.getAutosomalGenes();
@@ -793,9 +793,9 @@ NBT read/write
     @OnlyIn(Dist.CLIENT)
     public void setBucketImageData(EnhancedLayeredTexturer texture) {
         if (this.isAlive()) {
-            if (this.getSharedGenes() != null && texture.hasImage()) {
-                boolean g = this.getSharedGenes().isHomozygousFor(34, 2) ^ this.getSharedGenes().isHomozygousFor(36, 2);
-                boolean l = this.getSharedGenes().isHomozygousFor(32, 2);
+            if (this.getGenes() != null && texture.hasImage()) {
+                boolean g = this.getGenes().isHomozygousFor(34, 2) ^ this.getGenes().isHomozygousFor(36, 2);
+                boolean l = this.getGenes().isHomozygousFor(32, 2);
                 int[] axolotlBucketImage = new int[86];
                 int[] x = new int[]{
                         g?40:39, 40, 41, 46, 47, g?47:48,
@@ -897,7 +897,7 @@ NBT read/write
         Bucketable.saveDefaultDataToBucketTag(this, stack);
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
             EnhancedAxolotlBucket.setImage(stack, getImageArrayFromString(this.getBucketImage()));
-            EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
+            EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
             if (this.hasEgg() && this.mateGenetics != null) {

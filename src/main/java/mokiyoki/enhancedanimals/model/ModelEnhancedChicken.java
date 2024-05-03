@@ -2053,6 +2053,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.chickenModelData = getCreateChickenModelData(entityIn);
         if (this.chickenModelData != null) {
+
             ChickenPhenotype chicken = this.chickenModelData.getPhenotype();
             readInitialAnimationValues(this.chickenModelData, chicken);
 
@@ -2401,6 +2402,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         if (neckMod<0.0F) neckMod = 0.0F;
         theHead.lerpXRot(1.5708F*bodyMod*neckMod);
         theNeck.lerpY(-2.5F);
+        theNeck.lerpZ(-3.5F);
     }
 
     /**
@@ -2479,7 +2481,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         return false;
     }
     private boolean preenBelly(float ticks) {
-        theNeck.setY(this.lerpTo(theNeck.getY(), -6.01F));
+        theNeck.lerpY(-4.5F);
+        theNeck.lerpZ(-2.75F);
         theNeck.setYRot(this.lerpTo(theNeck.getYRot(), 0.0F));
         theNeck.setXRot(this.lerpTo(theNeck.getXRot(), Mth.HALF_PI*1.7F));
         theHead.setYRot(this.lerpTo(theHead.getYRot(), 0.0F));

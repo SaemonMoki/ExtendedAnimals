@@ -32,7 +32,7 @@ public class CatPhenotype implements Phenotype {
     public float tailThickness = 1.0F;
     public int bobtail = 0;
     public boolean curledEars = false;
-    public boolean foldedEars = false;
+    public boolean foldedEars = true;
 
     public CatPhenotype(int[] gene, char uuid) {
         longHaired = (gene[152] > 1 && gene[153] > 1);
@@ -60,7 +60,7 @@ public class CatPhenotype implements Phenotype {
         for (int i = 100; i < 108; i++) {
             switch (gene[i]) {
                 case 2 -> //Longest
-                        muzzleLength += 0.0325F;
+                        muzzleLength += 0.028F;
                 case 3 -> //Longer
                         muzzleLength += 0.02F;
                 case 4 -> //Shorter

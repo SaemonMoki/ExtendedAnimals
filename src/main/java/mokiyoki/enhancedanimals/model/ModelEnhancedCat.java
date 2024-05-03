@@ -843,7 +843,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 }
             } else if (cat.foldedEars) {
                 earYAngle = Mth.HALF_PI*-(0.9F);
-                earXAngle = Mth.HALF_PI*(1.225F);
+                earXAngle = Mth.HALF_PI*(1.225F - (cat.headWidth*0.075F));
                 earY = (-2.2F) - (cat.earSize*0.075F);
                 earZ = -1.75F;
                 ear4XRot = Mth.HALF_PI*0.15F + (Mth.HALF_PI*0.10F*cat.earSize);

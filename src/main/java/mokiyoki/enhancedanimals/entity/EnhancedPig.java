@@ -666,6 +666,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         float muscle = getPigMuscle();
         float fat = getPigFat();
 
+        float size = this.getAnimalSize();
+        if (size > 1.05F) {
+            speedMod = speedMod/size;
+        }
+
         if (fat > 0.55F) {
             speedMod -= fat * 0.15F;
         }
@@ -674,11 +679,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
         else {
             speedMod += 0.4F * muscle;
-        }
-
-        float size = this.getAnimalSize();
-        if (size > 1.05F) {
-            speedMod = speedMod/size;
         }
 
         float chestMod = 0.0F;
@@ -2113,12 +2113,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
 
     private float getPigFat() {
+        int[] genes = this.genetics.getAutosomalGenes();
         float fat = 0;
-        if (fat < 0) {
-            int[] genes = this.genetics.getAutosomalGenes();
-            for (int i = 174; i < 182; i++) {
-                fat += (genes[i] / 80.0F);
-            }
+        for (int i = 174; i < 182; i++) {
+            fat += (genes[i] / 80.0F);
         }
         return fat;
     };

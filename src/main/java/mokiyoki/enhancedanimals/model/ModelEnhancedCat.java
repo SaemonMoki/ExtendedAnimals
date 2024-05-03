@@ -431,23 +431,23 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         deformation = new CubeDeformation(-1.5F, 0.0F, -1.5F);
         base.addOrReplaceChild("toesFL", CubeListBuilder.create()
                         .texOffs(31, 54)
-                        .addBox(-2.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
-                PartPose.offset(0.0F, 1.0F, 0.0F)
+                        .addBox(-3.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
+                PartPose.offset(1.0F, 1.0F, 0.0F)
         );
         base.addOrReplaceChild("toesFR", CubeListBuilder.create()
                         .texOffs(41, 54)
-                        .addBox(-2.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
-                PartPose.offset(0.0F, 1.0F, 0.0F)
+                        .addBox(-1.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
+                PartPose.offset(-1.0F, 1.0F, 0.0F)
         );
         base.addOrReplaceChild("toesBL", CubeListBuilder.create()
                         .texOffs(31, 59)
-                        .addBox(-2.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
-                PartPose.offset(0.0F, 1.0F, 0.0F)
+                        .addBox(-3.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
+                PartPose.offset(1.0F, 1.0F, 0.0F)
         );
         base.addOrReplaceChild("toesBR", CubeListBuilder.create()
                         .texOffs(41, 59)
-                        .addBox(-2.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
-                PartPose.offset(0.0F, 1.0F, 0.0F)
+                        .addBox(-1.5F, 0.05F, -2.5F, 5, 0, 5, deformation),
+                PartPose.offset(-1.0F, 1.0F, 0.0F)
         );
 
         /**
@@ -744,11 +744,15 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             mapOfScale.put("legBFL", legScalings);
             mapOfScale.put("legBBL", legScalings);
             mapOfScale.put("pawFL", legScalings);
-            mapOfScale.put("pawBL", legScalings);
+            mapOfScale.put("pawFR", legScalings);
+            mapOfScale.put("toesFL", legScalings);
+            mapOfScale.put("toesFR", legScalings);
             mapOfScale.put("legBFR", legScalings);
             mapOfScale.put("legBBR", legScalings);
-            mapOfScale.put("pawFR", legScalings);
+            mapOfScale.put("pawBL", legScalings);
             mapOfScale.put("pawBR", legScalings);
+            mapOfScale.put("toesBL", legScalings);
+            mapOfScale.put("toesBR", legScalings);
             List<Float> frontThighScalings = ModelHelper.createScalings((cat.lowerLegScale)+(cat.furSize*0.25F), 1F, (cat.lowerLegScale)+(cat.furSize*0.25F), 0F, 0F, 0F);
             mapOfScale.put("legFL", frontThighScalings);
             mapOfScale.put("legFR", frontThighScalings);

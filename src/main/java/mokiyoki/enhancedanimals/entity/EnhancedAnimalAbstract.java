@@ -588,7 +588,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public Genes getGenes(){
-        return this.genetics;
+        if (this.level instanceof ServerLevel) {
+            return this.genetics;
+        } else {
+            return this.getClientSidedGenes();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1716,7 +1720,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     @OnlyIn(Dist.CLIENT)
-    public Genes getSharedGenes() {
+    private Genes getClientSidedGenes() {
         if(this.genesSplitForClient==null) {
             String sharedGenes = this.entityData.get(SHARED_GENES);
             if (sharedGenes.isEmpty()) {

@@ -24,10 +24,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
@@ -150,7 +146,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     }
 
     protected void setBaseInitialModelData(AnimalModelData animalModelData, T enhancedAnimal) {
-        if (enhancedAnimal.getSharedGenes()!=null) {
+        if (enhancedAnimal.getGenes()!=null) {
             animalModelData.phenotype = createPhenotype(enhancedAnimal);
         }
 

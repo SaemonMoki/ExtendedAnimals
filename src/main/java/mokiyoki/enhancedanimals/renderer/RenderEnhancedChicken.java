@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.renderer;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
-import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
@@ -15,9 +14,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.Map;
-
 
 /**
  * Created by saemon on 2/09/2018.
@@ -40,8 +36,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
         boolean silkie = false;
-        if (entity.getSharedGenes() != null) {
-            silkie = entity.getSharedGenes().isHomozygousFor(106, 2);
+        if (entity.getGenes() != null) {
+            silkie = entity.getGenes().isHomozygousFor(106, 2);
         }
 
         if (s == null || s.isEmpty() || colourRGB == null) {

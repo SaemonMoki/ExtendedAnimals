@@ -584,7 +584,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
     @Override
     protected Phenotype createPhenotype(T enhancedAxolotl) {
-        return new AxolotlPhenotype(enhancedAxolotl.getSharedGenes());
+        return new AxolotlPhenotype(enhancedAxolotl.getGenes());
     }
 
 

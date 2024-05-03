@@ -2779,7 +2779,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     @Override
     protected ChickenPhenotype createPhenotype(T enhancedAnimal) {
-        return new ChickenPhenotype(enhancedAnimal.getSharedGenes(), enhancedAnimal.getOrSetIsFemale());
+        return new ChickenPhenotype(enhancedAnimal.getGenes(), enhancedAnimal.getOrSetIsFemale());
     }
 
     protected float getExtraGrowth(float age) {

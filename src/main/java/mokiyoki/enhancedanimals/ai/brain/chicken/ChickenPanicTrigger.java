@@ -38,7 +38,7 @@ public class ChickenPanicTrigger extends Behavior<EnhancedChicken> {
    }
 
    protected void tick(ServerLevel server, EnhancedChicken chicken, long p_24702_) {
-      int[] gene = chicken.getSharedGenes().getAutosomalGenes();
+      int[] gene = chicken.getGenes().getAutosomalGenes();
 
       //random chance to space the tick and gene check to ensure not scaleless
       if (p_24702_ % 3L == 0L && !(gene[108] == 2 && gene[109] == 2)) {

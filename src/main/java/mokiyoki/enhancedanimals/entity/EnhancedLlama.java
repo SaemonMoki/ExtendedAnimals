@@ -393,7 +393,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedllama.setGenes(babyGenes);
         enhancedllama.setSharedGenes(babyGenes);
         enhancedllama.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -682,8 +682,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] genesForText = this.getGenes().getAutosomalGenes();
 
             int ground = 0;
             int pattern = 0;

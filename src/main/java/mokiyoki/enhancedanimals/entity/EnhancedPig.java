@@ -538,7 +538,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
         EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getSharedGenes());
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedpig.setGenes(babyGenes);
         enhancedpig.setSharedGenes(babyGenes);
         enhancedpig.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
@@ -860,8 +860,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
             int eyes = 0;
             int red = 1;
             int black = 0;

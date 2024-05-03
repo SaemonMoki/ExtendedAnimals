@@ -130,7 +130,19 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedMooshroom mooshroom = (EnhancedMooshroom) super.createEnhancedChild(level, otherParent);
+        EnhancedMooshroom mooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        mooshroom.setGenes(babyGenes);
+        mooshroom.setSharedGenes(babyGenes);
+        mooshroom.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        mooshroom.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        mooshroom.setParent(this.getUUID().toString());
+        mooshroom.setGrowingAge();
+        mooshroom.setBirthTime();
+        mooshroom.initilizeAnimalSize();
+        mooshroom.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        mooshroom.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        mooshroom.configureAI();
         mooshroom.setMooshroomType(this.getChildMushroomType(((EnhancedMooshroom) otherParent).getMooshroomType()));
         return mooshroom;
     }
@@ -285,12 +297,6 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public EnhancedMooshroom.Type getMooshroomType() {
         return EnhancedMooshroom.Type.getTypeByName(this.entityData.get(MOOSHROOM_TYPE));
-    }
-
-    @Override
-    public EnhancedMooshroom getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-        super.getBreedOffspring(serverWorld, ageable);
-        return null;
     }
 
     private Type getChildMushroomType(Type otherMooshroom) {

@@ -1449,6 +1449,6 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new LlamaPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
+        return new LlamaPhenotype(enhancedAnimal.getGenes().getAutosomalGenes());
     }
 }

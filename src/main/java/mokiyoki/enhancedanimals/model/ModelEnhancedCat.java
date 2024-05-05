@@ -829,54 +829,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             CatPhenotype cat = catModelData.getPhenotype();
-            float earXAngle = 0F;
-            float earYAngle = 0F;
-            float earZAngle = (Mth.HALF_PI*1.1F*cat.earSpacing);
-            float ear4XRot = 0F;
-            float earX = (cat.headWidth*1.25F)+(cat.earSpacing*1.25F*cat.headWidth)+(earZAngle*0.4F);
-            float earY = -1F;
-            float earZ = 0.5F;
-            theEarL.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earZAngle)*0.75F));
-            theEarR.setY(-1.5F+(1.5F*cat.earSpacing)-(Mth.sin(earZAngle)*0.75F));
-            if (cat.curledEars) {
-                earZAngle -= Mth.HALF_PI*0.1F;
-                earYAngle = Mth.HALF_PI*-0.5F;
-                ear4XRot = -Mth.HALF_PI*0.15F;
-                if (cat.foldedEars) {
-                    earXAngle = -Mth.HALF_PI*0.25F;
-                }
-            } else if (cat.foldedEars) {
-                earYAngle = Mth.HALF_PI*-(0.9F);
-                earXAngle = Mth.HALF_PI*(1.225F - (cat.headWidth*0.075F));
-                earY = (-2.2F) - (cat.earSize*0.075F);
-                earZ = -1.75F;
-                ear4XRot = Mth.HALF_PI*0.15F + (Mth.HALF_PI*0.10F*cat.earSize);
-                earZAngle = 0F;
-                if (cat.earSpacing >= 0.375F) {
-                    earXAngle = Mth.HALF_PI*(1.7F + (cat.earSize*0.15F));
-                    earYAngle = Mth.HALF_PI*-1F;
-                    earX = cat.headWidth*3.05F;
-                    earY = (-0.5F) + (cat.earSize*0.2F);
-                    earZ = -2F;
-                }
-                else if (cat.earSpacing <= 0.125F) {
-                    earX = (cat.headWidth*1.35F);
-                }
-                else {
-                    earX = (cat.headWidth*1.5F);
-//                    earYAngle += Mth.HALF_PI*(cat.earSize*0.25F);
-                }
-            }
-            theEarL.setX(earX);
-            theEarR.setX(-earX);
-            theEarL.setY(earY);
-            theEarR.setY(earY);
-            theEarL.setZ(earZ);
-            theEarR.setZ(earZ);
-            earL[4].setXRot(ear4XRot);
-            earR[4].setXRot(ear4XRot);
-            theEarL.setRotation(earXAngle, earYAngle, earZAngle);
-            theEarR.setRotation(earXAngle, -earYAngle, -earZAngle);
+
+            theEarL.setX(cat.earX);
+            theEarR.setX(-cat.earX);
+            theEarL.setY(cat.earY);
+            theEarR.setY(cat.earY);
+            theEarL.setZ(cat.earZ);
+            theEarR.setZ(cat.earZ);
+            earL[4].setXRot(cat.ear4XRot);
+            earR[4].setXRot(cat.ear4XRot);
+            theEarL.setRotation(cat.earXRot, cat.earYRot, cat.earZRot);
+            theEarR.setRotation(cat.earXRot, -cat.earYRot, -cat.earZRot);
             theSnout.setZ(-3.5F);
             theLegBackLeft.setXRot(Mth.PI*-0.05F);
             theLegBackRight.setXRot(Mth.PI*-0.05F);

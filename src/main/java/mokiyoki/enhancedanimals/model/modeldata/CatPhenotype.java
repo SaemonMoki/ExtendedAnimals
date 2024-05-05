@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import net.minecraft.util.Mth;
+
 public class CatPhenotype implements Phenotype {
     public boolean longHaired;
     public boolean hairless = false;
@@ -22,6 +24,15 @@ public class CatPhenotype implements Phenotype {
     public float earSize = 0.0F;
     public float earLength = 0.0F;
     public float earRoundness = 1.0F;
+
+    public float earX;
+    public float earY = -1.0F;
+    public float earZ = 0.5F;
+    public float earXRot = 0.0F;
+    public float earYRot = 0.0F;
+    public float earZRot;
+    public float ear4XRot = 0.0F;
+
     public float jawScale = 1.25F;
     public float bodyType = 0.0F; //Positive - shorter rounder; Negative - longer skinnier
     public boolean isCobby = false;
@@ -165,16 +176,57 @@ public class CatPhenotype implements Phenotype {
             tailThickness += (furSize * 0.25F);
         }
 
-        earSpacing = (gene[128]+gene[129]+gene[130]+gene[131]-4)/16F;
-        earFlare = (gene[132]+gene[133]+gene[134]+gene[135]-4)/8F;
-        earSpacing += earFlare/2F;
-
-        earLength = (gene[136]+gene[137]+gene[138]+gene[139]-4)/16F;
-        earRoundness = (gene[140]+gene[141]+gene[142]+gene[143]-4)/16F;
-        earSize = ((gene[144]+gene[145])-(gene[146]+gene[147]))/8F;
+        getEarValues(gene);
 
         this.bobtail = (gene[26]==2 || gene[27]==2) ? (uuid % 4) + 1 : 0;
+    }
+
+    private void getEarValues(int[] gene) {
+        earSpacing = (gene[128]+ gene[129]+ gene[130]+ gene[131]-4)/16F;
+        earFlare = (gene[132]+ gene[133]+ gene[134]+ gene[135]-4)/8F;
+        earSpacing += earFlare/2F;
+
+        earLength = (gene[136]+ gene[137]+ gene[138]+ gene[139]-4)/16F;
+        earRoundness = (gene[140]+ gene[141]+ gene[142]+ gene[143]-4)/16F;
+        earSize = ((gene[144]+ gene[145])-(gene[146]+ gene[147]))/8F;
 
 //        this.curledEars = gene[172]==2 || gene[173]==2;
+        
+        calculateEars();
+    }
+
+    private void calculateEars() {
+        earZRot = (Mth.HALF_PI*1.1F*earSpacing);
+        earX = (headWidth*1.25F)+(earSpacing*1.25F*headWidth)+(earZRot *0.4F);
+
+        if (curledEars) {
+            earZRot -= Mth.HALF_PI*0.1F;
+            earYRot = Mth.HALF_PI*-0.5F;
+            ear4XRot = -Mth.HALF_PI*0.15F;
+            if (foldedEars) {
+                earXRot = -Mth.HALF_PI*0.25F;
+            }
+        } else if (foldedEars) {
+            earYRot = Mth.HALF_PI*-(0.9F);
+            earXRot = Mth.HALF_PI*(1.225F - (headWidth*0.075F));
+            earY = (-2.2F) - (earSize*0.075F);
+            earZ = -1.75F;
+            ear4XRot = Mth.HALF_PI*0.15F + (Mth.HALF_PI*0.10F*earSize);
+            earZRot = 0F;
+            if (earSpacing >= 0.375F) {
+                earXRot = Mth.HALF_PI*(1.7F + (earSize*0.15F));
+                earYRot = Mth.HALF_PI*-1F;
+                earX = headWidth*3.05F;
+                earY = (-0.5F) + (earSize*0.2F);
+                earZ = -2F;
+            }
+            else if (earSpacing <= 0.125F) {
+                earX = (headWidth*1.35F);
+            }
+            else {
+                earX = (headWidth*1.5F);
+//                    earYAngle += Mth.HALF_PI*(cat.earSize*0.25F);
+            }
+        }
     }
 }

@@ -953,6 +953,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         this.catModelData = getCreateCatModelData(entityIn);
 
         if (this.catModelData != null) {
+            CatPhenotype cat = this.catModelData.getPhenotype();
             setupInitialAnimationValues(this.catModelData);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
             boolean awake = true;

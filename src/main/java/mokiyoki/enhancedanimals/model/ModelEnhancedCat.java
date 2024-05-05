@@ -971,12 +971,15 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             if (awake) {
                 if (isMoving) {
+                    defaultEars(cat);
                     standing();
                     legsWalking(limbSwing, limbSwingAmount);
                 } else {
                     if (entityIn.isOrderedToSit()) {
+                        fearfulEars(cat);
                         sitting();
                     } else {
+                        defaultEars(cat);
                         standing();
                         legsDefault();
                     }
@@ -992,7 +995,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     private void defaultEars(CatPhenotype cat) {
         if (theEarL.getYRot() == cat.earYRot) return;
-        if (Mth.abs(theEarL.getXRot()-cat.earXRot) < 0.0001F || Mth.abs(theEarL.getZRot()-cat.earZRot) < 0.0001F || Mth.abs(theEarL.getYRot()-cat.earYRot) < 0.0001F) {
+        if (Mth.abs(theEarL.getXRot()-cat.earXRot) < 0.0001F && Mth.abs(theEarL.getZRot()-cat.earZRot) < 0.0001F && Mth.abs(theEarL.getYRot()-cat.earYRot) < 0.0001F) {
             theEarL.setRotation(cat.earXRot, cat.earYRot, cat.earZRot);
             theEarR.setRotation(cat.earXRot, -cat.earYRot, -cat.earZRot);
         } else {
@@ -1008,21 +1011,30 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         float earX = cat.earXRot+(Mth.PI*0.1F);
         float earY = cat.earYRot-(Mth.PI*0.7F);
         if (theEarL.getYRot() == earY) return;
-        if (theEarL.getYRot() < earY + 0.0001F) {
+        if (Mth.abs(theEarL.getYRot() - earY) < 0.0001F && Mth.abs(theEarL.getXRot() - earX) < 0.0001F) {
             theEarL.setRotation(earX, earY, cat.earZRot);
             theEarR.setRotation(earX, -earY, -cat.earZRot);
         } else {
             theEarL.lerpXRot(earX);
             theEarL.lerpYRot(earY);
-//            theEarL.lerpZRot(cat.earZRot);
             theEarR.lerpXRot(earX);
             theEarR.lerpYRot(-earY);
-//            theEarR.lerpZRot(-cat.earZRot);
         }
     }
 
-    private void fearfulEars() {
-
+    private void fearfulEars(CatPhenotype cat) {
+        float earX = cat.earXRot+(Mth.PI*0.3F);
+        float earY = cat.earYRot-(Mth.PI*0.5F);
+        if (theEarL.getYRot() == earY) return;
+        if (Mth.abs(theEarL.getYRot() - earY) < 0.0001F && Mth.abs(theEarL.getXRot() - earX) < 0.0001F) {
+            theEarL.setRotation(earX, earY, cat.earZRot);
+            theEarR.setRotation(earX, -earY, -cat.earZRot);
+        } else {
+            theEarL.lerpXRot(earX);
+            theEarL.lerpYRot(earY);
+            theEarR.lerpXRot(earX);
+            theEarR.lerpYRot(-earY);
+        }
     }
 
     private void legsDefault() {
@@ -1093,6 +1105,10 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         return false;
     }
 
+    private void archedBack() {
+
+    }
+
     /**
      *  TODO
      *  should return true if they have laid down,
@@ -1100,6 +1116,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
      */
     private boolean layDownAnimation() {
         return true;
+    }
+
+    private void loaf() {
+        if (layDownAnimation()) {
+            /**
+             *  become loaf
+             */
+        }
     }
 
     private void headLookingAnimation(float netHeadYaw, float headPitch) {
@@ -1132,6 +1156,42 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             eyeR[1].lerpX(-0.5F);
             eyeL[2].lerpX(-0.5F);
         }
+    }
+
+    private void tailHookUp() {
+
+    }
+
+    private void tailCurvedDown() {
+        /**
+         *  angry/scared. Maybe being crazy and playful
+         */
+
+    }
+
+    private void tailStrightUp() {
+
+    }
+
+    private void tailFlick() {
+        /**
+         *  tail tip sort of flick
+         */
+
+    }
+
+    private void tailWave() {
+        /**
+         *  slow and lazy paced
+         */
+
+    }
+
+    private void tailWag() {
+        /**
+         *  clearly pissed
+         */
+
     }
 
     private void articulate() {

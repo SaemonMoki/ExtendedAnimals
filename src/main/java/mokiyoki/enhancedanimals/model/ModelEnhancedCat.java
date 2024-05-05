@@ -679,9 +679,6 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-//            System.out.println((packedLightIn & 0xFFFF) >> 4); //block light
-//            System.out.println(packedLightIn >> 20 & '\uffff'); //sky light
-
             float dilation = 1.0F-(Math.max(((packedLightIn & 0xFFFF) >> 4)/15F, ((packedLightIn >> 20 & '\uffff')/15F) * (catModelData.light))*0.8F);
 
 //            mapOfScale.put("base", ModelHelper.createScalings(1F, 0.0F, 1.0F, 0.0F));
@@ -698,30 +695,30 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 mapOfScale.put("eyeR2", ModelHelper.createScalings(dilation, 1.0F, 1.0F,  dilation>1.0F? -0.5F*xOff : xOff, 0.0F, 0.0F));
             }
 
-            this.bodyFurFrontShort.show(cat.furnishings == 1);
-            this.bodyFurFrontMed.show(cat.furnishings == 2);
-            this.bodyFurFrontLong.show(cat.furnishings == 3);
-            this.bodyFurBackShort.show(cat.furnishings == 1);
-            this.bodyFurBackMed.show(cat.furnishings == 2);
-            this.bodyFurBackLong.show(cat.furnishings == 3);
-            this.neckRuff.show(cat.furnishings > 1);
-            this.cheekFluffLeft.show(cat.furnishings > 0);
-            this.cheekFluffRight.show(cat.furnishings > 0);
-            this.legFurBackLeft.show(cat.furnishings > 0);
-            this.legFurBackRight.show(cat.furnishings > 0);
-            this.earFluffL.show(cat.furnishings > 1);
-            this.earFluffR.show(cat.furnishings > 1);
+            bodyFurFrontShort.show(cat.furnishings == 1);
+            bodyFurFrontMed.show(cat.furnishings == 2);
+            bodyFurFrontLong.show(cat.furnishings == 3);
+            bodyFurBackShort.show(cat.furnishings == 1);
+            bodyFurBackMed.show(cat.furnishings == 2);
+            bodyFurBackLong.show(cat.furnishings == 3);
+            neckRuff.show(cat.furnishings > 1);
+            cheekFluffLeft.show(cat.furnishings > 0);
+            cheekFluffRight.show(cat.furnishings > 0);
+            legFurBackLeft.show(cat.furnishings > 0);
+            legFurBackRight.show(cat.furnishings > 0);
+            earFluffL.show(cat.furnishings > 1);
+            earFluffR.show(cat.furnishings > 1);
             for (int i = 0; i < 7; i++) {
-                this.tailFur[i].show(cat.furnishings > 0);
+                tailFur[i].show(cat.furnishings > 0);
             }
 
-            this.tail[6].show(cat.bobtail == 0);
-            this.tail[5].show(cat.bobtail < 2);
-            this.tail[4].show(cat.bobtail < 2);
-            this.tail[3].show(cat.bobtail < 3);
-            this.tail[2].show(cat.bobtail < 3);
-            this.tail[1].show(cat.bobtail < 3);
-            this.tail[0].show(cat.bobtail < 4);
+            tail[6].show(cat.bobtail == 0);
+            tail[5].show(cat.bobtail < 2);
+            tail[4].show(cat.bobtail < 2);
+            tail[3].show(cat.bobtail < 3);
+            tail[2].show(cat.bobtail < 3);
+            tail[1].show(cat.bobtail < 3);
+            tail[0].show(cat.bobtail < 4);
 
             boolean isCobby = cat.isCobby;
             float eyesWidth = Math.min(cat.headWidth, 1F);
@@ -806,6 +803,16 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     protected void saveAnimationValues(CatModelData data) {
         Map<String, Vector3f> map = data.offsets;
+
+        map.put("eyes", new Vector3f(eyeL[1].getX(), eyeR[1].getX(), 0.0F));
+
+        map.put("bCatPos", this.getPosVector(theCat));
+        map.put("bBodyF", this.getRotationVector(theBodyFront));
+        map.put("bBodyB", this.getRotationVector(theBodyBack));
+        map.put("bBodyFPos", this.getPosVector(theBodyFront));
+
+        map.put("bNeck", this.getRotationVector(theNeck));
+        map.put("bHead", this.getRotationVector(theHead));
         map.put("bSnoutPos", this.getPosVector(theSnout));
         map.put("bLegBL", this.getRotationVector(theLegBackLeft));
         map.put("bLegBLPos", this.getPosVector(theLegBackLeft));

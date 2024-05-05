@@ -1003,13 +1003,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theLegBottomBackRight.lerpXRot(0.0F);
     }
     private void legsWalking(float limbSwing, float limbSwingAmount) {
-        float f = (Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount;
-        float f1 = (Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount);
 
-        theLegFrontLeft.setXRot(f);
-        theLegFrontRight.setXRot(f1);
-        theLegBackLeft.setXRot(f);
-        theLegBackRight.setXRot(f1);
+        theLegFrontLeft.setXRot((Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount);
+        theLegFrontRight.setXRot(Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount);
+        theLegBackLeft.setXRot((Mth.cos(limbSwing * 0.6662F)) * 1.0F * limbSwingAmount);
+        theLegBackRight.setXRot(Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.0F * limbSwingAmount);
 
         theLegBottomBackLeft.lerpXRot(0.0F);
         theLegBottomBackRight.lerpXRot(0.0F);

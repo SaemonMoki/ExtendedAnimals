@@ -789,6 +789,25 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 mapOfScale.put("tail"+i, ModelHelper.createScalings(cat.tailThickness + (cat.furSize*tailFluffScales[i]), 1F + (cat.furSize*tailFluffScales[i]*0.8F), cat.tailThickness + (cat.furSize*tailFluffScales[i]), 0F,0F,0F));
             }
 
+            if (catModelData.growthAmount<1.0F) {
+                float growth = 1.0F - catModelData.growthAmount;
+                growth*=growth;
+                mapOfScale.put("bHead", ModelHelper.createScalings(cat.headSize + (growth*0.35F), 0.0F,growth*-0.0625F,0.0F));
+                List<Float> snoutScale = mapOfScale.get("bSnout");
+                snoutScale.set(1, snoutScale.get(1)-(snoutScale.get(1)*0.4F*growth));
+                mapOfScale.put("bSnout", snoutScale);
+                List<Float> earScales = mapOfScale.get("earRootL");
+                earScales.set(0, earScales.get(0) - (earScales.get(0)*0.45F*growth));
+                earScales.set(1, earScales.get(1) - (earScales.get(1)*0.5F*growth));
+                earScales.set(3, growth*0.1F);
+                mapOfScale.put("earRootL", earScales);
+                mapOfScale.put("earRootR", ModelHelper.createScalings(earScales.get(0), earScales.get(1), earScales.get(2), -earScales.get(3), earScales.get(4), earScales.get(5)));
+
+                for (WrappedModelPart part : theTailBones) {
+                    mapOfScale.put(part.boxName, ModelHelper.createScalings(1.0F-(growth*0.1F),1.0F-(growth*0.05F), 1.0F-(growth*0.1F), 0.0F, 0.0F, 0.0F));
+                }
+            }
+
             poseStack.pushPose();
             float scale = 0.75F;
             float finalCatSize = scale*(((3.0F * catModelData.size * catModelData.growthAmount) + catModelData.size) / 4.0F);

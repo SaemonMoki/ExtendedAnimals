@@ -839,18 +839,26 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         map.put("bNeck", this.getRotationVector(theNeck));
         map.put("bHead", this.getRotationVector(theHead));
         map.put("bSnoutPos", this.getPosVector(theSnout));
+
         map.put("bLegBL", this.getRotationVector(theLegBackLeft));
         map.put("bLegBLPos", this.getPosVector(theLegBackLeft));
         map.put("bLegBRPos", this.getPosVector(theLegBackRight));
-        map.put("bLegFLPos", this.getPosVector(theLegFrontLeft));
-        map.put("bLegFRPos", this.getPosVector(theLegFrontRight));
         map.put("bLegBR", this.getRotationVector(theLegBackRight));
         map.put("bLegBBL", this.getRotationVector(theLegBottomBackLeft));
         map.put("bLegBBR", this.getRotationVector(theLegBottomBackRight));
+        map.put("bLegBBLPos", this.getPosVector(theLegBottomBackLeft));
+        map.put("bLegBBRPos", this.getPosVector(theLegBottomBackRight));
+
+        map.put("bLegFLPos", this.getPosVector(theLegFrontLeft));
+        map.put("bLegFRPos", this.getPosVector(theLegFrontRight));
+        map.put("bLegFL", this.getRotationVector(theLegFrontLeft));
+        map.put("bLegFR", this.getRotationVector(theLegFrontRight));
+        map.put("bLegBFL", this.getRotationVector(theLegBottomFrontLeft));
+        map.put("bLegBFR", this.getRotationVector(theLegBottomFrontRight));
+
         map.put("bTail", this.getRotationVector(theTail));
         map.put("bEarLPos", this.getPosVector(theEarL));
         map.put("bEarRPos", this.getPosVector(theEarR));
-        map.put("bBodyFPos", this.getPosVector(theBodyFront));
         map.put("cheekL", this.getPosVector(cheekFluffLeft));
         map.put("cheekR", this.getPosVector(cheekFluffRight));
         map.put("bEarLRot", this.getRotationVector(theEarL));
@@ -890,16 +898,41 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             cheekFluffLeft.setX(2.5F*cat.headWidth);
             cheekFluffRight.setX(-2.5F*cat.headWidth);
         } else {
+            /**
+             *
+             *  If something is included in animation 99.9% of the time it will need to be loaded and saved to the map
+             *
+             */
+            eyeL[1].setX(map.get("eyes").x());
+            eyeL[2].setX(map.get("eyes").x());
+            eyeR[1].setX(map.get("eyes").y());
+            eyeR[2].setX(map.get("eyes").y());
+
+            theCat.setPos(map.get("bCatPos"));
+            theBodyFront.setRotation(map.get("bBodyF"));
+            theBodyBack.setRotation(map.get("bBodyB"));
+            theBodyFront.setPos(map.get("bBodyFPos"));
+
+            theNeck.setRotation(map.get("bNeck"));
+            theHead.setRotation(map.get("bHead"));
             theSnout.setPos(map.get("bSnoutPos"));
+
             theLegBackLeft.setRotation(map.get("bLegBL"));
             theLegBackRight.setRotation(map.get("bLegBR"));
             theLegBackLeft.setPos(map.get("bLegBLPos"));
             theLegBackRight.setPos(map.get("bLegBRPos"));
-            theLegFrontLeft.setPos(map.get("bLegFLPos"));
-            theLegFrontRight.setPos(map.get("bLegFRPos"));
-            theBodyFront.setPos(map.get("bBodyFPos"));
             theLegBottomBackLeft.setRotation(map.get("bLegBBL"));
             theLegBottomBackRight.setRotation(map.get("bLegBBR"));
+            theLegBottomBackLeft.setPos(map.get("bLegBBLPos"));
+            theLegBottomBackRight.setPos(map.get("bLegBBRPos"));
+
+            theLegFrontLeft.setRotation(map.get("bLegFL"));
+            theLegFrontRight.setRotation(map.get("bLegFR"));
+            theLegFrontLeft.setPos(map.get("bLegFLPos"));
+            theLegFrontRight.setPos(map.get("bLegFRPos"));
+            theLegBottomFrontLeft.setRotation(map.get("bLegBFL"));
+            theLegBottomFrontRight.setRotation(map.get("bLegBFR"));
+
             theTail.setRotation(map.get("bTail"));
             theEarL.setPos(map.get("bEarLPos"));
             theEarR.setPos(map.get("bEarRPos"));

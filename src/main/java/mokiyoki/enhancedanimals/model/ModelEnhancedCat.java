@@ -990,6 +990,41 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         }
     }
 
+    private void defaultEars(CatPhenotype cat) {
+        if (theEarL.getYRot() == cat.earYRot) return;
+        if (Mth.abs(theEarL.getXRot()-cat.earXRot) < 0.0001F || Mth.abs(theEarL.getZRot()-cat.earZRot) < 0.0001F || Mth.abs(theEarL.getYRot()-cat.earYRot) < 0.0001F) {
+            theEarL.setRotation(cat.earXRot, cat.earYRot, cat.earZRot);
+            theEarR.setRotation(cat.earXRot, -cat.earYRot, -cat.earZRot);
+        } else {
+            theEarL.lerpXRot(cat.earXRot);
+            theEarL.lerpYRot(cat.earYRot);
+            theEarL.lerpZRot(cat.earZRot);
+            theEarR.lerpXRot(cat.earXRot);
+            theEarR.lerpYRot(-cat.earYRot);
+            theEarR.lerpZRot(-cat.earZRot);
+        }
+    }
+    private void angryEars(CatPhenotype cat) {
+        float earX = cat.earXRot+(Mth.PI*0.1F);
+        float earY = cat.earYRot-(Mth.PI*0.7F);
+        if (theEarL.getYRot() == earY) return;
+        if (theEarL.getYRot() < earY + 0.0001F) {
+            theEarL.setRotation(earX, earY, cat.earZRot);
+            theEarR.setRotation(earX, -earY, -cat.earZRot);
+        } else {
+            theEarL.lerpXRot(earX);
+            theEarL.lerpYRot(earY);
+//            theEarL.lerpZRot(cat.earZRot);
+            theEarR.lerpXRot(earX);
+            theEarR.lerpYRot(-earY);
+//            theEarR.lerpZRot(-cat.earZRot);
+        }
+    }
+
+    private void fearfulEars() {
+
+    }
+
     private void legsDefault() {
         theLegFrontLeft.lerpXRot(0.0F);
         theLegFrontRight.lerpXRot(0.0F);

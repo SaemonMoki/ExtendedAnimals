@@ -821,6 +821,12 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     }
 
     protected void saveAnimationValues(CatModelData data) {
+        /**
+         *  This needs to save everything you are animating by lerping.
+         *  lerping is when you get the current position of the part and then use math to alter those numbers into the next position
+         *  however if a part gets its new animation position only from other part's positions (with or without math) or is just set directly then it doesn't need to be saved here.
+         */
+
         Map<String, Vector3f> map = data.offsets;
 
         map.put("eyes", new Vector3f(eyeL[1].getX(), eyeR[1].getX(), 0.0F));

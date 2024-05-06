@@ -61,8 +61,10 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private static WrappedModelPart eyeR[] = new WrappedModelPart[3];
     private static WrappedModelPart earL[] = new WrappedModelPart[5];
     private static WrappedModelPart earFluffL;
+    private static WrappedModelPart earTipL;
     private static WrappedModelPart earR[] = new WrappedModelPart[5];
     private static WrappedModelPart earFluffR;
+    private static WrappedModelPart earTipR;
     private static WrappedModelPart mouth;
     private static WrappedModelPart bodyFront;
     private static WrappedModelPart bodyFurFrontShort;
@@ -221,7 +223,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .addBox(0.0F, 0, 0, 3,3,0, new CubeDeformation(-0.25F, -0.25F, 0.0F)),
                 PartPose.offsetAndRotation(0.0F, -3.5F, -0.25F, 0.0F, Mth.PI*0.15F, 0.0F)
         );
-
+        base.addOrReplaceChild("earTipL", CubeListBuilder.create()
+                        .texOffs(2, 116)
+                        .addBox(0.0F, -2.5F, 0F, 1,2,0, new CubeDeformation(-0.125F, -0.5F, 0.0F)),
+                PartPose.offset(0F,0F,0F)
+        );
         base.addOrReplaceChild("earR0", CubeListBuilder.create()
                         .texOffs(16, 4)
                         .addBox(0.0F, -2.0F, -1.025F, 1,2,1, new CubeDeformation(0.0F, 0.0F, 0.0F))
@@ -240,6 +246,11 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                         .texOffs(16, 0)
                         .addBox(-1.0F, -1.0F, -0.525F, 1,1,1, new CubeDeformation(0.0F, 0.0F, -0.45F)),
                 PartPose.offset(0F,-2.48F,0F)
+        );
+        base.addOrReplaceChild("earTipR", CubeListBuilder.create()
+                        .texOffs(0, 116)
+                        .addBox(-1.0F, -2.5F, 0F, 1,2,0, new CubeDeformation(-0.125F, -0.5F, 0.0F)),
+                PartPose.offset(0F,0F,0F)
         );
         base.addOrReplaceChild("earR2", CubeListBuilder.create()
                         .texOffs(5, 1)
@@ -530,6 +541,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         earFluffL = new WrappedModelPart("earFluffL", base);
         earRootL.addChild(earFluffL);
         theEarL.addChild(earRootL);
+        earTipL = new WrappedModelPart("earTipL", base);
+        earL[4].addChild(earTipL);
 
         for (int i = 0; i < 5; i++) {
             earR[i] = new WrappedModelPart("earR"+i, base);
@@ -538,6 +551,8 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         earFluffR = new WrappedModelPart("earFluffR", base);
         earRootR.addChild(earFluffR);
         theEarR.addChild(earRootR);
+        earTipR = new WrappedModelPart("earTipR", base);
+        earR[4].addChild(earTipR);
 
         head = new WrappedModelPart("head", base);
         neck = new WrappedModelPart("neck", base);
@@ -769,7 +784,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             List<Float> eye0Scaling = ModelHelper.createScalings(eyeWidth * eyeSize, eyeThickness, eyeSize, 0F, 0F, 0F);
             mapOfScale.put("eyeL0", eye0Scaling);
             mapOfScale.put("eyeR0", eye0Scaling);
-            List<Float> bEarScaling = ModelHelper.createScalings(earSize, earSize, earSize*0.5F, 0F, 0F,0F);
+            List<Float> bEarScaling = ModelHelper.createScalings(earSize, earSize, cat.foldedEars ? earSize*0.5F : earSize, 0F, 0F,0F);
             List<Float> earScaling = ModelHelper.createScalings(1F, earLength, 1F, 0F, 0F,0F);
             List<Float> ear4Scaling = ModelHelper.createScalings(1F, earLength+ear4Scale, 1F, 0F, 0F,0F);
             List<Float> ear2Scaling = ModelHelper.createScalings(1F+cat.earFlare, earLength, 1F, 0F, 0F,0F);

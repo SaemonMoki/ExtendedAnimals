@@ -661,25 +661,28 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected float getMovementFactorModifier() {
         float speedMod = 1.0F;
-        int[] genes = this.genetics.getAutosomalGenes();
+        int[] genes = this.getGenes().getAutosomalGenes();
 
-        float muscle = getPigMuscle();
-        float fat = getPigFat();
+        float muscle = 0.0F;
+        for (int i = 166; i < 172; i++) {
+            muscle += (genes[i] / 80.0F);
+        }
+        if (genes[172] == 2 || genes[173] == 2) {
+            muscle += 0.25F;
+        }
+
+        float fat = 0.0F;
+        for (int i = 174; i < 182; i++) {
+            fat += (genes[i] / 80.0F);;
+        }
 
         float size = this.getAnimalSize();
-        if (size > 1.05F) {
-            speedMod = speedMod/size;
+
+        if (fat > 0.525F) {
+            speedMod -= fat * 0.5F;
         }
 
-        if (fat > 0.55F) {
-            speedMod -= fat * 0.15F;
-        }
-        if (muscle > 0.55F) {
-            speedMod += 0.4F * 0.55F;
-        }
-        else {
-            speedMod += 0.4F * muscle;
-        }
+        speedMod += Math.min(muscle, 0.6F)*0.5F;
 
         float chestMod = 0.0F;
         ItemStack chestSlot = this.getEnhancedInventory().getItem(0);
@@ -2099,26 +2102,5 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
         return this.colouration;
     }*/
-    private float getPigMuscle() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        float muscle = 0;
-        for (int i = 166; i < 172; i++) {
-            muscle += (genes[i] / 80.0F);
-        }
-        if (genes[172] == 2 || genes[173] == 2) {
-            muscle += 0.25F;
-        }
-        return muscle;
-    };
-
-
-    private float getPigFat() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        float fat = 0;
-        for (int i = 174; i < 182; i++) {
-            fat += (genes[i] / 80.0F);
-        }
-        return fat;
-    };
 
 }

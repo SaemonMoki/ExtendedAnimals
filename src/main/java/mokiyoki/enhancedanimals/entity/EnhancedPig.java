@@ -259,6 +259,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     private PigModelData pigModelData;
+    private float pigFat = -1.0F;
+    private float pigMuscle = 1.0F;
 
 //    private boolean boosting;
 //    private int boostTime;
@@ -663,18 +665,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         float speedMod = 1.0F;
         int[] genes = this.getGenes().getAutosomalGenes();
 
-        float muscle = 0.0F;
-        for (int i = 166; i < 172; i++) {
-            muscle += (genes[i] / 80.0F);
-        }
-        if (genes[172] == 2 || genes[173] == 2) {
-            muscle += 0.25F;
-        }
+        float muscle = getPigMuscle();
 
-        float fat = 0.0F;
-        for (int i = 174; i < 182; i++) {
-            fat += (genes[i] / 80.0F);;
-        }
+        float fat = getPigFat();
 
         float size = this.getAnimalSize();
 
@@ -698,7 +691,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        int[] genes = this.genetics.getAutosomalGenes();
+        int[] genes = this.getGenes().getAutosomalGenes();
         float size = (this.getAnimalSize()-0.7F)*1.25F; // 0 to 1
         int age = this.getEnhancedAnimalAge();
         int meatDrop;
@@ -824,7 +817,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     public void lethalGenes(){
-        int[] genes = this.genetics.getAutosomalGenes();
+        int[] genes = this.getGenes().getAutosomalGenes();
         if(genes[12] == 12 && genes[13] == 12) {
             this.remove(RemovalReason.KILLED);
         }
@@ -2102,5 +2095,31 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
         return this.colouration;
     }*/
+
+    private float getPigMuscle() {
+        if (this.pigMuscle < 0.0F) {
+            int[] genes = this.getGenes().getAutosomalGenes();
+            this.pigMuscle = 0.0F;
+            for (int i = 166; i < 172; i++) {
+                this.pigMuscle += (genes[i] / 80.0F);
+            }
+            if (genes[172] == 2 || genes[173] == 2) {
+                this.pigMuscle += 0.25F;
+            }
+        }
+        return this.pigMuscle;
+    };
+
+
+    private float getPigFat() {
+        if (this.pigFat < 0.0F) {
+            int[] genes = this.getGenes().getAutosomalGenes();
+            this.pigFat = 0.0F;
+            for (int i = 174; i < 182; i++) {
+                this.pigFat += (genes[i] / 80.0F);
+            }
+        }
+        return this.pigFat;
+    };
 
 }

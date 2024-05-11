@@ -586,6 +586,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             this.setMateGender(false);
             if (((EnhancedChicken)ageable).hasCustomName()) {
                 this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            } else {
+                this.setMateName("???"); //Reset mate name
             }
         } else {
             ((EnhancedChicken)ageable).setMateGenes(this.genetics);
@@ -593,6 +595,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             ((EnhancedChicken)ageable).setMateGender(false);
             if (this.hasCustomName()) {
                 ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            } else {
+                ((EnhancedAnimalAbstract)ageable).setMateName("???"); //Reset mate name
             }
         }
     }
@@ -907,6 +911,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void createAndSpawnEnhancedChild(Level level) {}
+
+    @Override
+    protected void resetMateName() {}
 
     @Override
     protected boolean canBePregnant() {

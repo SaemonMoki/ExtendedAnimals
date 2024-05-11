@@ -335,9 +335,10 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level world) {
+    protected void createAndSpawnEnhancedChild(Level world) {}
 
-    }
+    @Override
+    protected void resetMateName() {}
 
     @Override
     protected boolean canBePregnant() {
@@ -792,6 +793,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     this.turtle.setHasEgg(false);
                     this.turtle.setDigging(false);
 //                    this.turtle.setInLove(600);
+                    this.turtle.mateName = "???"; //Reset mate name
                 }
 
                 if (this.turtle.isDigging()) {

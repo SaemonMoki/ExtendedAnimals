@@ -896,6 +896,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 //                    mixMitosisGenes();
                     createAndSpawnEnhancedChild(this.level);
                 }
+                resetMateName();
+                this.mateName = "???"; //reset the mate name
 
                 if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                     int i = 1;
@@ -907,6 +909,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 }
             }
         }
+    }
+
+    protected void resetMateName() {
+        this.mateName = "???"; //reset the mate name
     }
 
     protected float getPregnancyHungerLimit() {

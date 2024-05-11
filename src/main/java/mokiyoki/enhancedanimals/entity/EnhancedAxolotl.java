@@ -437,6 +437,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     protected void createAndSpawnEnhancedChild(Level world) {}
 
+    @Override
+    protected void resetMateName() {}
+
     public int getHungerRestored(ItemStack stack) {
         return 8000;
     }
@@ -1173,6 +1176,7 @@ NBT read/write
                         this.axolotl.setHasEgg(false);
                         this.axolotl.pregnant = false;
                         this.axolotl.eggLayingTimer = -1;
+                        this.axolotl.mateName = "???"; //Reset mate name
                     }
 //                    this.axolotl.setInLove(600);
                 }

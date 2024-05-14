@@ -139,7 +139,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 PartPose.offsetAndRotation(0.0F, 4.0F, -4.0F, Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHead.addOrReplaceChild("cheekW", CubeListBuilder.create()
-                        .texOffs(14, 47)
+                        .texOffs(14, 50)
                         .addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, new CubeDeformation(0.51F)),
                 PartPose.offset(0.0F, 2.25F, -5.0F)
         );

@@ -828,6 +828,9 @@ public class ChickenTexture {
 
             face -= 3;
             if (face >= 0) {
+                if (face >= 7) { //TODO increment when more faces are added
+                    face = 6;
+                }
                 chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/face" + face + ".png", earColour);
             }
         }

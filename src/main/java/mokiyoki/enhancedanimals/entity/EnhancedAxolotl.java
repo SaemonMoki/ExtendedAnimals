@@ -615,6 +615,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
+            if (gillsColour < 0) gillsColour = 0;
+            if (gillsColour2 < 0) gillsColour2 = 0;
             TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
             addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
             addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour2, gills, true);
@@ -624,6 +626,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
             addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+            if (pied < 0) pied = 0;
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
             parentGroup.addGrouping(bodyGroup);
 

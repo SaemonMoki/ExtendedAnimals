@@ -246,7 +246,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
-                renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
+                renderCameraBackground(matrixStack, photoI, photoJ+68, -100, 0, 0, photoWidth, photoHeight, 384, 256);
 
                 //RGB Box Backgrounds
                 this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);

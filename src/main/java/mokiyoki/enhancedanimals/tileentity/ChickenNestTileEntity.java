@@ -66,6 +66,13 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         return this.incubation < 0;
     }
 
+    public boolean incubateByAmount(int incubateAmount) {
+        if (!isEmpty()) {
+            this.incubation = this.incubation - incubateAmount;
+        }
+        return this.incubation < 0;
+    }
+
     public float incubationPercent() {
         return (float)incubation/(float) incubationTime;
     }

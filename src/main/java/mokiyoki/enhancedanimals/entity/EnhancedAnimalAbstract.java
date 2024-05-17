@@ -190,6 +190,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //PhotoMode
     public boolean isInPhotoMode = false;
 
+    //LoadUnload
+    protected Long unloadTime;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
@@ -686,6 +689,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     /*
+    On Load / Unload
+    */
+
+    public void checkActionsForPassageOfTime(long loadTime) {}
+
+    public void setUnloadTime(long unloadTime) {
+        this.unloadTime = unloadTime;
+    }
+
+    /*
     Tick
     */
 
@@ -1099,6 +1112,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
+        compound.putLong("UnloadTime", this.unloadTime);
+
         writeInventory(compound);
 
         writeScheduling(compound);
@@ -1205,6 +1220,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.setDamName(compound.getString("DamName"));
 
         this.toggleReloadTexture();
+
+        this.unloadTime = compound.getLong("UnloadTime");
 
         readInventory(compound);
 

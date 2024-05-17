@@ -84,6 +84,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -95,7 +96,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -122,6 +122,9 @@ public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
+        if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
+            ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+        }
 
         if (entity instanceof Villager) {
             Set<String> tags = entity.getTags();
@@ -178,6 +181,14 @@ public class EventSubscriber {
                 }
                 ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {
+        Entity entity = event.getEntity();
+        if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract && entity.getRemovalReason() != Entity.RemovalReason.KILLED) {
+            ((EnhancedAnimalAbstract)entity).setUnloadTime(event.getWorld().getGameTime());
         }
     }
 

@@ -344,6 +344,109 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
+    /*
+    On Load / Unload
+    */
+
+    @Override
+    public void checkActionsForPassageOfTime(long loadTime) {
+        if (this.unloadTime != null && loadTime > this.unloadTime + 4000) {
+            if (this.getOrSetIsFemale() && !this.isBaby()) {
+                if (this.isBrooding()) {
+                    long difference = loadTime - unloadTime;
+                    long iterations = difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get());
+                    if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                        if (nestEntity.incubateByAmount((int)iterations * EanimodCommonConfig.COMMON.incubationDaysChicken.get())) {
+                            nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+                            this.setBroody(false);
+                        }
+                    } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
+                        this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+                    }
+                } else {
+                    long difference = loadTime - unloadTime;
+                    long iterations = difference / eggLayingTime();
+                    if (iterations > 0) {
+                        if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
+                            int horizontalRange = 10;
+                            int verticalRange = 2;
+
+                            if (this.getLeashHolder() != null) {
+                                horizontalRange = 2;
+                                verticalRange = 1;
+                            }
+
+                            BlockPos baseBlockPos = new BlockPos(this.blockPosition());
+                            BlockPos.MutableBlockPos mutableblockpos = new BlockPos.MutableBlockPos();
+
+                            for(int k = 0; k <= verticalRange; k = k > 0 ? -k : 1 - k) {
+                                for(int l = 0; l < horizontalRange; ++l) {
+                                    for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
+                                        for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
+                                            mutableblockpos.set(baseBlockPos).move(i1, k - 1, j1);
+                                            if (this.isGoodNestSite(mutableblockpos)) {
+                                                if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
+                                                    if (this.currentNestScore < this.rateNest(mutableblockpos)) {
+                                                        this.setNest(mutableblockpos);
+                                                    }
+                                                } else {
+                                                    this.setNest(mutableblockpos);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
+                            for (int i = 0; i < iterations; i++) {
+                                if (this.isBrooding()) { //made brooding via this loop but has iterations left
+                                    if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                                        if (nestEntity.incubate()) {
+                                            nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+                                            this.setBroody(false);
+                                            this.setBrooding(false);
+                                            break; //Even if we have iterations left we stop here
+                                        }
+                                    } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
+                                        this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+                                    }
+                                } else {
+                                    if (!(this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
+                                        this.level.setBlock(this.getNest(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                                    }
+                                    if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                                        if (!nestEntity.isFull()) {
+                                            ItemStack eggItem = createEgg();
+                                            nestEntity.addEggToNest(eggItem);
+                                        }
+                                        if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
+                                            this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
+                                            this.setBroody(true);
+                                            this.setBrooding(true);
+                                        }
+                                    } else {
+                                        for (int j = 0; j < iterations; j++) {
+                                            ItemStack eggItem = createEgg();
+                                            this.spawnAtLocation(eggItem, 1);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < iterations; i++) {
+                                ItemStack eggItem = createEgg();
+                                this.spawnAtLocation(eggItem, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //--------//
+
     @Override
     public void aiStep() {
         super.aiStep();
@@ -427,25 +530,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void runPregnancyTick() {
         if (!this.isBaby() && this.timeUntilNextEgg <= 0 && !this.isAnimalSleeping()) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
-            if (this.gestationTimer > 0) {
-                String damName = "???";
-                if (this.getCustomName()!=null) {
-                    damName = this.getCustomName().getString();
-                }
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
-                CompoundTag nbtTagCompound = eggItem.serializeNBT();
-                eggItem.deserializeNBT(nbtTagCompound);
-                if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-                    int i = 1;
-                    while (i > 0) {
-                        int j = ExperienceOrb.getExperienceValue(i);
-                        i -= j;
-                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
-                    }
-                }
-            }
+            ItemStack eggItem = createEgg();
             if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
                 if (this.blockPosition()!=this.getNest()) {
                     this.currentNestScore = this.rateNest(this.blockPosition());
@@ -481,6 +566,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
             }
         }
+    }
+
+    private ItemStack createEgg() {
+        ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
+        ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
+        if (this.gestationTimer > 0) {
+            String damName = "???";
+            if (this.getCustomName()!=null) {
+                damName = this.getCustomName().getString();
+            }
+            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
+            CompoundTag nbtTagCompound = eggItem.serializeNBT();
+            eggItem.deserializeNBT(nbtTagCompound);
+            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                int i = 1;
+                while (i > 0) {
+                    int j = ExperienceOrb.getExperienceValue(i);
+                    i -= j;
+                    this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
+                }
+            }
+        }
+        return eggItem;
     }
 
     @Override

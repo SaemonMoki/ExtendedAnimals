@@ -76,30 +76,37 @@ public class WrappedModelPart {
         return this.modelPart.z;
     }
 
-    public void setXRot(float point) {
-        this.modelPart.xRot = point;
+    public void setXRot(float rotation) {
+        this.modelPart.xRot = rotation;
     }
 
     public float getXRot() {
         return this.modelPart.xRot;
     }
 
-    public void setYRot(float point) {
-        this.modelPart.yRot = point;
+    public void setYRot(float rotation) {
+        this.modelPart.yRot = rotation;
     }
 
     public float getYRot() {
         return this.modelPart.yRot;
     }
 
-    public void setZRot(float point) {
-        this.modelPart.zRot = point;
+    public void setZRot(float rotation) {
+        this.modelPart.zRot = rotation;
     }
 
     public float getZRot() {
         return this.modelPart.zRot;
     }
 
+    public boolean lerpRots(float xRot, float yRot, float zRot) {
+        boolean xIsDone = lerpXRot(xRot);
+        boolean yIsDone = lerpYRot(yRot);
+        boolean zIsDone = lerpZRot(zRot);
+
+        return xIsDone && yIsDone && zIsDone;
+    }
     public boolean lerpXRot(float xRot) {
         if (this.modelPart.xRot != xRot) {
             if (Mth.abs(this.modelPart.xRot - xRot) < 0.0001F) {

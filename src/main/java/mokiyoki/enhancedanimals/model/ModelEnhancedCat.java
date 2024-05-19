@@ -986,21 +986,27 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             if (awake) {
                 if (isMoving) {
-                    defaultEars(cat);
+//                    defaultEars(cat);
                     standing();
                     legsWalking(limbSwing, limbSwingAmount);
                 } else {
                     if (entityIn.isOrderedToSit()) {
-                        fearfulEars(cat);
+//                        fearfulEars(cat);
                         sitting();
                     } else {
-                        defaultEars(cat);
+//                        defaultEars(cat);
                         standing();
                         legsDefault();
                     }
                 }
                 headLookingAnimation(netHeadYaw, headPitch);
             }
+
+//            angryEars(cat);
+            defaultEars(cat);
+//            tailHookUp(0.75F);
+//            tailXStraightUp();
+            tailWave(ageInTicks+entityIn.getId(), 1, 6);
 
             articulate();
 
@@ -1085,13 +1091,13 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theLegFrontRight.lerpZ(-7.0F);
         theLegBottomBackLeft.lerpXRot(Mth.HALF_PI*0.25F);
         theLegBottomBackRight.lerpXRot(Mth.HALF_PI*0.25F);
-        theTail.setXRot(Mth.HALF_PI*-0.5F);
         theLegBottomBackLeft.lerpXRot(0.0F);
         theLegBottomBackRight.lerpXRot(0.0F);
         theLegBottomBackLeft.lerpZ(4.0F);
         theLegBottomBackRight.lerpZ(4.0F);
         theLegBottomBackLeft.lerpY(8.0F);
         theLegBottomBackRight.lerpY(8.0F);
+        //        theTail.lerpXRot(Mth.HALF_PI*0.5F);
     }
 
     /**
@@ -1116,7 +1122,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         theLegBottomBackRight.lerpZ(4.0F);
         theLegBottomBackLeft.lerpY(-1.0F);
         theLegBottomBackRight.lerpY(-1.0F);
-        theTail.lerpXRot(Mth.HALF_PI*0.25F);
+//        theTail.lerpXRot(Mth.HALF_PI*0.25F);
         return false;
     }
 
@@ -1173,19 +1179,62 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         }
     }
 
-    private void tailHookUp() {
+    private boolean tailHideExtraJoints() {
+        boolean isDone = theTailBones[0].lerpRots(0.0F, 0.0F, 0.0F);
+        isDone = theTailBones[1].lerpRots(0.0F, 0.0F, 0.0F) && isDone;
+        isDone = theTailBones[2].lerpRots(0.0F, 0.0F, 0.0F) && isDone;
+        isDone = theTailBones[4].lerpRots(0.0F, 0.0F, 0.0F) && isDone;
+        return theTailBones[5].lerpRots(0.0F, 0.0F, 0.0F) && isDone;
+    }
 
+    private void tailHookUp(float hookAngle) {
+        if (tailStraightenX(0, 4)) {
+            theTailBones[5].lerpXRot(Mth.HALF_PI*hookAngle*0.25F);
+            theTailBones[6].lerpXRot(Mth.HALF_PI*hookAngle*0.5F);
+            theTailBones[5].lerpZRot(Mth.HALF_PI*hookAngle);
+            theTailBones[6].lerpZRot(Mth.HALF_PI*hookAngle);
+        }
     }
 
     private void tailCurvedDown() {
         /**
          *  angry/scared. Maybe being crazy and playful
          */
-
     }
 
-    private void tailStrightUp() {
+    private boolean tailXStraightUp() {
+        boolean isDone = theTail.lerpXRot(0.0F);
+        for (WrappedModelPart tailpart : theTailBones) {
+            isDone = tailpart.lerpXRot(0.0F) && isDone;
+        }
+        return isDone;
+    }
 
+    private boolean tailStraightenX() {
+        boolean isDone = true;
+        for (int i = 1; i < theTailBones.length; i++) {
+            isDone = theTailBones[i].lerpXRot(0.0F) && isDone;
+        }
+        return isDone;
+    }
+
+    private boolean tailStraightenX(int start, int end) {
+        boolean isDone = true;
+        end = Math.min(theTailBones.length, end);
+        for (int i = start; i < end; i++) {
+            if (i == 0) {
+                isDone = theTail.lerpXRot(0.0F) && isDone;
+            } else {
+                isDone = theTailBones[i].lerpXRot(0.0F) && isDone;
+            }
+        }
+        return isDone;
+    }
+
+    private void tailRelaxed() {
+        theTail.lerpXRot(Mth.HALF_PI*-0.5F);
+        theTailBones[3].lerpXRot(Mth.HALF_PI*0.5F);
+        theTailBones[6].lerpXRot(Mth.HALF_PI*-0.5F);
     }
 
     private void tailFlick() {
@@ -1195,10 +1244,28 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
     }
 
-    private void tailWave() {
+    private void tailWave(float c, int start, int end) {
         /**
          *  slow and lazy paced
          */
+
+        float maximumBendAmount = 0.5F/13F;
+        float waveSpeed = 0.1F;
+        float tipFlexFactor = 2.5F;
+
+        for (int i = start; i <= end; i++) {
+            float bend = Mth.cos(c * waveSpeed ) * ( maximumBendAmount * (float)Math.pow(i,tipFlexFactor) );
+            if (bend>0) {
+                bend = Math.min(bend, Mth.HALF_PI*0.666F);
+            } else if (bend!=0) {
+                bend = Math.max(bend, -Mth.HALF_PI*0.666F);
+            }
+            if (i == 0) {
+                theTail.setZRot(bend);
+            } else {
+                theTailBones[i].setZRot(bend);
+            }
+        }
 
     }
 

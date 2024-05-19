@@ -514,7 +514,7 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.reload) {
             this.reload = false;
@@ -1062,12 +1062,12 @@ public class EnhancedCat extends EnhancedAnimalAbstract implements EnhancedAnima
                         addTextureToAnimalTextureGrouping(skinBlackMaskGroup, CAT_TEXTURES_BLACK, black, true);
                     skinBlackGroup.addGrouping(skinBlackMaskGroup);
                     TextureGrouping skinBlackBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                        addTextureToAnimalTextureGrouping(skinBlackBaseGroup, CAT_TEXTURES_SKIN, 2, l -> true);
+                        addTextureToAnimalTextureGrouping(skinBlackBaseGroup, CAT_TEXTURES_SKIN, 2, true);
                     skinBlackGroup.addGrouping(skinBlackBaseGroup);
                     if (agouti) {
                         TextureGrouping skinBlackUnderbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_UNDERBELLY, 0, l -> true);
-                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_SKIN, 0, l -> true);
+                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_UNDERBELLY, 0, true);
+                            addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, CAT_TEXTURES_SKIN, 0, true);
                         skinBlackGroup.addGrouping(skinBlackUnderbellyGroup);
                     }
                 skinGroup.addGrouping(skinBlackGroup);

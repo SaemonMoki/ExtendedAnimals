@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.ai.brain.BabyFollowParent;
-import mokiyoki.enhancedanimals.ai.brain.Grazing;
 import mokiyoki.enhancedanimals.ai.brain.SeekShelter;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModActivities;
@@ -103,18 +102,20 @@ public class ChickenBrain {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
                 Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
                 Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
-                Pair.of(1, new AnimalMakeLove(ModEntities.ENHANCED_CHICKEN.get(), 1.0F)),
-                Pair.of(2, new RunOne<>(ImmutableList.of(
+                Pair.of(1, new ChickenMakeLove(1.0F)),
+                Pair.of(2, new SeekingNest()),
+                Pair.of(3, new RunOne<>(ImmutableList.of(
                         Pair.of(new FollowTemptation(ChickenBrain::getSpeedModifier), 1),
                         Pair.of(new BabyFollowParent<>(ADULT_FOLLOW_RANGE, ChickenBrain::getSpeedModifierFollowingAdult), 1)))
                 ),
-                Pair.of(3, new StartAttacking<>(ChickenBrain::findNearestValidAttackTarget)),
-                Pair.of(4, new GateBehavior<>(
+                Pair.of(4, new StartAttacking<>(ChickenBrain::findNearestValidAttackTarget)),
+                Pair.of(5, new GateBehavior<>(
                         ImmutableMap.of(
                                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_WALKING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
+                                ModMemoryModuleTypes.SEEKING_NEST.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.BROODING.get(), MemoryStatus.VALUE_ABSENT
                         ),
@@ -180,6 +181,7 @@ public class ChickenBrain {
     private static boolean canMoveOrLookAround(EnhancedChicken chicken) {
         return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get()) &&
+               !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_WALKING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get());

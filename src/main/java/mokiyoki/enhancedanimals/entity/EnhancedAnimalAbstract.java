@@ -1112,7 +1112,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
-        compound.putLong("UnloadTime", this.unloadTime);
+        if (this.unloadTime != null) {
+            compound.putLong("UnloadTime", this.unloadTime);
+        }
 
         writeInventory(compound);
 

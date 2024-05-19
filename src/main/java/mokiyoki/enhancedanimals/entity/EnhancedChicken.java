@@ -85,7 +85,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //Brain Modules
 
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
-    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
 
     //--------------
 
@@ -368,35 +368,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     long iterations = difference / eggLayingTime();
                     if (iterations > 0) {
                         if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
-                            int horizontalRange = 10;
-                            int verticalRange = 2;
-
-                            if (this.getLeashHolder() != null) {
-                                horizontalRange = 2;
-                                verticalRange = 1;
-                            }
-
-                            BlockPos baseBlockPos = new BlockPos(this.blockPosition());
-                            BlockPos.MutableBlockPos mutableblockpos = new BlockPos.MutableBlockPos();
-
-                            for(int k = 0; k <= verticalRange; k = k > 0 ? -k : 1 - k) {
-                                for(int l = 0; l < horizontalRange; ++l) {
-                                    for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
-                                        for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
-                                            mutableblockpos.set(baseBlockPos).move(i1, k - 1, j1);
-                                            if (this.isGoodNestSite(mutableblockpos)) {
-                                                if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
-                                                    if (this.currentNestScore < this.rateNest(mutableblockpos)) {
-                                                        this.setNest(mutableblockpos);
-                                                    }
-                                                } else {
-                                                    this.setNest(mutableblockpos);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            findNestAroundSelf(true);
                         }
                         if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
                             for (int i = 0; i < iterations; i++) {
@@ -437,6 +409,36 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                             for (int i = 0; i < iterations; i++) {
                                 ItemStack eggItem = createEgg();
                                 this.spawnAtLocation(eggItem, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void findNestAroundSelf(boolean findBest) {
+        int horizontalRange = 10;
+        int verticalRange = 2;
+
+        if (this.getLeashHolder() != null) {
+            horizontalRange = 2;
+            verticalRange = 1;
+        }
+
+        BlockPos baseBlockPos = new BlockPos(this.blockPosition());
+        BlockPos.MutableBlockPos mutableblockpos = new BlockPos.MutableBlockPos();
+
+        for(int k = 0; k <= verticalRange; k = k > 0 ? -k : 1 - k) {
+            for(int l = 0; l < horizontalRange; ++l) {
+                for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
+                    for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
+                        mutableblockpos.set(baseBlockPos).move(i1, k - 1, j1);
+                        if (this.isGoodNestSite(mutableblockpos)) {
+                            if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
+                                if (this.currentNestScore < this.rateNest(mutableblockpos)) {
+                                    this.setNest(new BlockPos(mutableblockpos));
+                                }
                             }
                         }
                     }

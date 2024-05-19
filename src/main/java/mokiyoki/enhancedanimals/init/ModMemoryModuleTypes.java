@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.SerializableUUID;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.schedule.Activity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,6 +26,7 @@ public class ModMemoryModuleTypes {
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_FOOD = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_food", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> BROODING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("brooding", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> ROOSTING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("roosting", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
+    public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_NEST = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("nesting", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SLEEPING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("sleeping", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> HUNGRY = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("hungry", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<UUID>> MOTHER_UUID = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("mother_uuid", () -> new MemoryModuleType<UUID>(Optional.of(SerializableUUID.CODEC)));

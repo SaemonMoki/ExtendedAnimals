@@ -986,15 +986,12 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
             if (awake) {
                 if (isMoving) {
-//                    defaultEars(cat);
                     standing();
                     legsWalking(limbSwing, limbSwingAmount);
                 } else {
                     if (entityIn.isOrderedToSit()) {
-//                        fearfulEars(cat);
                         sitting();
                     } else {
-//                        defaultEars(cat);
                         standing();
                         legsDefault();
                     }
@@ -1003,10 +1000,17 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
             }
 
 //            angryEars(cat);
+//            fearfulEars(cat);
             defaultEars(cat);
+
 //            tailHookUp(0.75F);
-//            tailXStraightUp();
-            tailWave(ageInTicks+entityIn.getId(), 1, 6);
+//            archedBack();
+            tailXStraightUp();
+            if (catModelData.growthAmount > 0.25F) {
+                tailWave(ageInTicks+entityIn.getId(), 4, 6);
+            } else {
+                tailZStraightUp();
+            }
 
             articulate();
 
@@ -1127,7 +1131,18 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     }
 
     private void archedBack() {
-
+        /**
+         *      adjust until it looks right
+         */
+//        theCat.lerpZ(5.0F);
+        float backBend = 0.75F;
+        theCat.lerpXRot(Mth.HALF_PI*-backBend*0.5F);
+        theBodyFront.lerpXRot(Mth.HALF_PI*backBend);
+//        theBodyFront.lerpXRot(Mth.HALF_PI);
+        theLegFrontLeft.lerpXRot(-Mth.HALF_PI*backBend*0.5F);
+        theLegFrontRight.lerpXRot(-Mth.HALF_PI*backBend*0.5F);
+        theLegBackLeft.lerpXRot(Mth.HALF_PI*backBend*0.5F);
+        theLegBackRight.lerpXRot(Mth.HALF_PI*backBend*0.5F);
     }
 
     /**
@@ -1210,6 +1225,14 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
         return isDone;
     }
 
+    private boolean tailZStraightUp() {
+        boolean isDone = theTail.lerpZRot(0.0F);
+        for (WrappedModelPart tailpart : theTailBones) {
+            isDone = tailpart.lerpZRot(0.0F) && isDone;
+        }
+        return isDone;
+    }
+
     private boolean tailStraightenX() {
         boolean isDone = true;
         for (int i = 1; i < theTailBones.length; i++) {
@@ -1232,6 +1255,9 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     }
 
     private void tailRelaxed() {
+        /**
+         *      tail down
+         */
         theTail.lerpXRot(Mth.HALF_PI*-0.5F);
         theTailBones[3].lerpXRot(Mth.HALF_PI*0.5F);
         theTailBones[6].lerpXRot(Mth.HALF_PI*-0.5F);
@@ -1247,6 +1273,30 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
     private void tailWave(float c, int start, int end) {
         /**
          *  slow and lazy paced
+         */
+
+        float maximumBendAmount = 0.5F/13F;
+        float waveSpeed = 0.05F;
+        float tipFlexFactor = 2.0F;
+
+        for (int i = start; i <= end; i++) {
+            float bend = Mth.cos(c * waveSpeed ) * ( maximumBendAmount * (float)Math.pow(i,tipFlexFactor) );
+            if (bend>0) {
+                bend = Math.min(bend, Mth.HALF_PI*0.666F);
+            } else if (bend!=0) {
+                bend = Math.max(bend, -Mth.HALF_PI*0.666F);
+            }
+            if (i == 0) {
+                theTail.setZRot(bend);
+            } else {
+                theTailBones[i].setZRot(bend);
+            }
+        }
+    }
+
+    private void tailWag(float c, int start, int end) {
+        /**
+         *  clearly pissed
          */
 
         float maximumBendAmount = 0.5F/13F;
@@ -1266,14 +1316,6 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
                 theTailBones[i].setZRot(bend);
             }
         }
-
-    }
-
-    private void tailWag() {
-        /**
-         *  clearly pissed
-         */
-
     }
 
     private void articulate() {
@@ -1285,6 +1327,13 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EnhancedAnimalModel
 
         }
         theLegBackRight.setY(theLegBackRight.getXRot()<=0.0F?0.0F:2.5465F*theLegBackRight.getXRot());
+
+//        theBodyBack.lerpXRot(-Mth.HALF_PI*0.9F);
+//        theBodyFront.lerpXRot(Mth.HALF_PI*0.5F);
+
+        if ((theBodyBack.getXRot() + theBodyFront.getXRot()) > 0) {
+            theTail.setXRot(theBodyBack.getXRot() - theBodyFront.getXRot());
+        }
     }
 
     private CatModelData getCreateCatModelData(T enhancedCat) {

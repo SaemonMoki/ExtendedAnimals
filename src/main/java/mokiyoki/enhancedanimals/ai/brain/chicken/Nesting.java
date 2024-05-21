@@ -3,11 +3,11 @@ package mokiyoki.enhancedanimals.ai.brain.chicken;
 import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -16,8 +16,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -80,10 +82,10 @@ public class Nesting extends Behavior<EnhancedChicken> {
                         if (world.getBlockEntity(blockPos.west()) instanceof ChickenNestTileEntity) nestList.add(blockPos.west());
                         if (nestList.isEmpty()) {
                             if (chicken.currentNestScore < 0.0F) chicken.currentNestScore *= 0.75F;
-                            world.setBlock(blockPos, ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                            chicken.createNest();
                         } else {
                             BlockPos pos = nestList.get(chicken.getRandom().nextInt(nestList.size()));
-                            chicken.rateNest(pos);
+                            chicken.rateAndSetBetterNest(pos);
                             chicken.setNest(pos);
                         }
                     }

@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
+import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +25,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -39,6 +43,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 2.0D, 14.0D);
@@ -53,6 +59,14 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new ChickenNestTileEntity(blockPos,blockState);
+    }
+
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+        if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity) {
+            if (nestEntity.tick(level)){
+                hatchEggs(state, level, pos, random);
+            }
+        }
     }
 
     @Override

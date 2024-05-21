@@ -59,6 +59,10 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         return tag;
     }
 
+    public boolean tick(Level level) {
+        return incubate();
+    }
+
     public boolean incubate() {
         if (!isEmpty()) {
             this.incubation--;

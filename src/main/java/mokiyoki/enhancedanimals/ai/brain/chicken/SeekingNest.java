@@ -102,7 +102,7 @@ public class SeekingNest extends Behavior<EnhancedChicken> {
         } else {
             chicken.setPos(new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D));
             if (!(serverLevel.getBlockEntity(chicken.getNest()) instanceof ChickenNestTileEntity)) {
-                serverLevel.setBlock(chicken.getNest(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+                chicken.createNest();
             }
             this.onNest = true;
         }

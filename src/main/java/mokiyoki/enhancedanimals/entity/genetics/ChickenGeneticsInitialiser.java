@@ -27,6 +27,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.PILE_LEGHORN);
         this.breeds.add(ChickenBreeds.GOLD_LEGBAR);
         this.breeds.add(ChickenBreeds.CRESTED_CREAM_LEGBAR);
+        this.breeds.add(ChickenBreeds.COLUMBIAN_WYANDOTTE);
         this.breeds.add(ChickenBreeds.WHITE_WYANDOTTE);
         this.breeds.add(ChickenBreeds.MILLEFLEUR_WYANDOTTE);
         this.breeds.add(ChickenBreeds.BLUE_LACED_WYANDOTTE);
@@ -69,6 +70,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.LA_FLECHE);
         this.breeds.add(ChickenBreeds.BLUE_SALMON_FAVEROLLE);
         this.breeds.add(ChickenBreeds.BUTTERCUP);
+        this.breeds.add(ChickenBreeds.BLUE_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.LAVENDER_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.BLACK_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.WHITE_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.CUCKOO_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.BLUE_WHEATEN_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.WHEATEN_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.BROWN_RED_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.BUFF_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.SILVER_AMERICAUNA);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
@@ -1532,69 +1543,24 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //Vault [wildtype, vault ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[184] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[184] = 1;
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[185] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[185] = 1;
-        }
+        autosomalGenes[184] = ThreadLocalRandom.current().nextInt(100) > WTC + ((100-WTC)*0.5F) ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[185] = ThreadLocalRandom.current().nextInt(100) > WTC + ((100-WTC)*0.5F) ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         //Body Angle1 [wildtype, angled ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[186] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[186] = 1;
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[187] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[187] = 1;
-        }
+        autosomalGenes[186] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[187] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         //Body Angle2 [wildtype, angled ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[188] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[188] = 1;
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[189] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[189] = 1;
-        }
+        autosomalGenes[188] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[189] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         //Body Angle3 [wildtype, angled ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[190] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[190] = 1;
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[191] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[191] = 1;
-        }
+        autosomalGenes[190] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[191] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         //Body Angle4 [wildtype, angled ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[192] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[192] = 1;
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[193] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[193] = 1;
-        }
+        autosomalGenes[192] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[193] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         //Body Angle5 [ wildtype, angled ]
         autosomalGenes[194] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;

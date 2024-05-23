@@ -919,7 +919,7 @@ public class ChickenTexture {
                 int tailLength = 1;
                 if (gene[198]==2&&gene[199]==2) tailLength +=1;
                 if (gene[180]==2&&gene[181]==2) tailLength +=1;
-                if (gene[182]==2&&gene[183]==2) tailLength -=1;
+                if (gene[282]==2&&gene[283]==2) tailLength -=1;
 
                 int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
                 for (int i = 0; i <= tailNumber; i++) {

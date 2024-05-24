@@ -136,6 +136,12 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.DoubleValue woolMultiplierRabbit;
         public final ForgeConfigSpec.DoubleValue eggMultiplier;
 
+        //PassageOfTime
+        public final ForgeConfigSpec.BooleanValue passageOfTimeEnabled;
+        public final ForgeConfigSpec.BooleanValue passageOfTimeChickenEnabled;
+        public final ForgeConfigSpec.IntValue passageOfTimeChickenStages;
+
+
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             omnigenders = builder
@@ -385,6 +391,15 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
                     .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
+            builder.pop();
+
+            builder.push("passageOfTime");
+            passageOfTimeEnabled = builder
+                    .define("Allow 'Passage of Time' feature, which allows animal pregnancy and similar features to progress after player time away from chunk", true);
+            passageOfTimeChickenEnabled = builder
+                    .define("Allow 'Passage of Time' feature for chickens", true);
+            passageOfTimeChickenStages = builder
+                    .defineInRange("How many 'stages' can pass for a chicken when it is loaded in. Each of these is one stage: Make a nest, lay in the nest, hatch the nest. Default is 2 stages ", 2, 1, 3);
             builder.pop();
         }
     }

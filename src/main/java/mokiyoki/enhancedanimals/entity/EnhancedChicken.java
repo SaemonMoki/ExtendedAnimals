@@ -347,60 +347,68 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public void checkActionsForPassageOfTime(long loadTime) {
-        if (this.unloadTime != null && loadTime > this.unloadTime + 4000) {
+        if (this.unloadTime != null && this.unloadTime > 0 && loadTime > (this.unloadTime + 4000) && EanimodCommonConfig.COMMON.passageOfTimeChickenEnabled.get()) {
             if (this.getOrSetIsFemale() && !this.isBaby()) {
                 if (this.isBrooding()) {
                     long difference = loadTime - unloadTime;
-                    long iterations = difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get());
-                    if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
-                        if (nestEntity.incubateByAmount((int)iterations * EanimodCommonConfig.COMMON.incubationDaysChicken.get())) {
-                            nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
-                            this.setBroody(false);
-                        }
-                    } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
-                        this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
-                    }
+                    double iterations = difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get());
+                    broodingForPassageOfTime(iterations);
                 } else {
-                    long difference = loadTime - unloadTime;
-                    long iterations = difference / eggLayingTime();
-                    if (iterations > 0) {
-                        if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
-                            findNestAroundSelf(true);
+                    calculateActionsForPassageOfTime(loadTime);
+                }
+            }
+        }
+    }
+
+    private void broodingForPassageOfTime(double iterations) {
+        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+            if (nestEntity.incubateByAmount((int)iterations * EanimodCommonConfig.COMMON.incubationDaysChicken.get())) {
+                nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+                this.setBroody(false);
+                this.setBrooding(false);
+            }
+        } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
+            this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+        }
+    }
+
+    private void calculateActionsForPassageOfTime(long loadTime) {
+        int stagesPossibleToAdvance = EanimodCommonConfig.COMMON.passageOfTimeChickenStages.get();
+        int totalStagesAdvanced = 0;
+
+        long difference = loadTime - unloadTime;
+        long iterations = difference / eggLayingTime();
+        if (iterations > 0) {
+            if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
+                findNestAroundSelf(true);
+            }
+
+            if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
+                for (int i = 0; i < iterations; i++) {
+                    if (this.isBrooding() && totalStagesAdvanced < stagesPossibleToAdvance) { //made brooding via this loop but has iterations left
+                        double broodingIterations = (difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get())) * (100-(((double) i / iterations)*100))/100;
+                        broodingForPassageOfTime(broodingIterations);
+                        break; //Even if we have iterations left we stop here
+                    } else {
+                        if (!(this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
+                            createNest();
+                            stagesPossibleToAdvance++;
                         }
-                        if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
-                            for (int i = 0; i < iterations; i++) {
-                                if (this.isBrooding()) { //made brooding via this loop but has iterations left
-                                    if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
-                                        if (nestEntity.incubate()) {
-                                            nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
-                                            this.setBroody(false);
-                                            this.setBrooding(false);
-                                            break; //Even if we have iterations left we stop here
-                                        }
-                                    } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
-                                        this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
-                                    }
-                                } else {
-                                    if (!(this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
-                                        createNest();
-                                    }
-                                    if (this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity ) {
-                                        if (!nestEntity.isFull()) {
-                                            ItemStack eggItem = createEgg();
-                                            nestEntity.addEggToNest(eggItem);
-                                        }
-                                        if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
-                                            this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
-                                            this.setBroody(true);
-                                            this.setBrooding(true);
-                                        }
-                                    } else {
-                                        for (int j = 0; j < iterations; j++) {
-                                            ItemStack eggItem = createEgg();
-                                            this.spawnAtLocation(eggItem, 1);
-                                        }
-                                    }
-                                }
+                        if (this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
+                            if (!nestEntity.isFull()) {
+                                ItemStack eggItem = createEgg();
+                                nestEntity.addEggToNest(eggItem);
+                            }
+                            if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
+                                this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
+                                this.setBroody(true);
+                                this.setBrooding(true);
+                                stagesPossibleToAdvance++;
+                            }
+                        } else {
+                            for (int j = 0; j < iterations; j++) {
+                                ItemStack eggItem = createEgg();
+                                this.spawnAtLocation(eggItem, 1);
                             }
                         }
                     }

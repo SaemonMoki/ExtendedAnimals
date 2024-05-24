@@ -123,7 +123,9 @@ public class EventSubscriber {
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
-            ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+            if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get()) {
+                ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+            }
         }
 
         if (entity instanceof Villager) {

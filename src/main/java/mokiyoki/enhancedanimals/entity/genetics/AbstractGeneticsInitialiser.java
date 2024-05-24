@@ -39,26 +39,20 @@ public abstract class AbstractGeneticsInitialiser {
     }
 
     protected Genes generateWithBreed(LevelAccessor world, BlockPos pos, List<Breed> breeds, String breedAsString) {
-        if (isBiome(breedAsString)) {
-            return generateWithBiome(breedAsString);
-        }
-
         Holder<Biome> biome = world.getBiome(pos);
-
         if (breedAsString.equals("WanderingTrader")) {
             Collections.shuffle(breeds);
             return breeds.get(0).generateGenes(generateLocalWildGenetics(biome, true));
+        } else {
+            breedAsString = breedAsString.strip().toLowerCase();
+            if (isBiome(breedAsString)) {
+                return generateWithBiome(breedAsString);
+            }
         }
 
-        breedAsString = breedAsString.toLowerCase();
         Genes localWildType = generateLocalWildGenetics(biome, false/*world.getWorldInfo().getGenerator() == WorldType.FLAT*/);
 
-        if (hasBreed(breeds, breedAsString)) {
-            Breed breed = getBreedFromString(breeds, breedAsString);
-            return breed.generateGenes(localWildType);
-        }
-
-        return localWildType;
+        return getBreedFromStringOrDefault(breeds, breedAsString, localWildType);
     }
 
     protected Genes generateWithBiome(String biome) {
@@ -131,20 +125,6 @@ public abstract class AbstractGeneticsInitialiser {
         return selectBreed(selection, ForgeRegistries.BIOMES.getHolder(Biomes.THE_VOID.location()).get(), new Random(), forTrader);
     }
 
-    public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {
-        if (!listOfBreeds.isEmpty() && !selectedBreed.isEmpty()) {
-            if (selectedBreed.equals("true")) {
-                return true;
-            }
-            for (Breed breed : listOfBreeds) {
-                if (breed.getBreedName().contains(selectedBreed)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public Boolean isBiome(String biome) {
         biome = biome.toLowerCase();
         if (biome.contains("plains")) {
@@ -174,17 +154,27 @@ public abstract class AbstractGeneticsInitialiser {
         return false;
     }
 
-    private Breed getBreedFromString(List<Breed> listOfBreeds, String selectedBreed) {
-        Collections.shuffle(listOfBreeds);
+    private Genes getBreedFromStringOrDefault(List<Breed> listOfBreeds, String selectedBreed, Genes defaultGenes) {
+            Collections.shuffle(listOfBreeds);
         if (selectedBreed.equals("true")) {
-            return listOfBreeds.get(0);
+            return listOfBreeds.get(0).generateGenes(defaultGenes);
         }
         for (Breed breed : listOfBreeds) {
             if (breed.getBreedName().contains(selectedBreed)) {
-                return breed;
+                return breed.generateGenes(defaultGenes);
+            } else if (selectedBreed.contains(" ")) {
+                String[] splitSelectedBreed = selectedBreed.split(" ");
+                boolean flag = true;
+                for (String split: splitSelectedBreed) {
+                    flag = breed.getBreedName().contains(split);
+                    if (!flag) {
+                        break;
+                    }
+                }
+                if (flag) return breed.generateGenes(defaultGenes);
             }
         }
-        return null;
+        return defaultGenes;
     }
 
     protected boolean getChance(int value) {

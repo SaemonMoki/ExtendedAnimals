@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
+    List<Breed> types = new ArrayList<>();
 
     public SheepGeneticsInitialiser() {
         this.breeds.add(SheepBreeds.DORSETHORNED);
@@ -27,14 +28,15 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(SheepBreeds.BABYDOLL);
         this.breeds.add(SheepBreeds.DORPER);
         this.breeds.add(SheepBreeds.TICKED_DORPER);
-        this.breeds.add(SheepBreeds.ENGLISH_BLUE);
-        this.breeds.add(SheepBreeds.GERMAN_BLUE);
-        this.breeds.add(SheepBreeds.PADDINGTON_BLUE);
-        this.breeds.add(SheepBreeds.GREY);
-        this.breeds.add(SheepBreeds.RECESSIVE_BLACK);
-        this.breeds.add(SheepBreeds.MOORIT);
-        this.breeds.add(SheepBreeds.RED);
-        this.breeds.add(SheepBreeds.RANDOMRUFOUS);
+        this.types.add(SheepBreeds.ENGLISH_BLUE);
+        this.types.add(SheepBreeds.GERMAN_BLUE);
+        this.types.add(SheepBreeds.PADDINGTON_BLUE);
+        this.types.add(SheepBreeds.GREY);
+        this.types.add(SheepBreeds.RECESSIVE_BLACK);
+        this.types.add(SheepBreeds.MOORIT);
+        this.types.add(SheepBreeds.RED);
+        this.types.add(SheepBreeds.RANDOMRUFOUS);
+        types.addAll(this.breeds);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -42,7 +44,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
-        return super.generateWithBreed(world, pos, this.breeds, breed);
+        return super.generateWithBreed(world, pos, this.types, breed);
     }
 
     @Override

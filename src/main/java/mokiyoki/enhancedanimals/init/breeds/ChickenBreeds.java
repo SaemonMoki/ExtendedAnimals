@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ChickenBreeds {
-    List<Breed> breeds = new ArrayList<>();
-
     public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
                        new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5").add(228,"2","2","2","2","1","1","1","1","1","1")));

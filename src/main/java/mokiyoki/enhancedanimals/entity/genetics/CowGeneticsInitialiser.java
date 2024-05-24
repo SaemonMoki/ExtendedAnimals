@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
+    List<Breed> types = new ArrayList<>();
 
     public CowGeneticsInitialiser() {
         this.breeds.add(CowBreeds.HEREFORD);
@@ -23,9 +24,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.HOLSTEIN);
         this.breeds.add(CowBreeds.JERSEY);
         this.breeds.add(CowBreeds.TEXAS_LONGHORN);
-        this.breeds.add(CowBreeds.WILD_HORNS);
         this.breeds.add(CowBreeds.DEXTER);
-        this.breeds.add(CowBreeds.SPANISH);
         this.breeds.add(CowBreeds.MURREY_GREY);
         this.breeds.add(CowBreeds.GLOUCESTER);
         this.breeds.add(CowBreeds.HUNGARIAN_GREY);
@@ -34,7 +33,12 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 //        this.breeds.add(CowBreeds.DARK_JERSEY);
         this.breeds.add(CowBreeds.HIGHLAND);
         this.breeds.add(CowBreeds.ANKOL);
+
+        this.types.add(CowBreeds.SPANISH);
+        this.types.add(CowBreeds.WILD_HORNS);
 //        this.breeds.add(CowBreeds.TEST);
+
+        this.types.addAll(this.breeds);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -42,7 +46,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
-        return super.generateWithBreed(world, pos, this.breeds, breed);
+        return super.generateWithBreed(world, pos, this.types, breed);
     }
 
     @Override

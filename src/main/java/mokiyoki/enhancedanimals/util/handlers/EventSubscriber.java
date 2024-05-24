@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
@@ -70,7 +69,6 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -123,7 +121,7 @@ public class EventSubscriber {
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
-            if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get()) {
+            if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get() && !((EnhancedAnimalAbstract) entity).isNoAi()) {
                 ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
             }
         }

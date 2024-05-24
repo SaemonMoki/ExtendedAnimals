@@ -406,10 +406,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                                 stagesPossibleToAdvance++;
                             }
                         } else {
-                            for (int j = 0; j < iterations; j++) {
-                                ItemStack eggItem = createEgg();
-                                this.spawnAtLocation(eggItem, 1);
-                            }
+                            ItemStack eggItem = createEgg();
+                            this.spawnAtLocation(eggItem, 1);
+                            if (iterations == 12) break; //break at 6 eggs as a limit
                         }
                     }
                 }

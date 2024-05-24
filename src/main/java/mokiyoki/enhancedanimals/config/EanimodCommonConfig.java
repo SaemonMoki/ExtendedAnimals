@@ -140,6 +140,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.BooleanValue passageOfTimeEnabled;
         public final ForgeConfigSpec.BooleanValue passageOfTimeChickenEnabled;
         public final ForgeConfigSpec.IntValue passageOfTimeChickenStages;
+        public final ForgeConfigSpec.BooleanValue passageOfTimeChickenNoHatch;
 
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
@@ -400,6 +401,8 @@ public class EanimodCommonConfig {
                     .define("Allow 'Passage of Time' feature for chickens", true);
             passageOfTimeChickenStages = builder
                     .defineInRange("How many 'stages' can pass for a chicken when it is loaded in. Each of these is one stage: Make a nest, lay in the nest, hatch the nest. Default is 2 stages ", 2, 1, 3);
+            passageOfTimeChickenNoHatch = builder
+                    .define("Disable hatching from passage of time regards of stages setting and time passed.", false);
             builder.pop();
         }
     }

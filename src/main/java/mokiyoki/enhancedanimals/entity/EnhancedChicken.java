@@ -361,7 +361,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     private void broodingForPassageOfTime(double iterations) {
-        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !EanimodCommonConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
             if (nestEntity.incubateByAmount((int)iterations * EanimodCommonConfig.COMMON.incubationDaysChicken.get())) {
                 nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
                 this.setBroody(false);

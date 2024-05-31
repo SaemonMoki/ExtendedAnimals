@@ -298,13 +298,11 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //wooly [ thicker hair, wildtype, curly wool ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
         } else {
             autosomalGenes[38] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
+            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             autosomalGenes[39] = (2);
         }

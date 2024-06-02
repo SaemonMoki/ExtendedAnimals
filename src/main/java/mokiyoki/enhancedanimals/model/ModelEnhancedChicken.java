@@ -1765,10 +1765,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         if (!this.chickenModelData.sleeping) {
                             pantsLeft[leglength].show();
                             pantsRight[leglength].show();
-                        }
-                        if (chicken.isVultureHocked) {
-                            vultureHockLeft.show();
-                            vultureHockRight.show();
+                            if (chicken.isVultureHocked) {
+                                vultureHockLeft.show();
+                                vultureHockRight.show();
+                            }
                         }
                         break;
                 }

@@ -183,9 +183,9 @@ public class TexturingUtils {
         float inverseBaseA = 1.0F - baseA;
         float inverseLayerA = 1.0F - layerA;
         float outAlpha = cleanValue(baseA+(inverseBaseA * layerA));
-        float outBlue = cleanValue((layerB * layerA) + (inverseLayerA * baseB));
-        float outGreen = cleanValue((layerG * layerA) + (inverseLayerA * baseG));
-        float outRed = cleanValue((layerR * layerA) + (inverseLayerA * baseR));
+        float outBlue = cleanValue(((layerB * layerA) + (inverseLayerA * (baseB*baseA)))/outAlpha);
+        float outGreen = cleanValue(((layerG * layerA) + (inverseLayerA * (baseG*baseA)))/outAlpha);
+        float outRed = cleanValue(((layerR * layerA) + (inverseLayerA * (baseR*baseA)))/outAlpha);
 
         int j = (int)(outAlpha * 255.0F);
         int k = (int)(outBlue * 255.0F);

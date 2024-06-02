@@ -63,7 +63,7 @@ public class SeekingNest extends Behavior<EnhancedChicken> {
         if (chicken.getNest() != null && chicken.getNest() != BlockPos.ZERO) {
             return true;
         }
-        chicken.findNestAroundSelf(false);
+        chicken.findNestAroundSelf(false, true);
         return (chicken.getNest() != null && chicken.getNest() != BlockPos.ZERO);
     }
 
@@ -93,7 +93,8 @@ public class SeekingNest extends Behavior<EnhancedChicken> {
             } else {
                 hasReset = true;
                 notReachedNestTicks = 0;
-                chicken.findNestAroundSelf(false); //A single attempt to find a new nest
+                chicken.currentNestScore = 0.0F;
+                chicken.findNestAroundSelf(false, true); //A single attempt to find a new nest
             }
         }
 

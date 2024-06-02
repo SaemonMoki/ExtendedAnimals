@@ -120,11 +120,18 @@ public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
-        if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
-            if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get() && !((EnhancedAnimalAbstract) entity).isNoAi()) {
-                ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+        if (event.loadedFromDisk()) {
+            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
+                if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get() && !((EnhancedAnimalAbstract) entity).isNoAi()) {
+                    ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+                }
+            }
+        } else {
+            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedChicken enhancedChicken) {
+                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos
             }
         }
+
 
         if (entity instanceof Villager) {
             Set<String> tags = entity.getTags();

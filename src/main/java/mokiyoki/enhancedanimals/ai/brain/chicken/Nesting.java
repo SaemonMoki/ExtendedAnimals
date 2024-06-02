@@ -16,14 +16,14 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
 
 public class Nesting extends Behavior<EnhancedChicken> {
 
@@ -46,6 +46,9 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
         chicken.getBrain().setMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get(), true);
+        if (!isValidPath(chicken, chicken.getNest())) {
+            chicken.findNestAroundSelf(false, true);
+        };
         this.stuck = false;
         this.notReachedNestTicks = 0;
     }
@@ -106,6 +109,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
                 if (vec31 == null) {
                     this.stuck = true;
+                    chicken.setNest(BlockPos.ZERO);
                     return;
                 }
 

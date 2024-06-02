@@ -41,10 +41,10 @@ public enum Schedules {
         })),
     STOP_BROODING_SCHEDULE("StopBroodingSchedule", (ticks) ->
         new AnimalScheduledFunction(ticks, (eaa) -> {
-            if (eaa instanceof EnhancedChicken) {
+            if (eaa instanceof EnhancedChicken enhancedChicken) {
                 if (!(eaa.level.getBlockEntity(eaa.blockPosition()) instanceof ChickenNestTileEntity)) {
-                    ((EnhancedChicken)eaa).setBroody(false);
-                    ((EnhancedChicken)eaa).setBrooding(false);
+                    enhancedChicken.setBroody(false);
+                    enhancedChicken.setBrooding(false);
                 }
             }
         })),

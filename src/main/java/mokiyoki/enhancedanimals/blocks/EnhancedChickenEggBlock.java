@@ -64,7 +64,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity) {
             if (nestEntity.tick(level)){
-                hatchEggs(state, level, pos, random);
+                nestEntity.hatchEggs(level, pos, random);
             }
         }
     }
@@ -138,7 +138,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
             level.playSound((Player) null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
 
             while (!nestEntity.isEmpty()) {
-                ItemStack eggStack = nestEntity.removeItem(nestEntity.getSlotWithEgg(),1);
+                ItemStack eggStack = nestEntity.removeItemForHatchNoUpdate(nestEntity.getSlotWithEgg(),1);
                 EggHolder egg = eggStack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(eggStack);
 
                 if (egg.hasParents()) {

@@ -23,6 +23,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
     private static final int incubationTime = EanimodCommonConfig.COMMON.incubationDaysChicken.get()==0?1:EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     private int incubation;
+    private boolean resetNest = false;
 
     public ChickenNestTileEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(ModTileEntities.CHICKEN_NEST_TILE_ENTITY.get(), p_155229_, p_155230_);
@@ -52,10 +53,11 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        if (!isEmpty()) {
+        if (!isEmpty() || resetNest) {
             ContainerHelper.saveAllItems(tag, this.items, true);
             tag.putFloat("incubation", incubationPercent());
         }
+        resetNest = false;
         return tag;
     }
 
@@ -137,9 +139,12 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     @Override
     public ItemStack removeItem(int slot, int count) {
         ItemStack itemRemoved = ContainerHelper.removeItem(this.items, slot, count);
-        this.setChanged();
-        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        this.nestChanged();
         return itemRemoved;
+    }
+
+    public ItemStack removeItemForHatchNoUpdate(int slot, int count) {
+        return ContainerHelper.removeItem(this.items, slot, count);
     }
 
     @Override
@@ -155,8 +160,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
             changed = true;
         }
         if (changed) {
-            this.setChanged();
-            this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+            this.nestChanged();
         }
     }
 
@@ -187,15 +191,21 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
                 return;
             }
         }
-        this.setChanged();
-        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        nestChanged();
     }
 
     public void hatchEggs(Level level, BlockPos pos, Random random) {
         if (level instanceof ServerLevel serverLevel) {
             EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random);
             incubation = incubationTime;
+            resetNest = true;
         }
+        this.nestChanged();
+    }
+
+    private void nestChanged() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
 }

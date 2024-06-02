@@ -54,6 +54,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
@@ -366,9 +367,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
                 this.setBroody(false);
                 this.setBrooding(false);
+                this.gestationTimer = this.gestationTimer - (int)iterations*4000;
             }
         } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
             this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+            if (!EanimodCommonConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+                this.setNest(BlockPos.ZERO);
+            }
         }
     }
 
@@ -380,7 +385,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         long iterations = difference / eggLayingTime();
         if (iterations > 0) {
             if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
-                findNestAroundSelf(true);
+                findNestAroundSelf(false, false);
             }
 
             if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
@@ -408,7 +413,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         } else {
                             ItemStack eggItem = createEgg();
                             this.spawnAtLocation(eggItem, 1);
-                            if (iterations == 12) break; //break at 6 eggs as a limit
+                            if (iterations == 12) {
+                                this.gestationTimer = 0;
+                                break; //break at 6 eggs as a limit
+                            }
                         }
                     }
                 }
@@ -429,7 +437,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
-    public void findNestAroundSelf(boolean findBest) {
+    public void findNestAroundSelf(boolean findBest, boolean validate) {
         int horizontalRange = 10;
         int verticalRange = 2;
 
@@ -445,10 +453,18 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             for(int l = 0; l < horizontalRange; ++l) {
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
-                        mutableblockpos.set(baseBlockPos).move(i1, k - 1, j1);
+                        mutableblockpos.set(baseBlockPos).move(i1, k, j1);
                         if (this.isGoodNestSite(mutableblockpos)) {
-                            if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
-                                this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                            if (validate) {
+                                if (isValidPath(this, new BlockPos(mutableblockpos))) {
+                                    if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
+                                        this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                                    }
+                                }
+                            } else {
+                                if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
+                                    this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                                }
                             }
                         }
                     }
@@ -546,10 +562,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             ItemStack eggItem = createEgg();
             if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
                 if (!this.blockPosition().equals(this.getNest())) {
-                    this.currentNestScore = this.rateAndSetBetterNest(this.blockPosition());
+                    this.rateAndSetBetterNest(this.blockPosition());
                     this.setNest(this.blockPosition());
                 } else if (this.currentNestScore<0.0F) {
-                    this.currentNestScore = -(this.currentNestScore+0.1F);
+                    this.currentNestScore = -this.currentNestScore + 0.1F;
                 }
                 if (!nestEntity.isFull()) { nestEntity.addEggToNest(eggItem); }
                 if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
@@ -557,15 +573,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
             } else {
                 this.spawnAtLocation(eggItem, 1);
-                if (this.getNest()!=BlockPos.ZERO && this.random.nextInt(3)==0) {
-                    this.setNest(0, 0, 0);
+                if (this.getNest()!=BlockPos.ZERO) {
+                    this.setNest(BlockPos.ZERO);
                 }
             }
             if (this.isBrooding() && !this.isBroody()) {
                 this.setBrooding(false);
             }
-            float eggTimeVariance = 0.1F; //TODO egg time variation genetics?
-            this.timeUntilNextEgg = (int) (eggLayingTime()*(1.0F-eggTimeVariance) + this.random.nextInt((int) (eggLayingTime()*(eggTimeVariance*2))));
+            this.timeUntilNextEgg = eggLayingTime();
         }
 
         if (this.isBroody()) {
@@ -577,6 +592,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
             } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
                 this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+                this.setNest(BlockPos.ZERO);
             }
         }
     }

@@ -88,12 +88,12 @@ public class SeekingNest extends Behavior<EnhancedChicken> {
         }
         if (notReachedNestTicks > 400) {
             chicken.setNest(BlockPos.ZERO);
+            chicken.currentNestScore = 0.0F;
             if (hasReset) {
                 stuck = true;
             } else {
                 hasReset = true;
                 notReachedNestTicks = 0;
-                chicken.currentNestScore = 0.0F;
                 chicken.findNestAroundSelf(false, true); //A single attempt to find a new nest
             }
         }

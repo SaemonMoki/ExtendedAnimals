@@ -129,6 +129,7 @@ public class EventSubscriber {
         } else {
             if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedChicken enhancedChicken) {
                 enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos
+                enhancedChicken.currentNestScore = 0.0F;
             }
         }
 

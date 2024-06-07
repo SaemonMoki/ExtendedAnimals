@@ -36,7 +36,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
                 ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.SLEEPING.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT
-        ), 60, 10000);
+        ), 60, 100000);
     }
 
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedChicken chicken) {
@@ -45,11 +45,13 @@ public class Nesting extends Behavior<EnhancedChicken> {
     }
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
-        chicken.getBrain().setMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get(), true);
+         chicken.getBrain().setMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get(), true);
         if (!isValidPath(chicken, chicken.getNest())) {
+            chicken.setNest(BlockPos.ZERO);
+            chicken.currentNestScore = 0.0F;
             chicken.findNestAroundSelf(false, true);
         };
-        this.stuck = false;
+        this.stuck = chicken.getNest() == BlockPos.ZERO;
         this.notReachedNestTicks = 0;
     }
 
@@ -94,24 +96,11 @@ public class Nesting extends Behavior<EnhancedChicken> {
                     }
                 } else {
                     chicken.setNest(BlockPos.ZERO);
+                    chicken.currentNestScore = 0.0F;
                 }
 
             } else if (chicken.getNavigation().isDone()) {
                 Vec3 vec3 = new Vec3(blockPos.getX() + 0.5D, blockPos.getY() + 0.0625D, blockPos.getZ() + 0.5D);
-                Vec3 vec31 = DefaultRandomPos.getPosTowards(chicken, 16, 3, vec3, (double)((float)Math.PI / 10F));
-                if (vec31 == null) {
-                    vec31 = DefaultRandomPos.getPosTowards(chicken, 8, 7, vec3, (double)((float)Math.PI / 2F));
-                }
-
-                if (vec31 != null && !chicken.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
-                    vec31 = DefaultRandomPos.getPosTowards(chicken, 16, 5, vec3, (double)((float)Math.PI / 2F));
-                }
-
-                if (vec31 == null) {
-                    this.stuck = true;
-                    chicken.setNest(BlockPos.ZERO);
-                    return;
-                }
 
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(vec3), 1.0F, 0);
             }

@@ -459,6 +459,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                                 if (isValidPath(this, new BlockPos(mutableblockpos))) {
                                     if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
                                         this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                                        if (!findBest && !(this.getNest() == null) && !(this.getNest() == BlockPos.ZERO)){
+                                            return; //leave when found, otherwise it still loops and validates paths, too inefficient
+                                        }
+
                                     }
                                 }
                             } else {
@@ -499,7 +503,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        if (!this.getOrSetIsFemale()) {
+        if (!this.getOrSetIsFemale() && !this.isBaby()) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {

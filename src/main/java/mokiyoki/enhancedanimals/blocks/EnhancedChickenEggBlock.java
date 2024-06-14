@@ -12,6 +12,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -195,6 +198,39 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
 
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
+
+    public void onRemove(BlockState wasBlockState, Level level, BlockPos pos, BlockState becomeBlockState, boolean p_51542_) {
+        if (!wasBlockState.is(becomeBlockState.getBlock())) {
+            BlockEntity blockentity = level.getBlockEntity(pos);
+            if (blockentity instanceof Container) {
+                Containers.dropContents(level, pos, (Container)blockentity);
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+
+            super.onRemove(wasBlockState, level, pos, becomeBlockState, p_51542_);
+        }
+
+    }
+
+
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @javax.annotation.Nullable BlockEntity tileEntityIn, ItemStack stack) {
+        player.awardStat(Stats.BLOCK_MINED.get(this));
+        player.causeFoodExhaustion(0.005F);
+        if (level instanceof ServerLevel) {
+            getDrops(state, (ServerLevel)level, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
+                spawnAsGeneticItemEntity(level, pos, stackToSpawn);
+            });
+
+            if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity && !nestEntity.isEmpty()) {
+                while (!nestEntity.isEmpty()) {
+                    ItemStack eggStack = nestEntity.removeItemForHatchNoUpdate(nestEntity.getSlotWithEgg(), 1);
+                    spawnAsGeneticItemEntity(level, pos, eggStack);
+                }
+            }
+            state.spawnAfterBreak((ServerLevel)level, pos, stack);
+        }
+    }
+
 
     public boolean isPathfindable(BlockState blockState, BlockGetter p_53307_, BlockPos blockPos, PathComputationType p_53309_) {
         return p_53309_ == PathComputationType.LAND;

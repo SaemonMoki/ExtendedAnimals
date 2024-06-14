@@ -485,7 +485,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void runLivingTickClient() {
         super.runLivingTickClient();
 
-        if (this.isBrooding()) {
+        if (this.isBroody()) {
             int d0 = 1;
             int d1 = 1;
             if (this.tickCount % 300 == 0) {

@@ -1535,8 +1535,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public boolean isGoodNestSite(BlockPos pos) {
         if (this.level.getBlockEntity(pos) instanceof ChickenNestTileEntity) {
            ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level.getBlockEntity(pos);
-            if (nestTileEntity!=null) {
-                return !nestTileEntity.isFull();
+            if (nestTileEntity!=null ) {
+                if (!(this.isBrooding() || this.isBroody())) {
+                    return !nestTileEntity.isFull();
+                }
+                return true;
             }
         }
         if (this.level.isEmptyBlock(pos.below())) return false;

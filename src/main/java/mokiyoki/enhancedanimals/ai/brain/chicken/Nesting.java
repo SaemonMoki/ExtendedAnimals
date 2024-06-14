@@ -87,6 +87,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
                         if (world.getBlockEntity(blockPos.west()) instanceof ChickenNestTileEntity) nestList.add(blockPos.west());
                         if (nestList.isEmpty()) {
                             if (chicken.currentNestScore < 0.0F) chicken.currentNestScore *= 0.75F;
+                            if (chicken.currentNestScore > 0.0F) chicken.currentNestScore *= 0.75F;
                             chicken.createNest();
                         } else {
                             BlockPos pos = nestList.get(chicken.getRandom().nextInt(nestList.size()));

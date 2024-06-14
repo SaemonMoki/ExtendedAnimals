@@ -681,6 +681,9 @@ public class ChickenTexture {
                     }
 
                     if (gene[170]==1 || gene[171]==1) {
+                        if (pattern.startsWith("brown")) {
+                            pattern = pattern.replace("brown/", "birchen/");
+                        }
                         autosomalRed = pattern + (femFeathers ? "/female" : "/male");
                     }
 

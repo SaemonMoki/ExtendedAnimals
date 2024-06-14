@@ -143,7 +143,7 @@ public final class ChickenBreeds {
     public static final Breed SILVER_CHOCOLATE_LACED_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("SilverChocolateLacedOrpington", Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED,GeneSet.CHOCOLATE).get()));
 
-    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.WINDSWEPT_SAVANNA, Breed.Rarity.UNCOMMON)
+    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_PLAINS, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1").add(228,"1","1","1","1","2","2","2","2","2","2")));
 
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
@@ -200,7 +200,7 @@ public final class ChickenBreeds {
     public static final Breed ARAUCANA = new Breed(new Breed.Properties().setData("Araucana", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD, GeneSet.DUCKWING, GeneSet.CLEANLEGS, GeneSet.PEA, GeneSet.RUMPLESS, GeneSet.EARTUFTS, GeneSet.BLUEEGGER).get()));
 
-    public static final Breed AMERICAUNA = new Breed(new Breed.Properties().setData("Americaunas", Biomes.JUNGLE, Breed.Rarity.COMMON)
+    public static final Breed AMERAUCANA = new Breed(new Breed.Properties().setData("AmericaunasAmeraucanas", Biomes.JUNGLE, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.GOLD, GeneSet.BEARDED, GeneSet.CLEANLEGS, GeneSet.CRESTLESS, GeneSet.BLUEEGGER, GeneSet.PEA, GeneSet.GREYLEGS).get(),
                     new GeneSketch().add(20, "1"),
                     new GeneSketch()
@@ -213,34 +213,34 @@ public final class ChickenBreeds {
                             .add(72, "1")/*tails*/
             ));
 
-    public static final Breed BLUE_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("BlueAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed BLUE_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("BlueAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.SOLIDBLUE, GeneSet.CHARCOAL).get()));
 
-    public static final Breed LAVENDER_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("LavenderAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed LAVENDER_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("LavenderAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.LAVENDER, GeneSet.CHARCOAL).get()));
 
-    public static final Breed BLACK_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("BlackAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed BLACK_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("BlackAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.CHARCOAL).get()));
 
-    public static final Breed WHITE_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("WhiteAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed WHITE_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("WhiteAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new GeneSketch(), new GeneSketch(20, "2")));
 
-    public static final Breed CUCKOO_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("CuckooAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed CUCKOO_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("CuckooAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.SOLIDBLACK, GeneSet.BARRED).get()));
 
-    public static final Breed BLUE_WHEATEN_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("BlueWheatenAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed BLUE_WHEATEN_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("BlueWheatenAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.BLUE, GeneSet.WHEATEN).get()));
 
-    public static final Breed WHEATEN_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("WheatenAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed WHEATEN_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("WheatenAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.WHEATEN).get()));
 
-    public static final Breed BROWN_RED_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("BrownRedAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed BROWN_RED_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("BrownRedAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.BIRCHEN).get()));
 
-    public static final Breed BUFF_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("BuffAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed BUFF_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("BuffAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.BUFF).get()));
 
-    public static final Breed SILVER_AMERICAUNA = new Breed(AMERICAUNA, new Breed.Properties().setData("SilverAmericaunasSilverDuckwingAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
+    public static final Breed SILVER_AMERICAUNA = new Breed(AMERAUCANA, new Breed.Properties().setData("SilverAmericaunasSilverDuckwingAmericaunas", Biomes.TAIGA, Breed.Rarity.COMMON)
             .setGeneSketch( new NewGeneSet(GeneSet.DUCKWING,GeneSet.SILVER).get()));
     public static final Breed EASTEREGGER = new Breed(new Breed.Properties().setData("EasterEgger", Biomes.PLAINS, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD, GeneSet.DUCKWING, GeneSet.CLEANLEGS, GeneSet.PEA, GeneSet.EASTEREGGER).get()));

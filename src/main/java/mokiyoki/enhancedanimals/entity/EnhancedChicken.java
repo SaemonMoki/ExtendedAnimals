@@ -15,6 +15,7 @@ import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
@@ -479,6 +480,32 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     //--------//
+
+    @Override
+    protected void runLivingTickClient() {
+        super.runLivingTickClient();
+
+        if (this.isBrooding()) {
+            int d0 = 1;
+            int d1 = 1;
+            if (this.tickCount % 300 == 0) {
+                int particles = this.random.nextInt(4, 6);
+                for(int i = 0; i < particles; ++i) {
+                    double d2 = random.nextGaussian() * 0.02;
+                    double d3 = random.nextGaussian() * 0.02;
+                    double d4 = random.nextGaussian() * 0.02;
+                    double d5 = 0.5 - d0;
+                    double d6 = this.position().x + d5 + random.nextDouble() * d0;
+                    double d7 = this.position().y + random.nextDouble() * d1;
+                    double d8 = this.position().z + d5 + random.nextDouble() * d0;
+                    if (!this.level.getBlockState((new BlockPos(d6, d7, d8)).below()).isAir()) {
+                        this.level.addParticle(ParticleTypes.HAPPY_VILLAGER, d6, d7, d8, d2, d3, d4);
+                    }
+                }
+            }
+        }
+
+    }
 
     @Override
     public void aiStep() {

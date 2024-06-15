@@ -18,8 +18,8 @@ public class ValidatePauseBrain extends Behavior<EnhancedChicken> {
 
     protected void start(ServerLevel serverLevel, EnhancedChicken eanimal, long p_149341_) {
         Brain<EnhancedChicken> brain = eanimal.getBrain();
-        if (!eanimal.isBrooding()) {
-            brain.eraseMemory(ModMemoryModuleTypes.BROODING.get());
+        if (!eanimal.isBroody()) {
+            brain.eraseMemory(ModMemoryModuleTypes.BROODY.get());
         }
 
         if (!eanimal.isAnimalSleeping()) {
@@ -27,7 +27,7 @@ public class ValidatePauseBrain extends Behavior<EnhancedChicken> {
 
         }
 
-        if (!eanimal.isBrooding() && !eanimal.isAnimalSleeping()) {
+        if (!eanimal.isAnimalSleeping()) {
             brain.eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
             brain.useDefaultActivity();
         }

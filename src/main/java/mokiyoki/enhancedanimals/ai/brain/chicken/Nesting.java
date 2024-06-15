@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
+import static mokiyoki.enhancedanimals.init.ModMemoryModuleTypes.SEEKING_FOOD;
 
 public class Nesting extends Behavior<EnhancedChicken> {
 
@@ -35,18 +36,18 @@ public class Nesting extends Behavior<EnhancedChicken> {
                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.SLEEPING.get(), MemoryStatus.VALUE_ABSENT,
-                ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT
+                ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryStatus.VALUE_ABSENT
         ), 60, 100000);
     }
 
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedChicken chicken) {
         if (chicken.getNest() == BlockPos.ZERO) return false;
-        return (chicken.isBrooding() || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())));
+        return ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())));
     }
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
-         chicken.getBrain().setMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get(), true);
-        if (!isValidPath(chicken, chicken.getNest())) {
+        if (!isValidPath(chicken, chicken.getNest(), 24)) {
             chicken.setNest(BlockPos.ZERO);
             chicken.currentNestScore = 0.0F;
             chicken.findNestAroundSelf(false, true);
@@ -56,21 +57,22 @@ public class Nesting extends Behavior<EnhancedChicken> {
     }
 
     @Override
-    protected void stop(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
-        chicken.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
-    }
+    protected void stop(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {}
 
     @Override
     protected boolean canStillUse(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
-        return !stuck && (chicken.isBrooding() || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())));
+        return !stuck
+                && ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())))
+                && !chicken.getBrain().hasMemoryValue(SEEKING_FOOD.get());
     }
 
 
     public void tick(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
         BlockPos blockPos = chicken.getNest();
-        if (!chicken.isBrooding()) {
+
+        if ((!chicken.isBrooding())) {
             ++this.notReachedNestTicks;
-            if (notReachedNestTicks > 400) { stuck = true; }
+            if (notReachedNestTicks > 600) { stuck = true; }
 
             if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);

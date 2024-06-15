@@ -11,9 +11,9 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 
 public class ValidatePath {
 
-    public static boolean isValidPath(EnhancedAnimalAbstract eaa, BlockPos destination) {
+    public static boolean isValidPath(EnhancedAnimalAbstract eaa, BlockPos destination, int nodeSearchLimit) {
         if (eaa.level instanceof ServerLevel serverLevel) {
-            Path path = eaa.getNavigation().createPath(destination, 0);
+            Path path = eaa.getNavigation().createPath(destination, 0, nodeSearchLimit);
 
             return path != null && !path.isDone() && path.getNodeCount() > 0 && isPathReachable(serverLevel, path, destination);
         }

@@ -24,7 +24,7 @@ public class ModMemoryModuleTypes {
     public static final RegistryObject<MemoryModuleType<Boolean>> FOCUS_BRAIN = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("focus_brain", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_SHELTER = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_shelter", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_FOOD = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("seeking_food", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
-    public static final RegistryObject<MemoryModuleType<Boolean>> BROODING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("brooding", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
+    public static final RegistryObject<MemoryModuleType<Boolean>> BROODY = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("broody", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> ROOSTING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("roosting", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SEEKING_NEST = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("nesting", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));
     public static final RegistryObject<MemoryModuleType<Boolean>> SLEEPING = MEMORY_MODULE_TYPE_DEFERRED_REGISTRY.register("sleeping", () -> new MemoryModuleType<Boolean>(Optional.of(Codec.BOOL)));

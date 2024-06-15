@@ -79,7 +79,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //Brain Modules
 
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
-    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODY.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
 
     //--------------
 
@@ -114,10 +114,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.isAnimalSleeping()) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.SLEEPING.get(), true);
             }
-            if (this.isBrooding()) {
-                this.getBrain().setMemory(ModMemoryModuleTypes.BROODING.get(), true);
+            if (this.isBroody() && this.getNest() != BlockPos.ZERO) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.BROODY.get(), true);
             } else {
-                this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODING.get());
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODY.get());
             }
             if (this.isAnimalSleeping()) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get(), true);
@@ -457,7 +457,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         mutableblockpos.set(baseBlockPos).move(i1, k, j1);
                         if (this.isGoodNestSite(mutableblockpos)) {
                             if (validate) {
-                                if (isValidPath(this, new BlockPos(mutableblockpos))) {
+                                if (isValidPath(this, new BlockPos(mutableblockpos), 16)) {
                                     if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
                                         this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
                                         if (!findBest && !(this.getNest() == null) && !(this.getNest() == BlockPos.ZERO)){
@@ -485,7 +485,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void runLivingTickClient() {
         super.runLivingTickClient();
 
-        if (this.isBroody()) {
+        if (this.isBrooding()) {
             int d0 = 1;
             int d1 = 1;
             if (this.tickCount % 300 == 0) {
@@ -578,7 +578,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 --this.gestationTimer;
             }
 
-            if (hunger <= 24000 && !isAnimalSleeping() && !this.isBroody()) {
+            if (hunger <= 24000 && !isAnimalSleeping() && !this.isBrooding() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
                 this.timeUntilNextEgg = eggLayingTime();
@@ -622,8 +622,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     this.setBrooding(false);
                 }
             } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
-                this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
-                this.setNest(BlockPos.ZERO);
+                this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(250, 500)));
             }
         }
     }
@@ -1102,6 +1101,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         compound.putInt("NestPosY", this.getNest().getY());
         compound.putInt("NestPosZ", this.getNest().getZ());
         compound.putBoolean("Broody", this.isBroody());
+        compound.putBoolean("Brooding", this.isBrooding());
 
     }
 
@@ -1115,7 +1115,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.currentNestScore = compound.getFloat("NestQuality");
         this.setNest(compound.getInt("NestPosX"), compound.getInt("NestPosY"), compound.getInt("NestPosZ"));
         this.setBroody(compound.getBoolean("Broody"));
-        if (this.isBroody()) this.setBrooding(true); else this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODING.get());
+        this.setBrooding(compound.getBoolean("Brooding"));
         this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
         this.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
 

@@ -45,6 +45,8 @@ public enum Schedules {
                 if (!(eaa.level.getBlockEntity(eaa.blockPosition()) instanceof ChickenNestTileEntity)) {
                     enhancedChicken.setBroody(false);
                     enhancedChicken.setBrooding(false);
+                    enhancedChicken.setNest(BlockPos.ZERO);
+                    enhancedChicken.currentNestScore = 0;
                 }
             }
         })),

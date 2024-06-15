@@ -102,7 +102,7 @@ public class ChickenBrain {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
                 Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
                 Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
-                Pair.of(1, new RunIf<>(ChickenBrain::notBrooding, new ChickenMakeLove(1.0F))),
+                Pair.of(1, new RunIf<>(ChickenBrain::notBroody, new ChickenMakeLove(1.0F))),
                 Pair.of(2, new SeekingNest()),
                 Pair.of(3, new RunOne<>(ImmutableList.of(
                         Pair.of(new RunIf<>(ChickenBrain::canMoveOrLookAround, new FollowTemptation(ChickenBrain::getSpeedModifier)), 1),
@@ -117,7 +117,7 @@ public class ChickenBrain {
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_NEST.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
-                                ModMemoryModuleTypes.BROODING.get(), MemoryStatus.VALUE_ABSENT
+                                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT
                         ),
                         ImmutableSet.of(),
                         GateBehavior.OrderPolicy.SHUFFLED,
@@ -178,8 +178,8 @@ public class ChickenBrain {
         return chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get());
     }
 
-    private static boolean notBrooding(EnhancedChicken chicken) {
-        return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODING.get());
+    private static boolean notBroody(EnhancedChicken chicken) {
+        return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODY.get());
     }
 
     private static boolean canMoveOrLookAround(EnhancedChicken chicken) {
@@ -187,7 +187,7 @@ public class ChickenBrain {
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_WALKING.get()) &&
-               !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODING.get()) &&
+               !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODY.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get());
     }
 }

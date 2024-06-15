@@ -126,7 +126,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
                 } else {
                     geneticAnimal.decreaseHunger(otherHungerRestore);
                 }
-                this.eatingGrassTimer = 40;
+                this.eatingGrassTimer = 140;
                 geneticAnimal.level.broadcastEntityEvent(geneticAnimal, (byte)10);
                 geneticAnimal.getNavigation().stop();
             }

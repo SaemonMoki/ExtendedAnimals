@@ -113,15 +113,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isNoAi()) {
             if (this.isAnimalSleeping()) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.SLEEPING.get(), true);
+                this.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get(), true);
+            } else if (this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get()) && !this.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get())) {
+                this.brain.eraseMemory(ModMemoryModuleTypes.SLEEPING.get());
             }
             if (this.isBroody() && this.getNest() != BlockPos.ZERO) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.BROODY.get(), true);
             } else {
                 this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODY.get());
             }
-            if (this.isAnimalSleeping()) {
-                this.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get(), true);
-            }
+
             if (this.isInWaterOrRain() && !this.isInWater()) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get(), true);
                 this.scheduledToRun.put(CHECK_RAIN_STOPPED_SCHEDULE.funcName, CHECK_RAIN_STOPPED_SCHEDULE.function.apply(300));
@@ -670,6 +671,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         } else if (genes[150] == 2 && genes[151] == 2){
                 this.remove(RemovalReason.DISCARDED);
         }
+    }
+
+    @Override
+    public boolean sleepingConditional() {
+        boolean notReturningToNest = false;
+        if (this.isBroody()) {
+            if (this.getNest() == BlockPos.ZERO || (this.getNest().closerToCenterThan(this.position(), 0.75D))) {
+                notReturningToNest = true;
+            }
+        } else {
+            notReturningToNest = true;
+        }
+
+        return (!this.level.isDay() && this.awokenTimer == 0 && !this.sleeping && notReturningToNest);
     }
 
     @Override

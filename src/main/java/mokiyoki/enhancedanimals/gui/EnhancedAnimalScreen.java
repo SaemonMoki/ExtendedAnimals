@@ -199,16 +199,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.gBox.setMaxLength(3);
         this.gBox.setBordered(false);
         this.gBox.setVisible(true);
-        this.gBox.setTextColor(65280);
         this.gBox.setValue("0");
+        this.gBox.setTextColor(65280);
+        this.gBox.setFilter(isValidInput);
         this.addWidget(this.gBox);
 
         this.bBox = new EditBox(this.font, photoI-44, photoJ+233, 20, 9, new TranslatableComponent("photomode.bBox"));
         this.bBox.setMaxLength(3);
         this.bBox.setBordered(false);
         this.bBox.setVisible(true);
-        this.bBox.setTextColor(255);
         this.bBox.setValue("0");
+        this.bBox.setTextColor(255);
+        this.bBox.setFilter(isValidInput);
         this.addWidget(this.bBox);
         super.init();
     }

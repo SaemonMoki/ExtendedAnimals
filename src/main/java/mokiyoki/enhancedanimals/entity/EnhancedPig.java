@@ -2039,19 +2039,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected void geneFixer() {
         int[] genes = this.genetics.getAutosomalGenes();
-        for (int i = 174; i < 182; i++) {
-            if (genes[i] <= 0) {
-                genes[i] = 4;
-            }
-        }
-        for (int i = 182; i < 190; i++) {
-            if (genes[i] <= 0) {
-                genes[i] = 4;
-            }
-        }
-        for (int i = 202; i < 206; i++) {
-            if (genes[i] <= 0) {
-                genes[i] = 2;
+        for (int i = 0; i < 206; i++) {
+            if (genes[i] == 0) {
+                if (i >= 174 && i < 190) {
+                    genes[i] = 4;
+                }
+                else if (i >= 202 && i < 206) {
+                    genes[i] = 2;
+                }
+                else {
+                    genes[i] = 1;
+                }
             }
         }
         super.geneFixer();

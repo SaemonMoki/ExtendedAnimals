@@ -2060,69 +2060,91 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             if (!entityIn.isNoAi()) {
                 boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            if (chickenModelData.lookType <= ageInTicks) {
-                if (entityIn.getRandom().nextBoolean()) {
-                    chickenModelData.lookType = (int) (ageInTicks) + entityIn.getRandom().nextInt(300) + 60;
+                if (chickenModelData.lookType <= ageInTicks) {
+                    if (entityIn.getRandom().nextBoolean()) {
+                        chickenModelData.lookType = (int) (ageInTicks) + entityIn.getRandom().nextInt(300) + 60;
+                    } else {
+                        chickenModelData.lookType = (int) (ageInTicks) + entityIn.getRandom().nextInt(60);
+                    }
                 } else {
-                    chickenModelData.lookType = (int) (ageInTicks) + entityIn.getRandom().nextInt(60);
+                    chickenModelData.lookType--;
                 }
-            } else {
-                chickenModelData.lookType--;
-            }
 
-            float height = 24.5F - chicken.height;
-            float currentTailAngle = chicken.tailAngle;
-            boolean awake = true;
-            boolean usingBeak = false;
-            boolean usingNeck = false;
-            boolean usingRWing = false;
-            boolean usingLWing = false;
-            boolean usingTail = false;
-            boolean usingBody = false;
+                float height = 24.5F - chicken.height;
+                float currentTailAngle = chicken.tailAngle;
+                boolean awake = true;
+                boolean usingBeak = false;
+                boolean usingNeck = false;
+                boolean usingRWing = false;
+                boolean usingLWing = false;
+                boolean usingTail = false;
+                boolean usingBody = false;
 
-            if (this.chickenModelData.sleeping && !isMoving) {
-                if (this.chickenModelData.sleepDelay == -1) {
-                    this.chickenModelData.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
-                } else if (this.chickenModelData.sleepDelay <= ageInTicks + 50) {
-                    usingBody = true;
-                    if (this.chickenModelData.sleepDelay <= ageInTicks && sitDownAnimation(height)) {
-                        headSleeping();
-                        currentTailAngle = 1.0F;
-                        this.chickenModelData.sleepDelay = 0;
-                        awake = false;
-                        usingNeck = true;
-                    }
-                }
-            } else if (this.chickenModelData.sleepDelay != -1) {
-                this.chickenModelData.sleepDelay = -1;
-            }
-
-            if (chickenModelData.isBrooding()) {
-                if (!isMoving) {
-                    if (chickenModelData.brooding == 1 && sitDownAnimation(height)) {
-                        chickenModelData.brooding = (int) ageInTicks + ThreadLocalRandom.current().nextInt(40) + 20;
-                    } else if (chickenModelData.brooding != 1) {
-                        broodyAnimation(height, chickenModelData.brooding - ageInTicks);
+                if (this.chickenModelData.sleeping && !isMoving) {
+                    if (this.chickenModelData.sleepDelay == -1) {
+                        this.chickenModelData.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
+                    } else if (this.chickenModelData.sleepDelay <= ageInTicks + 50) {
                         usingBody = true;
-                        usingRWing = true;
-                        usingLWing = true;
+                        if (this.chickenModelData.sleepDelay <= ageInTicks && sitDownAnimation(height)) {
+                            headSleeping();
+                            currentTailAngle = 1.0F;
+                            this.chickenModelData.sleepDelay = 0;
+                            awake = false;
+                            usingNeck = true;
+                        }
+                    }
+                } else if (this.chickenModelData.sleepDelay != -1) {
+                    this.chickenModelData.sleepDelay = -1;
+                }
+
+                if (chickenModelData.isBrooding()) {
+                    System.out.println();
+                    if (entityIn.isBrooding()) {
+                        System.out.print("is brooding "+chickenModelData.brooding+" | ");
+                    } else {
+                        System.out.print("only model is brooding "+chickenModelData.brooding+" | ");
+                    }
+
+                    if (entityIn.isBroody()) {
+                        System.out.print("hen is BROODY | ");
+                    }
+
+                    if (!isMoving) {
+                        System.out.print("not moving | ");
+                        if (chickenModelData.brooding == 1 && sitDownAnimation(height+2.0F)) {
+                            chickenModelData.brooding = (int) ageInTicks + ThreadLocalRandom.current().nextInt(40) + 20;
+                            System.out.print("set timer to " + chickenModelData.brooding);
+                        } else if (chickenModelData.brooding != 1) {
+                            System.out.print("animating " + chickenModelData.brooding + " -> " + (chickenModelData.brooding - ageInTicks));
+                            broodyAnimation(height, chickenModelData.brooding - ageInTicks);
+                            usingBody = true;
+                            usingRWing = true;
+                            usingLWing = true;
+                        }
+                    } else {
+                        System.out.print("is moving...");
+                    }
+                } else if (bodyNaked.getX() != 0.0F) {
+                    bodyFeathers.setX(0.0F);
+                    bodyNaked.setX(0.0F);
+                } else if (chickenModelData.isFemale) {
+                    if (entityIn.isBroody()) {
+                        System.out.println(" BROODY NOT BROODING ");
+                    } else {
+                        System.out.println(" NOT BROODING ");
                     }
                 }
-            } else if (bodyNaked.getX() != 0.0F) {
-                bodyFeathers.setX(0.0F);
-                bodyNaked.setX(0.0F);
-            }
 
-            if (awake) {
-                if (this.chickenModelData.isEating != 0) {
-                    if (this.chickenModelData.isEating == -1) {
-                        this.chickenModelData.isEating = (int) ageInTicks + 140;
-                    } else if (this.chickenModelData.isEating < ageInTicks) {
-                        this.chickenModelData.isEating = 0;
-                    }
-                    grazingAnimation(this.chickenModelData.isEating - (int) ageInTicks, chicken.bodyY);
-                    usingBody = true;
-                    usingNeck = true;
+                if (awake) {
+                    if (this.chickenModelData.isEating != 0) {
+                        if (this.chickenModelData.isEating == -1) {
+                            this.chickenModelData.isEating = (int) ageInTicks + 140;
+                        } else if (this.chickenModelData.isEating < ageInTicks) {
+                            this.chickenModelData.isEating = 0;
+                        }
+                        grazingAnimation(this.chickenModelData.isEating - (int) ageInTicks, chicken.bodyY);
+                        usingBody = true;
+                        usingNeck = true;
                     } else {
                         if (isMoving) {
                             legsWalking(limbSwing, limbSwingAmount);
@@ -2214,27 +2236,27 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     tailDefault();
                 }
 
-            if (wingsFlapping(entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
-                usingLWing = true;
-                usingRWing = true;
-            }
+                if (wingsFlapping(entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
+                    usingLWing = true;
+                    usingRWing = true;
+                }
 
-            if (!usingLWing) {
-                wingLeftDefault(chicken.wingAngle);
-            }
-            if (!usingRWing) {
-                wingRightDefault(chicken.wingAngle);
-            }
+                if (!usingLWing) {
+                    wingLeftDefault(chicken.wingAngle);
+                }
+                if (!usingRWing) {
+                    wingRightDefault(chicken.wingAngle);
+                }
 
-            if (!usingBeak) {
-                mouth(0.0F);
-            }
+                if (!usingBeak) {
+                    mouth(0.0F);
+                }
 
-            if (!usingNeck) {
-                headDefault(chicken.bodyAngle, chicken.neckAngle);
-            }
+                if (!usingNeck) {
+                    headDefault(chicken.bodyAngle, chicken.neckAngle);
+                }
 
-            articulate(1.0F - chicken.neckAngle, height, chicken.bodyY+2.0F);
+                articulate(1.0F - chicken.neckAngle, height, chicken.bodyY + 2.0F);
 
             }
 
@@ -2647,7 +2669,20 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     private boolean sitDownAnimation(float height) {
-        return theBody.lerpY(height) && theBody.lerpXRot(0.0F);
+        boolean flag = false;
+        if (!(theBody.lerpY(height) && theBody.lerpXRot(0.0F))) {
+            if (theBody.getY() != height) {
+                if (Mth.abs(theBody.getY() - height) < 0.001F) {
+                    flag = true;
+                }
+            }
+            if (theBody.getXRot() != 0.0F) {
+                if (Mth.abs(theBody.getXRot()) < 0.001F) {
+                    if (flag) return true;
+                }
+            }
+        }
+        return true;
     }
 
     private void sittingDown(float height) {
@@ -2659,11 +2694,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         sitDownAnimation(height);
         float shuffle = 1.0F;
         if (brooding>0) {
+            System.out.print("  SHUFFLING  ");
             shuffle = Mth.sin(brooding*1.1F);
             theBody.setX(shuffle*0.5F);
             theNeck.setX(theBody.getX()*-0.5F);
             theHead.setX(theBody.getX()*-0.5F);
         } else {
+            System.out.print("  STILL  ");
             theBody.setX(0.0F);
             theNeck.setX(0.0F);
             theHead.setX(0.0F);

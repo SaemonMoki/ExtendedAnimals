@@ -103,7 +103,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = (int) (this.random.nextInt(this.random.nextInt(6000) + 6000)/EanimodCommonConfig.COMMON.eggMultiplier.get()); //TODO make some genes to alter these numbers
+        this.timeUntilNextEgg = eggLayingTime();
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.createNewHungerLimit();
     }
@@ -217,9 +217,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     }
 
+    //TODO make some genes to alter these numbers
     protected int eggLayingTime() {
         if (this.gestationTimer > 0) {
-            return ((int)(6000/EanimodCommonConfig.COMMON.eggMultiplier.get())/2);
+            return (int)((int)(6000/EanimodCommonConfig.COMMON.eggMultiplier.get())/2.5);
         }
         return (int)(6000/EanimodCommonConfig.COMMON.eggMultiplier.get());
     }
@@ -1117,6 +1118,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         compound.putInt("NestPosZ", this.getNest().getZ());
         compound.putBoolean("Broody", this.isBroody());
         compound.putBoolean("Brooding", this.isBrooding());
+        compound.putInt("NextEggTime", this.timeUntilNextEgg);
 
     }
 
@@ -1133,6 +1135,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.setBrooding(compound.getBoolean("Brooding"));
         this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
         this.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
+        this.timeUntilNextEgg = compound.getInt("NextEggTime");
 
 
     }
@@ -1545,6 +1548,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     public void setFertile(){
         this.gestationTimer = 96000;
+        int firstNewEggTime = eggLayingTime()/2;
+        if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
+        if (this.timeUntilNextEgg > firstNewEggTime) {
+           this.timeUntilNextEgg = firstNewEggTime;
+        }
     }
 
     public boolean isGoodNestSite(BlockPos pos) {

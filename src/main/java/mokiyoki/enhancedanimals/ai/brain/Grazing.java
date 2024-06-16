@@ -55,6 +55,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
                 ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.SLEEPING.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT,
                 ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), MemoryStatus.VALUE_ABSENT
             ),
     200

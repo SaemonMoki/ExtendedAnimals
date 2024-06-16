@@ -21,7 +21,8 @@ public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
         super(ImmutableMap.of(
                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_PRESENT,
                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
-                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT
+                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT
             )
         );
     }

@@ -7,7 +7,6 @@ import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -15,9 +14,7 @@ import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -47,11 +44,13 @@ public class Nesting extends Behavior<EnhancedChicken> {
     }
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
+        if (chicken.timeUntilNextEgg < 800 && !chicken.isBroody()) { chicken.getBrain().setMemoryWithExpiry(ModMemoryModuleTypes.EGG_LAYING.get(), true, chicken.timeUntilNextEgg);}
         if (!isValidPath(chicken, chicken.getNest(), 24)) {
             chicken.setNest(BlockPos.ZERO);
             chicken.currentNestScore = 0.0F;
             chicken.findNestAroundSelf(false, true);
         };
+
         this.stuck = chicken.getNest() == BlockPos.ZERO;
         this.notReachedNestTicks = 0;
     }

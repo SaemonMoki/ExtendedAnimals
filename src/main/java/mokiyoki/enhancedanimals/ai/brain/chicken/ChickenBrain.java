@@ -117,7 +117,8 @@ public class ChickenBrain {
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_NEST.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
-                                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT
+                                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT,
+                                ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT
                         ),
                         ImmutableSet.of(),
                         GateBehavior.OrderPolicy.SHUFFLED,
@@ -188,6 +189,7 @@ public class ChickenBrain {
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_WALKING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODY.get()) &&
+               !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get());
     }
 }

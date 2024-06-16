@@ -22,7 +22,8 @@ public class Roost extends Behavior<EnhancedChicken> {
     public Roost() {
         super(ImmutableMap.of(
                 ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
-                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT
+                ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT,
+                ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT
             )
         );
     }

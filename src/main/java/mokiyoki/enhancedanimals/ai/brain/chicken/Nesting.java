@@ -73,6 +73,10 @@ public class Nesting extends Behavior<EnhancedChicken> {
             ++this.notReachedNestTicks;
             if (notReachedNestTicks > 600) { stuck = true; }
 
+            if (blockPos.closerToCenterThan(chicken.position(), 1.5D)) {
+                chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()), 0.01));
+            }
+
             if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
 
@@ -107,6 +111,9 @@ public class Nesting extends Behavior<EnhancedChicken> {
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(vec3), 1.0F, 0);
             }
         } else {
+            if (blockPos.closerToCenterThan(chicken.position(), 1.5D)) {
+                chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()), 0.01));
+            }
             if (!blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
                 setWalkAndLookTargetMemories(chicken, new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
             } else {
@@ -119,5 +126,21 @@ public class Nesting extends Behavior<EnhancedChicken> {
         WalkTarget walktarget = new WalkTarget(vec3, p_22620_, p_22621_);
         p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(new BlockPos(vec3)));
         p_22618_.getBrain().setMemory(MemoryModuleType.WALK_TARGET, walktarget);
+    }
+
+    public Vec3 moveCloser(Vec3 vec1, Vec3 vec2, double step) {
+        // Calculate the direction vector from vec1 to vec2
+        Vec3 direction = vec2.subtract(vec1);
+
+        // Normalize the direction vector to get the unit vector
+        Vec3 unitDirection = direction.normalize();
+
+        // Scale the unit vector by the step size
+        Vec3 stepVector = unitDirection.scale(step);
+
+        // Add the step vector to vec1 to get the new vector
+        Vec3 newVec = vec1.add(stepVector);
+
+        return newVec;
     }
 }

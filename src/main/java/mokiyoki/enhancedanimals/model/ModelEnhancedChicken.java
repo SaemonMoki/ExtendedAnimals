@@ -2057,7 +2057,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             ChickenPhenotype chicken = this.chickenModelData.getPhenotype();
             readInitialAnimationValues(this.chickenModelData, chicken);
 
-            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
+            if (!entityIn.isNoAi()) {
+                boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
             if (chickenModelData.lookType <= ageInTicks) {
                 if (entityIn.getRandom().nextBoolean()) {
@@ -2234,6 +2235,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             articulate(1.0F - chicken.neckAngle, height, chicken.bodyY+2.0F);
+
+            }
 
             saveAnimationValues(this.chickenModelData);
         }

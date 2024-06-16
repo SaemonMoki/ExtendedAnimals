@@ -876,6 +876,13 @@ public class ChickenTexture {
             } else if (sGene[6] == 2 || sGene[7] == 2) {
                 barred = sGene[6]==sGene[7]?"barred_double":"barred";
             }
+            if (!barred.isEmpty() &&
+                    (EanimodCommonConfig.COMMON.force16x.get() ||
+                            gene[106]==2&&gene[107]==2
+                    )
+            ) {
+                barred += "_silkie";
+            }
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/"+barred+".png", barred);
         } else {
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);

@@ -2236,7 +2236,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     tailDefault();
                 }
 
-                if (wingsFlapping(entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
+                if (!usingLWing && !usingRWing && wingsFlapping(entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
                     usingLWing = true;
                     usingRWing = true;
                 }

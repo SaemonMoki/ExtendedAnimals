@@ -1574,17 +1574,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
             // random med-high tux
             else if (white == idx_tuxmed) {
-                if (whiteExtension == 0) {
-                    int d3 = uuidArry[3] % 6;
-                    int d2 = uuidArry[2] % 6;
-                    white = idx_tuxmed + d3;
-                    whiteFace = idx_tuxface_med + d2;
-                }
-                else {
+                if (whiteExtension == 2) {
                     int d3 = uuidArry[3] % 4;
                     int d2 = uuidArry[2] % 4;
                     white = idx_tuxhigh + d3;
                     whiteFace = idx_tuxface_high + d2;
+                }
+                else {
+                    int d3 = uuidArry[3] % 6;
+                    int d2 = uuidArry[2] % 6;
+                    white = idx_tuxmed + d3;
+                    whiteFace = idx_tuxface_med + d2;
                 }
             }
             else if (white == idx_belt) {

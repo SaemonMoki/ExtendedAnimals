@@ -30,6 +30,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
         public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
         public final ForgeConfigSpec.BooleanValue onlyKilledWithAxe;
+        public final ForgeConfigSpec.BooleanValue force16x;
 
         public final ForgeConfigSpec.BooleanValue leatherWorkerTrades;
         public final ForgeConfigSpec.BooleanValue shepardTrades;
@@ -160,6 +161,8 @@ public class EanimodCommonConfig {
                     .define("Animals will spawn with random biome type", false);
             onlyKilledWithAxe = builder
                     .define("Genetic animals are immune to all damage unless attacked with an axe by a player", false);
+            force16x = builder
+                    .define("Force Genetic Animals to use a 16x base texture", false);
             builder.pop();
 
             builder.push("Trading");

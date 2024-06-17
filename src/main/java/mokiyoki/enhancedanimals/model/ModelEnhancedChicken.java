@@ -2107,9 +2107,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             usingRWing = true;
                             usingLWing = true;
                         }
-                    } else {
-                        System.out.println();
-                        System.out.println("is moving...");
                     }
                 } else if (bodyNaked.getX() != 0.0F) {
                     bodyFeathers.setX(0.0F);
@@ -2676,13 +2673,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         float shuffle = 1.0F;
         System.out.println();
         if (brooding>0) {
-            System.out.print("  SHUFFLING  ");
             shuffle = Mth.sin(brooding*1.1F);
             theBody.setX(shuffle*0.5F);
             theNeck.setX(theBody.getX()*-0.5F);
             theHead.setX(theBody.getX()*-0.5F);
         } else {
-            System.out.print("  STILL  ");
             theBody.setX(0.0F);
             theNeck.setX(0.0F);
             theHead.setX(0.0F);
@@ -2692,14 +2687,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theWingLeft.setZRot(this.lerpTo(theWingLeft.getZRot(), -1.0F));
             theWingRight.setZRot(this.lerpTo(theWingRight.getZRot(), 1.0F));
         } else {
-            shuffle = (Mth.sin(brooding*0.5F)+1.0F)*1.3F;
+            shuffle = (Mth.sin(brooding)+0.8F)*1.3F;
             theWingLeft.setZRot(-shuffle);
             theWingRight.setZRot(shuffle);
         }
         theWingLeft.setXRot(this.lerpTo(theWingLeft.getXRot(), shuffle*0.5F));
         theWingRight.setXRot(this.lerpTo(theWingRight.getXRot(), shuffle*0.5F));
-
-        System.out.print("|  left : [  "+theWingLeft.getXRot()+" ,  "+theWingLeft.getZRot()+"  ]   right : [  "+theWingRight.getXRot()+" ,  "+theWingRight.getZRot()+"  ]");
     }
 
     private void sandBathingAnimation(float height, float bathing) {

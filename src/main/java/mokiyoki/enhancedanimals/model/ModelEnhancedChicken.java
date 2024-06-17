@@ -2671,7 +2671,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private void broodyAnimation(float height, float brooding) {
         sitDownAnimation(height);
         float shuffle = 1.0F;
-        System.out.println();
         if (brooding>0) {
             shuffle = Mth.sin(brooding*1.1F);
             theBody.setX(shuffle*0.5F);

@@ -580,7 +580,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 --this.gestationTimer;
             }
 
-            if (hunger <= 24000 && !isAnimalSleeping() && !isRoosting() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
+            if (hunger <= 24000 && !isAnimalSleeping() && !isBroody() && !isRoosting() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
                 this.timeUntilNextEgg = eggLayingTime();

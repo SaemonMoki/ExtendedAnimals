@@ -654,14 +654,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
 
 
-            if (genes[38] == 6){
-                maxBagSize = maxBagSize - 0.01F;
+            if (genes[38] >= 5){
+                maxBagSize -= genes[38]==6? 0.01F : 0.005F;
             }
-            if (genes[39] == 6){
-                maxBagSize = maxBagSize - 0.01F;
+            if (genes[39] >= 5){
+                maxBagSize -= genes[39]==6? 0.01F : 0.005F;
             }
 
-            if (genes[40] == 1){
+            if (genes[40] >= 3){
                 maxBagSize = maxBagSize - 0.01F;
             }
             if (genes[41] == 1){

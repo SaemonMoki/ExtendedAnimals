@@ -2098,41 +2098,22 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
 
                 if (chickenModelData.isBrooding()) {
-                    System.out.println();
-                    if (entityIn.isBrooding()) {
-                        System.out.print("is brooding "+chickenModelData.brooding+" | ");
-                    } else {
-                        System.out.print("only model is brooding "+chickenModelData.brooding+" | ");
-                    }
-
-                    if (entityIn.isBroody()) {
-                        System.out.print("hen is BROODY | ");
-                    }
-
                     if (!isMoving) {
-                        System.out.print("not moving | ");
-                        if (chickenModelData.brooding == 1 && sitDownAnimation(height+2.0F)) {
+                        if (chickenModelData.brooding == 1 && sitDownAnimation(height-2.0F)) {
                             chickenModelData.brooding = (int) ageInTicks + ThreadLocalRandom.current().nextInt(40) + 20;
-                            System.out.print("set timer to " + chickenModelData.brooding);
                         } else if (chickenModelData.brooding != 1) {
-                            System.out.print("animating " + chickenModelData.brooding + " -> " + (chickenModelData.brooding - ageInTicks));
                             broodyAnimation(height, chickenModelData.brooding - ageInTicks);
                             usingBody = true;
                             usingRWing = true;
                             usingLWing = true;
                         }
                     } else {
-                        System.out.print("is moving...");
+                        System.out.println();
+                        System.out.println("is moving...");
                     }
                 } else if (bodyNaked.getX() != 0.0F) {
                     bodyFeathers.setX(0.0F);
                     bodyNaked.setX(0.0F);
-                } else if (chickenModelData.isFemale) {
-                    if (entityIn.isBroody()) {
-                        System.out.println(" BROODY NOT BROODING ");
-                    } else {
-                        System.out.println(" NOT BROODING ");
-                    }
                 }
 
                 if (awake) {
@@ -2693,6 +2674,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private void broodyAnimation(float height, float brooding) {
         sitDownAnimation(height);
         float shuffle = 1.0F;
+        System.out.println();
         if (brooding>0) {
             System.out.print("  SHUFFLING  ");
             shuffle = Mth.sin(brooding*1.1F);
@@ -2710,13 +2692,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theWingLeft.setZRot(this.lerpTo(theWingLeft.getZRot(), -1.0F));
             theWingRight.setZRot(this.lerpTo(theWingRight.getZRot(), 1.0F));
         } else {
-            shuffle = Mth.sin(brooding*1.65F) + 1.0F;
-            shuffle += 1.0F;
-            theWingLeft.setZRot(shuffle);
+            shuffle = (Mth.sin(brooding*0.5F)+1.0F)*1.3F;
+            theWingLeft.setZRot(-shuffle);
             theWingRight.setZRot(shuffle);
         }
         theWingLeft.setXRot(this.lerpTo(theWingLeft.getXRot(), shuffle*0.5F));
         theWingRight.setXRot(this.lerpTo(theWingRight.getXRot(), shuffle*0.5F));
+
+        System.out.print("|  left : [  "+theWingLeft.getXRot()+" ,  "+theWingLeft.getZRot()+"  ]   right : [  "+theWingRight.getXRot()+" ,  "+theWingRight.getZRot()+"  ]");
     }
 
     private void sandBathingAnimation(float height, float bathing) {

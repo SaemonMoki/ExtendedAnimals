@@ -807,12 +807,14 @@ public class ChickenTexture {
     }
 
     private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {
-        chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateSkinRGB(sGene, gene, isFemale));
+        int[] skinColour = calculateSkinRGB(sGene, gene, isFemale);
+        chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", skinColour[0]);
         chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShanksRGB(sGene, gene, isFemale));
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
         if (age < 0.25F) {
-            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", calculateSkinRGB(sGene, gene, isFemale));
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", skinColour[0]);
         }
+//        chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/top.png", "t", skinColour[1]);
     }
 
     private static void setEarColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, int earColour, TextureGrouping detailGroup) {
@@ -1848,8 +1850,9 @@ public class ChickenTexture {
         return colour;
     }
 
-    private static int calculateSkinRGB(int[] sGene, int[] gene, boolean isFemale) {
+    private static int[] calculateSkinRGB(int[] sGene, int[] gene, boolean isFemale) {
         int colour = 16777215;
+        int highlight = 12655875;
         if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
             if (gene[42]==1 || gene[43]==1) {
                 colour = gene[42]==gene[43]? 3289655 : 6579303;
@@ -1867,7 +1870,14 @@ public class ChickenTexture {
             colour = r << 16 | g << 8 | b;
         }
 
-        return colour;
+        if (colour!=16777215) {
+            float[] highlightHSB = Colouration.getHSBFromABGR(12655875);
+            float[] colourHSB = Colouration.getHSBFromABGR(colour);
+
+            highlight = Colouration.HSBAtoARGB(colourHSB[0], highlightHSB[1] + ((1.0F-highlightHSB[1])*0.25F), colourHSB[2] + ((1.0F-highlightHSB[2])*0.5F), 0.0F);
+        }
+
+        return new int[] {colour, highlight};
     }
 
     private static int calculateCombRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {

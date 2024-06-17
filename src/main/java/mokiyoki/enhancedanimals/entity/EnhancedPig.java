@@ -108,11 +108,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_ROAN_RED = new String[]{
-        "", "roan_red.png", "roan_red_piglet.png"
+        "", "roan_red.png", "roan_red_piglet.png", "roan_het_red.png", "roan_het_red_piglet.png"
     };
 
     private static final String[] PIG_TEXTURES_ROAN_BLACK = new String[]{
-        "", "roan_black.png", "roan_black_piglet.png"
+        "", "roan_black.png", "roan_black_piglet.png", "roan_het_black.png", "roan_het_black_piglet.png"
     };
 
     private final int idx_brindlepatch = 8;
@@ -878,7 +878,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int white = 0;
             // if negative, tamworth; if positive, kitlg/allspots
             int spotPower = (gene[64] + gene[65]) - (gene[62] + gene[63]);
-            boolean roan = false;
+            int roan = 0;
             boolean whitePoints = false;
             boolean tusks = false;
             boolean agouti = true;
@@ -1454,7 +1454,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //roan
             if (gene[12] == 5 || gene[13] == 5) {
-                roan = true;
+                roan = gene[12] == gene[13] ? 1 : 3;
             }
 
             // skin color
@@ -1462,7 +1462,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (gene[12] == 4 && gene[13] == 4) {
                 skinBlack = 1;
             }
-            if (gene[12] == 5 && gene[13] == 5 ) {
+            if (gene[12] == 5 || gene[13] == 5 ) {
                 //roan causes grey skin
                 skinBlack = 2;
             }
@@ -1780,7 +1780,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 if ( (baby && agouti && black == 0) ) {
                     addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-rd", darkAgoutiRedRGB);
                 }
-                addTextureToAnimalTextureGrouping(redGroup, PIG_TEXTURES_ROAN_RED, baby ? 2 : 1, roan);
+                addTextureToAnimalTextureGrouping(redGroup, PIG_TEXTURES_ROAN_RED, baby ? roan+1 : roan, roan != 0);
                 hairTexGroup.addGrouping(redGroup);
 
                 TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
@@ -1791,7 +1791,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 else if (swallowbelly != 0) {
                     addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
                     addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? 2 : 1, roan);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? roan+1 : roan, roan != 0);
                 }
 
                 int agoutiTex = 0;
@@ -1821,7 +1821,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                             addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
                         }
                     }
-                    addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? 2 : 1, roan);
+                    addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? roan+1 : roan, roan != 0 && !brindle);
                     blackGroup.addGrouping(blackAlphaGroup);
                     blackGroup.addGrouping(blackTexGroup);
                     hairTexGroup.addGrouping(blackGroup);

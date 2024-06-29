@@ -532,7 +532,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        if (!this.getOrSetIsFemale() && !this.isBaby()) {
+        if (!this.getOrSetIsFemale() && !this.isBaby() && EanimodCommonConfig.COMMON.allowRoostersToCrow.get()) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {
@@ -547,7 +547,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
                     //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
                     //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
-                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(100, 6000)));
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(EanimodCommonConfig.COMMON.minimumWaitForCrowTime.get(), EanimodCommonConfig.COMMON.maximumWaitForCrowTime.get())));
                 }
             }
         }

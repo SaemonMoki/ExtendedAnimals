@@ -98,6 +98,9 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue spawnWeightChickens;
         public final ForgeConfigSpec.IntValue minimumChickenGroup;
         public final ForgeConfigSpec.IntValue maximumChickenGroup;
+        public final ForgeConfigSpec.BooleanValue allowRoostersToCrow;
+        public final ForgeConfigSpec.IntValue minimumWaitForCrowTime;
+        public final ForgeConfigSpec.IntValue maximumWaitForCrowTime;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
         public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
@@ -327,6 +330,12 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumChickenGroup = builder
                     .defineInRange("The maximum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
+            allowRoostersToCrow = builder
+                    .define("Allow roosters to crow:", true);
+            minimumWaitForCrowTime = builder
+                    .defineInRange("The minimum number of ticks till a rooster might crow, Default is 100ticks", 100, 1, 24000);
+            maximumWaitForCrowTime = builder
+                    .defineInRange("The maximum number of ticks till a rooster might crow, Default is 6000ticks", 6000, 2, 24000);
             eggMultiplier = builder
                     .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.pop();

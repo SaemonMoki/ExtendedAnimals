@@ -197,7 +197,7 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[13] = (1);
         }
 
-        // Burgundy [ Wildtype, burgundy ]
+        // Ringneck [ Wildtype, ringneck ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -209,6 +209,20 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         } else {
             autosomalGenes[15] = (1);
+        }
+
+        // black socks [ Wildtype, no socks ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[16] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[17] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[17] = (1);
         }
 
 

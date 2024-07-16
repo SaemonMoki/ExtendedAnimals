@@ -677,6 +677,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 eyeHSB[1] *= 0.5F;
                 eyeHSB[2] = 1.0F;
             }
+            case 6 -> {
+                //GlowEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+            }
             default -> {
                 //NormalEyes
                 if (gene[0] == 2 && gene[1] == 2) {

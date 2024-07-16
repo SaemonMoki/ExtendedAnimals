@@ -154,7 +154,7 @@ public class Colouration {
         return colour1;
     }
 
-    public static int mixAxolotlHue(float hue1, float hue2) {
+    public static float[] mixAxolotlHue(float hue1, float hue2) {
 //        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
 //        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
 
@@ -172,10 +172,19 @@ public class Colouration {
             brightness = brightness + (((degreesDif-0.3333F)/0.1667F)*0.35F);
         }
 
-        int[] color = getRGBFromHSB(hue, saturation, brightness);
-
-        return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
+        return new float[]{hue, saturation, brightness};
     }
+
+    public static int getAxolotlEyes(float[] hsb1, float[] hsb2) {
+        int[] rgb1 = getRGBFromHSB(hsb1[0], hsb1[1], hsb1[2]);
+        int[] rgb2 = getRGBFromHSB(hsb2[0], hsb2[1], hsb2[2]);
+        int r = (rgb1[0] + rgb2[0])/2;
+        int g = (rgb1[1] + rgb2[1])/2;
+        int b = (rgb1[2] + rgb2[2])/2;
+
+        return 128 << 24 | (Math.min(r, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(b, 255));
+    }
+
 
     public static float[] getAxolotlLightEyes(float hue1, float hue2) {
         int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
@@ -243,6 +252,7 @@ public class Colouration {
 
         return a << 24 | rgb[2] << 16 | rgb[1] << 8 | rgb[0];
     }
+
 
     public static float[] getHSBFromABGR(int colourABGR) {
         int colour[] = getRGBFromABGR(colourABGR);

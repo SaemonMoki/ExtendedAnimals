@@ -124,7 +124,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[19] = getChance() ? (ThreadLocalRandom.current().nextInt(2)+2) : 1;
 
         /**
-         *      [20,21] - ColouredEyes - DarkEyes >< PigmentedEyes >< LightEyes >< PastelEyes >< GlowEyes >< NormalEyes
+         *      [20,21] - ColouredEyes - NormalEyes >< DarkEyes >< PigmentedEyes >< LightEyes >< PastelEyes >< GlowEyes
          */
         autosomalGenes[20] = getChance() ? (ThreadLocalRandom.current().nextInt(5)+2) : 1;
         autosomalGenes[21] = getChance() ? (ThreadLocalRandom.current().nextInt(5)+2) : 1;

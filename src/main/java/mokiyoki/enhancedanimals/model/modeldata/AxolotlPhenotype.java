@@ -11,12 +11,14 @@ public class AxolotlPhenotype implements Phenotype {
 
     public AxolotlPhenotype(Genes genes) {
         int[] gene = genes.getAutosomalGenes();
-        this.isLong = gene[32] == 2 && gene[33] == 2;
+        this.isLong = gene[32] == 2 && gene[33] == 2; //Long Body
 
-        if (gene[26] == gene[27]) {
-            this.tailLength = gene[32] == 1 ? AxolotlTailLength.NORMAL : AxolotlTailLength.EXTRALONG;
-        } else {
-            this.tailLength = AxolotlTailLength.LONG;
+        if (gene[26] == 2 || gene[27] == 2) {
+            //Long Tail
+            this.tailLength = gene[26] == gene[27] ? AxolotlTailLength.EXTRALONG : AxolotlTailLength.LONG;
+        }
+        else {
+            this.tailLength = AxolotlTailLength.NORMAL;
         }
 
         this.glowingBody = genes.has(10, 3) && !genes.has(10, 2);

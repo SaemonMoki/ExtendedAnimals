@@ -534,7 +534,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
         }
 
-        return (ThreadLocalRandom.current().nextInt(pigletRange*2) - (pigletRange)) + pigletAverage;
+        return Math.max(1, (ThreadLocalRandom.current().nextInt(pigletRange*2) - (pigletRange)) + pigletAverage);
     }
 
     @Override

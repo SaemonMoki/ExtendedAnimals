@@ -32,8 +32,8 @@ public class AxolotlBucketTexturePacket {
     public static void processPacket(AxolotlBucketTexturePacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.get().getSender();
-            if (serverPlayer != null && serverPlayer.level instanceof ServerLevel) {
-                ServerLevel server = (ServerLevel)serverPlayer.level;
+            if (serverPlayer != null && serverPlayer.level() instanceof ServerLevel) {
+                ServerLevel server = (ServerLevel)serverPlayer.level();
                 Entity entity = server.getEntity(packet.getEntityID());
                 if (entity instanceof EnhancedAxolotl) {
                     EnhancedAxolotl axolotl = (EnhancedAxolotl) entity;

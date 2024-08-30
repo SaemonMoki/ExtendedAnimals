@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -15,15 +14,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.IReverseTag;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -180,21 +176,21 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
         public boolean isFoodItem(Item item) {
             return foodMapList.stream()
-                    .anyMatch(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .anyMatch(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString())
                             || findTags(item, f.tag));
         }
 
         public boolean isBreedingItem(Item item) {
             return foodMapList.stream()
-                    .filter(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .filter(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString())
                             || findTags(item, f.tag))
                     .anyMatch(f -> f.isBreedingItem);
         }
 
         public int getHungerRestored(Item item) {
-            if (item.getRegistryName() != null) {
+            if (ForgeRegistries.ITEMS.getKey(item).toString() != null) {
                 FoodMap foodMap = foodMapList.stream()
-                        .filter(f -> f.registryName.equals(item.getRegistryName().toString()))
+                        .filter(f -> f.registryName.equals(ForgeRegistries.ITEMS.getKey(item).toString()))
                         .findFirst().orElse(null);
                 if (foodMap != null) {
                     return foodMap.hungerRestored;

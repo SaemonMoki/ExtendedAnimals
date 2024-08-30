@@ -84,6 +84,7 @@ public abstract class NestBlock extends Block {
      * Spawns the block's drops in the world. By the time this is called the Block has possibly been set to air via
      * Block.removedByPlayer
      */
+    @Override
     public void playerDestroy(Level worldIn, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity tileEntityIn, ItemStack stack) {
         player.awardStat(Stats.BLOCK_MINED.get(this));
         player.causeFoodExhaustion(0.005F);
@@ -91,7 +92,7 @@ public abstract class NestBlock extends Block {
             getDrops(state, (ServerLevel)worldIn, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
                 spawnAsGeneticItemEntity(worldIn, pos, stackToSpawn);
             });
-            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack);
+            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack, false);
         }
         this.removeOneEgg(worldIn, pos, state, false);
     }

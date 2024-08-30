@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
 import com.google.common.collect.Maps;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 import java.util.Map;
 

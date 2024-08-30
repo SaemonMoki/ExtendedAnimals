@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
@@ -23,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.function.Function;
 
@@ -156,7 +156,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             animalModelData.sleeping = enhancedAnimal.isAnimalSleeping();
             animalModelData.blink = enhancedAnimal.getBlink();
             animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
-            animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
+            animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level()).getLevelData()).getGameTime();
             animalModelData.random = enhancedAnimal.getRandom().nextFloat();
 
             additionalModelDataInfo(animalModelData, enhancedAnimal);
@@ -173,7 +173,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void updateModelData(T enhancedAnimal) {
         AnimalModelData animalModelData = enhancedAnimal.getModelData();
-        animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
+        animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level()).getLevelData()).getGameTime();
         if (animalModelData.growthAmount != 1.0F) {
             animalModelData.growthAmount = enhancedAnimal.growthAmount();
         }

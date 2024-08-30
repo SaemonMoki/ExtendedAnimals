@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -25,12 +24,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+
 public class ChickenNestTileEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
-    public static final ResourceLocation EGG_PLAIN_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/plain_egg");
-    public static final ResourceLocation EGG_SPECKLE_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/speckle_egg");
-    public static final ResourceLocation EGG_SPATTER_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/splotch_egg");
-    public static final ResourceLocation EGG_SPOT_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/spot_egg");
-    public static final ModelLayerLocation CHICKEN_NEST = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "chicken_nest"), "main");
+    public static final ResourceLocation EGG_PLAIN_TEXTURE = new ResourceLocation(MODID, "block/chicken_nest/plain_egg");
+    public static final ResourceLocation EGG_SPECKLE_TEXTURE = new ResourceLocation(MODID, "block/chicken_nest/speckle_egg");
+    public static final ResourceLocation EGG_SPATTER_TEXTURE = new ResourceLocation(MODID, "block/chicken_nest/splotch_egg");
+    public static final ResourceLocation EGG_SPOT_TEXTURE = new ResourceLocation(MODID, "block/chicken_nest/spot_egg");
+    public static final ModelLayerLocation CHICKEN_NEST = new ModelLayerLocation(new ResourceLocation(MODID, "chicken_nest"), "main");
 
     private final ModelPart[] egg = new ModelPart[12];
     public ChickenNestTileEntityRenderer(BlockEntityRendererProvider.Context context) {

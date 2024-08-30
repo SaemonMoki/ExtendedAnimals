@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -24,12 +24,10 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstract {
 
@@ -230,7 +228,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             this.animalInventory.setItem(0, new ItemStack(Items.CHEST, 1));
             this.initInventory();
         }
-        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(Component.literal("Trader's Blanket"));
         traderBlanket.getOrCreateTagElement("tradersblanket");
         this.animalInventory.setItem(4, traderBlanket);
     }

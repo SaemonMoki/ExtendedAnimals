@@ -29,9 +29,9 @@ public class Roost extends Behavior<EnhancedChicken> {
     }
 
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedChicken chicken) {
-        if (chicken.level.getDayTime()%24000 > 10500) {
+        if (chicken.level().getDayTime()%24000 > 10500) {
             if (!chicken.isRoosting() && chicken.getAIStatus() != AIStatus.FOCUSED) {
-                List<BlockPos> allPostPos = chicken.level.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
+                List<BlockPos> allPostPos = chicken.level().getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos, chicken);
                     postPos = blockPosToGoTo;

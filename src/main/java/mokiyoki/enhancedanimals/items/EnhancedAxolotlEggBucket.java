@@ -1,8 +1,7 @@
 package mokiyoki.enhancedanimals.items;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
-import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -52,7 +51,7 @@ public class EnhancedAxolotlEggBucket extends MobBucketItem {
         if (stack.hasCustomHoverName()) {
             axolotlEgg.setCustomName(stack.getHoverName());
         }
-        axolotlEgg.setHatchTime(data.contains("HatchTime") ? data.getInt("HatchTime") : EanimodCommonConfig.COMMON.axolotlHatchTime.get());
+        axolotlEgg.setHatchTime(data.contains("HatchTime") ? data.getInt("HatchTime") : GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
         axolotlEgg.moveTo((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);
         level.addFreshEntity(axolotlEgg);
     }

@@ -6,8 +6,10 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +50,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockpos, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.SHEEP_AUTOSOMAL_GENES_LENGTH];
         Biome biome = biomeHolder.value();
 
@@ -60,12 +62,12 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(16) + 1);
         } else {
-            autosomalGenes[0] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
+            autosomalGenes[0] = (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) ? 1 : 13);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(16) + 1);
         } else {
-            autosomalGenes[1] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
+            autosomalGenes[1] = (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) ? 1 : 13);
         }
 
         //Chocolate [ Wildtype+, chocolate ]
@@ -190,11 +192,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
 
-        if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS || biome.getPrecipitation() == Biome.Precipitation.SNOW ) {
+        if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) || biomeHolder.get().coldEnoughToSnow(blockpos) ) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] * 2;
             }
-        } else if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+        } else if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] != 1 ? (int)(woolmod[i] * 0.5) : 1;
             }
@@ -360,7 +362,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+            if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
                 autosomalGenes[46] = 1;
             } else {
                 autosomalGenes[46] = 2;
@@ -369,7 +371,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+            if (biomeHolder.get().getPrecipitationAt(blockpos) == Biome.Precipitation.NONE) {
                 autosomalGenes[47] = 1;
             } else {
                 autosomalGenes[47] = 2;
@@ -528,22 +530,43 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[72] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
             autosomalGenes[72] = 1;
-            switch (Biome.getBiomeCategory(biomeHolder)) {
-                case PLAINS, ICY -> autosomalGenes[72] = 6;
-                case DESERT -> autosomalGenes[72] = 3;
-                case SAVANNA -> autosomalGenes[72] = 2;
-                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[72] = 5;
+            if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) ||
+                    biomeHolder.containsTag(Tags.Biomes.IS_SNOWY)) {
+                autosomalGenes[72] = 6;
+            }
+
+            if (biomeHolder.containsTag(Tags.Biomes.IS_DESERT)) {
+                autosomalGenes[72] = 3;
+            }
+
+            if (biomeHolder.containsTag(BiomeTags.IS_SAVANNA)) {
+                autosomalGenes[72] = 2;
+            }
+
+            if (biomeHolder.containsTag(Tags.Biomes.IS_MOUNTAIN)) {
+                autosomalGenes[72] = 5;
             }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[73] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
             autosomalGenes[73] = 1;
-            switch (Biome.getBiomeCategory(biomeHolder)) {
-                case PLAINS, ICY -> autosomalGenes[73] = 5;
-                case DESERT -> autosomalGenes[73] = 3;
-                case SAVANNA -> autosomalGenes[73] = 2;
-                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[73] = 4;
+
+            if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS) ||
+                    biomeHolder.containsTag(Tags.Biomes.IS_SNOWY)) {
+                autosomalGenes[73] = 5;
+            }
+
+            if (biomeHolder.containsTag(Tags.Biomes.IS_DESERT)) {
+                autosomalGenes[73] = 3;
+            }
+
+            if (biomeHolder.containsTag(BiomeTags.IS_SAVANNA)) {
+                autosomalGenes[73] = 2;
+            }
+
+            if (biomeHolder.containsTag(Tags.Biomes.IS_MOUNTAIN)) {
+                autosomalGenes[73] = 4;
             }
         }
 

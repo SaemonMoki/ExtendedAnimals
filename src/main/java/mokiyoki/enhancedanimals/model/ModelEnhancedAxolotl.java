@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
@@ -21,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -391,7 +391,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                         this.setupWaterHoveringAnimation(ageInTicks);
                     }
                 } else {
-                    if (entityIn.isOnGround()) {
+                    if (entityIn.onGround()) {
                         if (isMoving) {
                             this.setupGroundCrawlingAnimation(ageInTicks, netHeadYaw);
                         } else {

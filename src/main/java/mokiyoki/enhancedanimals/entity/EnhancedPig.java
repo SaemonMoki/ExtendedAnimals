@@ -15,7 +15,7 @@ import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
@@ -353,7 +353,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         if (this.isAngry() && this.angerTargetUUID != null && livingentity == null) {
-            Player playerentity = this.level.getPlayerByUUID(this.angerTargetUUID);
+            Player playerentity = this.level().getPlayerByUUID(this.angerTargetUUID);
             this.setLastHurtByMob(playerentity);
             this.lastHurtByPlayer = playerentity;
             this.lastHurtByPlayerTime = this.getLastHurtByMobTimestamp();
@@ -404,7 +404,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgePig.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgePig.get();
         return this.adultAge;
     }
 
@@ -459,7 +459,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.5F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 0.5F);
         }
     }
 
@@ -485,7 +485,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysPig.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysPig.get();
     }
 
     protected  void incrementHunger() {
@@ -539,7 +539,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
+        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedpig.setGenes(babyGenes);
         enhancedpig.setSharedGenes(babyGenes);
@@ -555,11 +555,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level level) {
-        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
+        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, level, babyGenes, -this.getAdultAge());
 
-        this.level.addFreshEntity(enhancedpig);
+        this.level().addFreshEntity(enhancedpig);
     }
 
     @Override
@@ -602,7 +602,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean doHurtTarget(Entity entityIn) {
-        boolean flag = entityIn.hurt(DamageSource.mobAttack(this), (float)((int)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+        boolean flag = entityIn.hurt(this.damageSources().mobAttack(this), (float)((int)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
         if (flag) {
             this.doEnchantDamageEffects(this, entityIn);
         }
@@ -687,7 +687,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean shouldDropExperience() { return true; }
+    public boolean shouldDropExperience() { return true; }
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
@@ -1910,7 +1910,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         String s = compound.getString("HurtBy");
         if (!s.isEmpty()) {
             this.angerTargetUUID = UUID.fromString(s);
-            Player playerentity = this.level.getPlayerByUUID(this.angerTargetUUID);
+            Player playerentity = this.level().getPlayerByUUID(this.angerTargetUUID);
             this.setLastHurtByMob(playerentity);
             if (playerentity != null) {
                 this.lastHurtByPlayer = playerentity;

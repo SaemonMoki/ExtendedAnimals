@@ -31,21 +31,21 @@ public class GrazingGoalPig extends GrazingGoal {
     @Override
     protected void eatBlocks() {
         BlockPos blockpos = new BlockPos(this.eanimal.blockPosition());
-        BlockState blockType = this.eanimal.level.getBlockState(blockpos);
-        if (IS_CARROT.test(this.eanimal.level.getBlockState(blockpos)) || IS_BEETROOT.test(blockType) || IS_POTATO.test(blockType) || IS_WHEAT.test(blockType) || IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
+        BlockState blockType = this.eanimal.level().getBlockState(blockpos);
+        if (IS_CARROT.test(this.eanimal.level().getBlockState(blockpos)) || IS_BEETROOT.test(blockType) || IS_POTATO.test(blockType) || IS_WHEAT.test(blockType) || IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
             if (IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
                 this.eanimal.ate();
             }
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                this.eanimal.level.destroyBlock(blockpos, false);
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                this.eanimal.level().destroyBlock(blockpos, false);
             }
             this.eanimal.ate();
         } else if (IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                this.eanimal.level.destroyBlock(blockpos, false);
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                this.eanimal.level().destroyBlock(blockpos, false);
             }
         } else {
-            int root = this.eanimal.level.random.nextInt(3);
+            int root = this.eanimal.level().random.nextInt(3);
             if (root == 2) {
                 //just nibbling
                 if (!IS_RED_MUSHROOM.test(blockType)) {
@@ -53,29 +53,29 @@ public class GrazingGoalPig extends GrazingGoal {
                 }
             } else {
                 if (IS_GRASS.test(blockType) || IS_TALL_GRASS_BLOCK.test(blockType) || IS_BROWN_MUSHROOM.test(blockType)) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                        this.eanimal.level.destroyBlock(blockpos, false);
+                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                        this.eanimal.level().destroyBlock(blockpos, false);
                     }
                     this.eanimal.ate();
                 } else {
                     BlockPos blockpos1 = blockpos.below();
-                    Block blockDown = this.eanimal.level.getBlockState(blockpos1).getBlock();
+                    Block blockDown = this.eanimal.level().getBlockState(blockpos1).getBlock();
                     if (blockDown == Blocks.GRASS_BLOCK) {
-                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                            this.eanimal.level.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                            this.eanimal.level.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
+                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                            this.eanimal.level().levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                            this.eanimal.level().setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
                         }
                         this.eanimal.ate();
                     } else if (blockDown == ModBlocks.SPARSEGRASS_BLOCK.get()) {
-                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                            this.eanimal.level.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                            this.eanimal.level.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
+                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                            this.eanimal.level().levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                            this.eanimal.level().setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
                         }
                         this.eanimal.ate();
                     } else if (blockDown == Blocks.DIRT) {
-                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level, this.eanimal)) {
-                            this.eanimal.level.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
-                            this.eanimal.level.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
+                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.level(), this.eanimal)) {
+                            this.eanimal.level().levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                            this.eanimal.level().setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
                         }
                     }
                 }

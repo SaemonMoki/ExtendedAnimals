@@ -1,22 +1,21 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "eanimod:half_milk_bottle"
-    },
-    {
-      "item": "eanimod:half_milk_bottle"
-    },
-    {
-      "item": "eanimod:twothirds_milk_bucket"
-    },
-    {
-      "item": "minecraft:bucket"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "eanimod:half_milk_bottle"
+        },
+        {
+            "item": "eanimod:half_milk_bottle"
+        },
+        {
+            "item": "eanimod:twothirds_milk_bucket"
+        },
+        {
+            "item": "minecraft:bucket"
+        }
+    ],
+    "result": {
+        "item": "minecraft:milk_bucket",
+        "count": 1
     }
-  ],
-  "result":
-  {
-    "item": "minecraft:milk_bucket",
-    "count": 1
-  }
 }

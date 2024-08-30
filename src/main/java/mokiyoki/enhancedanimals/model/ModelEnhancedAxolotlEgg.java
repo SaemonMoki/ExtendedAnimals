@@ -23,7 +23,7 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
         super(renderType);
         this.root = modelPart;
         this.egg = modelPart.getChild("egg");
-        this.root.children.put("egg", this.egg);
+//        this.root.children.put("egg", this.egg);
     }
 
     public static LayerDefinition createBodyLayer() {

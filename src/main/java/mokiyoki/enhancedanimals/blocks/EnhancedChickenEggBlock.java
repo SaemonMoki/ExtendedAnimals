@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
-import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,6 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -28,26 +28,17 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
-import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 2.0D, 14.0D);
@@ -64,7 +55,8 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         return new ChickenNestTileEntity(blockPos,blockState);
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity) {
             if (nestEntity.tick(level)){
                 nestEntity.hatchEggs(level, pos, random);
@@ -136,7 +128,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         }
     }
 
-    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity && !nestEntity.isEmpty()) {
             level.playSound((Player) null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
 
@@ -227,7 +219,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                     spawnAsGeneticItemEntity(level, pos, eggStack);
                 }
             }
-            state.spawnAfterBreak((ServerLevel)level, pos, stack);
+            state.spawnAfterBreak((ServerLevel)level, pos, stack, true);
         }
     }
 

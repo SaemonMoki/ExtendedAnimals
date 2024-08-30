@@ -29,7 +29,7 @@ public class EnhancedFollowParentGoal extends Goal {
         if (this.child.isVehicle() || this.child.isAnimalSleeping() || this.child.getAge() >= 0) {
             return false;
         } else if (this.parent == null) {
-            List<? extends EnhancedAnimalAbstract> list = this.child.level.getEntitiesOfClass(this.child.getClass(), this.child.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
+            List<? extends EnhancedAnimalAbstract> list = this.child.level().getEntitiesOfClass(this.child.getClass(), this.child.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
             EnhancedAnimalAbstract animal = null;
             double d0 = Double.MAX_VALUE;
 

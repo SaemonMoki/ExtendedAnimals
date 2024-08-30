@@ -11,8 +11,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Predicate;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.*;
-import static mokiyoki.enhancedanimals.util.Reference.MODID;
 
 public class ModSensorTypes {
 

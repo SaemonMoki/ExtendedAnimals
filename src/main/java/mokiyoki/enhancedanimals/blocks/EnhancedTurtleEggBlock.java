@@ -3,9 +3,8 @@ package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
-import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -13,7 +12,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Zombie;
@@ -144,7 +142,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                         if (egg.getGenes().getNumberOfAutosomalGenes() < Reference.TURTLE_AUTOSOMAL_GENES_LENGTH) {
                             int length = Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
                             int oldLength = egg.getGenes().getNumberOfAutosomalGenes();
-                            int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+                            int WTC = GeneticAnimalsConfig.COMMON.wildTypeChance.get();
                             Genes fixedGenetics = new Genes(length);
                             for (int e = 0; e < length; e++) {
                                 fixedGenetics.setAutosomalGene(e, oldLength < e ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);

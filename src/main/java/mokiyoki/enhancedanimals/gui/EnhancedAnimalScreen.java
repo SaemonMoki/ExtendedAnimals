@@ -10,15 +10,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -27,7 +25,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
@@ -38,11 +35,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import java.io.File;
 import java.io.InputStream;
@@ -152,16 +150,17 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         toggleSlots();
     }
 
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
         toggleSlots();
-        this.renderBackground(matrixStack);
+        this.renderBackground(guiGraphics);
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
-        super.render(matrixStack, mouseX, mouseY, p_render_3_);
-        renderCameraMode(matrixStack, mouseX, mouseY, p_render_3_);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
-        this.renderInfoToolTip(matrixStack, mouseX, mouseY);
+        super.render(guiGraphics, mouseX, mouseY, p_render_3_);
+        renderCameraMode(guiGraphics, mouseX, mouseY, p_render_3_);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.renderInfoToolTip(guiGraphics, mouseX, mouseY);
     }
 
     protected void init() {
@@ -186,7 +185,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         };
 
 
-        this.rBox = new EditBox(this.font, photoI-44, photoJ+193, 20, 9, new TranslatableComponent("photomode.rBox"));
+        this.rBox = new EditBox(this.font, photoI-44, photoJ+193, 20, 9, Component.translatable("photomode.rBox"));
         this.rBox.setMaxLength(3);
         this.rBox.setBordered(false);
         this.rBox.setVisible(true);
@@ -195,7 +194,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.rBox.setFilter(isValidInput);
         this.addWidget(this.rBox);
 
-        this.gBox = new EditBox(this.font, photoI-44, photoJ+213, 20, 9, new TranslatableComponent("photomode.gBox"));
+        this.gBox = new EditBox(this.font, photoI-44, photoJ+213, 20, 9, Component.translatable("photomode.gBox"));
         this.gBox.setMaxLength(3);
         this.gBox.setBordered(false);
         this.gBox.setVisible(true);
@@ -204,7 +203,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.gBox.setFilter(isValidInput);
         this.addWidget(this.gBox);
 
-        this.bBox = new EditBox(this.font, photoI-44, photoJ+233, 20, 9, new TranslatableComponent("photomode.bBox"));
+        this.bBox = new EditBox(this.font, photoI-44, photoJ+233, 20, 9, Component.translatable("photomode.bBox"));
         this.bBox.setMaxLength(3);
         this.bBox.setBordered(false);
         this.bBox.setVisible(true);
@@ -216,7 +215,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     }
 
 
-    private void renderCameraMode(PoseStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
+    private void renderCameraMode(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_render_3_) {
         if (this.photoModeEnabled) {
             int photoI = (this.width - photoWidth) / 2;
             int photoJ = (this.height - photoWidth) / 2;
@@ -225,54 +224,54 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             RenderSystem.setShaderTexture(0, GUI_TEXTURE);
-            renderTabs(matrixStack, photoI, photoJ+68, 63, 0, 256, 256);
+            renderTabs(guiGraphics, photoI, photoJ+68, 63, 0, 256, 256);
 
             RenderSystem.setShaderTexture(0, PHOTO_MODE_GUI_TEXTURE);
 
             //Take Photo Button
-            this.blit(matrixStack, photoI+26, photoJ+40, 0, 335, 112, 28, 31, 384, 256);
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+26, photoJ+40, 0, 335, 112, 28, 31, 384, 256);
 
             //Direction Buttons
-            this.blit(matrixStack, photoI+304, photoJ+236, 0, 323, 168, 18, 18, 384, 256); //left
-            this.blit(matrixStack, photoI+322, photoJ+218, 0, 342, 149, 18, 18, 384, 256); //up
-            this.blit(matrixStack, photoI+340, photoJ+236, 0, 361, 168, 18, 18, 384, 256); //right
-            this.blit(matrixStack, photoI+322, photoJ+254, 0, 342, 187, 18, 18, 384, 256); //down
-            this.blit(matrixStack, photoI+325, photoJ+239, 0, 345, 171, 12, 12, 384, 256); //middle
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+304, photoJ+236, 0, 323, 168, 18, 18, 384, 256); //left
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+322, photoJ+218, 0, 342, 149, 18, 18, 384, 256); //up
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+340, photoJ+236, 0, 361, 168, 18, 18, 384, 256); //right
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+322, photoJ+254, 0, 342, 187, 18, 18, 384, 256); //down
+            guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI+325, photoJ+239, 0, 345, 171, 12, 12, 384, 256); //middle
 
             //highlight tab
             if (this.currentMode == RGB ) {
                 //Background Button
-                this.blit(matrixStack, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
                 //RGB Button
-                this.blit(matrixStack, photoI-46, photoJ+113, 0, 335, 48, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+113, 0, 335, 48, 28, 31, 384, 256);
                 //Transparency Button
-                this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
-                renderCameraBackground(matrixStack, photoI, photoJ+68, -100, 0, 0, photoWidth, photoHeight, 384, 256);
+                renderCameraBackground(guiGraphics, photoI, photoJ+68, -100, 0, 0, photoWidth, photoHeight, 384, 256);
 
                 //RGB Box Backgrounds
-                this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);
-                this.blit(matrixStack, photoI-46, photoJ+210, 0, 0, 167, 28, 14, 384, 256);
-                this.blit(matrixStack, photoI-46, photoJ+230, 0, 0, 167, 28, 14, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+210, 0, 0, 167, 28, 14, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+230, 0, 0, 167, 28, 14, 384, 256);
 
                 //RGB Boxes
-                this.rBox.render(matrixStack, mouseX, mouseY, p_render_3_);
-                this.rBox.setFocus(true);
-                this.gBox.render(matrixStack, mouseX, mouseY, p_render_3_);
-                this.bBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                this.rBox.render(guiGraphics, mouseX, mouseY, p_render_3_);
+                this.rBox.setFocused(true);
+                this.gBox.render(guiGraphics, mouseX, mouseY, p_render_3_);
+                this.bBox.render(guiGraphics, mouseX, mouseY, p_render_3_);
 
                 this.currentBackgroundColour = convertToBackground();
 
             } else if (this.currentMode == BACKGROUND) {
                 //Background Button
-                this.blit(matrixStack, photoI-46, photoJ+78, 0, 335, 16, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE,photoI-46, photoJ+78, 0, 335, 16, 28, 31, 384, 256);
                 //Arrows
-                this.blit(matrixStack, photoI-15, photoJ+90, 0, 368, 26, 5, 7, 384, 256);
-                this.blit(matrixStack, photoI-8, photoJ+90, 0, 375, 26, 5, 7, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE,photoI-15, photoJ+90, 0, 368, 26, 5, 7, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE,photoI-8, photoJ+90, 0, 375, 26, 5, 7, 384, 256);
                 //RGB Button
-                this.blit(matrixStack, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE,photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
                 //Transparency Button
-                this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE,photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
                 RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
 
@@ -283,15 +282,15 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
             } else if (this.currentMode == TRANSPARENCY) {
                 //Background Button
-                this.blit(matrixStack, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+78, 0, 303, 16, 28, 31, 384, 256);
                 //RGB Button
-                this.blit(matrixStack, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
                 //Transparency Button
-                this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
+                guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
                 if (this.prepareForTransparentScreenshot) {
                     int tempColourHolder = this.currentBackgroundColour;
                     this.currentBackgroundColour = this.greenScreenColour;
-                    renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
+                    renderCameraBackground(guiGraphics, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
                     this.currentBackgroundColour = tempColourHolder;
                 }
             }
@@ -340,12 +339,12 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         tesselator.end();
     }
 
-    public void renderCameraBackground(PoseStack matrixStack, int startX, int startY, int p_93147_, float p_93148_, float p_93149_, int width, int height, int textureXWidth, int textureYWidth) {
-        innerRenderCameraBackground(matrixStack, startX, startX + width, startY, startY + height, p_93147_, width, height, p_93148_, p_93149_, textureXWidth, textureYWidth);
+    public void renderCameraBackground(GuiGraphics guiGraphics, int startX, int startY, int p_93147_, float p_93148_, float p_93149_, int width, int height, int textureXWidth, int textureYWidth) {
+        innerRenderCameraBackground(guiGraphics, startX, startX + width, startY, startY + height, p_93147_, width, height, p_93148_, p_93149_, textureXWidth, textureYWidth);
     }
 
-    private void innerRenderCameraBackground(PoseStack matrixStack, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int p_93193_, int width, int height, float p_93196_, float p_93197_, int textureXWidth, int textureYHeight) {
-        completeRenderCameraBackground(matrixStack.last().pose(), startX, startXPlusWidth, startY, startYPlusHeight, p_93193_, (p_93196_ + 0.0F) / (float)textureXWidth, (p_93196_ + (float)width) / (float)textureXWidth, (p_93197_ + 0.0F) / (float)textureYHeight, (p_93197_ + (float)height) / (float)textureYHeight);
+    private void innerRenderCameraBackground(GuiGraphics guiGraphics, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int p_93193_, int width, int height, float p_93196_, float p_93197_, int textureXWidth, int textureYHeight) {
+        completeRenderCameraBackground(guiGraphics.pose().last().pose(), startX, startXPlusWidth, startY, startYPlusHeight, p_93193_, (p_93196_ + 0.0F) / (float)textureXWidth, (p_93196_ + (float)width) / (float)textureXWidth, (p_93197_ + 0.0F) / (float)textureYHeight, (p_93197_ + (float)height) / (float)textureYHeight);
     }
 
     private void completeRenderCameraBackground(Matrix4f pose, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int p_93118_, float p_93119_DivideTextureXWidth, float p_93120_PlusTextureWidthDivideTextureXWidth, float p_93121TextureYHeight, float p_93122_PlusTextureHeightDivideTextureYHeight) {
@@ -356,67 +355,66 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startYPlusHeight, (float)p_93118_).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93122_PlusTextureHeightDivideTextureYHeight).color(currentBackgroundColour).endVertex();
         bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startY, (float)p_93118_).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
         bufferbuilder.vertex(pose, (float)startX, (float)startY, (float)p_93118_).uv(p_93119_DivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
-    private void renderInfoToolTip(PoseStack matrixStack, int mouseX, int mouseY) {
+    private void renderInfoToolTip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (!this.photoModeEnabled) {
             if (this.isHovering(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-                if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+                if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
                     if (this.enhancedAnimalInfo.pregnant > 0) {
                         if (this.omniToggle) {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                            guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                         } else {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                            guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                         }
                     } else {
                         if (this.omniToggle) {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                            guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                         } else {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                            guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                         }
                     }
                 } else if (this.enhancedAnimalInfo.isFemale) {
                     if (this.enhancedAnimalInfo.pregnant > 0) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                     }
                 } else {
                     if (this.enhancedAnimalInfo.pregnant > 0) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                     }
                 }
             } else {
                 this.omniToggle = !this.omniToggle;
             }
             if (this.isHovering(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.health"), mouseX, mouseY);
             }
             if (this.isHovering(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
             }
         } else {
             if (this.isHoveringPhotoMode(-106, 11, 27, 23, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.background"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.background"), mouseX, mouseY);
             }
             if (this.isHoveringPhotoMode(-106, 46, 27, 23, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.rgb"), mouseX, mouseY);
             }
             if (this.isHoveringPhotoMode(-106, 83, 27, 23, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.transparent"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.transparent"), mouseX, mouseY);
             }
             if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 123, 27, 14, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.red"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.rgb.red"), mouseX, mouseY);
             }
             if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 143, 27, 14, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.green"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.rgb.green"), mouseX, mouseY);
             }
             if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 163, 27, 14, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.blue"), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.photomode.rgb.blue"), mouseX, mouseY);
             }
         }
     }
@@ -448,7 +446,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         double d0;
         double d1;
 
-        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+        if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
             d0 = p_mouseClicked_1_ - (double) (i + 140);
             d1 = p_mouseClicked_3_ - (double) (j - 28);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
@@ -661,8 +659,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     Collection<ResourceLocation> backgroundResources = Minecraft.getInstance().getResourceManager().listResources("textures/gui/photo_backgrounds", (pic) -> {
                         String[] possibleSuffixes = { ".jpeg", ".jpg", ".png" };
                         return Arrays.stream(possibleSuffixes)
-                                .anyMatch(pic::endsWith);
-                    });
+                                .anyMatch(suffix -> pic.getPath().endsWith(suffix));
+                    }).keySet();
 
                     combinedList.addAll(backgroundResources);
 
@@ -702,7 +700,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     } else if (selectedImage instanceof ResourceLocation) {
                         previousSelectionWasFile = false;
                         BACKGROUND_TEXTURE = (ResourceLocation) selectedImage;
-                        NativeImage resourceBackgroundAsNative = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(BACKGROUND_TEXTURE) .getInputStream());
+                        NativeImage resourceBackgroundAsNative = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(BACKGROUND_TEXTURE).get().open());
 
                         this.backgroundWidth = resourceBackgroundAsNative.getWidth();
                         this.backgroundHeight = resourceBackgroundAsNative.getHeight();
@@ -734,15 +732,15 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         Util.ioPool().execute(() -> {
             try {
                 nativeimage.writeToFile(target);
-                Component component = (new TextComponent(file2.getName())).withStyle(ChatFormatting.UNDERLINE).withStyle((p_168608_) -> {
+                Component component = (Component.literal(file2.getName())).withStyle(ChatFormatting.UNDERLINE).withStyle((p_168608_) -> {
                     return p_168608_.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, target.getAbsolutePath()));
                 });
                 if (event.getResultMessage() != null)
                     uiMessage.accept(event.getResultMessage());
                 else
-                    uiMessage.accept(new TranslatableComponent("screenshot.success", component));
+                    uiMessage.accept(Component.translatable("screenshot.success", component));
             } catch (Exception exception) {
-                uiMessage.accept(new TranslatableComponent("screenshot.failure", exception.getMessage()));
+                uiMessage.accept(Component.translatable("screenshot.failure", exception.getMessage()));
             } finally {
                 nativeimage.close();
             }
@@ -829,12 +827,13 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (!this.photoModeEnabled) {
             String name = getAnimalName();
-            this.font.draw(matrixStack, name, 8.0F, (float)(this.imageHeight - 160), 4210752);
+            guiGraphics.drawString(this.font, name, 8.0F, (float)(this.imageHeight - 160), 4210752, false);
             //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
-            this.font.draw(matrixStack, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752);
+            guiGraphics.drawString(this.font, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752, false);
         }
     }
 
@@ -861,11 +860,11 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
             String age = enhancedAnimalInfo.agePrefix;
             if (age.equals("YOUNG")) {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.young").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.young").getString();
             } else if (age.equals("BABY")) {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.baby").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.baby").getString();
             } else {
-                age = new TranslatableComponent("eanimod.animalinfocontainer.newborn").getString();
+                age = Component.translatable("eanimod.animalinfocontainer.newborn").getString();
             }
             name = age+" "+name;
         }
@@ -877,7 +876,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         /**
          *  screenPlacementFromX : X coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int i and + || - what you need to place it.
          *  screenPlacementFromY : Y coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int j and + || - what you need to place it.
@@ -900,56 +899,56 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             int j = (this.height - this.imageHeight) / 2;
             int shiftY = 17;
             int shiftX = 7;
-            this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+            guiGraphics.blit(GUI_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
-            if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-                this.blit(matrixStack, i + 126, j + 5, 125, this.imageHeight + 74, 8, 10); // pregnancy icon
+            if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
+                guiGraphics.blit(GUI_TEXTURE, i + 126, j + 5, 125, this.imageHeight + 74, 8, 10); // pregnancy icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 133, this.imageHeight + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
+                guiGraphics.blit(GUI_TEXTURE, i + 126, j + 4 + (11 - pregnancy), 133, this.imageHeight + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
             } else {
                 if (enhancedAnimalInfo.isFemale) {
-                    this.blit(matrixStack, i + 126, j + 5, 117, this.imageHeight + 54, 8, 10); // female icon
+                    guiGraphics.blit(GUI_TEXTURE, i + 126, j + 5, 117, this.imageHeight + 54, 8, 10); // female icon
                     int pregnancy = enhancedAnimalInfo.pregnant;
-                    this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 117, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // female icon
+                    guiGraphics.blit(GUI_TEXTURE, i + 126, j + 4 + (11 - pregnancy), 117, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // female icon
                 } else {
-                    this.blit(matrixStack, i + 126, j + 5, 108, this.imageHeight + 54, 8, 10); // male icon
+                    guiGraphics.blit(GUI_TEXTURE, i + 126, j + 5, 108, this.imageHeight + 54, 8, 10); // male icon
                     int pregnancy = enhancedAnimalInfo.pregnant;
-                    this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 108, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // male icon
+                    guiGraphics.blit(GUI_TEXTURE, i + 126, j + 4 + (11 - pregnancy), 108, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // male icon
                 }
             }
 
-            this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
-            this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
-            this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
+            guiGraphics.blit(GUI_TEXTURE, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
+            guiGraphics.blit(GUI_TEXTURE, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
+            guiGraphics.blit(GUI_TEXTURE, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
 
             int health = Math.min(enhancedAnimalInfo.health, 10);
             int hunger = 10 - enhancedAnimalInfo.hunger;
     //        int tameness = enhancedAnimalInfo.tameness;
-            this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
-            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
+            guiGraphics.blit(GUI_TEXTURE, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
+            guiGraphics.blit(GUI_TEXTURE, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
     //        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
 
             if (this.menu.enhancedAnimal.canHaveSaddle()) {
                 if (retrievedInventory.getItem(1).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 0, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 0, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
             }
             if (this.menu.enhancedAnimal.canHaveBridle()) {
                 if (retrievedInventory.getItem(3).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 18, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 18, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
             }
             if (this.menu.enhancedAnimal.canHaveArmour()) {
                 if (retrievedInventory.getItem(2).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 36, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 36, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
                 if (shiftY >= 69) {
@@ -959,9 +958,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
             if (this.menu.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
                 if (retrievedInventory.getItem(4).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
                 if (shiftY >= 69) {
@@ -971,9 +970,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
             if (this.menu.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
                 if (retrievedInventory.getItem(6).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 72, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 72, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
                 if (shiftY >= 69) {
@@ -983,9 +982,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
             if (this.menu.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
                 if (retrievedInventory.getItem(5).isEmpty()) {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 90, this.imageHeight + 54, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 90, this.imageHeight + 54, 18, 18);
                 } else {
-                    this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+                    guiGraphics.blit(GUI_TEXTURE, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
                 }
                 shiftY = shiftY + 18;
                 if (shiftY >= 69) {
@@ -995,10 +994,10 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
 
             if (shiftY==17 && shiftX==7) {
-                this.blit(matrixStack, i + 7, j + 17, 0, this.imageHeight + 72, 18, 18);
+                guiGraphics.blit(GUI_TEXTURE, i + 7, j + 17, 0, this.imageHeight + 72, 18, 18);
             }
 
-            renderTabs(matrixStack, i, j, 0, 0, 256, 256);
+            renderTabs(guiGraphics, i, j, 0, 0, 256, 256);
 
             if (this.enhancedAnimalInfo.created && !this.photoModeEnabled) {
                 renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
@@ -1009,38 +1008,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
                 String age = "";
                 if (ageInt < 8) {
-                    age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.days").getString());
+                    age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.days").getString());
                 } else if (ageInt < 96) {
                     ageInt = ageInt/8;
-                    age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.months").getString());
+                    age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.months").getString());
                 } else if (ageInt < 959040) {
                     ageInt = ageInt/96;
-                    age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.years").getString());
+                    age = ageInt.toString() + (Component.translatable("eanimod.animalinfocontainer.years").getString());
                 } else {
-                    age = new TranslatableComponent("eanimod.animalinfocontainer.ancient").getString();
+                    age = Component.translatable("eanimod.animalinfocontainer.ancient").getString();
                 }
-                this.font.draw(matrixStack, (new TranslatableComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
+                guiGraphics.drawString(this.font, (Component.translatable("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
 
                 String sireName = this.enhancedAnimalInfo.sire;
                 int s = sireName.length();
                 String damName = this.enhancedAnimalInfo.dam;
                 int d = damName.length();
                 if (s > 8) {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
-                    this.font.draw(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
+                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
+                    guiGraphics.drawString(this.font, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
                     if (d > 8) {
-                        this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
-                        this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
+                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                     } else {
-                        this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
                     }
                 } else {
-                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
+                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
                     if (d > 8) {
-                        this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
-                        this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
+                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                     } else {
-                        this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
                     }
                 }
             }
@@ -1048,32 +1047,32 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
     }
 
-    private void renderTabs(PoseStack matrixStack, int i, int j, int offsetX, int offsetTextureX, int sizeX, int sizeY) {
+    private void renderTabs(GuiGraphics guiGraphics, int i, int j, int offsetX, int offsetTextureX, int sizeX, int sizeY) {
         if (this.photoModeEnabled) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                this.blit(matrixStack, i + 82+offsetX, j - 28, 0, 209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
-                this.blit(matrixStack, i + 111+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 140+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 88+offsetX,j - 19, 0,   217+offsetTextureX, 107, 18, 14, sizeX, sizeY); //highlight photo logo
-                this.blit(matrixStack, i + 117+offsetX, j - 18, 0,   184+offsetTextureX, 23, 15, 14, sizeX, sizeY); //shadow chest logo
-                this.blit(matrixStack, i + 144+offsetX, j - 17, 0,   182+offsetTextureX, 51, 18, 14, sizeX, sizeY); //shadow info logo
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
+                guiGraphics.blit(GUI_TEXTURE, i + 82+offsetX, j - 28, 0, 209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
+                guiGraphics.blit(GUI_TEXTURE, i + 111+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 140+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 88+offsetX,j - 19, 0,   217+offsetTextureX, 107, 18, 14, sizeX, sizeY); //highlight photo logo
+                guiGraphics.blit(GUI_TEXTURE, i + 117+offsetX, j - 18, 0,   184+offsetTextureX, 23, 15, 14, sizeX, sizeY); //shadow chest logo
+                guiGraphics.blit(GUI_TEXTURE, i + 144+offsetX, j - 17, 0,   182+offsetTextureX, 51, 18, 14, sizeX, sizeY); //shadow info logo
             } else {
-                this.blit(matrixStack, i + 173+offsetX, j + 13, 209+offsetTextureX, 16, 31, 28, sizeX, sizeY); //highlight photo
-                this.blit(matrixStack, i + 173+offsetX, j + 41, 177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow chest
-                this.blit(matrixStack, i + 173+offsetX, j + 69, 177+offsetTextureX, 44, 30, 28, sizeX, sizeY); //shadow info
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 13, 209+offsetTextureX, 16, 31, 28, sizeX, sizeY); //highlight photo
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 41, 177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow chest
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 69, 177+offsetTextureX, 44, 30, 28, sizeX, sizeY); //shadow info
             }
         } else if (this.chestTabEnabled) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                this.blit(matrixStack, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 111+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
-                this.blit(matrixStack, i + 140+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 88+offsetX, j - 18, 0,   184+offsetTextureX, 107, 18, 14, sizeX, sizeY); //shadow photo logo
-                this.blit(matrixStack, i + 117+offsetX, j - 19, 0,   217+offsetTextureX, 23, 15, 14, sizeX, sizeY); //highlight chest logo
-                this.blit(matrixStack, i + 144+offsetX, j - 17, 0,   182+offsetTextureX, 51, 18, 14, sizeX, sizeY); //shadow info logo
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
+                guiGraphics.blit(GUI_TEXTURE, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 111+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
+                guiGraphics.blit(GUI_TEXTURE, i + 140+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 88+offsetX, j - 18, 0,   184+offsetTextureX, 107, 18, 14, sizeX, sizeY); //shadow photo logo
+                guiGraphics.blit(GUI_TEXTURE, i + 117+offsetX, j - 19, 0,   217+offsetTextureX, 23, 15, 14, sizeX, sizeY); //highlight chest logo
+                guiGraphics.blit(GUI_TEXTURE, i + 144+offsetX, j - 17, 0,   182+offsetTextureX, 51, 18, 14, sizeX, sizeY); //shadow info logo
             } else {
-                this.blit(matrixStack, i + 173+offsetX, j + 13, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow photo
-                this.blit(matrixStack, i + 173+offsetX, j + 41, 0,   209+offsetTextureX, 16, 31, 28, sizeX, sizeY); //highlight chest
-                this.blit(matrixStack, i + 173+offsetX, j + 69, 0,   177+offsetTextureX, 44, 30, 28, sizeX, sizeY); //shadow info
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 13, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow photo
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 41, 0,   209+offsetTextureX, 16, 31, 28, sizeX, sizeY); //highlight chest
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 69, 0,   177+offsetTextureX, 44, 30, 28, sizeX, sizeY); //shadow info
             }
             Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
             boolean hasItemsInChest = isHasItemsInChest(retrievedInventory);
@@ -1081,33 +1080,33 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
             if (retrievedInventory.getItem(0).getItem() == Items.CHEST) {
                 if (hasItemsInChest) {
-                    this.blit(matrixStack, i + 79, j + 17, 0, this.imageHeight, 18*invSize, 54);
+                    guiGraphics.blit(GUI_TEXTURE, i + 79, j + 17, 0, this.imageHeight, 18*invSize, 54);
                 } else {
-                    this.blit(matrixStack, i + 79, j + 17, 90, this.imageHeight, 90, 54);
-//                        this.blit(matrixStack, i + 112, j + 31, 180, this.ySize, 24, 26);
+                    guiGraphics.blit(GUI_TEXTURE, i + 79, j + 17, 90, this.imageHeight, 90, 54);
+//                        guiGraphics.blit(matrixStack, i + 112, j + 31, 180, this.ySize, 24, 26);
                 }
             } else {
-                this.blit(matrixStack, i + 79, j + 17, 90, this.imageHeight, 90, 54);
+                guiGraphics.blit(GUI_TEXTURE, i + 79, j + 17, 90, this.imageHeight, 90, 54);
             }
         } else {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                this.blit(matrixStack, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 111+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
-                this.blit(matrixStack, i + 140+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
-                this.blit(matrixStack, i + 88+offsetX, j - 18, 0,   184+offsetTextureX, 107, 18, 14, sizeX, sizeY); //shadow photo logo
-                this.blit(matrixStack, i + 117+offsetX, j - 18, 0,   184+offsetTextureX, 23, 15, 14, sizeX, sizeY); //shadow chest logo
-                this.blit(matrixStack, i + 144+offsetX, j - 18, 0,   215+offsetTextureX, 51, 18, 14, sizeX, sizeY); //highlight info logo
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
+                guiGraphics.blit(GUI_TEXTURE, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 111+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
+                guiGraphics.blit(GUI_TEXTURE, i + 140+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
+                guiGraphics.blit(GUI_TEXTURE, i + 88+offsetX, j - 18, 0,   184+offsetTextureX, 107, 18, 14, sizeX, sizeY); //shadow photo logo
+                guiGraphics.blit(GUI_TEXTURE, i + 117+offsetX, j - 18, 0,   184+offsetTextureX, 23, 15, 14, sizeX, sizeY); //shadow chest logo
+                guiGraphics.blit(GUI_TEXTURE, i + 144+offsetX, j - 18, 0,   215+offsetTextureX, 51, 18, 14, sizeX, sizeY); //highlight info logo
             } else {
-                this.blit(matrixStack, i + 173+offsetX, j + 13, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow photo
-                this.blit(matrixStack, i + 173+offsetX, j + 41, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow chest
-                this.blit(matrixStack, i + 173+offsetX, j + 69, 0,   209+offsetTextureX, 44, 31, 28, sizeX, sizeY); //highlight info
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 13, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow photo
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 41, 0,   177+offsetTextureX, 16, 30, 28, sizeX, sizeY); //shadow chest
+                guiGraphics.blit(GUI_TEXTURE, i + 173+offsetX, j + 69, 0,   209+offsetTextureX, 44, 31, 28, sizeX, sizeY); //highlight info
             }
         }
     }
 
     public void renderEntityInInventory(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity p_98856_) {
-        float $$6 = (float)Math.atan((double)(facingDirectionX / 40.0F));
-        float $$7 = (float)Math.atan((double)(facingDirectionY / 40.0F));
+        float f = (float)Math.atan((double)(facingDirectionX / 40.0F));
+        float f1 = (float)Math.atan((double)(facingDirectionY / 40.0F));
         PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
         poseStack.translate((double)xPos, (double)yPose, 1050.0);
@@ -1116,27 +1115,27 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         PoseStack poseStack1 = new PoseStack();
         poseStack1.translate(0.0, 0.0, 1000.0);
         poseStack1.scale((float)scale, (float)scale, (float)scale);
-        Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
-        Quaternion quaternion1 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
+        Quaternionf quaternion = (new Quaternionf()).rotateZ(3.1415927F);
+        Quaternionf quaternion1 = (new Quaternionf()).rotateX(f1 * 20.0F * 0.017453292F);
         quaternion.mul(quaternion1);
         poseStack1.mulPose(quaternion);
         float $$12 = p_98856_.yBodyRot;
         float $$13 = p_98856_.getYRot();
         float $$14 = p_98856_.getXRot();
-        p_98856_.yBodyRot = 180.0F + $$6 * 20.0F;
-        p_98856_.setYRot(180.0F + $$6 * 40.0F);
-        p_98856_.setXRot(-$$7 * 20.0F);
+        p_98856_.yBodyRot = 180.0F + f * 20.0F;
+        p_98856_.setYRot(180.0F + f * 40.0F);
+        p_98856_.setXRot(-f1 * 20.0F);
         Lighting.setupForEntityInInventory();
-        EntityRenderDispatcher $$17 = Minecraft.getInstance().getEntityRenderDispatcher();
-        quaternion1.conj();
-        $$17.overrideCameraOrientation(quaternion1);
-        $$17.setRenderShadow(false);
-        MultiBufferSource.BufferSource $$18 = Minecraft.getInstance().renderBuffers().bufferSource();
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        quaternion1.conjugate();
+        entityrenderdispatcher.overrideCameraOrientation(quaternion1);
+        entityrenderdispatcher.setRenderShadow(false);
+        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderSystem.runAsFancy(() -> {
-            $$17.render(p_98856_, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack1, $$18, 15728880);
+            entityrenderdispatcher.render(p_98856_, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack1, multibuffersource$buffersource, 15728880);
         });
-        $$18.endBatch();
-        $$17.setRenderShadow(true);
+        multibuffersource$buffersource.endBatch();
+        entityrenderdispatcher.setRenderShadow(true);
         p_98856_.yBodyRot = $$12;
         p_98856_.setYRot($$13);
         p_98856_.setXRot($$14);
@@ -1154,14 +1153,16 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         posestack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
         PoseStack posestack1 = new PoseStack();
-        posestack1.translate(0.0D, 0.0D, 1000.0D);
+        posestack1.translate(0.0D, 0.0D, 10.0D);
         posestack1.scale((float)scale, (float)scale, (float)scale);
-        Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
-        Quaternion quaternion1 = Vector3f.XP.rotationDegrees(f1 * 20.0F + dragOffsetY);
-        Quaternion quaternion2 = Vector3f.YP.rotationDegrees(f1 * 20.0F + dragOffsetX);
-        quaternion.mul(quaternion1);
-        quaternion.mul(quaternion2);
-        posestack1.mulPose(quaternion);
+//        Quaternionf quaternion = (new Quaternionf()).rotateZ(180F);
+        Quaternionf quaternion1 = (new Quaternionf()).rotateX(f1 * 20.0F + dragOffsetY * -0.017453292F);
+        Quaternionf quaternion2 = (new Quaternionf()).rotateY(f1 * 20.0F + dragOffsetX * 0.017453292F);
+//        quaternion.mul(quaternion1);
+//        quaternion.mul(quaternion2);
+//        posestack1.mulPose(quaternion);
+        quaternion1.mul(quaternion2);
+        posestack1.mulPose(quaternion1);
         float originalYBodyRot = entity.yBodyRot;
         float originalYRot = entity.getYRot();
         float originalXRot = entity.getXRot();
@@ -1169,12 +1170,12 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         float originalYHeadRot = entity.yHeadRot;
         entity.yBodyRot = 180.0F + f * 20.0F;
         entity.setYRot(180.0F + f * 40.0F);
-        entity.setXRot(-f1 * 20.0F);
+//        entity.setXRot(-f1 * 20.0F);
         entity.yHeadRot = 180.0F + f * 20.0F;
 //        entity.yHeadRotO = 180.0F + f * 20.0F;
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        quaternion1.conj();
+        quaternion1.conjugate();
         entityrenderdispatcher.overrideCameraOrientation(quaternion1);
         entityrenderdispatcher.setRenderShadow(false);
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();

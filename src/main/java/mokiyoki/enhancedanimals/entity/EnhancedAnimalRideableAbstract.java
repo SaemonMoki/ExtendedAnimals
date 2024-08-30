@@ -466,6 +466,11 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                this.setRot(this.getYRot(), this.getXRot());
 //                this.yBodyRot = this.getYRot();
 //                if (this.hasBridle() && !livingentity.isHolding(Items.CARROT_ON_A_STICK)) {
+//                    this.setYRot(livingentity.getYRot());
+//                    this.yRotO = this.getYRot();
+//                    this.setXRot(livingentity.getXRot() * 0.5F);
+//                    this.setRot(this.getYRot(), this.getXRot());
+//                    this.yBodyRot = this.getYRot();
 //                    this.yHeadRot = this.yBodyRot;
 //                    float f = livingentity.xxa * 0.5F;
 //                    float f1 = livingentity.zza;
@@ -502,7 +507,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                        this.jumpPower = 0.0F;
 //                    }
 //
-////                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
+//                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
 //                    if (this.isControlledByLocalInstance()) {
 //                        this.setSpeed((float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
 //                        super.travel(new Vec3((double) f, p_213352_1_.y, (double) f1));
@@ -515,7 +520,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                        this.setAnimalJumping(false);
 //                    }
 //
-////                    this.walkAnimation.setSpeed(this.walkAnimation.speed());
+//                    this.animationSpeedOld = this.animationSpeed;
 //                    double d2 = this.getX() - this.xo;
 //                    double d3 = this.getZ() - this.zo;
 //                    float f4 = Mth.sqrt((float) (d2 * d2 + d3 * d3)) * 4.0F;
@@ -523,11 +528,17 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                        f4 = 1.0F;
 //                    }
 //
-//                    this.walkAnimation.update(f4, 0.4F);
+//                    this.animationSpeed += (f4 - this.animationSpeed) * 0.4F;
+//                    this.animationPosition += this.animationSpeed;
 //                } else {
+//                    this.setYRot(livingentity.getYRot());
+//                    this.yRotO = this.getYRot();
+//                    this.setXRot(livingentity.getXRot() * 0.5F);
+//                    this.setRot(this.getYRot(), this.getXRot());
+//                    this.yBodyRot = this.getYRot();
 //                    this.yHeadRot = this.getYRot();
-////                    this.maxUpStep = 1.1F;
-////                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
+//                    this.maxUpStep = 1.1F;
+//                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
 //                    if (this.boosting && this.boostTime++ > this.totalBoostTime) {
 //                        this.boosting = false;
 //                    }
@@ -545,7 +556,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                        this.setDeltaMovement(Vec3.ZERO);
 //                    }
 //
-////                    this.animationSpeedOld = this.walkAnimation;
+//                    this.animationSpeedOld = this.animationSpeed;
 //                    double d1 = this.getX() - this.xo;
 //                    double d0 = this.getZ() - this.zo;
 //                    float f1 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
@@ -553,12 +564,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 //                        f1 = 1.0F;
 //                    }
 //
-//                    this.walkAnimation.update(f1, 0.4F);
+//                    this.animationSpeed += (f1 - this.animationSpeed) * 0.4F;
+//                    this.animationPosition += this.animationSpeed;
 //                }
 //            } else {
 //                this.allowStandSliding = false;
-////                this.maxUpStep = 1.1F;
-////                this.flyingSpeed = 0.02F;
+//                this.maxUpStep = 1.1F;
+//                this.flyingSpeed = 0.02F;
 //                super.travel(p_213352_1_);
 //            }
 //        }

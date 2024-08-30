@@ -29,9 +29,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModItems.*;
 
-import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
-import static mokiyoki.enhancedanimals.init.ModItems.*;
-
 @Mod(MODID)
 public class GeneticAnimals {
 

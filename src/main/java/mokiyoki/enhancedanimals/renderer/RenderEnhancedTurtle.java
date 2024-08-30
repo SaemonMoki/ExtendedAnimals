@@ -1,25 +1,23 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 
 public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhancedTurtle<EnhancedTurtle>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entities/turtle/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/turtle/turtlebase.png");
-    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "turtle"), "turtle_layer");
+    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "turtle"), "turtle_layer");
 
     public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedTurtle<>(renderManager.bakeLayer(TURTLE_LAYER)), 0.5F);

@@ -45,7 +45,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
         super(animalIn, (double)0.7F, 16);
         this.animal = animalIn;
         this.ediblePlants = foods;
-        this.griefingAllowed = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.animal.level, this.animal);
+        this.griefingAllowed = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.animal.level(), this.animal);
     }
 
     public boolean canUse() {
@@ -69,7 +69,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
         super.tick();
         this.animal.getLookControl().setLookAt((double)this.blockPos.getX() + 0.5D, (double)(this.blockPos.getY() + 1), (double)this.blockPos.getZ() + 0.5D, 10.0F, (float)this.animal.getMaxHeadXRot());
         if (this.isReachedTarget()) {
-            Level world = this.animal.level;
+            Level world = this.animal.level();
             BlockPos blockpos = this.blockPos.above();
             if (this.canEat && isEdible(world, blockpos)) {
                 BlockState blockState = world.getBlockState(blockpos);
@@ -91,7 +91,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 }
             }
         } else if (this.blockPos.closerThan(this.animal.blockPosition(), 2.0D)) {
-            Level world = this.animal.level;
+            Level world = this.animal.level();
             BlockPos blockpos = this.blockPos.above();
             BlockState blockState = world.getBlockState(blockpos);
             Block block = blockState.getBlock();

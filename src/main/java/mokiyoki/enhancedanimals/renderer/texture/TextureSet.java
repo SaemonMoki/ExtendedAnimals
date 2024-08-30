@@ -78,10 +78,10 @@ public class TextureSet extends AbstractTexture {
         iterator = textureSet.getTextures().iterator();
         s = iterator.next();
 
-        try (
-                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
-        ) {
+        try {
+            Resource iresource = manager.getResourceOrThrow(new ResourceLocation(modLocation+s));
+            NativeImage nativeimage = NativeImage.read(iresource.open());
+
             switch (textureSet.blendType) {
                 case NORMAL -> {
 

@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.items;
 
-import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.LivingEntity;
@@ -196,7 +195,7 @@ public class MixableMilkBucket extends Item {
 
     /**
      * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
-     * {@link #onItemUse}.
+     * {@link # onItemUse}.
      */
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         playerIn.startUsingItem(handIn);

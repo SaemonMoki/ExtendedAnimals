@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
@@ -20,6 +19,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -231,7 +231,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
             this.theHead.setXRot((headPitch * (Mth.PI / 180F))-Mth.HALF_PI);
             this.theHead.setZRot(-netHeadYaw * (Mth.PI / 180F));
 
-            if (!entityIn.isInWater() && entityIn.isOnGround()) {
+            if (!entityIn.isInWater() && entityIn.onGround()) {
                 float f = entityIn.isDigging() ? 4.0F : 1.0F;
                 float f1 = entityIn.isDigging() ? 2.0F : 1.0F;
                 float f2 = 5.0F;

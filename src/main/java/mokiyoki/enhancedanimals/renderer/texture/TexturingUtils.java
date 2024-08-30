@@ -4,18 +4,13 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.mojang.blaze3d.platform.NativeImage.combine;
-import static com.mojang.blaze3d.platform.NativeImage.getA;
-import static com.mojang.blaze3d.platform.NativeImage.getB;
-import static com.mojang.blaze3d.platform.NativeImage.getG;
-import static com.mojang.blaze3d.platform.NativeImage.getR;
 
 public class TexturingUtils {
 
@@ -28,8 +23,8 @@ public class TexturingUtils {
 
     public static NativeImage loadNativeImage(String texture, ResourceManager manager, String modLocation, int x, int y) {
         try {
-            Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture));
-            NativeImage image = NativeImage.read(iresource.getInputStream());
+            Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture)).get();
+            NativeImage image = NativeImage.read(iresource.open());
             if (image.getWidth() != x || image.getHeight() != y) {
                 NativeImage image1 = new NativeImage(x, y, true);
                 int xb = image.getWidth();
@@ -49,17 +44,17 @@ public class TexturingUtils {
                                     int getX = (j*scale)+l;
                                     int getY = (i*scale)+k;
                                     int color = image.getPixelRGBA(getX, getY);
-                                    float val = getR(color)*f;
+                                    float val = FastColor.ABGR32.red(color)*f;
                                     r += val*val;
-                                    val = (float)getG(color)*f;
+                                    val = (float)FastColor.ABGR32.green(color)*f;
                                     g += val*val;
-                                    val = (float)getB(color)*f;
+                                    val = (float)FastColor.ABGR32.blue(color)*f;
                                     b += val*val;
-                                    val = (float)getA(color)*f;
+                                    val = (float)FastColor.ABGR32.alpha(color)*f;
                                     a += val*val;
                                 }
                             }
-                            image1.setPixelRGBA(j, i, combine( ((int)(255*(Math.sqrt(a/scaleSize)))), ((int)(255*(Math.sqrt(b/scaleSize)))), ((int)(255*(Math.sqrt(g/scaleSize)))), ((int)(255*(Math.sqrt(r/scaleSize))))));
+                            image1.setPixelRGBA(j, i, FastColor.ABGR32.color( ((int)(255*(Math.sqrt(a/scaleSize)))), ((int)(255*(Math.sqrt(b/scaleSize)))), ((int)(255*(Math.sqrt(g/scaleSize)))), ((int)(255*(Math.sqrt(r/scaleSize))))));
                         }
                     }
 
@@ -172,14 +167,14 @@ public class TexturingUtils {
     //Layers the base image's and supplied image's pixels together
     private static void layerPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
-        float layerA = (float)getA(colIn) * COLOUR_DEGREE;
-        float layerB = (float)getB(colIn) * COLOUR_DEGREE;
-        float layerG = (float)getG(colIn) * COLOUR_DEGREE;
-        float layerR = (float)getR(colIn) * COLOUR_DEGREE;
-        float baseA = (float)getA(i) * COLOUR_DEGREE;
-        float baseB = (float)getB(i) * COLOUR_DEGREE;
-        float baseG = (float)getG(i) * COLOUR_DEGREE;
-        float baseR = (float)getR(i) * COLOUR_DEGREE;
+        float layerA = (float)FastColor.ABGR32.alpha(colIn) * COLOUR_DEGREE;
+        float layerB = (float)FastColor.ABGR32.blue(colIn) * COLOUR_DEGREE;
+        float layerG = (float)FastColor.ABGR32.green(colIn) * COLOUR_DEGREE;
+        float layerR = (float)FastColor.ABGR32.red(colIn) * COLOUR_DEGREE;
+        float baseA = (float)FastColor.ABGR32.alpha(i) * COLOUR_DEGREE;
+        float baseB = (float)FastColor.ABGR32.blue(i) * COLOUR_DEGREE;
+        float baseG = (float)FastColor.ABGR32.green(i) * COLOUR_DEGREE;
+        float baseR = (float)FastColor.ABGR32.red(i) * COLOUR_DEGREE;
         float inverseBaseA = 1.0F - baseA;
         float inverseLayerA = 1.0F - layerA;
         float outAlpha = cleanValue(baseA+(inverseBaseA * layerA));
@@ -191,7 +186,7 @@ public class TexturingUtils {
         int k = (int)(outBlue * 255.0F);
         int l = (int)(outGreen * 255.0F);
         int i1 = (int)(outRed * 255.0F);
-        baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
+        baseImage.setPixelRGBA(xIn, yIn, FastColor.ABGR32.color(j, k, l, i1));
     }
 
     private static void maskAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
@@ -225,20 +220,20 @@ public class TexturingUtils {
         int i = baseImage.getPixelRGBA(xIn, yIn);
 
         float size = 1.0F / (colIns.size()+1.0F);
-        float alpha = getA(i) * size * COLOUR_DEGREE;
-        float red = getR(i) * alpha;
-        float green = getG(i) * alpha;
-        float blue = getB(i) * alpha;
+        float alpha = FastColor.ABGR32.alpha(i) * size * COLOUR_DEGREE;
+        float red = FastColor.ABGR32.red(i) * alpha;
+        float green = FastColor.ABGR32.green(i) * alpha;
+        float blue = FastColor.ABGR32.blue(i) * alpha;
 
         for (Integer layerColor : colIns) {
-            float layerAlpha = getA(layerColor) * size * COLOUR_DEGREE;
+            float layerAlpha = FastColor.ABGR32.alpha(layerColor) * size * COLOUR_DEGREE;
             alpha += layerAlpha;
-            red += getR(layerColor) * layerAlpha;
-            green += getG(layerColor) * layerAlpha;
-            blue += getB(layerColor) * layerAlpha;
+            red += FastColor.ABGR32.red(layerColor) * layerAlpha;
+            green += FastColor.ABGR32.green(layerColor) * layerAlpha;
+            blue += FastColor.ABGR32.blue(layerColor) * layerAlpha;
         }
 
-        baseImage.setPixelRGBA(xIn, yIn, combine((int)(cleanColourValue(alpha*255.0F)), (int)cleanColourValue(blue), (int)cleanColourValue(green), (int)cleanColourValue(red)));
+        baseImage.setPixelRGBA(xIn, yIn, FastColor.ABGR32.color((int)(cleanColourValue(alpha*255.0F)), (int)cleanColourValue(blue), (int)cleanColourValue(green), (int)cleanColourValue(red)));
     }
 
     //Blends the supplied image with a specified bgr

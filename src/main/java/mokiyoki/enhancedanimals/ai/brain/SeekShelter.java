@@ -5,13 +5,12 @@ import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
-
-import java.util.Random;
 
 public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
 
@@ -95,7 +94,7 @@ public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
     }
 
     protected BlockPos getHidePos(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
-        Random random = geneticAnimal.getRandom();
+        RandomSource random = geneticAnimal.getRandom();
         BlockPos blockpos = geneticAnimal.blockPosition();
 
         for(int i = 0; i < 10; ++i) {

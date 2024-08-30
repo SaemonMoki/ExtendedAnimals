@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "minecraft:item/water_bucket",
-    "layer1": "eanimod:items/enhanced_axolotl_egg_bucket"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "minecraft:item/water_bucket",
+        "layer1": "eanimod:item/enhanced_axolotl_egg_bucket"
+    }
 }

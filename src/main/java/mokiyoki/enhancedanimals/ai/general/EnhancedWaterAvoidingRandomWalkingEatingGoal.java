@@ -72,7 +72,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.searchLength = length; //how long to search
         this.verticalSearchStart = 0;
         this.verticalSearchRange = depth;
-        this.entityWorld = creature.level;
+        this.entityWorld = creature.level();
         this.probability = probabilityIn; //probably to pick block???
         this.wanderExecutionChance = wanderExecutionChance; //chance to wander
         this.hungerModifier = hungerModifier; //the amount to divide the hunger timer by to then take away from the 1/1000 chance to eat

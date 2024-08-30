@@ -8,19 +8,15 @@ import mokiyoki.enhancedanimals.ai.brain.BabyFollowParent;
 import mokiyoki.enhancedanimals.ai.brain.SeekShelter;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModActivities;
-import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
@@ -100,15 +96,15 @@ public class ChickenBrain {
 
     private static void initIdleActivity(Brain<EnhancedChicken> brain) {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
-                Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
-                Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
-                Pair.of(1, new RunIf<>(ChickenBrain::notBroody, new ChickenMakeLove(1.0F), true)),
+//                Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
+//                Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
+//                Pair.of(1, new RunIf<>(ChickenBrain::notBroody, new ChickenMakeLove(1.0F), true)),
                 Pair.of(2, new SeekingNest()),
                 Pair.of(3, new RunOne<>(ImmutableList.of(
-                        Pair.of(new RunIf<>(ChickenBrain::canMoveOrLookAround, new FollowTemptation(ChickenBrain::getSpeedModifier), true), 1),
+//                        Pair.of(new RunIf<>(ChickenBrain::canMoveOrLookAround, new FollowTemptation(ChickenBrain::getSpeedModifier), true), 1),
                         Pair.of(new BabyFollowParent<>(ADULT_FOLLOW_RANGE, ChickenBrain::getSpeedModifierFollowingAdult), 1)))
                 ),
-                Pair.of(4, new StartAttacking<>(ChickenBrain::findNearestValidAttackTarget)),
+                Pair.of(4, StartAttacking.create(ChickenBrain::findNearestValidAttackTarget)),
                 Pair.of(5, new GateBehavior<>(
                         ImmutableMap.of(
                                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
@@ -124,16 +120,15 @@ public class ChickenBrain {
                         GateBehavior.OrderPolicy.SHUFFLED,
                         GateBehavior.RunningPolicy.RUN_ONE,
                         ImmutableList.of(
-                                Pair.of(new RunSometimes<>(new RandomStroll(1.0F), UniformInt.of(30, 60)), 2),
-                                Pair.of(new SetWalkTargetFromLookTarget(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new RunIf<>(Entity::isOnGround, new DoNothing(300, 600)), 1))
+                                Pair.of(RandomStroll.stroll(1.0F, 30, 60), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3))
+//                                Pair.of(new RunIf<>(Entity::onGround), new DoNothing(300, 600)), 1))
                         )
                 )
         ));
     }
 
     private static boolean canSetWalkTargetFromLookTarget(LivingEntity livingEntity) {
-        Level level = livingEntity.level;
         Optional<PositionTracker> optional = livingEntity.getBrain().getMemory(MemoryModuleType.LOOK_TARGET);
         if (optional.isPresent()) {
             BlockPos blockpos = optional.get().currentBlockPosition();

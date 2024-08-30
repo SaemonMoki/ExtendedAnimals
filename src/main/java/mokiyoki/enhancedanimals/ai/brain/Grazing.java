@@ -78,8 +78,8 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
 
         for (int i = 0; i < geneticAnimal.getRandom().nextInt(3)+3; i++) {
             Vec3 randomDirVec = LandRandomPos.getPosAway(geneticAnimal, 10, 7, getDirectionVec(geneticAnimal));
-            if (randomDirVec != null && isEdibleBlock(serverLevel, new BlockPos(randomDirVec))) {
-                eatingDestinations.add(new BlockPos(randomDirVec));
+            if (randomDirVec != null && isEdibleBlock(serverLevel, BlockPos.containing(randomDirVec))) {
+                eatingDestinations.add(BlockPos.containing(randomDirVec));
             }
         }
 
@@ -128,19 +128,19 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
                     geneticAnimal.decreaseHunger(otherHungerRestore);
                 }
                 this.eatingGrassTimer = 140;
-                geneticAnimal.level.broadcastEntityEvent(geneticAnimal, (byte)10);
+                geneticAnimal.level().broadcastEntityEvent(geneticAnimal, (byte)10);
                 geneticAnimal.getNavigation().stop();
             }
         } else if (eating) {
             this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
             if (this.eatingGrassTimer == 4) {
                 if(seekingHay) {
-                    BlockState blockState = geneticAnimal.level.getBlockState(currentDestination);
+                    BlockState blockState = geneticAnimal.level().getBlockState(currentDestination);
                     if (blockState.getBlock() instanceof UnboundHayBlock) {
-                        ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(geneticAnimal.level, blockState, currentDestination);
+                        ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(geneticAnimal.level(), blockState, currentDestination);
                     } else {
                         //clean up
-                        geneticAnimal.level.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(currentDestination);
+                        geneticAnimal.level().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(currentDestination);
                     }
                 } else {
                     eatBlocks(geneticAnimal, currentDestination);
@@ -157,7 +157,7 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
     }
 
     private boolean findIfNearbyHay(EnhancedAnimalAbstract geneticAnimal) {
-        Set<BlockPos> hayList = geneticAnimal.level.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
+        Set<BlockPos> hayList = geneticAnimal.level().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
         double closestDistance = 128;
         BlockPos destinationBlock = null;
         for (BlockPos pos : hayList) {
@@ -213,13 +213,13 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
     protected void eatBlocks(EnhancedAnimalAbstract geneticAnimal, BlockPos currentDestination) {
         BlockPos blockpos = new BlockPos(geneticAnimal.blockPosition());
         if (isInEdibleBlock(geneticAnimal, blockpos)) {
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(geneticAnimal.level, geneticAnimal)) {
-                geneticAnimal.level.destroyBlock(blockpos, false);
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(geneticAnimal.level(), geneticAnimal)) {
+                geneticAnimal.level().destroyBlock(blockpos, false);
             }
-        } else if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(geneticAnimal.level, geneticAnimal)) {
-            if (geneticAnimal.level.getBlockState(currentDestination.below()).getBlock() == Blocks.GRASS_BLOCK) {
+        } else if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(geneticAnimal.level(), geneticAnimal)) {
+            if (geneticAnimal.level().getBlockState(currentDestination.below()).getBlock() == Blocks.GRASS_BLOCK) {
                 eatBlock(geneticAnimal, currentDestination.below(), Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()), ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState());
-            } else if (geneticAnimal.level.getBlockState(currentDestination.below()).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
+            } else if (geneticAnimal.level().getBlockState(currentDestination.below()).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
 
             }
         }
@@ -227,12 +227,12 @@ public class Grazing extends Behavior<EnhancedAnimalAbstract> {
     }
 
     protected void eatBlock(EnhancedAnimalAbstract geneticAnimal, BlockPos currentDestination, int eatenBlock, BlockState newBlock) {
-        geneticAnimal.level.levelEvent(2001, currentDestination, eatenBlock);
-        geneticAnimal.level.setBlock(currentDestination, newBlock, 2);
+        geneticAnimal.level().levelEvent(2001, currentDestination, eatenBlock);
+        geneticAnimal.level().setBlock(currentDestination, newBlock, 2);
     }
 
     private boolean isInEdibleBlock(EnhancedAnimalAbstract geneticAnimal, BlockPos blockpos) {
-        BlockState blockState = geneticAnimal.level.getBlockState(blockpos);
+        BlockState blockState = geneticAnimal.level().getBlockState(blockpos);
         return (IS_GRASS.test(blockState)
                 || IS_TALL_GRASS_BLOCK.test(blockState)
                 || blockState.getBlock() instanceof GrowablePlant

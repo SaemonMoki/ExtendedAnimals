@@ -44,12 +44,12 @@ public class ChickenPanicTrigger extends Behavior<EnhancedChicken> {
       if (p_24702_ % 3L == 0L && !(gene[108] == 2 && gene[109] == 2)) {
          ItemStack featherStack = new ItemStack(Items.FEATHER, 1);
 
-         ItemEntity itementity = new ItemEntity(chicken.level, chicken.getX(), chicken.getY() + 0.0d, chicken.getZ(), featherStack);
+         ItemEntity itementity = new ItemEntity(chicken.level(), chicken.getX(), chicken.getY() + 0.0d, chicken.getZ(), featherStack);
          itementity.setDefaultPickUpDelay();
          itementity.setNeverPickUp();
          itementity.lifespan = 20;
 
-         chicken.level.addFreshEntity(itementity);
+         chicken.level().addFreshEntity(itementity);
       }
    }
 

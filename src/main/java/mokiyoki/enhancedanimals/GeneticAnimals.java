@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals;
 
-import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
@@ -9,18 +8,12 @@ import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
-import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -28,8 +21,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-
-import java.util.List;
 
 import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.ModItems.*;
@@ -74,8 +65,6 @@ public class GeneticAnimals {
         ModMemoryModuleTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCauldronInteractions);
-
-        MinecraftForge.EVENT_BUS.addListener(this::addAnimalsToVillages);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -84,6 +73,45 @@ public class GeneticAnimals {
         channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumerNetworkThread(AxolotlBucketTexturePacket::processPacket).add();
 
         event.enqueueWork(ModItems::registerDispenserBehaviour);
+//        try {
+//            StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));
+//
+//            if (oldPool != null) {
+//                List<StructurePoolElement> jigsawPieces = oldPool.templates;
+//
+//                StructurePoolElement chickenPiece = StructurePoolElement.legacy("village/common/animals/chickens_1").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(chickenPiece, 7));
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//
+//                StructurePoolElement cow2Piece = StructurePoolElement.legacy("village/common/animals/cows_2").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(cow2Piece, 1));
+//                jigsawPieces.add(cow2Piece);
+//
+//                StructurePoolElement cow3Piece = StructurePoolElement.legacy("village/common/animals/cows_3").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(cow3Piece, 1));
+//                jigsawPieces.add(cow3Piece);
+//
+//                StructurePoolElement llamaPiece = StructurePoolElement.legacy("village/common/animals/llamas_1").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(llamaPiece, 3));
+//                jigsawPieces.add(llamaPiece);
+//                jigsawPieces.add(llamaPiece);
+//                jigsawPieces.add(llamaPiece);
+//
+//                StructurePoolElement sheep3Piece = StructurePoolElement.legacy("village/common/animals/sheep_3").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(sheep3Piece, 1));
+//                jigsawPieces.add(sheep3Piece);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     private void setupCauldronInteractions(final FMLCommonSetupEvent event) {
@@ -164,48 +192,6 @@ public class GeneticAnimals {
             }
         }
     };
-
-    private void addAnimalsToVillages(final ServerAboutToStartEvent event) {
-        try {
-            StructureTemplatePool oldPool = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).get().get(new ResourceLocation("village/common/animals"));
-
-            if (oldPool != null) {
-                List<StructurePoolElement> jigsawPieces = oldPool.templates;
-
-                StructurePoolElement chickenPiece = StructurePoolElement.legacy("village/common/animals/chickens_1").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(chickenPiece, 7));
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-
-                StructurePoolElement cow2Piece = StructurePoolElement.legacy("village/common/animals/cows_2").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(cow2Piece, 1));
-                jigsawPieces.add(cow2Piece);
-
-                StructurePoolElement cow3Piece = StructurePoolElement.legacy("village/common/animals/cows_3").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(cow3Piece, 1));
-                jigsawPieces.add(cow3Piece);
-
-                StructurePoolElement llamaPiece = StructurePoolElement.legacy("village/common/animals/llamas_1").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(llamaPiece, 3));
-                jigsawPieces.add(llamaPiece);
-                jigsawPieces.add(llamaPiece);
-                jigsawPieces.add(llamaPiece);
-
-                StructurePoolElement sheep3Piece = StructurePoolElement.legacy("village/common/animals/sheep_3").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(sheep3Piece, 1));
-                jigsawPieces.add(sheep3Piece);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
 }
 

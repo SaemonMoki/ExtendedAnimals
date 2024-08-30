@@ -8,11 +8,9 @@ import mokiyoki.enhancedanimals.ai.brain.BabyFollowParent;
 import mokiyoki.enhancedanimals.ai.brain.SeekShelter;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModActivities;
-import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
@@ -98,37 +96,33 @@ public class ChickenBrain {
 
     private static void initIdleActivity(Brain<EnhancedChicken> brain) {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
-                Pair.of(0, ChickenSetEntityLookTargetSometimes.create(EntityType.PLAYER, 6.0F, UniformInt.of(100, 600))),
-                Pair.of(1, ChickenSetEntityLookTargetSometimes.create(ModEntities.ENHANCED_CHICKEN.get(), 6.0F, UniformInt.of(50, 200))),
-                Pair.of(1, new ChickenMakeLove(1.0F)),
+//                Pair.of(0, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(EntityType.PLAYER, 6.0F)), UniformInt.of(100, 600))),
+//                Pair.of(1, new RunSometimes<>(new RunIf<>(ChickenBrain::canMoveOrLookAround, new SetEntityLookTarget(ModEntities.ENHANCED_CHICKEN.get(), 6.0F)), UniformInt.of(50, 200))),
+//                Pair.of(1, new RunIf<>(ChickenBrain::notBroody, new ChickenMakeLove(1.0F), true)),
                 Pair.of(2, new SeekingNest()),
                 Pair.of(3, new RunOne<>(ImmutableList.of(
-                        Pair.of(new ChickenFollowTemptation(ChickenBrain::getSpeedModifier), 1),
+//                        Pair.of(new RunIf<>(ChickenBrain::canMoveOrLookAround, new FollowTemptation(ChickenBrain::getSpeedModifier), true), 1),
                         Pair.of(new BabyFollowParent<>(ADULT_FOLLOW_RANGE, ChickenBrain::getSpeedModifierFollowingAdult), 1)))
                 ),
                 Pair.of(4, StartAttacking.create(ChickenBrain::findNearestValidAttackTarget)),
                 Pair.of(5, new GateBehavior<>(
                         ImmutableMap.of(
                                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
-                                ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_WALKING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_NEST.get(), MemoryStatus.VALUE_ABSENT,
-                                ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT,
-//                                MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT
                         ),
                         ImmutableSet.of(),
                         GateBehavior.OrderPolicy.SHUFFLED,
                         GateBehavior.RunningPolicy.RUN_ONE,
                         ImmutableList.of(
-                                Pair.of(RandomStroll.stroll(1.0F, 10, 5), 2),
-                                Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new ChickenDoNothing(30, 60), 1)
-                        )
+                                Pair.of(RandomStroll.stroll(1.0F, 30, 60), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3))
+//                                Pair.of(new RunIf<>(Entity::onGround), new DoNothing(300, 600)), 1))
                         )
                 )
         ));
@@ -180,11 +174,11 @@ public class ChickenBrain {
         return chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get());
     }
 
-    public static boolean notBroody(EnhancedChicken chicken) {
+    private static boolean notBroody(EnhancedChicken chicken) {
         return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.BROODY.get());
     }
 
-    public static boolean canMoveOrLookAround(EnhancedChicken chicken) {
+    private static boolean canMoveOrLookAround(EnhancedChicken chicken) {
         return !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get()) &&
                !chicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) &&

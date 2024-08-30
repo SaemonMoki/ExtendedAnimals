@@ -1,15 +1,9 @@
 modLoader="javafml"
-loaderVersion="[34,)"
-
-license="All rights reserved"
-
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 [[mods]]
-modId="eanimod"
-version="0.8.48"
-displayName="Genetic Animals"
-logoFile="icon.png"
-authors="Moki, BeardedDev, Nicole, Mika, Navia"
-credits="Everyone on the Genetic Animals Patreon!"
-description='''
-Genetics with improved animal behaviour and extra animal content.
-'''
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description='''${mod_description}'''

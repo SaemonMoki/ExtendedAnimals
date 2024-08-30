@@ -1,24 +1,18 @@
 package mokiyoki.enhancedanimals;
 
-import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -28,71 +22,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import java.util.List;
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
+import static mokiyoki.enhancedanimals.init.ModItems.*;
 
-import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH;
-import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_LEATHER;
-import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_LEATHER_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_LEATHER_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_GOLDBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_GOLDRING;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_IRONBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_CLOTH_IRONRING;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_GOLDBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_GOLDRING;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_IRONBELL;
-import static mokiyoki.enhancedanimals.init.ModItems.COLLAR_BASIC_LEATHER_IRONRING;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_CLOTH;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHER;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_CLOTH;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_CLOTH_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_CLOTH_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_CLOTH_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHER;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHER_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHER_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_BASIC_LEATHER_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_CLOTH;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_CLOTH_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_CLOTH_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHER;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHER_GOLD;
-import static mokiyoki.enhancedanimals.init.ModItems.SADDLE_ENGLISH_LEATHER_WOOD;
-import static mokiyoki.enhancedanimals.util.Reference.MODID;
+@Mod(MODID)
+public class GeneticAnimals {
 
-/**
- * Created by moki on 24/08/2018.
- */
-
-@Mod(value = "eanimod")
-public class EnhancedAnimals {
+    public static final String MODID = "eanimod";
 
     private static final String PROTOCOL_VERSION = "1.0";
 
@@ -103,20 +39,11 @@ public class EnhancedAnimals {
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
 
-    public static final CreativeModeTab GENETICS_ANIMALS_GROUP = new CreativeModeTab(MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(ModItems.EGG_BLUE.get());
-        }
-    };
+    public static GeneticAnimals instance;
 
-    public static EnhancedAnimals instance;
-
-    public static final EanimodCommonConfig commonConfig = new EanimodCommonConfig();
-
-    public EnhancedAnimals() {
+    public GeneticAnimals() {
         instance = this;
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EanimodCommonConfig.getConfigSpecForLoader(), EanimodCommonConfig.getFileNameForLoader());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, GeneticAnimalsConfig.getConfigSpecForLoader(), GeneticAnimalsConfig.getFileNameForLoader());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -125,10 +52,13 @@ public class EnhancedAnimals {
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 
+        ModSpawns.register(FMLJavaModLoadingContext.get().getModEventBus());
+
         ModItems.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModBlocks.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModTileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModCreativeTabs.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModSensorTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModActivities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModSounds.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -139,47 +69,48 @@ public class EnhancedAnimals {
 
     private void setup(final FMLCommonSetupEvent event) {
         int messageNumber = 0;
-        channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
-        channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
+        channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumerNetworkThread(EAEquipmentPacket::processPacket).add();
+        channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumerNetworkThread(AxolotlBucketTexturePacket::processPacket).add();
 
-        try {
-            StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));
-
-            if (oldPool != null) {
-                List<StructurePoolElement> jigsawPieces = oldPool.templates;
-
-                StructurePoolElement chickenPiece = StructurePoolElement.legacy("village/common/animals/chickens_1").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(chickenPiece, 7));
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-                jigsawPieces.add(chickenPiece);
-
-                StructurePoolElement cow2Piece = StructurePoolElement.legacy("village/common/animals/cows_2").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(cow2Piece, 1));
-                jigsawPieces.add(cow2Piece);
-
-                StructurePoolElement cow3Piece = StructurePoolElement.legacy("village/common/animals/cows_3").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(cow3Piece, 1));
-                jigsawPieces.add(cow3Piece);
-
-                StructurePoolElement llamaPiece = StructurePoolElement.legacy("village/common/animals/llamas_1").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(llamaPiece, 3));
-                jigsawPieces.add(llamaPiece);
-                jigsawPieces.add(llamaPiece);
-                jigsawPieces.add(llamaPiece);
-
-                StructurePoolElement sheep3Piece = StructurePoolElement.legacy("village/common/animals/sheep_3").apply(StructureTemplatePool.Projection.RIGID);
-                oldPool.rawTemplates.add(Pair.of(sheep3Piece, 1));
-                jigsawPieces.add(sheep3Piece);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        event.enqueueWork(ModItems::registerDispenserBehaviour);
+//        try {
+//            StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));
+//
+//            if (oldPool != null) {
+//                List<StructurePoolElement> jigsawPieces = oldPool.templates;
+//
+//                StructurePoolElement chickenPiece = StructurePoolElement.legacy("village/common/animals/chickens_1").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(chickenPiece, 7));
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//                jigsawPieces.add(chickenPiece);
+//
+//                StructurePoolElement cow2Piece = StructurePoolElement.legacy("village/common/animals/cows_2").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(cow2Piece, 1));
+//                jigsawPieces.add(cow2Piece);
+//
+//                StructurePoolElement cow3Piece = StructurePoolElement.legacy("village/common/animals/cows_3").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(cow3Piece, 1));
+//                jigsawPieces.add(cow3Piece);
+//
+//                StructurePoolElement llamaPiece = StructurePoolElement.legacy("village/common/animals/llamas_1").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(llamaPiece, 3));
+//                jigsawPieces.add(llamaPiece);
+//                jigsawPieces.add(llamaPiece);
+//                jigsawPieces.add(llamaPiece);
+//
+//                StructurePoolElement sheep3Piece = StructurePoolElement.legacy("village/common/animals/sheep_3").apply(StructureTemplatePool.Projection.RIGID);
+//                oldPool.rawTemplates.add(Pair.of(sheep3Piece, 1));
+//                jigsawPieces.add(sheep3Piece);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 

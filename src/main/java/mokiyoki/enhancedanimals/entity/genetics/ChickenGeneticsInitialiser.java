@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, BlockPos blockpos, boolean isFlat) {
         Biome biome = biomeHolder.value();
         int[] sexlinkedGenes = new int[Reference.CHICKEN_SEXLINKED_GENES_LENGTH];
         int[] autosomalGenes = new int[Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH];
@@ -121,16 +122,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
         int wildType = 0;
 
-        if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getBaseTemperature() >= 0.9F && biome.getModifiedClimateSettings().downfall() > 0.8F) // hot and wet (jungle)
         {
             wildType = 1;
-        } else if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        } else if (biome.getBaseTemperature() >= 0.9F && biome.getModifiedClimateSettings().downfall() < 0.3F) // hot and dry (savanna)
         {
             wildType = 2;
         } else if (biome.getBaseTemperature() < 0.3F) // cold (mountains)
         {
             wildType = 3;
-        } else if (biome.getBaseTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+        } else if (biome.getBaseTemperature() >= 0.8F && biome.getModifiedClimateSettings().downfall() > 0.8F) {
             wildType = 4;
         }
 
@@ -308,7 +309,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS)) {
                 autosomalGenes[20] = 2;
             } else {
                 autosomalGenes[20] = 1;
@@ -317,7 +318,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (biomeHolder.containsTag(Tags.Biomes.IS_PLAINS)) {
                 autosomalGenes[21] = 2;
             } else {
                 autosomalGenes[21] = 1;

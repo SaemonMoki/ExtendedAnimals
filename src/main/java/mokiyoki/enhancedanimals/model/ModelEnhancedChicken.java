@@ -2,8 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
@@ -21,6 +20,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,7 +158,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     private ChickenModelData chickenModelData;
     private static Map<String, WrappedModelPart> chickenModelParts = new HashMap<>();
-    private static final float earMaxGrowth = EanimodCommonConfig.COMMON.adultAgeChicken.get();
+    private static final float earMaxGrowth = GeneticAnimalsConfig.COMMON.adultAgeChicken.get();
 
     private static Map<String, WrappedModelPart> getModelParts() {
         Map<String, WrappedModelPart> map = new HashMap<>();
@@ -2218,7 +2218,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     tailDefault();
                 }
 
-                if (!usingLWing && !usingRWing && wingsFlapping(chicken.wingAngle,entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
+                if (!usingLWing && !usingRWing && wingsFlapping(chicken.wingAngle,entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.onGround(), ageInTicks)) {
                     usingLWing = true;
                     usingRWing = true;
                 }

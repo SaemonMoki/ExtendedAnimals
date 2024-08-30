@@ -30,7 +30,7 @@ public class GrazingChicken extends Grazing {
 
     @Override
     protected void eatBlock(EnhancedAnimalAbstract geneticAnimal, BlockPos currentDestination, int eatenBlock, BlockState newBlock) {
-        int root = geneticAnimal.level.random.nextInt(2);
+        int root = geneticAnimal.level().random.nextInt(2);
         if (root == 0) {
             super.eatBlock(geneticAnimal, currentDestination, eatenBlock, newBlock);
         }

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -9,9 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.PlantType;
-
-import javax.annotation.Nullable;
-import java.util.Random;
 
 import static net.minecraftforge.common.PlantType.BEACH;
 import static net.minecraftforge.common.PlantType.CAVE;
@@ -28,7 +26,7 @@ public class PatchyMyceliumBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         super.randomTick(state, worldIn, pos, random);
         if (!worldIn.isClientSide) {
             if (!worldIn.isAreaLoaded(pos, 3))

@@ -2,13 +2,12 @@ package mokiyoki.enhancedanimals.init.breeds;
 
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.level.biome.Biomes;
 
 public class CowBreeds {
-    public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", Biomes.OLD_GROWTH_BIRCH_FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", 0.6F, 0.6F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "1", "4").add(8, "1").add(12, "1", "2", "1", "4", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
 
-    public static final Breed ANGUS = new Breed(new Breed.Properties().setData("Angus", Biomes.JUNGLE, Breed.Rarity.ORDINARY)
+    public static final Breed ANGUS = new Breed(new Breed.Properties().setData("Angus", 0.95F, 0.9F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1", "1", "4").add(8, "1").add(12, "1", "2", "3", "3", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
 
     public static final Breed BLACK_ANGUS = new Breed(ANGUS, new Breed.Properties().setName("BlackAngus"));
@@ -16,10 +15,10 @@ public class CowBreeds {
     public static final Breed RED_ANGUS = new Breed(ANGUS, new Breed.Properties().setName("RedAngus")
             .setGeneSketch(new GeneSketch(), new GeneSketch(0, "3")));
 
-    public static final Breed HOLSTEIN = new Breed(new Breed.Properties().setData("HolsteinFresian", Biomes.FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed HOLSTEIN = new Breed(new Breed.Properties().setData("HolsteinFresian", 0.7F, 0.8F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1","1","2").add(6, "5%1","2").add(8, "1","1","1","2","4").add(24,"1","2","1","1-5","10-5","1","3","1","4","2|3").add(50, "1","1","1").add(62, "10", "10", "1").add(70, "1","1","2","2","2").add(120, "1").add(252,"15%2","1")));
 
-    public static final Breed JERSEY = new Breed(new Breed.Properties().setData("Jersey", Biomes.DARK_FOREST, Breed.Rarity.COMMON)
+    public static final Breed JERSEY = new Breed(new Breed.Properties().setData("Jersey", 0.7F, 0.8F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2|5","1","10%2|1|3","5","2","1","1").add(14, "2","3","_","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10","10")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
@@ -48,7 +47,7 @@ public class CowBreeds {
     public static final Breed DARK_JERSEY = new Breed(JERSEY, new Breed.Properties().setData("Dark", Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(170, "1","1","1","1","1","1","1","2","2","2","2","2","2","2","1","1","1","1","1","1","1","1","1","1","1","1","2","2","2","2","2","2","2","2","2","2","2","2")));
     
-    public static final Breed TEXAS_LONGHORN = new Breed(new Breed.Properties().setData("texaslonghorn", Biomes.SAVANNA, Breed.Rarity.COMMON)
+    public static final Breed TEXAS_LONGHORN = new Breed(new Breed.Properties().setData("texaslonghorn", 2.0F, 0.0F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","1|4","1","_","25%2","1").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                 .add(84, "1-4")
                 .add(86, "1-2")
@@ -73,14 +72,14 @@ public class CowBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "2").add(26, "10%1,2","2"))
     );
 
-    public static final Breed MURREY_GREY = new Breed(BLACK_ANGUS, new Breed.Properties().setData("murreygrey", Biomes.SAVANNA, Breed.Rarity.ORDINARY)
+    public static final Breed MURREY_GREY = new Breed(BLACK_ANGUS, new Breed.Properties().setData("murreygrey", 2.0F, 0.0F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(0, "1")
                     .add(2, "1|2|3,1|2|3")
             )
     );
 
-    public static final Breed GLOUCESTER = new Breed(new Breed.Properties().setData("gloucester", Biomes.PLAINS, Breed.Rarity.EXOTIC)
+    public static final Breed GLOUCESTER = new Breed(new Breed.Properties().setData("gloucester", 0.8F, 0.4F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","1","5","2","1").add(12, "2","2","2","4","2","3","1","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
@@ -101,7 +100,7 @@ public class CowBreeds {
                     .add(150, "2","2","2","2","2","2","2","2","2","2")
             ));
 
-    public static final Breed HUNGARIAN_GREY = new Breed(new Breed.Properties().setData("hungariangrey", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
+    public static final Breed HUNGARIAN_GREY = new Breed(new Breed.Properties().setData("hungariangrey", 0.2F, 0.3F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","3").add(12, "2","2","3","4","2","_","2","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
@@ -123,7 +122,7 @@ public class CowBreeds {
                     .add(128, "2")
             ));
 
-    public static final Breed ANKOL = new Breed(new Breed.Properties().setData("ankol", Biomes.SAVANNA, Breed.Rarity.COMMON)
+    public static final Breed ANKOL = new Breed(new Breed.Properties().setData("ankol", 2.0F, 0.0F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","_","2","_","25%2","1").add(38, "1").add(44, "1").add(48, "1").add(54, "2").add(70, "1","1","2").add(80, "2","1","1","2","2","2")
                     .add(92,"9999")
                     .add(94, "56529-677711")
@@ -142,7 +141,7 @@ public class CowBreeds {
             )
     );
 
-    public static final Breed BROWN_SWISS = new Breed(new Breed.Properties().setData("brownswiss", Biomes.DARK_FOREST, Breed.Rarity.COMMON)
+    public static final Breed BROWN_SWISS = new Breed(new Breed.Properties().setData("brownswiss", 0.7F, 0.8F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","2","10%2","1","2","1","1").add(14, "2","3","4","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
@@ -165,7 +164,7 @@ public class CowBreeds {
             )
     );
 
-    public static final Breed HIGHLAND = new Breed(new Breed.Properties().setData("highlandcoo", Biomes.SNOWY_PLAINS, Breed.Rarity.ORDINARY)
+    public static final Breed HIGHLAND = new Breed(new Breed.Properties().setData("highlandcoo", 0.0F, 0.5F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(0, "10%1|2","3")
                     .add(2, "12%1|2", "1")
@@ -194,7 +193,7 @@ public class CowBreeds {
                     .add(250,"1","1")
             ));
 
-    public static final Breed AMERICAN_BRAHMAN = new Breed(new Breed.Properties().setData("AmericanBrahman", Biomes.SAVANNA, Breed.Rarity.COMMON)
+    public static final Breed AMERICAN_BRAHMAN = new Breed(new Breed.Properties().setData("AmericanBrahman", 2.0F, 0.0F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(0, "5%5","2").add(4, "3|5").add(24, "1|3") /*pattern*/
                     .add(8, "1").add(14, "2","3").add(20, "2").add(250, "1") /*spot removal*/
@@ -232,7 +231,7 @@ public class CowBreeds {
             )
     );
 
-    public static final Breed KANKREJ = new Breed(new Breed.Properties().setData("Kankrej", Biomes.SAVANNA, Breed.Rarity.COMMON)
+    public static final Breed KANKREJ = new Breed(new Breed.Properties().setData("Kankrej", 2.0F, 0.0F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(0, "10%3","5").add(4, "1|2|3|5").add(24, "1") /*pattern*/
                     .add(128, "2") /*colour modifier*/
@@ -266,7 +265,7 @@ public class CowBreeds {
     );
 
 
-    public static final Breed TEST = new Breed(new Breed.Properties().setData("test", Biomes.THE_VOID, Breed.Rarity.ORDINARY)
+    public static final Breed TEST = new Breed(new Breed.Properties().setData("test", 0.5F, 0.5F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(48, "2","2","2")
                     .add(86, "1", "1", "1")
@@ -286,7 +285,7 @@ public class CowBreeds {
             )
     );
 
-    public static final Breed U_SHAPE_HORNS = new Breed(new Breed.Properties().setData("uhorn", Biomes.THE_VOID, Breed.Rarity.ORDINARY)
+    public static final Breed U_SHAPE_HORNS = new Breed(new Breed.Properties().setData("uhorn", 0.5F, 0.5F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(76, "2","2") /*horn presence*/
                     .add(92, "9999") /*horn smoothiner*/
@@ -304,7 +303,7 @@ public class CowBreeds {
     //SPANISH HORNS 1,1+2,2,1,1,2,2,2,2,1,1,1,1,2,2,2,2,4,4,4,4,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,3,3,1,1,4,4,2,2,1,2,2,2,2,2,1,1,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,1,1,1,1,2,1,3,3,1,1,1,1,1,2,1988,1988,244349,244349,1666,1666,206,206,158,158,158,158,165,165,177,177,138,138,144,144,195,195,622,674,190,190,1,1,1,1,1,1
     //SPANISH HORNS 1,1+2,2,1,1,2,2,2,2,1,1,1,1,2,2,2,2,4,4,4,4,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,3,3,1,1,4,4,1,2,2,1,2,2,2,2,1,2,1,1,2,2,1,2,2,2,2,2,5,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,1,1,1,1,1,2,3,2,1,1,1,1,1,2,1988,1988,244349,244349,1666,1666,206,206,158,158,158,158,165,165,177,177,138,138,144,144,195,195,622,674,190,190,1,1,1,1,1,1
 
-    public static final Breed SPANISH = new Breed(new Breed.Properties().setData("spanish", Biomes.FOREST, Breed.Rarity.ORDINARY)
+    public static final Breed SPANISH = new Breed(new Breed.Properties().setData("spanish", 0.7F, 0.8F, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(84, "1")
                     .add(86, "1")
@@ -326,7 +325,7 @@ public class CowBreeds {
             )
     );
 
-    public static final Breed WILD_HORNS = new Breed(new Breed.Properties().setData("truewildtype", Biomes.DARK_FOREST, Breed.Rarity.EXOTIC)
+    public static final Breed WILD_HORNS = new Breed(new Breed.Properties().setData("truewildtype", 0.7F, 0.8F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch() ,new GeneSketch().add(12, "2").add(80, "3").add(86, "1","1").add(90, "1")
                     .add(84, "1-4")
                     .add(92,"1111-9999")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,

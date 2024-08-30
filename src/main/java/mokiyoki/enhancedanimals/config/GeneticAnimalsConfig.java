@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 
-public class EanimodCommonConfig {
+public class GeneticAnimalsConfig {
 
     public static final CommonConfig COMMON;
     public static final ForgeConfigSpec COMMON_SPEC;

@@ -19,8 +19,9 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.RabbitModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.animal.Cat;
@@ -72,6 +73,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.rabbitFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.Reference.RABBIT_AUTOSOMAL_GENES_LENGTH;
@@ -287,8 +289,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         return rabbitFoodMap();
     }
 
-    public static boolean checkRabbitSpawnRules(EntityType<EnhancedRabbit> p_29699_, LevelAccessor p_29700_, MobSpawnType p_29701_, BlockPos p_29702_, Random p_29703_) {
-        return p_29700_.getBlockState(p_29702_.below()).is(BlockTags.RABBITS_SPAWNABLE_ON) && isBrightEnoughToSpawn(p_29700_, p_29702_);
+    public static boolean checkRabbitSpawnRules(EntityType<EnhancedRabbit> entityType, LevelAccessor level, MobSpawnType mobSpawnType, BlockPos blockPos, RandomSource random) {
+        return level.getBlockState(blockPos.below()).is(BlockTags.RABBITS_SPAWNABLE_ON) && isBrightEnoughToSpawn(level, blockPos);
     }
 
     protected float getJumpPower() {
@@ -320,8 +322,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             }
         }
 
-        if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)1);
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, (byte)1);
         }
 
     }
@@ -377,13 +379,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeRabbit.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysRabbit.get();
     }
 
     private void setCoatLength(int coatLength) {
@@ -399,7 +401,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             --this.currentMoveTypeDuration;
         }
 
-        if (this.onGround) {
+        if (this.onGround()) {
             if (!this.wasOnGround) {
                 this.setJumping(false);
                 this.checkLandingDelay();
@@ -422,7 +424,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             }
         }
 
-        this.wasOnGround = this.onGround;
+        this.wasOnGround = this.onGround();
     }
 
     private void calculateRotationYaw(double x, double z) {
@@ -552,19 +554,19 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
         if (maxcoat == 1){
-            if (timeForGrowth >= 48000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 48000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 2){
-            if (timeForGrowth >= 24000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 24000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 3){
-            if (timeForGrowth >= 16000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 16000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 4){
-            if (timeForGrowth >= 12000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 12000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }
@@ -639,7 +641,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedrabbit.setGenes(babyGenes);
         enhancedrabbit.setSharedGenes(babyGenes);
@@ -658,14 +660,14 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     protected void createAndSpawnEnhancedChild(Level level) {
-        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedrabbit, level, babyGenes, -this.getAdultAge());
         enhancedrabbit.setMaxCoatLength();
         enhancedrabbit.currentCoatLength = 0;
         enhancedrabbit.setCoatLength(0);
 
-        this.level.addFreshEntity(enhancedrabbit);
+        this.level().addFreshEntity(enhancedrabbit);
     }
 
     @Override
@@ -725,7 +727,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         }
 
         public void tick() {
-            if (this.rabbit.onGround && !this.rabbit.jumping && !((EnhancedRabbit.JumpHelperController)this.rabbit.jumpControl).getIsJumping()) {
+            if (this.rabbit.onGround() && !this.rabbit.jumping && !((EnhancedRabbit.JumpHelperController)this.rabbit.jumpControl).getIsJumping()) {
                 this.rabbit.setMovementSpeed(0.0D);
             } else if (this.hasWanted()) {
                 this.rabbit.setMovementSpeed(this.nextJumpSpeed);
@@ -751,7 +753,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         int i = random.nextInt(100);
         if (this.getEnhancedAnimalAge()/480 >= i) {
             return true;
@@ -815,7 +817,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Nullable
     protected ResourceLocation getDefaultLootTable() {
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < 48000) {
                 dropMeatType = "rawrabbit_small";
             } else {
@@ -823,7 +825,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             }
         }
 
-        return new ResourceLocation(Reference.MODID, "enhanced_rabbit");
+        return new ResourceLocation(MODID, "enhanced_rabbit");
     }
 
     public void lethalGenes(){
@@ -839,7 +841,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected SoundEvent getJumpSound() {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.75F, 2.5F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.75F, 2.5F);
         }
         return SoundEvents.RABBIT_JUMP;
     }
@@ -863,19 +865,19 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 2.5F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 2.5F);
         }
     }
 
     @Override
     public boolean isShearable(ItemStack item, Level world, BlockPos pos) {
-        return !this.level.isClientSide && currentCoatLength >= 1;
+        return !this.level().isClientSide && currentCoatLength >= 1;
     }
 
     @Override
     public java.util.List<ItemStack> onSheared(Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (currentCoatLength == 1) {
                 int i = this.random.nextInt(4);
                 if (i==0){

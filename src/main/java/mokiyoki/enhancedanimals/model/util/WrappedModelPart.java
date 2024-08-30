@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.model.util;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Arrays;

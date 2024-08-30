@@ -1,55 +1,60 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
-    }
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        [
+            {
+                "item": "eanimod:milk_bottle"
+            },
+            {
+                "item": "eanimod:onethird_milk_bucket"
+            }
+        ],
+        {
+            "item": "minecraft:bucket"
+        }
     ],
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
+    "result": {
+        "item": "minecraft:milk_bucket",
+        "count": 1
     }
-    ],
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
-    }
-    ],
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
-    }
-    ],
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
-    }
-    ],
-    [
-      {
-        "item": "eanimod:milk_bottle"
-      }, {
-      "item": "eanimod:onethird_milk_bucket"
-    }
-    ],
-    {
-      "item": "minecraft:bucket"
-    }
-  ],
-  "result":
-  {
-    "item": "minecraft:milk_bucket",
-    "count": 1
-  }
 }

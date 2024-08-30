@@ -19,6 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -43,9 +44,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -209,15 +208,14 @@ public class EggCartonBlock extends BaseEntityBlock {
     }
 
 
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity tileentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
-            builder = builder.withDynamicDrop(CONTENTS, (p_220168_1_, p_220168_2_) -> {
+            builder = builder.withDynamicDrop(CONTENTS, (p_56219_) -> {
                 for(int i = 0; i < eggCartonTileEntity.getContainerSize(); ++i) {
-                    p_220168_2_.accept(eggCartonTileEntity.getItem(i));
+                    p_56219_.accept(eggCartonTileEntity.getItem(i));
                 }
-
             });
         }
 
@@ -230,7 +228,7 @@ public class EggCartonBlock extends BaseEntityBlock {
         CompoundTag compoundnbt = stack.getTagElement("BlockEntityTag");
         if (compoundnbt != null) {
             if (compoundnbt.contains("LootTable", 8)) {
-                tooltip.add(new TextComponent("???????"));
+                tooltip.add(Component.literal("???????"));
             }
 
             if (compoundnbt.contains("Items", 9)) {
@@ -252,7 +250,7 @@ public class EggCartonBlock extends BaseEntityBlock {
                 }
 
                 if (j - i > 0) {
-                    tooltip.add((new TranslatableComponent("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
+                    tooltip.add((Component.translatable("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
                 }
             }
         }

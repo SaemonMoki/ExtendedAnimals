@@ -16,7 +16,7 @@ import mokiyoki.enhancedanimals.entity.genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
@@ -24,6 +24,7 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.LlamaModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -66,7 +67,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
@@ -147,7 +147,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private int despawnDelay = -1;
     private boolean resetTexture = true;
 
-    private static final int woolRegenTimer = (int)(24000/EanimodCommonConfig.COMMON.woolMultiplierLlama.get());
+    private int woolRegenTimer = -1;
 
     private GrazingGoal grazingGoal;
 
@@ -239,13 +239,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeLlama.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysLlama.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysLlama.get();
     }
 
     private void setStrength(int strengthIn) {
@@ -336,7 +336,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
             return super.mobInteract(entityPlayer, hand);
         }
 
-        if (!this.level.isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
+        if (!this.level().isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
             if (item instanceof ShearsItem) {
                 List<ItemStack> woolToDrop = onSheared(entityPlayer, itemStack, null, null, 0);
                 java.util.Random rand = new java.util.Random();
@@ -351,9 +351,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     public void aiStep() {
         super.aiStep();
-        this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
+        this.destPos = (float)((double)this.destPos + (double)(this.onGround() ? -1 : 4) * 0.3D);
         this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.despawnDelay != -1) {
                 this.tryDespawn();
             }
@@ -364,6 +364,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         if (hunger <= 36000) {
             timeForGrowth++;
         }
+
+        if (woolRegenTimer == -1) {
+            woolRegenTimer = (int)(24000/ GeneticAnimalsConfig.COMMON.woolMultiplierLlama.get());
+        }
+
         if (timeForGrowth >= woolRegenTimer) {
             timeForGrowth = 0;
 
@@ -393,7 +398,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedllama.setGenes(babyGenes);
         enhancedllama.setSharedGenes(babyGenes);
@@ -413,7 +418,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -this.getAdultAge());
         enhancedllama.setStrengthAndInventory();
@@ -421,7 +426,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         enhancedllama.currentCoatLength = 0;
         enhancedllama.setCoatLength(0);
 
-        this.level.addFreshEntity(enhancedllama);
+        this.level().addFreshEntity(enhancedllama);
     }
 
     @Override
@@ -492,7 +497,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.LLAMA_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.75F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.5F, 0.75F);
         }
     }
 
@@ -502,14 +507,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @Override
     public boolean isShearable(ItemStack item, Level world, BlockPos pos) {
-        return !this.level.isClientSide && this.currentCoatLength >= 0 && !isBaby();
+        return !this.level().isClientSide && this.currentCoatLength >= 0 && !isBaby();
     }
 
     @Override
     public java.util.List<ItemStack> onSheared(Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         int[] genes = this.genetics.getAutosomalGenes();
-        if (!this.level.isClientSide && !isBaby()) {
+        if (!this.level().isClientSide && !isBaby()) {
             if (currentCoatLength == 1) {
                 int i = this.random.nextInt(4);
                 if (i>3){
@@ -580,7 +585,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected boolean shouldDropExperience() { return true; }
+    public boolean shouldDropExperience() { return true; }
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
@@ -627,7 +632,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     public void makeTraderLlama() {
         this.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
         this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(Component.literal("Trader's Blanket"));
         traderBlanket.getOrCreateTagElement("tradersblanket");
         this.animalInventory.setItem(4, traderBlanket);
         this.setStrengthAndInventory();
@@ -1139,14 +1144,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     private void spit(LivingEntity target) {
-        EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.level, this);
+        EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.level(), this);
         double d0 = target.getX() - this.getX();
         double d1 = target.getBoundingBox().minY + (double)(target.getBbHeight() / 3.0F) - entityllamaspit.getY();
         double d2 = target.getZ() - this.getZ();
         float f = Mth.sqrt((float) (d0 * d0 + d2 * d2)) * 0.2F;
         entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
-        this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LLAMA_SPIT, this.getSoundSource(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
-        this.level.addFreshEntity(entityllamaspit);
+        this.level().playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LLAMA_SPIT, this.getSoundSource(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+        this.level().addFreshEntity(entityllamaspit);
         this.didSpit = true;
     }
 
@@ -1154,24 +1159,23 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.didSpit = didSpitIn;
     }
 
-    public void fall(float distance, float damageMultiplier) {
-        int i = Mth.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
-        if (i > 0) {
-            if (distance >= 6.0F) {
-                this.hurt(DamageSource.FALL, (float)i);
+    @Override
+    public boolean causeFallDamage(float p_149538_, float p_149539_, DamageSource p_149540_) {
+        int i = this.calculateFallDamage(p_149538_, p_149539_);
+        if (i <= 0) {
+            return false;
+        } else {
+            if (p_149538_ >= 6.0F) {
+                this.hurt(p_149540_, (float)i);
                 if (this.isVehicle()) {
                     for(Entity entity : this.getIndirectPassengers()) {
-                        entity.hurt(DamageSource.FALL, (float)i);
-                    }
+                    entity.hurt(p_149540_, (float)i);
                 }
             }
+        }
 
-            BlockState blockstate = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 0.2D - (double)this.yRotO, this.getZ()));
-            if (!blockstate.isAir() && !this.isSilent()) {
-                SoundType soundtype = blockstate.getSoundType();
-                this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), soundtype.getStepSound(), this.getSoundSource(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
-            }
-
+        this.playBlockFallSound();
+            return true;
         }
     }
 

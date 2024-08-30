@@ -5,15 +5,15 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 
 /**
  * Created by saemon on 2/09/2018.
@@ -24,7 +24,7 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_RABBIT_TEXTURE_LOCATION = "eanimod:textures/entities/rabbit/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/rabbit/rabbitbase.png");
-    public static final ModelLayerLocation RABBIT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "rabbit"), "rabbit_layer");
+    public static final ModelLayerLocation RABBIT_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "rabbit"), "rabbit_layer");
 
     public RenderEnhancedRabbit(EntityRendererProvider.Context renderManager)
     {

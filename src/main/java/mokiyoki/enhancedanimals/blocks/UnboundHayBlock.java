@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
@@ -330,7 +329,7 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
     public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, float fallDistance) {
         BlockState state = worldIn.getBlockState(pos);
         float bites = state.getValue(BITES);
-        entityIn.causeFallDamage(fallDistance, 0.2F + (bites*0.1F), DamageSource.FALL);
+        entityIn.causeFallDamage(fallDistance, 0.2F + (bites*0.1F), entityIn.damageSources().fall());
     }
 
     @Override

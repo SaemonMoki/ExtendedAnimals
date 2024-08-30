@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "eanimod:items/saddle_english",
-    "layer1": "eanimod:items/saddle_english_stirup_iron"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "eanimod:item/saddle_english",
+        "layer1": "eanimod:item/saddle_english_stirup_iron"
+    }
 }

@@ -31,7 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -267,7 +266,7 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
     }
 
     protected Component getDefaultName() {
-        return new TranslatableComponent("Egg Carton");
+        return Component.translatable("Egg Carton");
     }
 
     @Override

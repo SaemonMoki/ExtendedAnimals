@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,6 +12,8 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 
 /**
  * Created by saemon on 2/09/2018.
@@ -22,7 +23,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_LLAMA_TEXTURE_LOCATION = "eanimod:textures/entities/llama/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/llama/llamabase.png");
-    public static final ModelLayerLocation LLAMA_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "llama"), "llama_layer");
+    public static final ModelLayerLocation LLAMA_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "llama"), "llama_layer");
 
     public RenderEnhancedLlama(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedLlama<>(renderManager.bakeLayer(LLAMA_LAYER)), 0.75F);

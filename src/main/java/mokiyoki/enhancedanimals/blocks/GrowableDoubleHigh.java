@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -105,7 +106,7 @@ public class GrowableDoubleHigh extends CropBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if (state.getValue(HALF) != DoubleBlockHalf.UPPER) {
             Block groundType = worldIn.getBlockState(pos.below()).getBlock();
             if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {

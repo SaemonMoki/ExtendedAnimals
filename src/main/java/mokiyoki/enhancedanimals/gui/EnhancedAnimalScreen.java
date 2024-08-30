@@ -398,9 +398,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     if (this.enhancedAnimalInfo.pregnant >= 0) {
                         if (this.enhancedAnimalInfo.pregnant == 11) {
                             if (this.omniToggle) {
-                                guiGraphics.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.female").append(" Fertilized"), mouseX, mouseY);
+                                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.female").append(" Fertilized"), mouseX, mouseY);
                             } else {
-                                guiGraphics.renderTooltip(matrixStack, Component.translatable("eanimod.animalinfocontainer.male").append(" Fertilized"), mouseX, mouseY);
+                                guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.male").append(" Fertilized"), mouseX, mouseY);
                             }
                         } else {
                             if (this.omniToggle) {

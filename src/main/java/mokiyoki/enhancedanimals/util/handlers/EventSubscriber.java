@@ -139,6 +139,7 @@ public class EventSubscriber {
                         if (enhancedChicken.getNest() != BlockPos.ZERO) {
                             if (!isValidPath(enhancedChicken, enhancedChicken.getNest(), 24)) {
                                 enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
+                                enhancedChicken.currentNestScore = 0.0F;
                             }
                         }
 

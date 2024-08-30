@@ -8,7 +8,6 @@ import mokiyoki.enhancedanimals.ai.brain.BabyFollowParent;
 import mokiyoki.enhancedanimals.ai.brain.SeekShelter;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModActivities;
-import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -98,12 +97,12 @@ public class ChickenBrain {
 
     private static void initIdleActivity(Brain<EnhancedChicken> brain) {
         brain.addActivity(Activity.IDLE, ImmutableList.of(
-                Pair.of(0, ChickenSetEntityLookTargetSometimes.create(EntityType.PLAYER, 6.0F, UniformInt.of(100, 600))),
-                Pair.of(1, ChickenSetEntityLookTargetSometimes.create(ModEntities.ENHANCED_CHICKEN.get(), 6.0F, UniformInt.of(50, 200))),
-                Pair.of(1, new ChickenMakeLove(1.0F)),
+//                Pair.of(0, ChickenSetEntityLookTargetSometimes.create(EntityType.PLAYER, 6.0F, UniformInt.of(100, 600))),
+//                Pair.of(1, ChickenSetEntityLookTargetSometimes.create(ModEntities.ENHANCED_CHICKEN.get(), 6.0F, UniformInt.of(50, 200))),
+//                Pair.of(1, new ChickenMakeLove(1.0F)),
                 Pair.of(2, new SeekingNest()),
                 Pair.of(3, new RunOne<>(ImmutableList.of(
-                        Pair.of(new ChickenFollowTemptation(ChickenBrain::getSpeedModifier), 1),
+//                        Pair.of(new ChickenFollowTemptation(ChickenBrain::getSpeedModifier), 1),
                         Pair.of(new BabyFollowParent<>(ADULT_FOLLOW_RANGE, ChickenBrain::getSpeedModifierFollowingAdult), 1)))
                 ),
                 Pair.of(4, StartAttacking.create(ChickenBrain::findNearestValidAttackTarget)),
@@ -126,9 +125,8 @@ public class ChickenBrain {
                         GateBehavior.RunningPolicy.RUN_ONE,
                         ImmutableList.of(
                                 Pair.of(RandomStroll.stroll(1.0F, 10, 5), 2),
-                                Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new ChickenDoNothing(30, 60), 1)
-                        )
+                                Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3))
+//                                Pair.of(new RunIf<>(Entity::onGround), new DoNothing(30, 60)), 1))
                         )
                 )
         ));

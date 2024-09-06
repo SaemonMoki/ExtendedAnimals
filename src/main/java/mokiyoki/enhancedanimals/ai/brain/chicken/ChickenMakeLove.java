@@ -9,6 +9,9 @@ import net.minecraft.world.entity.ai.behavior.AnimalMakeLove;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.Animal;
 
+import static mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain.canMoveOrLookAround;
+import static mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain.notBroody;
+
 import java.util.Optional;
 
 public class ChickenMakeLove extends AnimalMakeLove {
@@ -20,6 +23,17 @@ public class ChickenMakeLove extends AnimalMakeLove {
     }
 
     @Override
+    protected boolean checkExtraStartConditions(ServerLevel serverLevel, Animal animal) {
+        if (animal.isInLove() && animal instanceof EnhancedChicken chicken) {
+            Optional<? extends Animal> possibleMate = findValidBreedPartner(animal);
+            if (possibleMate.isPresent() && ((EnhancedAnimalAbstract)animal).canBreed() && ((EnhancedAnimalAbstract)possibleMate.get()).canBreed()) {
+                return super.checkExtraStartConditions(serverLevel, animal) && notBroody((EnhancedChicken) chicken);
+            }
+        }
+        return false;
+    }
+
+    @Override
     protected void start(ServerLevel serverLevel, Animal animal, long in) {
         super.start(serverLevel, animal, in);
         if (animal.getBrain().getMemory(MemoryModuleType.BREED_TARGET).get() instanceof EnhancedChicken enhancedChicken) {
@@ -28,15 +42,6 @@ public class ChickenMakeLove extends AnimalMakeLove {
                 animal.getBrain().eraseMemory(MemoryModuleType.BREED_TARGET);
             }
         }
-    }
-
-    @Override
-    protected boolean checkExtraStartConditions(ServerLevel serverLevel, Animal animal) {
-        if (animal.isInLove()) {
-            Optional<? extends Animal> possibleMate = findValidBreedPartner(animal);
-            return possibleMate.isPresent() && ((EnhancedAnimalAbstract)animal).canBreed() && ((EnhancedAnimalAbstract)possibleMate.get()).canBreed();
-        }
-        return false;
     }
 
     @Override

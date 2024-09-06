@@ -8,12 +8,23 @@ import net.minecraft.world.entity.ai.behavior.AnimalMakeLove;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.Animal;
 
+import static mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain.canMoveOrLookAround;
+import static mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain.notBroody;
+
 public class ChickenMakeLove extends AnimalMakeLove {
 
     EnhancedChicken breedTarget;
 
     public ChickenMakeLove(float speed) {
         super(ModEntities.ENHANCED_CHICKEN.get(), speed);
+    }
+
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel serverLevel, Animal animal) {
+        if (animal instanceof EnhancedChicken chicken) {
+            return super.checkExtraStartConditions(serverLevel, animal) && notBroody((EnhancedChicken) chicken);
+        }
+        return false;
     }
 
     @Override

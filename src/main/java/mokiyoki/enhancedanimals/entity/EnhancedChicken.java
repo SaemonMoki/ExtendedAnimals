@@ -179,7 +179,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.entityData.define(NEST_POS, BlockPos.ZERO);
     }
 
-    public void scheduleDespawn(int ticksToWait) {
+        public void scheduleDespawn(int ticksToWait) {
         this.scheduledToRun.put(DESPAWN_NO_PASSENGER_SCHEDULE.funcName, DESPAWN_NO_PASSENGER_SCHEDULE.function.apply(ticksToWait));
     }
 

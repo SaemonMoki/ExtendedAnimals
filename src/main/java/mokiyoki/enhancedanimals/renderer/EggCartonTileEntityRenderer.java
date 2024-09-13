@@ -12,11 +12,11 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.geom.ModelPart;
@@ -91,7 +91,7 @@ public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity>
         f1 = 1.0F - f1 * f1 * f1;
         int i = iCallbackWrapper.apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);
 
-        Material rendermaterial = new Material(Sheets.CHEST_SHEET, EGG_CARTON_TEXTURE);
+        Material rendermaterial = new Material(TextureAtlas.LOCATION_BLOCKS, EGG_CARTON_TEXTURE);
         VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferIn, RenderType::entityCutoutNoCull);
         this.handleModelRender(matrixStackIn, ivertexbuilder, f1, i, combinedOverlayIn);
 

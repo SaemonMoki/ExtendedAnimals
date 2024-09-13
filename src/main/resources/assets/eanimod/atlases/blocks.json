@@ -1,0 +1,9 @@
+{
+    "sources": [
+        {
+            "type": "directory",
+            "source": "block/chicken_nest",
+            "prefix": "block/chicken_nest/"
+        }
+    ]
+}

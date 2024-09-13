@@ -13,9 +13,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -92,7 +92,7 @@ public class ChickenNestTileEntityRenderer<T extends BlockEntity> implements Blo
         float r = ((rgb & 16711680) >> 16)/255F;
         float g = ((rgb & '\uff00') >> 8)/255F;
         float b = ((rgb  & 255) >> 0)/255F;
-        Material rendermaterial = new Material(Sheets.CHEST_SHEET, texture);
+        Material rendermaterial = new Material(TextureAtlas.LOCATION_BLOCKS, texture);
         VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferIn, RenderType::entityCutout);
         part.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn,r,g,b,1.0F);
     }

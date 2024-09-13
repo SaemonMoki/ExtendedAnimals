@@ -110,21 +110,24 @@ public class ChickenBrain {
                 Pair.of(5, new GateBehavior<>(
                         ImmutableMap.of(
                                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
+                                ModMemoryModuleTypes.FOCUS_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_BRAIN.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.PAUSE_WALKING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_SHELTER.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.SEEKING_NEST.get(), MemoryStatus.VALUE_ABSENT,
+                                ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.ROOSTING.get(), MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.BROODY.get(), MemoryStatus.VALUE_ABSENT,
+//                                MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_ABSENT,
                                 ModMemoryModuleTypes.EGG_LAYING.get(), MemoryStatus.VALUE_ABSENT
                         ),
                         ImmutableSet.of(),
                         GateBehavior.OrderPolicy.SHUFFLED,
                         GateBehavior.RunningPolicy.RUN_ONE,
                         ImmutableList.of(
-                                Pair.of(RandomStroll.stroll(1.0F, 30, 60), 2),
+                                Pair.of(RandomStroll.stroll(1.0F, 10, 5), 2),
                                 Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new ChickenDoNothing(300, 600), 1)
+                                Pair.of(new ChickenDoNothing(30, 60), 1)
                         )
                         )
                 )

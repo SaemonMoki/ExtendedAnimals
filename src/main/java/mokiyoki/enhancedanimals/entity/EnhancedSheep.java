@@ -1082,7 +1082,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         }
 
                         if (gene[90] == 1 || gene[91] == 1) {
-                            mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                            mealy = (pattern1 == 3 || (pattern1 < 14 && pattern1 > 6)) || (pattern2 == 3 || (pattern2 < 14 && pattern2 > 6));
                         }
                     }
 

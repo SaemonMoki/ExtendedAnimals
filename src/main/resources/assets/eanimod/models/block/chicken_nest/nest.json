@@ -1,5 +1,6 @@
 {
 	"texture_size": [48, 48],
+	"render_type": "cutout_mipped",
 	"textures": {
 		"0": "eanimod:block/chicken_nest/nest",
 		"particle": "eanimod:block/chicken_nest/nest"

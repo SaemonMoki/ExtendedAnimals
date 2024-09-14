@@ -7,6 +7,6 @@
     "age=4": { "model": "eanimod:block/grass4" },
     "age=5": { "model": "eanimod:block/grass5" },
     "age=6": { "model": "eanimod:block/grass6" },
-    "age=7": { "model": "block/grass" }
+    "age=7": { "model": "eanimod:block/grass_adult" }
   }
 }

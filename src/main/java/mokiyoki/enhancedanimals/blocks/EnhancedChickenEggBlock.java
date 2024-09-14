@@ -2,7 +2,9 @@ package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -58,9 +60,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity) {
-            if (nestEntity.tick(level)){
-                nestEntity.hatchEggs(level, pos, random);
-            }
+            nestEntity.tick(level);
         }
     }
 
@@ -128,7 +128,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         }
     }
 
-    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, EnhancedAnimalAbstract mother) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity && !nestEntity.isEmpty()) {
             level.playSound((Player) null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
 
@@ -149,6 +149,10 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                         chicken.setBirthTime();
                         chicken.moveTo((double) pos.getX() + 0.3D + (random.nextFloat()*0.4D), (double) pos.getY(), (double) pos.getZ() + 0.3D + (random.nextFloat()*0.4D), 0.0F, 0.0F);
                         level.addFreshEntity(chicken);
+                        if (mother != null) {
+                            chicken.getBrain().setMemory(ModMemoryModuleTypes.MOTHER.get(), mother);
+                            chicken.getBrain().setMemory(ModMemoryModuleTypes.MOTHER_UUID.get(), mother.getUUID());
+                        }
                     }
                 } else {
                     level.levelEvent(2001, pos, Block.getId(state));
@@ -163,6 +167,10 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                     chicken.setBirthTime();
                     chicken.moveTo((double) pos.getX() + 0.3D + (random.nextFloat()*0.4D), (double) pos.getY(), (double) pos.getZ() + 0.3D + (random.nextFloat()*0.4D), 0.0F, 0.0F);
                     level.addFreshEntity(chicken);
+                    if (mother != null) {
+                        chicken.getBrain().setMemory(ModMemoryModuleTypes.MOTHER.get(), mother);
+                        chicken.getBrain().setMemory(ModMemoryModuleTypes.MOTHER_UUID.get(), mother.getUUID());
+                    }
                 }
             }
         }

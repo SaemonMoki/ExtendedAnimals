@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/rose_bush_top",
+  "render_type": "cutout_mipped"
+}

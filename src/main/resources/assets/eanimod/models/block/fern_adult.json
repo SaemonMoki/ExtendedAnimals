@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/fern",
+  "render_type": "cutout_mipped"
+}

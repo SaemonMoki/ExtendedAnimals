@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/azure_bluet",
+  "render_type": "cutout_mipped"
+}

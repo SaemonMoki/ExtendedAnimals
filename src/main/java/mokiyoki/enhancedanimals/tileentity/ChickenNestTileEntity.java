@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.tileentity;
 
 import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -206,9 +207,9 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         setNestDecayTime(level.getGameTime());
     }
 
-    public void hatchEggs(Level level, BlockPos pos, RandomSource random) {
+    public void hatchEggs(Level level, BlockPos pos, RandomSource random, EnhancedAnimalAbstract mother) {
         if (level instanceof ServerLevel serverLevel) {
-            EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random);
+            EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random, mother);
             incubation = incubationTime;
             resetNest = true;
         }

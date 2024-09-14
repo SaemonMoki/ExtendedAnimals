@@ -1,5 +1,5 @@
 {
-  "parent": "block/cross",
+  "parent": "eanimod:block/gaplant",
   "textures": {
     "cross": "eanimod:block/azure_bluet6"
   }

@@ -127,7 +127,7 @@ public class ChickenBrain {
                         ImmutableList.of(
                                 Pair.of(RandomStroll.stroll(1.0F, 10, 5), 2),
                                 Pair.of(SetWalkTargetFromLookTarget.create(ChickenBrain::canSetWalkTargetFromLookTarget, ChickenBrain::getSpeedModifier, 3), 3),
-                                Pair.of(new ChickenDoNothing(30, 60), 1)
+                                Pair.of(new ChickenDoNothing(60, 120), 1)
                         )
                         )
                 )

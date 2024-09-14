@@ -79,7 +79,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //Brain Modules
 
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
-    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODY.get(), ModMemoryModuleTypes.EGG_LAYING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING);
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODY.get(), ModMemoryModuleTypes.EGG_LAYING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(), ModMemoryModuleTypes.SEEKING_FOOD.get(), ModMemoryModuleTypes.MOTHER.get(), ModMemoryModuleTypes.MOTHER_UUID.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING);
 
     //--------------
 
@@ -366,7 +366,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private void broodingForPassageOfTime(double iterations) {
         if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
             if (nestEntity.incubateByAmount((int)iterations * GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) {
-                nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
+                nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom(), this);
                 this.setBroody(false);
                 this.setBrooding(false);
                 this.gestationTimer = this.gestationTimer - (int)iterations*4000;
@@ -619,7 +619,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (this.isBroody()) {
             if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
                 if (nestEntity.incubate()) {
-                    nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
+                    nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom(), this);
                     this.setBroody(false);
                     this.setBrooding(false);
                 }

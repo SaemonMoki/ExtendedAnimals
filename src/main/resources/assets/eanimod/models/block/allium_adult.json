@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/allium",
+  "render_type": "cutout_mipped"
+}

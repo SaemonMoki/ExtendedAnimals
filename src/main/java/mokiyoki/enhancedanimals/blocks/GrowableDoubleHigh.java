@@ -91,18 +91,16 @@ public class GrowableDoubleHigh extends CropBlock {
 
     @Override
     public void growCrops(Level worldIn, BlockPos pos, BlockState state) {
-//        int i = this.getAge(state) + this.getBonemealAgeIncrease(worldIn);
-//        int j = this.getMaxAge();
-//
-//        if (i > 5) {
-//
-//        }
-//        if (i > j) {
-//            i = j;
-//        }
-//
-//        worldIn.setBlockState(pos, this.withAge(i), 2);
-//        worldIn.setBlockState(pos.up(), this.withAge(i), 2);
+        //TODO fix the age passed correctly to the top
+        int i = this.getAge(state) + this.getBonemealAgeIncrease(worldIn);
+        int j = this.getMaxAge();
+
+        if (i > j) {
+            i = j;
+        }
+
+        worldIn.setBlock(pos, this.getStateForAge(i), 2);
+        setHalfToUpper(worldIn, pos, i);
     }
 
     @Override

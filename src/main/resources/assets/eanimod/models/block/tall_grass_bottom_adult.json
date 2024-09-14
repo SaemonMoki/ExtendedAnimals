@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/tall_grass_bottom",
+  "render_type": "cutout_mipped"
+}

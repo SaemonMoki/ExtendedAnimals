@@ -1,5 +1,5 @@
 {
-  "parent": "block/tinted_cross",
+  "parent": "eanimod:block/gaplant_tinted",
   "textures": {
     "cross": "eanimod:block/tall_grass_top3"
   }

@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.ai.brain;
 
 import com.google.common.collect.ImmutableMap;
+import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -13,6 +14,9 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 import java.util.Optional;
 import java.util.function.Function;
+
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DISMOUNT_SCHEDULE;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RIDE_MOTHER_HEN_SCHEDULE;
 
 public class BabyFollowParent<E extends AgeableMob> extends Behavior<E> {
    private final UniformInt followRange;
@@ -49,8 +53,32 @@ public class BabyFollowParent<E extends AgeableMob> extends Behavior<E> {
       }
    }
 
-   protected void start(ServerLevel p_147426_, E p_147427_, long p_147428_) {
-      BehaviorUtils.setWalkAndLookTargetMemories(p_147427_, this.getNearestAdult(p_147427_), this.speedModifier.apply(p_147427_), this.followRange.getMinValue() - 1);
+   protected void start(ServerLevel serverLevel, E child, long p_147428_) {
+      Optional<LivingEntity> optionalParent = child.getBrain().getMemory(ModMemoryModuleTypes.MOTHER.get());
+         if (optionalParent.isPresent()) {
+            runFollowParent(serverLevel, child, optionalParent.get(), p_147428_);
+         } else {
+            optionalParent = BehaviorUtils.getLivingEntityFromUUIDMemory(child, ModMemoryModuleTypes.MOTHER_UUID.get());
+            if (optionalParent.isPresent()) {
+               child.getBrain().setMemory(ModMemoryModuleTypes.MOTHER.get(), optionalParent.get());
+               runFollowParent(serverLevel, child, optionalParent.get(), p_147428_);
+            }
+         }
+   }
+
+   protected void runFollowParent(ServerLevel serverLevel, E child, LivingEntity parent, long p_147429_) {
+      BehaviorUtils.setWalkAndLookTargetMemories(child, parent, this.speedModifier.apply(child), this.followRange.getMinValue() - 1);
+
+      if (child instanceof EnhancedChicken enhancedChicken) {
+         if (enhancedChicken.growthAmount()<0.25F && enhancedChicken.getRandom().nextInt(0, 100) > 95 && !enhancedChicken.isAnimalSleeping() && parent.getPassengers().isEmpty() && !enhancedChicken.scheduledToRun.containsKey(RIDE_MOTHER_HEN_SCHEDULE.funcName)) {
+                int mountInTicks = enhancedChicken.getRandom().nextInt(100, 1000);
+                int dismountInTicks = enhancedChicken.getRandom().nextInt(mountInTicks+100, mountInTicks+1000);
+                enhancedChicken.scheduledToRun.put(RIDE_MOTHER_HEN_SCHEDULE.funcName, RIDE_MOTHER_HEN_SCHEDULE.function.apply(mountInTicks));
+                enhancedChicken.scheduledToRun.put(DISMOUNT_SCHEDULE.funcName, DISMOUNT_SCHEDULE.function.apply(dismountInTicks));
+            } else {
+                enhancedChicken.getNavigation().moveTo(parent, this.speedModifier.apply(child));
+            }
+      }
    }
 
    private AgeableMob getNearestAdult(E p_147430_) {

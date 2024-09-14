@@ -7,6 +7,6 @@
     "age=4": { "model": "eanimod:block/azure_bluet4" },
     "age=5": { "model": "eanimod:block/azure_bluet5" },
     "age=6": { "model": "eanimod:block/azure_bluet6" },
-    "age=7": { "model": "block/azure_bluet" }
+    "age=7": { "model": "eanimod:block/azure_bluet_adult" }
   }
 }

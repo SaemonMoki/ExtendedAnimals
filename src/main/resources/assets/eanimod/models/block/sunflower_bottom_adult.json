@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/sunflower_bottom",
+  "render_type": "cutout_mipped"
+}

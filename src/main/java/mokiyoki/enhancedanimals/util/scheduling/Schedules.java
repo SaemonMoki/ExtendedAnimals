@@ -6,11 +6,13 @@ import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public enum Schedules {
@@ -119,9 +121,16 @@ public enum Schedules {
 
     RIDE_MOTHER_HEN_SCHEDULE("RideMotherHenSchedule", (ticks) -> new AnimalScheduledFunction(ticks, (eaa) -> {
         if (eaa instanceof EnhancedChicken) {
-            EnhancedAnimalAbstract parent = ((EnhancedChicken) eaa).followParentGoal.getParent();
-            if (parent != null) {
+            Optional<LivingEntity> parentOptional = eaa.getBrain().getMemory(ModMemoryModuleTypes.MOTHER.get());
+            if (parentOptional.isPresent()) {
+                EnhancedAnimalAbstract parent = (EnhancedChicken)parentOptional.get();
                 eaa.startRiding(parent);
+            } else {
+                parentOptional = BehaviorUtils.getLivingEntityFromUUIDMemory(((EnhancedChicken) eaa), ModMemoryModuleTypes.MOTHER_UUID.get());
+                if (parentOptional.isPresent()) {
+                    EnhancedAnimalAbstract parent = (EnhancedChicken)parentOptional.get();
+                    eaa.startRiding(parent);
+                }
             }
         }
     }));

@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/blue_orchid",
+  "render_type": "cutout_mipped"
+}

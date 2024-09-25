@@ -67,7 +67,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
 
-
     private static final String[] FOX_TEXTURES_BASE = new String[] {   // plain white
             "solid_base.png"
     };
@@ -81,11 +80,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     };
 
     private final int IDX_BASECOATS_AGOUTI = 0;
-    private final int IDX_BASECOATS_SILVER = IDX_BASECOATS_AGOUTI + 1;
+    private final int IDX_BASECOATS_SILVER = IDX_BASECOATS_AGOUTI + 3;
     private static final String[] FOX_TEXTURES_AGOUTI = new String[] {
             "red_orange_1.png",
             "alaskan_cross_1.png", "cross_2_test_3.png",
-            "silver_standard_test.png", "silver_alaskan_test.png", "silver_subalaskan_test.png", "silver_doublesilver_test.png"
+            "silver_standard_test.png", "silver_substandard_test.png", "silver_alaskan_test.png", "silver_subalaskan_test.png", "silver_doublesilver_test.png" // SILVERS; BLACK
     };
 
     private static final String[] FOX_TEXTURES_SHADING = new String[] {
@@ -93,9 +92,19 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     };  // tint?
 
     private final int IDX_BLACK_SOLID = 1;
+    private final int IDX_BLACKWT = IDX_BLACK_SOLID + 1;
+    private final int IDX_BLACKSOCKS = IDX_BLACKWT + 1;
+    private final int IDX_SMOKY = IDX_BLACKSOCKS + 2; // 2 textures after socks start
+
     private static final String[] FOX_TEXTURES_BLACK = new String[] {
-            "", "silver_doublesilver_test.png"
+            "", "silver_doublesilver_test.png",
+            "wt_black_2.png",
+            "black_socks_1.png", "black_socks_2.png",
+            "gold_test_2.png"
+
+
     };  // black cross patterns, gold pattern black silver_1_test.png
+    // ALL black masks
 
     private static final String[] FOX_TEXTURES_SMOKY = new String[] {
             "", "gold_test_2.png",
@@ -106,7 +115,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             "", "black_socks_1.png", "black_socks_2.png"
     };
     private static final String[] FOX_TEXTURES_BLACK_FUR = new String[] {
-            "", "WT_black_2.png"
+            "", "wt_black_2.png"
     };
 
     private static final String[] FOX_TEXTURES_FUR = new String[] {
@@ -153,20 +162,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     private static final String[] FOX_TEXTURES_WHITEMARK = new String[] {
             "", "whitemark_1.png", "whitemark_2.png", "whitemark_3.png", "whitemark_4.png", "whitemark_5.png", "whitemark_6.png"
     };
-
-//    private final int IDX_WHITEMARK_1 = 1; // start at 1, het
-//    private final int IDX_WHITEMARK_2 = IDX_WHITEMARK_1 + 3; // 3 textures after marble_1 start, homo
-//    private final int IDX_MARBLE_1 = IDX_WHITEMARK_2 + 3; // 1 texture after whitemark2 start
-//    private final int IDX_MARBLE_2 = IDX_MARBLE_1 + 2; // 2 textures after marble_1 start, homo
-//    private final int IDX_GEORGIANWHITE = IDX_MARBLE_2 + 2; // 2 texture after marble_2 start
-//    private static final String[] FOX_TEXTURES_WHITE_MARKINGS = new String[] {
-//            "", "whitemark_1.png", "whitemark_2.png", "whitemark_3.png", "whitemark_4.png", "whitemark_5.png", "whitemark_6.png",
-
-//            "marble_het_1.png", "marble_het_2.png", "marble_homo_1.png", "marble_homo_2.png",
-
-//            "georgian_white_1.png",
-//    };
-
 
     private final int IDX_RINGNECK_1 = 1; // start at 1, het
     private final int IDX_RINGNECK_2 = IDX_RINGNECK_1 + 4; // 4 textures after rn_1 start, homo
@@ -357,38 +352,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     }
 
 
-//    @Override
-//    protected int getNumberOfChildren() {
-    //    int[] genes = this.genetics.getAutosomalGenes();
-    //    int kitRange;
-    //    int kitAverage = 1;
-     //   int numberOfKits;
-
-     //   if (genes[38] == 1 || genes[39] == 1) {
-            //1 baby
-       //     kitRange = 1;
-     //   } else if (genes[38] == 3 && genes[39] == 3) {
-     //       // 2-3 babies
-     //       kitRange = 2;
-    //        kitAverage = 2;
-    //    } else if (genes[38] == 2 && genes[39] == 2) {
-     //       //1 to 2 babies
-    //        kitRange = 2;
-    //    } else {
-    //        // 1-3 babies
-    //        kitRange = 3;
-    //        kitAverage = 1;
-    //    }
-
-    //    if (kitRange != 1) {
-    //        numberOfKits = ThreadLocalRandom.current().nextInt(kitRange) + kitAverage;
-    //    } else {
-    //        numberOfKits = 1;
-   //     }
-//
-   //     return numberOfKits;
-   // }
-
     @Override
     protected void incrementHunger() {
         if(this.sleeping) {
@@ -516,28 +479,33 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
             int[] gene = getSharedGenes().getAutosomalGenes();
-            //int[] aGenes = getSharedGenes().getAutosomalGenes();
 
             // COLORATION
             // hue, saturation, brightness
+
+            float maxRed = 0.020F;
+            float maxYellow = 0.101F;
+
+        //    float[] swallowbellyColor = {0,0,0};
+
             float[] eyeColor = { 0.075F, 0.70F, 0.675F };  //0.45F, 0.85F, 0.46F , 0.205F, 0.61F, 0.675F
 
-            float[] melanin = { 0.063F, 0.15F, 0.15F };  // 27, 32.5, 26  dark green  0.075F, 0.325F, 0.26F
+
+            float[] melanin = {0.036F, 0.5F, 0.071F};
             float[] blackTintColor = { 0.072F, 0.22F, 0.071F };
 
-
-            float[] pheomelanin = { 0.566F, 1.28F, 0.33F }; //blueish  0.078F, 0.623F, 0.798F
+            float[] pheomelanin = { 0.049F, 0.683F, 0.558F };
             float[] redTintColor = {  0.048F, 0.623F, 0.628F };
 
             float[] redUnderbelly = { pheomelanin[0], pheomelanin[1]-0.1F, pheomelanin[2]+0.1F };
-            float[] redTabbyColor = {  0.048F, 0.623F, 0.628F };
+            float[] redPatternColor = {  0.048F, 0.623F, 0.628F };
 
 
             int burgundy = 0;
 
             int noseRGB = 1;  // default black
 
-            int black = IDX_BLACK_SOLID;
+            int black = 0;
             int shading = 0;
 
             int extension = 0;
@@ -550,7 +518,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             int skin = 0;
             int skinBlack = 3;
 
-            int underbelly = 1;
+            int underbelly = 0;
 
             int blacksocks = 1;
 
@@ -569,10 +537,17 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             int silvering = 0;
 
+        //    int swallowbelly = 0;
+
             int redagouti = IDX_BASECOATS_AGOUTI;
 
             int redUnderbellyRGB = Colouration.HSBtoARGB(redUnderbelly[0], redUnderbelly[1], redUnderbelly[2]);
 
+
+            // BOOLEANS ARE YES/NO or ON/OFF - two values!
+            boolean wideband = false;
+
+            boolean agoutiBlack = false;
 
 
             char[] uuidArry = getStringUUID().toCharArray();
@@ -589,7 +564,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
              */
 
 
-
             /**
              * MC1R - Extension
              *  1 : E dominant wildtype
@@ -603,6 +577,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
              * }
              *
              *  gene 0, gene 1
+             *
              */
 
             //fox base coat - extension
@@ -635,12 +610,19 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             // 1 = homo Dom, 2 = het, 3 = homo Rec
             if (extension == 1 && agouti == 1 ) {
                 basecoat = 1;  // AAEE - red wildtype          red1.png  RED
+                pheomelanin[0] += 0.021F;
+                pheomelanin[1] -= 0.07F;
+                melanin[0] += 0.016F;
+                melanin[1] -= 0.035F;
+                black = IDX_BLACKWT;
 
             } else if (extension == 1 && agouti == 2) {
                 basecoat = 2;  // AAEe - gold                  gold1.png  GOLD / SMOKY RED
+                black = IDX_SMOKY;
 
             } else if (extension == 1 && agouti == 3) {
                 basecoat = 3;  // AAee - standard silver       silver2.png  STANDARD SILVER
+                black = 1;
 
             } else if (extension == 2 && agouti == 1) {
                 basecoat = 4;  // AaEE - alaskan cross         cross1.png  ALASKAN / GOLDEN CROSS
@@ -650,19 +632,26 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             } else if (extension == 2 && agouti == 3) {
                 basecoat = 6;  // Aaee - sub-standard silver   silver2.png  SUB-STANDARD SILVER
+                black = 1;
 
             } else if (extension == 3 && agouti == 1) {
                 basecoat = 7;  // aaEE - alaskan silver        silver1.png  ALASKAN SILVER
+                black = 1;
 
             } else if (extension == 3 && agouti == 2) {
                 basecoat = 8;  // aaEe - sub-alaskan silver    silver1.png  SUB-ALASKAN SILVER
+                black = 1;
 
             } else {
                 basecoat = 9;  // aaee - double silver         silver3.png  DOUBLE SILVER
+                black = 1;
 
             }
 
 
+            if (gene[164] == 2 && gene[165] == 2) {
+                wideband = true;
+            }
 
             // BURGUNDY - recessive, affects black pigment
             // hue sat bright
@@ -673,15 +662,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             }
 
 
-
-
             /**
              * SILVER GUARD HAIRS
              *    gene 4 : wildtype: no silvering
              *    gene 5 : more silvering
              */
-            // SILVERING guard hairs  - layer on top of base
-
             //basic silvering - need default to be no silvering
             // should be:  SS = no silver , Ss = faded silver , ss = full silver
 
@@ -780,10 +765,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             }
 
 
-
-
-
-
             //  Dilute/Blue TEST - both need to =2 to be dilute
             if (gene[28]==2 && gene[29]==2) {
                 eyeColor[0] = 0.23F;  // hue
@@ -804,13 +785,163 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
              }
 
-            // Fox kit eyes should be blue
-        //    if (age < 108000) {
-        //        eyeColor[0] = 0.55F;  // hue
-        //        eyeColor[1] -= 0.215F;  // sat
-        //        eyeColor[2] += 0.22F;  // lightness
 
+            // COLOR saturation etc TESTING PLACEHOLDER - code from pigs
+
+            int s = 0;
+
+            for (int i = 192; i < 202; i++) {
+                if (gene[i] == 2) {
+                    s -= 1;
+                }
+            }
+
+            //wideband increases saturation - higher opacity texture. lightens /reddens/yellows black patterning too
+            if (wideband) {
+                s += 5;
+            }
+
+            float saturation = s*0.12F;
+
+            int r = 0;
+            for (int i = 120; i < 148; i++) {
+                if (gene[i] == 2) {
+                    r = i < 134 ? r-1 : r+1;
+                }
+            }
+
+            int darkness = 0;
+            for (int i = 150; i < 158; i++) {
+                if (gene[i] == 2) {
+                    darkness += 1;
+                }
+            }
+
+            if (s != 0) {
+                if (saturation < 0) {
+                    maxYellow += (0.0016F * saturation);
+                    //pheomelanin[0] += (0.002F * darkness);
+                }
+                pheomelanin[1] += (0.02F * saturation);
+                melanin[1] += (0.005F * saturation);
+            }
+
+            if (r != 0) {
+                pheomelanin[0] += (0.0029F * -r);
+                pheomelanin[2] += (0.008F * -r);
+                melanin[0] += (0.0025F * -r);
+                melanin[1] += (0.009F * r);
+            }
+
+            if (darkness != 0) {
+                melanin[2] -= (0.01F * darkness);
+                pheomelanin[0] -= (0.002F * darkness);
+                pheomelanin[1] += (0.0015F * darkness);
+                pheomelanin[2] -= (0.03F * darkness);
+                maxYellow -= (0.0021F * darkness);
+            }
+
+        //    if (wideband) {
+        //        swallowbellyColor[0] = pheomelanin[0] + 0.01F;
+        //        swallowbellyColor[1] = pheomelanin[1] - 0.02F;
+        //        swallowbellyColor[2] = pheomelanin[2] + 0.09F;
+        //    } else {
+        //        swallowbellyColor[0] = pheomelanin[0] + 0.02F;
+        //        swallowbellyColor[1] = pheomelanin[1] - 0.15F;
+        //        swallowbellyColor[2] = pheomelanin[2] + 0.23F;
         //    }
+
+            float[] lightAgoutiColor = {pheomelanin[0], pheomelanin[1], pheomelanin[2]+0.25F};
+            float[] darkAgoutiColor = {melanin[0], melanin[1], melanin[2]-0.1F};
+            float[] darkAgoutiRedColor = {pheomelanin[0], pheomelanin[1]+0.04F, pheomelanin[2]-0.25F};
+
+            if (gene[8] == 2 && gene[9] == 2) {
+                darkAgoutiColor[2] -= 0.4F;
+            }
+            else if (gene[8] == 2 || gene[9] == 2) {
+                darkAgoutiColor[2] -= 0.3F;
+            }
+
+            if (this.isBaby()) {
+                if (agoutiBlack && gene[2] == 4 && gene[3] == 4) {
+                    melanin[1] -= 0.5F;
+                    melanin[2] += 0.5F;
+                }
+            //    swallowbellyColor[1] -= 0.5F;
+            }
+
+
+            //check hue range
+            if (pheomelanin[0] > maxYellow) {
+                pheomelanin[0] = maxYellow;
+            } else if (pheomelanin[0] < maxRed) {
+                pheomelanin[0] = maxRed;
+            }
+
+            if (melanin[0] > maxYellow) {
+                melanin[0] = maxYellow;
+            } else if (melanin[0] < maxRed) {
+                melanin[0] = maxRed;
+            }
+
+        //    if (swallowbellyColor[0] > maxYellow) {
+        //        swallowbellyColor[0] = maxYellow;
+        //    } else if (swallowbellyColor[0] < maxRed) {
+        //        swallowbellyColor[0] = maxRed;
+        //    }
+
+            if (darkAgoutiColor[0] > maxYellow) {
+                darkAgoutiColor[0] = maxYellow;
+            } else if (darkAgoutiColor[0] < maxRed) {
+                darkAgoutiColor[0] = maxRed;
+            }
+
+            if (lightAgoutiColor[0] > maxYellow) {
+                lightAgoutiColor[0] = maxYellow;
+            } else if (lightAgoutiColor[0] < maxRed) {
+                lightAgoutiColor[0] = maxRed;
+            }
+
+            if (darkAgoutiRedColor[0] > maxYellow) {
+                darkAgoutiRedColor[0] = maxYellow;
+            } else if (darkAgoutiRedColor[0] < maxRed) {
+                darkAgoutiRedColor[0] = maxRed;
+            }
+
+            //checks that numbers are within the valid range
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
+                }
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
+                }
+            //    if (swallowbellyColor[i] > 1.0F) {
+            //        swallowbellyColor[i] = 1.0F;
+            //    } else if (swallowbellyColor[i] < 0.0F) {
+            //        swallowbellyColor[i] = 0.0F;
+            //    }
+                if (lightAgoutiColor[i] > 1.0F) {
+                    lightAgoutiColor[i] = 1.0F;
+                } else if (lightAgoutiColor[i] < 0.0F) {
+                    lightAgoutiColor[i] = 0.0F;
+                }
+                if (darkAgoutiColor[i] > 1.0F) {
+                    darkAgoutiColor[i] = 1.0F;
+                } else if (darkAgoutiColor[i] < 0.0F) {
+                    darkAgoutiColor[i] = 0.0F;
+                }
+                if (darkAgoutiRedColor[i] > 1.0F) {
+                    darkAgoutiRedColor[i] = 1.0F;
+                } else if (darkAgoutiRedColor[i] < 0.0F) {
+                    darkAgoutiRedColor[i] = 0.0F;
+                }
+            }
+
 
 
             int eyeHue = 0; // negative = orange, positive = green
@@ -868,13 +999,19 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
             int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
 
-            int redTabbyRGB = Colouration.HSBtoARGB(redTabbyColor[0], redTabbyColor[1], redTabbyColor[2]); // testing
+            int redPatternRGB = Colouration.HSBtoARGB(redPatternColor[0], redPatternColor[1], redPatternColor[2]); // testing
 
 
-        // CAT NOSE COLOR example
+            // testing PLACEHOLDER
+        //    int swallowbellyRGB = Colouration.HSBtoARGB(swallowbellyColor[0], swallowbellyColor[1], swallowbellyColor[2]);
+            int lightAgoutiRGB = Colouration.HSBtoARGB(lightAgoutiColor[0], lightAgoutiColor[1], lightAgoutiColor[2]);
+            int darkAgoutiRGB = Colouration.HSBtoARGB(darkAgoutiColor[0], darkAgoutiColor[1], darkAgoutiColor[2]);
+            int darkAgoutiRedRGB = Colouration.HSBtoARGB(darkAgoutiRedColor[0], darkAgoutiRedColor[1], darkAgoutiRedColor[2]);
+
+
+        // CAT NOSE COLOR example; change later! cats colors as test
             // Colouration.HSBtoARGB(0.13F [HUE], 0.02F [SATURATION], 0.96F [BRIGHTNESS]);
             // int whiteRGB = Colouration.HSBtoARGB(0.13F, 0.02F, 0.96F);
-            // change later! cats colors as test
             // hue, saturation, brightness
             int[] noseColors = {
                     //Brick 0
@@ -897,14 +1034,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
 
 
-        // FAWN SPOTS
-            // 1 - no spots, default and dominant  2 - ear spots, homo?  3 - body spots, homo? 4 - ear and body spots, homo, rare?
-
-            // EXAMPLE for making sure a trait occurs when several others do
-            // if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
-            // }
-
-
     // TEXTURE GROUPING
 
             // merge, alpha, mask
@@ -914,14 +1043,8 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create PARENT
             TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create SKIN
 
-        // SKIN TEXTURES
-
-        //    addTextureToAnimalTextureGrouping(skinGroup, FOX_TEXTURES_SKINBASE, skin, true); // add skin base texture to skin group
-
-        //    addTextureToAnimalTextureGrouping(skinGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_BASE, 0, l -> l != 0);  // BASE texture black (move)
-        //    addTextureToAnimalTextureGrouping(skinGroup, FOX_TEXTURES_BASECOAT, basecoat, l -> l != 0);  // create basecoat group - OLD
-
-            if (black != IDX_BLACK_SOLID) {
+        // SKIN GROUPS
+            if (black != IDX_BLACK_SOLID) { // change to 0
                 TextureGrouping skinRedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(skinRedGroup, FOX_TEXTURES_SKINBASE, 1, l -> true);
                 skinGroup.addGrouping(skinRedGroup);
@@ -936,13 +1059,13 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 skinBlackGroup.addGrouping(skinBlackBaseGroup);
                 if (agouti != 0) {
                     TextureGrouping skinBlackUnderbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                    addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, FOX_TEXTURES_UNDERBELLY, 0, true);
+                    addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, FOX_TEXTURES_UNDERBELLY, 1, true);
                     addTextureToAnimalTextureGrouping(skinBlackUnderbellyGroup, FOX_TEXTURES_SKINBASE, 0, true);
                     skinBlackGroup.addGrouping(skinBlackUnderbellyGroup);
                 }
                 skinGroup.addGrouping(skinBlackGroup);
             }
-            if (white != 0) {
+            if (white != 0) {   // adds white texture to skin
                 TextureGrouping skinWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_PLATINUM, platinum, l -> l != 0);
@@ -950,7 +1073,6 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_GEORGIANWHITE, georgianwhite, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_WHITEMARK, whitemark, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_RINGNECK, ringneck, l -> l != 0);
-        //        addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_HEADWHITE, headWhite, l -> l != 0);  <-- more whitemark variation eventually
                 skinWhiteGroup.addGrouping(whiteMaskGroup);
                 TextureGrouping whiteTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(whiteTexGroup, FOX_TEXTURES_SKINBASE, 0, l -> true);
@@ -975,80 +1097,96 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
 
          // RED LAYER
-            if (black != IDX_BLACK_SOLID) {
-                TextureGrouping redGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create REDGROUP
-                TextureGrouping redGlitterGroup = new TextureGrouping(TexturingType.OVERLAY_GROUP);
+            if (extension != 0 || agouti != 0) {
+                TextureGrouping redGroup = new TextureGrouping(TexturingType.MASK_GROUP);  // create REDGROUP
                 TextureGrouping redBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // create REDBASE
-
                 addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RED, FOX_TEXTURES_BASE, 0, l -> true); // base texture red
-                addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_UNDERBELLY[underbelly], "r-ub"+underbelly, redUnderbellyRGB); // TEST
-
-                addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_BLACK_FUR[agoutiBase], "r-agb"+agoutiBase, redTabbyRGB); // TEST
-
 
                 // agouti mask (TEST)
-                TextureGrouping redTabbyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                TextureGrouping redPatternGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping agoutiMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(agoutiMaskGroup, FOX_TEXTURES_TEST, agouti != 0 ? 1 : 0, l -> true); // TEST agouti mask
-                redTabbyGroup.addGrouping(agoutiMaskGroup);
+                redPatternGroup.addGrouping(agoutiMaskGroup); // add Mask to Pattern
 
                 // AGOUTI TEXTURE
                 TextureGrouping agoutiTexGroup = new TextureGrouping(TexturingType.MASK_GROUP);
 
-                if (extension == 1 && agouti == 1 ) {
                 //    basecoat = 1;  // AAEE - RED wildtype
-                    TextureGrouping RedAgoutiTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                //    addTextureToAnimalTextureGrouping(RedAgoutiTexGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_BLACK_SOCKS, blacksocks, l -> true); // should maybe be RBG instead? for dilutions etc
-                    addTextureToAnimalTextureGrouping(RedAgoutiTexGroup, FOX_TEXTURES_AGOUTI, redagouti, l -> l != 0);
-                    agoutiTexGroup.addGrouping(RedAgoutiTexGroup);
+                // 1 = homo Dom, 2 = het, 3 = homo Rec
+                if (extension == 1 && agouti == 1 ) {
+                    basecoat = 1;  // AAEE - RED wildtype
+                    TextureGrouping redWTGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // creates redWTG
+                //    addTextureToAnimalTextureGrouping(redWTGroup, FOX_TEXTURES_AGOUTI, redagouti, l -> l != 0);
+                //    addTextureToAnimalTextureGrouping(redWTGroup, TexturingType.APPLY_RED, FOX_TEXTURES_AGOUTI, redagouti, l -> true);
+                    addTextureToAnimalTextureGrouping(redWTGroup, TexturingType.APPLY_RED, FOX_TEXTURES_AGOUTI,  0, l -> true);
+                    agoutiTexGroup.addGrouping(redWTGroup); // add WTG to red group
+
+                } else if (extension == 1 && agouti == 2) {
+                    // AAEe - GOLD / SMOKY RED
+                //    TextureGrouping redSmokyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //    addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_SMOKY, 1, l -> true);
+                //    agoutiTexGroup.addGrouping(redSmokyGroup); // add smoky to red
+
+                } else if (extension == 1 && agouti == 3) {
+                    // AAee - STANDARD SILVER
+                //    TextureGrouping redStandardGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //    addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_AGOUTI, 2, l -> true);
+                //    agoutiTexGroup.addGrouping(redStandardGroup); // add standard to red
+
+                } else if (extension == 2 && agouti == 1) {
+                    basecoat = 4;  // AaEE - ALASKAN / GOLDEN CROSS
+                    TextureGrouping redACrossGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                    addTextureToAnimalTextureGrouping(redACrossGroup, FOX_TEXTURES_AGOUTI, 1, true);
+                    agoutiTexGroup.addGrouping(redACrossGroup); // add alaskan cross to red group
+
+                } else if (extension == 2 && agouti == 2) {
+                    basecoat = 5;  // AaEe - BLENDED / SILVER CROSS
+                    TextureGrouping redBlendGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                    addTextureToAnimalTextureGrouping(redBlendGroup, FOX_TEXTURES_AGOUTI, 2, true);
+                    agoutiTexGroup.addGrouping(redBlendGroup); // add blended cross to red group
+
+                } else if (extension == 2 && agouti == 3) {
+                    basecoat = 6;  // Aaee - SUB-STANDARD SILVER
+                //    TextureGrouping redSubstandardGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //    addTextureToAnimalTextureGrouping(redSubstandardGroup, FOX_TEXTURES_AGOUTI, 3, true);
+                //    agoutiTexGroup.addGrouping(redSubstandardGroup); // add subStandard to red group
+
+                } else if (extension == 3 && agouti == 1) {
+                    basecoat = 7;  // aaEE - ALASKAN SILVER
+                //    TextureGrouping redAlaskanGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //   addTextureToAnimalTextureGrouping(redAlaskanGroup, FOX_TEXTURES_AGOUTI, 3, true);
+                //    agoutiTexGroup.addGrouping(redAlaskanGroup); // add Alaskan to red group
+
+                } else if (extension == 3 && agouti == 2) {
+                    basecoat = 8;  // aaEe - SUB-ALASKAN SILVER
+                //    TextureGrouping redSubalaskanGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //    addTextureToAnimalTextureGrouping(redSubalaskanGroup, FOX_TEXTURES_AGOUTI, 4, true);
+                //    agoutiTexGroup.addGrouping(redSubalaskanGroup); // add subAlaskan to red group
+
+                } else {
+                    basecoat = 9;  // aaee - DOUBLE SILVER
+                //    TextureGrouping redDoubleGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                //    addTextureToAnimalTextureGrouping(redDoubleGroup, FOX_TEXTURES_BLACK, black, true);
+                //    agoutiTexGroup.addGrouping(redDoubleGroup); // add double to red group
                 }
+
 
                 TextureGrouping agoutiInnerMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(agoutiInnerMaskGroup, FOX_TEXTURES_BLACK_FUR[1], true); //  ear deets
 
                 agoutiTexGroup.addGrouping(agoutiInnerMaskGroup);
 
-
-                // AGOUTI TINT
-                TextureGrouping agoutiTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                agoutiTexGroup.addGrouping(agoutiTintGroup);
-                addTextureToAnimalTextureGrouping(agoutiTintGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_BASE[0], "r-tb", redTabbyRGB); // TEST
-
-                redTabbyGroup.addGrouping(agoutiTexGroup);
-
-                redGroup.addGrouping(redTabbyGroup);
-
-                hairTexGroup.addGrouping(redGroup);
             }
 
 
-         //       addTextureToAnimalTextureGrouping(redBaseGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_AGOUTI[agoutiBase], "r-agt"+agoutiBase, redTintRGB); // red agouti base
-
-            //    TextureGrouping agoutiTexGroup = new TextureGrouping(TexturingType.MASK_GROUP); // create agouti mask
-
-            //    TextureGrouping agoutiInnerMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // create inner mask
-                // should have textures / rgb changes that apply only to red/orange areas!
-            //    addTextureToAnimalTextureGrouping(agoutiInnerMaskGroup, FOX_TEXTURES_FUR_SHADING[1], true);
-            //    agoutiTexGroup.addGrouping(agoutiInnerMaskGroup); // add INNER MASK to agouti texture
-
-            //    TextureGrouping agoutiTintGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // create agouti tint
-            //    addTextureToAnimalTextureGrouping(agoutiTintGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_AGOUTI[0], "r-agt"+agoutiBase, redTintRGB);
-
-        //        agoutiTexGroup.addGrouping(agoutiTintGroup); // add tint to agouti texture
-
-        //        redGroup.addGrouping(agoutiTexGroup); // add agouti textures to red group
-
-        //        hairTexGroup.addGrouping(redGroup);  // add red to hair
-        //    }
-
 
             //BLACK LAYER
-            // should have textures / rgb changes that apply only to black areas!
-            if (extension != 0 || agouti != 0) {
+            // should have textures / rgb changes that apply only to black areas
+            if (black != 0) {
                 TextureGrouping blackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                TextureGrouping blackMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                addTextureToAnimalTextureGrouping(blackMaskGroup, FOX_TEXTURES_BLACK, black, true); // hmm
-                blackGroup.addGrouping(blackMaskGroup);
+                TextureGrouping blackAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                addTextureToAnimalTextureGrouping(blackAlphaGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_BLACK, black, l -> l != 0); // hmm
+                blackGroup.addGrouping(blackAlphaGroup);
 
                 TextureGrouping blackTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 TextureGrouping blackBaseGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1058,8 +1196,9 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 if (extension == 1 && agouti == 1 ) {
                     basecoat = 1;  // AAEE - RED wildtype
                     TextureGrouping blackWTGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_BLACK_SOCKS, blacksocks, l -> true); // should maybe be RBG instead? for dilutions etc
-                    addTextureToAnimalTextureGrouping(blackBaseGroup, FOX_TEXTURES_BLACK_SOCKS, blacksocks, l -> l != 0);
+                //    addTextureToAnimalTextureGrouping(blackBaseGroup, TexturingType.APPLY_BLACK, FOX_TEXTURES_BLACK_SOCKS, blacksocks, l -> true); // should maybe be RBG instead? for dilutions etc
+                //    addTextureToAnimalTextureGrouping(blackBaseGroup, FOX_TEXTURES_BLACK_SOCKS, blacksocks, l -> l != 0);
+
                     blackTexGroup.addGrouping(blackWTGroup); // add to black group
                     // black socks, wildtype amount of black
 
@@ -1077,15 +1216,15 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
                 } else if (extension == 2 && agouti == 1) {
                     basecoat = 4;  // AaEE - ALASKAN / GOLDEN CROSS
-                    TextureGrouping blackSubstandardGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    addTextureToAnimalTextureGrouping(blackSubstandardGroup, FOX_TEXTURES_AGOUTI, 1, true);
-                    blackTexGroup.addGrouping(blackSubstandardGroup); // add alaskan cross to black group
+                    TextureGrouping blackACrossGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                    addTextureToAnimalTextureGrouping(blackACrossGroup, FOX_TEXTURES_AGOUTI, 1, true);
+                    blackTexGroup.addGrouping(blackACrossGroup); // add alaskan cross to black group
 
                 } else if (extension == 2 && agouti == 2) {
                     basecoat = 5;  // AaEe - BLENDED / SILVER CROSS
-                    TextureGrouping blackSubstandardGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    addTextureToAnimalTextureGrouping(blackSubstandardGroup, FOX_TEXTURES_AGOUTI, 2, true);
-                    blackTexGroup.addGrouping(blackSubstandardGroup); // add blended cross to black group
+                    TextureGrouping blackBlendGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                    addTextureToAnimalTextureGrouping(blackBlendGroup, FOX_TEXTURES_AGOUTI, 2, true);
+                    blackTexGroup.addGrouping(blackBlendGroup); // add blended cross to black group
 
                 } else if (extension == 2 && agouti == 3) {
                     basecoat = 6;  // Aaee - SUB-STANDARD SILVER
@@ -1094,7 +1233,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                     blackTexGroup.addGrouping(blackSubstandardGroup); // add subStandard to black group
 
                 } else if (extension == 3 && agouti == 1) {
-                    basecoat = 7;  // aaEE - ALASKAN SILVER
+                    basecoat = 7;  // aaEE - ALASKAN SILVER - should have brownish tint along sides and ears
                     TextureGrouping blackAlaskanGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                     addTextureToAnimalTextureGrouping(blackAlaskanGroup, FOX_TEXTURES_AGOUTI, 3, true);
                     blackTexGroup.addGrouping(blackAlaskanGroup); // add Alaskan to black group
@@ -1106,27 +1245,23 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                     blackTexGroup.addGrouping(blackSubalaskanGroup); // add subAlaskan to black group
 
                 } else {
-                    basecoat = 9;  // aaee - DOUBLE SILVER
+                    basecoat = 9;  // aaee - DOUBLE SILVER  -- FOX_TEXTURES_AGOUTI texture 7
                     TextureGrouping blackDoubleGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    addTextureToAnimalTextureGrouping(blackDoubleGroup, FOX_TEXTURES_BLACK, black, true);
+                    addTextureToAnimalTextureGrouping(blackDoubleGroup, FOX_TEXTURES_AGOUTI, 7, true);
+                //    addTextureToAnimalTextureGrouping(blackDoubleGroup, FOX_TEXTURES_BLACK, black, true);
                     blackTexGroup.addGrouping(blackDoubleGroup); // add double to black group
                 }
-
-
 
                 blackGroup.addGrouping(blackTexGroup);
                 hairTexGroup.addGrouping(blackGroup); // add black to hair
             }
 
 
-
-
-            //WHITE LAYER
+            //WHITE LAYER (this seems to work)
             if (georgianwhite != 0 || marble != 0 || whitemark != 0 || platinum != 0 || ringneck != 0) {
-                TextureGrouping hairWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                TextureGrouping hairWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);  // create white mask group
+                TextureGrouping whiteMaskGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create white inner mask group
 
-            //    addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_WHITE_MARKINGS, white, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_PLATINUM, platinum, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_MARBLE, marble, l -> l != 0);
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_GEORGIANWHITE, georgianwhite, l -> l != 0);
@@ -1134,12 +1269,27 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
                 addTextureToAnimalTextureGrouping(whiteMaskGroup, FOX_TEXTURES_RINGNECK, ringneck, l -> l != 0);
 
                 TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // create white texture group
-                addTextureToAnimalTextureGrouping(whiteTextureGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_BASE[0], "w", whiteRGB);
+                addTextureToAnimalTextureGrouping(whiteTextureGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_BASE[0], "w", whiteRGB); // affect with rgb? unsure if this works
 
-                hairWhiteGroup.addGrouping(whiteMaskGroup);
-                hairWhiteGroup.addGrouping(whiteTextureGroup);
-                hairTexGroup.addGrouping(hairWhiteGroup);
+                hairWhiteGroup.addGrouping(whiteMaskGroup);  // add inner mask to hairwhite
+                hairWhiteGroup.addGrouping(whiteTextureGroup);  // add Texture Group to hairwhite
+                hairTexGroup.addGrouping(hairWhiteGroup);  // add hairwhite to hair tex
            }
+
+            // UNDERBELLY
+            if (extension != 0 || agouti != 0) {
+                TextureGrouping bellyWhiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);  // create white mask group
+                TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);  // create white inner mask group
+
+                addTextureToAnimalTextureGrouping(whitebellyGroup, FOX_TEXTURES_UNDERBELLY, 1, true);
+
+                TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP); // create white texture group
+                addTextureToAnimalTextureGrouping(whiteTextureGroup, TexturingType.APPLY_RGB, FOX_TEXTURES_BASE[0], "w", whiteRGB); // affect with rgb? unsure if this works
+
+                bellyWhiteGroup.addGrouping(whitebellyGroup);  // add inner mask to hairwhite
+                bellyWhiteGroup.addGrouping(whiteTextureGroup);  // add Texture Group to hairwhite
+                hairTexGroup.addGrouping(bellyWhiteGroup);  // add hairwhite to hair tex
+            }
 
             // HAIR OVERLAY
             TextureGrouping hairOverlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -1161,22 +1311,15 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
             addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, FOX_TEXTURES_EYE_L, 0, l-> true);
             addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, FOX_TEXTURES_EYE_R, 0, l -> true);
 
-            //addTextureToAnimalTextureGrouping(detailGroup, FOX_TEXTURES_SKIN, skin, null);
-            //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_left.png", getColour(this.growthAmount()));
-            //addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eye_right.png", getColour(this.growthAmount()));
-
             parentGroup.addGrouping(detailGroup); // detail added to parent
 
             this.setTextureGrouping(parentGroup);  // finalizes texture grouping
 
+            // skin group; also black or white markings that affect skin
             // red group (red base coat)
-
             // black group (black coat, black markings i.e. smokey, socks, etc)
-
             // white group (white markings)
-
             // hair group (fur texture overlay)
-
             // detail group (eyes, nose, paws)
 
         }

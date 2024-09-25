@@ -50,7 +50,6 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
 
-
         /**
          * MC1R - Extension
          *  1 : E dominant wildtype
@@ -96,6 +95,8 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
         } else {
             autosomalGenes[3] = (1);
         }
+
+
 
 
         /**
@@ -300,8 +301,71 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[35] = (2);
         }
 
-        // ear size, spacing, angle
 
+
+        //rufousing [120-133: -red; 134-147: +red]
+        for (int i = 120; i < 148; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+
+        //desaturation [wildtype, duller, duller, ...]
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[148] = ThreadLocalRandom.current().nextInt(10) + 1;
+//        }
+//        else {
+        autosomalGenes[148] = 1;
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[149] = ThreadLocalRandom.current().nextInt(10) + 1;
+//        }
+//        else {
+        autosomalGenes[149] = 1;
+//        }
+
+        //darkness
+        for (int i = 150; i < 158; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+
+
+        //wideband [normal, wideband]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[164] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[164] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[165] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[165] = (1);
+        }
+
+        //desaturation genes [normal, duller]
+        for (int i = 192; i < 202; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.8F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+
+
+
+
+
+
+
+        // ear size, spacing, angle
 
 
         //if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -320,8 +384,6 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
         // WTC = WildTypeChance
         // autosomalGenes[#] = the gene ID #; which gene it is
         // can include biome category
-
-
 
 
         return new Genes(autosomalGenes);

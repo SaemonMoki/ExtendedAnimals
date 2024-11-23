@@ -286,6 +286,7 @@ public class ChickenTexture {
         int[] skinColour = calculateSkinRGB(sGene, gene, isFemale);
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", skinColour[0]);
         chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShanksRGB(sGene, gene, isFemale));
+        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "soles.png", 255 << 24 | calculateShanksRGBUnderColour(sGene, gene, isFemale));
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
         if (age < 0.25F) {
             chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", skinColour[0]);
@@ -1325,32 +1326,149 @@ public class ChickenTexture {
         return new float[]{patternHue, patternSaturation, patternValue, iridescenceAlpha, iridescenceHueShift};
     }
     private static int calculateShanksRGB(int[] sGene, int[] gene, boolean isFemale) {
-        int colour = 16777215;
-        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
-            if (gene[42]==1 || gene[43]==1) {
-                colour = gene[42]==gene[43]? 3289655 : 6579303;
-            }
-        }
+        float hue = 28.0F;
+        float sat = 0.18F;
+        float val = 0.8F;
+
+        boolean yellow = false;
+        boolean superyellow = false;
 
         if (gene[44]!=1 && gene[45]!=1) {
-            //yellow legs
-            int r = colour >> 16 & 255;
-            int g = colour >> 8 & 255;
-            int b = colour & 255;
-
+            yellow = true;
             if (gene[44]==3 && gene[45]==3) {
-                g *= 0.8F;
-                b *= 0.3F;
+                superyellow = true;
+                //gold legs
+                hue = 43.0F;
+                sat = 1.0F;
+                val = 0.65F;
             } else {
-                r *= 0.85F;
-                g *= 0.75F;
-                b *= 0.4F;
+                //yellow legs
+                hue = 47.0F;
+                sat = 0.6F;
+                val = 0.62F;
             }
-
-            colour = r << 16 | g << 8 | b;
         }
 
-        return colour;
+        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
+            //Id Gene
+            if (gene[42]==1 || gene[43]==1) {
+                //fibro
+                if (yellow) {
+                    hue *= 2.0F;
+                } else {
+                    hue = 240.0F;
+                }
+                if (gene[42]!=gene[43]) {
+                    // het fibro
+//                    sat *= 0.17F;
+                    val *= 0.5F;
+                } else {
+                    // homozygous fibro
+//                    sat *= 0.5F;
+                    val *= 0.28F;
+                }
+            } else {
+                //wildtype slate
+                if (yellow) {
+                    hue *= 2.5F;
+                } else {
+                    hue = 180.0F;
+                }
+                sat *= 0.35F;
+                val -= 0.15F;
+            }
+        }
+
+        if (gene[166] == 2 && gene[167] == 2) {
+            if (yellow) {
+                hue += 10F;
+                sat *= 0.9F;
+            }
+            val *= 0.9F;
+        }
+
+        if (gene[30]==1 || gene[31]==1) {
+            if (yellow) {
+                hue += 10F;
+                sat *= 0.9F;
+            }
+            val *= 0.9F;
+        }
+
+        if (gene[24]==5 || gene[25]==5) {
+            if (yellow) {
+                hue += 20F;
+                sat *= 0.8F;
+            }
+            val *= 0.4F;
+        } else if (gene[24]==1 || gene[25]==1) {
+            if (yellow) {
+                hue += 20F;
+                sat *= 0.8F;
+            }
+            val *= 0.75F;
+        } else if (!(gene[24]==3&&gene[25]==3)) {
+            if (yellow) {
+                hue += 10F;
+                sat *= 0.9F;
+            }
+            val *= 0.9F;
+        }
+
+
+
+        return Colouration.HSBtoARGB(hue/360F, sat, val);
+    }
+
+    private static int calculateShanksRGBUnderColour(int[] sGene, int[] gene, boolean isFemale) {
+        float hue = 28.0F;
+        float sat = 0.18F;
+        float val = 0.8F;
+
+        if (gene[44]!=1 && gene[45]!=1) {
+            if (gene[44]==3 && gene[45]==3) {
+                //gold legs
+                hue = 43.0F;
+                sat = 1.0F;
+                val = 0.65F;
+            } else {
+                //yellow legs
+                hue = 47.0F;
+                sat = 0.6F;
+                val = 0.62F;
+            }
+        }
+
+        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
+            //Id Gene
+            if (gene[42]==1 || gene[43]==1) {
+                //fibro
+                if (hue < 40) {
+                    hue = 240.0F;
+                } else {
+                    hue *= 2.0F;
+                }
+                if (gene[42]!=gene[43]) {
+                    // het fibro
+//                    sat *= 0.17F;
+                    val *= 0.5F;
+                } else {
+                    // homozygous fibro
+//                    sat *= 0.5F;
+                    val *= 0.28F;
+                }
+            } else {
+                //wildtype slate
+                if (hue < 40) {
+                    hue = 180.0F;
+                } else {
+                    hue *= 2.5F;
+                }
+                sat *= 0.35F;
+            }
+        }
+
+        return Colouration.HSBtoARGB(hue/360F, sat, val);
     }
 
     private static int[] calculateSkinRGB(int[] sGene, int[] gene, boolean isFemale) {

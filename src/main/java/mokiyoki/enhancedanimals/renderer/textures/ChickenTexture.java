@@ -5,7 +5,11 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ChickenTexture {
@@ -701,6 +705,37 @@ public class ChickenTexture {
 
                     pattern += femFeathers ? "/female" : "/male";
 
+                    if (gene[24]!=gene[25]) {
+                        int e = gene[24] == extension ? gene[25]:gene[24];
+                        switch (e) {
+                            default -> {
+                                if ((gene[40] == 2) == (gene[41] == 2)) {
+                                    pattern = "blackhet" + pattern;
+                                }
+                            }
+                            case 1 -> {
+                                pattern = "birchenhet" + pattern;
+                            }
+                            case 2 -> {
+                                pattern = "duckwinghet" + pattern;
+                            }
+                            case 3 -> {
+                                pattern = "wheatenhet" + pattern;
+                            }
+                            case 4 -> {
+                                pattern = "brownhet" + pattern;
+                            }
+                        }
+                    }
+
+                    if (debug) {
+                        System.out.println("+ " + extension + " " + columbian + " " + darkbrown + " " + patternGene + " " + melanized);
+                        System.out.println("    " + pattern);
+                    }
+
+                }
+                else if (debug) {
+                    System.out.println("recessive white or albino");
                 }
 
 
@@ -850,8 +885,81 @@ public class ChickenTexture {
             if (!pattern.isEmpty() || mottled || charcoal) {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
-                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/milliefleur_male.png", mottled && (gene[22]==2 || gene[23]==2));
+                if (
+                        pattern.contains("het") &&
+                                !Minecraft.getInstance().getResourceManager().hasResource( new ResourceLocation("eanimod:textures/entities/chicken/pattern/"+pattern+".png"))
+                ) {
+
+                    TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                    String[] patterns = pattern.split("/");
+                    List<String> pattern_locations = new ArrayList<>();
+
+                    if (patterns[0].contains("het")) {
+                        String[] p = patterns[0].split("het");
+                        pattern_locations.add("pattern/"+p[0]);
+                        pattern_locations.add("pattern/"+p[1]);
+                    } else {
+                        pattern_locations.add("pattern/"+patterns[0]);
+                    }
+
+                    //Co
+                    if (patterns[1].contains("het")) {
+                        int size = pattern_locations.size();
+                        for (int i = 0; i < size; i++) {
+                            String p = patterns[1].split("het")[1];
+                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                        }
+                    } else {
+                        pattern_locations.replaceAll(s -> s + "/" + patterns[1]);
+                    }
+
+                    //Db
+                    if (patterns[2].contains("het")) {
+                        int size = pattern_locations.size();
+                        for (int i = 0; i < size; i++) {
+                            String p = patterns[2].split("het")[1];
+                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                        }
+                    } else {
+                        pattern_locations.replaceAll(s -> s + "/" + patterns[2]);
+                    }
+
+                    //Ml
+                    if (patterns[3].contains("het")) {
+                        int size = pattern_locations.size();
+                        for (int i = 0; i < size; i++) {
+                            String p = patterns[3].split("het")[1];
+                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                        }
+                    } else {
+                        pattern_locations.replaceAll(s -> s + "/" + patterns[3]);
+                    }
+
+                    //Pg
+                    if (patterns[4].contains("het")) {
+                        int size = pattern_locations.size();
+                        for (int i = 0; i < size; i++) {
+                            String p = patterns[4].split("het")[1];
+                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                        }
+                    } else {
+                        pattern_locations.replaceAll(s -> s + "/" + patterns[4]);
+                    }
+
+                    for (String loc : pattern_locations) {
+                        chicken.addTextureToAnimalTextureGrouping(patternAverageGroup, loc + "/" +patterns[5] + ".png", loc);
+                    }
+
+                    patternCutOutGroup.addGrouping(patternAverageGroup);
+                } else {
+                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                }
+
                 if (charcoal) {
                     String charcoalType = "pattern/";
                     charcoalType+= femFeathers ? "cha_female.png" : "cha_male.png";

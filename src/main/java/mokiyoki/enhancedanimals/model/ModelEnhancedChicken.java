@@ -1482,25 +1482,27 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Comb
              */
-            if (chicken.comb != Comb.NONE && chickenModelData.growthAmount>0.25F){
+            if (chickenModelData.growthAmount>0.25F) {
 
-                if (chicken.waddleSize >= 2) {
-                    if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                        waddlesBearded.show();
-                    }
-                    if (!chicken.isBearded()) {
-                        if (chicken.comb.hasPeaComb()) {
-                            waddlesPea.show();
+                if (chicken.waddleSize >= 0 || !chickenModelData.isFemale) {
+                    if (chicken.waddleSize >= 2) {
+                        if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+                            waddlesBearded.show();
+                        }
+                        if (!chicken.isBearded()) {
+                            if (chicken.comb.hasPeaComb()) {
+                                waddlesPea.show();
+                            }
                         }
                     }
-                }
-                if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                    if (chicken.waddleSize >= 3) {
-                        waddlesLarge.show();
-                    } else if (chicken.waddleSize >= 1) {
-                        waddlesMedium.show();
-                    } else {
-                        waddlesLarge.show();
+                    if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+                        if (chicken.waddleSize >= 3) {
+                            waddlesLarge.show();
+                        } else if (chicken.waddleSize >= 1) {
+                            waddlesMedium.show();
+                        } else {
+                            waddlesSmall.show();
+                        }
                     }
                 }
 

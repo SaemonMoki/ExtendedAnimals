@@ -165,7 +165,7 @@ public class ChickenPhenotype implements Phenotype {
 
         this.waddleSize = this.combSize;
 
-        if (gene[84] == 1 && gene[85] == 1 && this.waddleSize > 0) {
+        if (gene[84] == 1 && gene[85] == 1) {
             this.waddleSize = this.waddleSize - 1;
         }
 

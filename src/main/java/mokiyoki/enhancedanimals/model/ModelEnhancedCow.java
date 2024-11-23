@@ -261,12 +261,12 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
         bEarRight.addOrReplaceChild("earLR", CubeListBuilder.create()
                         .texOffs(0, 51)
-                        .addBox(-2.5F, -6.5F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
+                        .addBox(-2.5F, -7.0F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earXLR", CubeListBuilder.create()
                         .texOffs(0, 51)
-                        .addBox(-2.0F, -8.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
+                        .addBox(-2.0F, -9.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
                 PartPose.ZERO
         );
 

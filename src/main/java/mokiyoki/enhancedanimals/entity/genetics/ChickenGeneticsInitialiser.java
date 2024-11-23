@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
+    List<Breed> types = new ArrayList<>();
 
     public ChickenGeneticsInitialiser() {
 //        this.breeds.add(ChickenBreeds.LEGHORN);
@@ -68,14 +69,15 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.SILKIE);
         this.breeds.add(ChickenBreeds.SCOTS_DUMPY);
         this.breeds.add(ChickenBreeds.LA_FLECHE);
+        this.breeds.add(ChickenBreeds.SICILIAN_BUTTERCUP);
         this.breeds.add(ChickenBreeds.BLUE_SALMON_FAVEROLLE);
-        this.breeds.add(ChickenBreeds.BUTTERCUP);
         this.breeds.add(ChickenBreeds.BLUE_AMERICAUNA);
         this.breeds.add(ChickenBreeds.LAVENDER_AMERICAUNA);
         this.breeds.add(ChickenBreeds.BLACK_AMERICAUNA);
         this.breeds.add(ChickenBreeds.WHITE_AMERICAUNA);
         this.breeds.add(ChickenBreeds.CUCKOO_AMERICAUNA);
         this.breeds.add(ChickenBreeds.BLUE_WHEATEN_AMERICAUNA);
+        this.breeds.add(ChickenBreeds.WHEATEN_AMERICAUNA);
         this.breeds.add(ChickenBreeds.WHEATEN_AMERICAUNA);
         this.breeds.add(ChickenBreeds.BROWN_RED_AMERICAUNA);
         this.breeds.add(ChickenBreeds.BUFF_AMERICAUNA);
@@ -85,6 +87,17 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.SILVER_DARK_BRAHMA);
         this.breeds.add(ChickenBreeds.GOLD_DARK_BRAHMA);
         this.breeds.add(ChickenBreeds.BUFF_BRAHMA);
+
+        this.types.add(ChickenBreeds.GOLD_LEGS);
+        this.types.add(ChickenBreeds.YELLOW_LEGS);
+        this.types.add(ChickenBreeds.GREEN_LEGS);
+        this.types.add(ChickenBreeds.WILLOW_LEGS);
+        this.types.add(ChickenBreeds.WHITE_LEGS);
+        this.types.add(ChickenBreeds.SLATE_LEGS);
+        this.types.add(ChickenBreeds.FIBRO);
+        this.types.add(ChickenBreeds.BUTTERCUP_COMB);
+
+        this.types.addAll(this.breeds);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
@@ -93,7 +106,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
-        return super.generateWithBreed(world, pos, this.breeds, breed);
+        return super.generateWithBreed(world, pos, this.types, breed);
     }
 
     @Override

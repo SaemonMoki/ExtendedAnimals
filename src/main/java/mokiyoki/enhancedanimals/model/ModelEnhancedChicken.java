@@ -897,16 +897,16 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
         base.addOrReplaceChild("footL", CubeListBuilder.create()
                         .texOffs(1, 26)
-                        .addBox(-3.0F, 0.0F, 0.0F, 3, 1, 1)
+                        .addBox(-3.0F, 0.19F, 0.0F, 3, 1, 1)
                         .texOffs(3, 26)
-                        .addBox(-2.0F, 0.0F, -1.0F, 1, 1, 1),
+                        .addBox(-2.0F, 0.19F, -1.0F, 1, 1, 1),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("footR", CubeListBuilder.create()
                         .texOffs(1, 26)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 1, 1)
+                        .addBox(0.0F, 0.18F, 0.0F, 3, 1, 1)
                         .texOffs(3, 26)
-                        .addBox(1.0F, 0.0F, -1.0F, 1, 1, 1),
+                        .addBox(1.0F, 0.18F, -1.0F, 1, 1, 1),
                 PartPose.ZERO
         );
 

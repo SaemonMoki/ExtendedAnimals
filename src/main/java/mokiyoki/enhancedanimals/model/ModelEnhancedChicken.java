@@ -2801,6 +2801,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     protected float getExtraGrowth(float age) {
+        if (age<0) age=0;
         if (age > 3.5F*earMaxGrowth) return 1.0F;
         if (age>(0.5F*earMaxGrowth)) {
             return 0.25F + (age-(0.5F*earMaxGrowth)) / (3.0F*earMaxGrowth);

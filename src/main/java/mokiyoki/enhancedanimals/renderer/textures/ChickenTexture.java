@@ -125,6 +125,7 @@ public class ChickenTexture {
                             ground = femFeathers? "duckwing_female" : "duckwing_male";
                         }
                     }
+
                     switch (columbian) {
                         default -> pattern += "/noncolumbian";
                         case 1 -> pattern += "/hetcolumbian";
@@ -178,15 +179,6 @@ public class ChickenTexture {
                             }
                         }
                     }
-
-                    if (debug) {
-                        System.out.println("+ " + extension + " " + columbian + " " + darkbrown + " " + patternGene + " " + melanized);
-                        System.out.println("    " + pattern);
-                    }
-
-                }
-                else if (debug) {
-                    System.out.println("recessive white or albino");
                 }
 
 

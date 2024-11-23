@@ -290,10 +290,10 @@ public class CowBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch()
                     .add(76, "2","2") /*horn presence*/
                     .add(92, "9999") /*horn smoothiner*/
-                    .add(98, "999") /*horn root*/
-                    .add(96, "9111") /*horn bottom twist*/
+                    .add(98, "111") /*horn root*/
+                    .add(96, "1111") /*horn bottom twist*/
                     .add(94, "111111") /*horn top twist*/
-                    .add(100, "19","19","19","19","19",/*>>>*/"19"/*<<<*/,"19","19","19") /* horn per segment modifier*/
+                    .add(100, "100","100","100","100","100",/*>>>*/"100"/*<<<*/,"100","100","100") /* horn per segment modifier*/
                     .add(84, "1") /* horn tip modifier */
                     .add(80, "2","1") /*horn length*/
                     .add(86, "1") /*horn thickening*/

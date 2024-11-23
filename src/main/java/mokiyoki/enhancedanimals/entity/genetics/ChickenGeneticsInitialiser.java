@@ -211,7 +211,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             sexlinkedGenes[7] = 1;
         }
 
-        //Fibromelanin Suppressor [ wildtype, suppressor ]
+        //Inhibitor of Dermal Melanin (Fibromelanin Suppressor) [ wildtype, Suppressor ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             sexlinkedGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {

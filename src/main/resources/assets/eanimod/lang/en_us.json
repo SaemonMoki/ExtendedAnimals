@@ -416,5 +416,7 @@
   "item.eanimod.saddle_english_leatherclothseat_wood": "Saddle",
   "item.eanimod.turtle_egg": "Turtle Egg",
   "item.eanimod.twothirds_milk_bucket": "Two Thirds Filled Milk Bucket",
-  "itemGroup.eanimod": "Genetic Animals"
+  "itemGroup.eanimod": "Genetic Animals",
+  "item.eanimod.chicken_nest": "Chicken Nest",
+  "block.eanimod.chicken_nest": "Chicken Nest"
 }

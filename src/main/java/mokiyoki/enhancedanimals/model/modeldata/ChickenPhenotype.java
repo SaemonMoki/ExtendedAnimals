@@ -67,7 +67,7 @@ public class ChickenPhenotype implements Phenotype {
                     } else {
                         this.crestType = Crested.SMALL_FORWARDCREST;
                     }
-                } else if (gene[54] != gene[55] || (gene[54] == 1 && gene[55] == 1)) {
+                } else if (gene[54] != gene[55] || (gene[54] == 1)) {
                     this.crestType = Crested.BIG_CREST;
                 } else {
                     this.crestType = Crested.BIG_FORWARDCREST;

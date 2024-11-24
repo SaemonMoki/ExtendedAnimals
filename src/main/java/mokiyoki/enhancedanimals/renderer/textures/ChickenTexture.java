@@ -768,92 +768,92 @@ public class ChickenTexture {
         return Colouration.HSBAtoARGB(h, s, b, a);
     }
 
-    private static int calculateAutosomalRedRGB(int[] sGene, int[] gene, boolean isFemale) {
-        float h = 0.0F;
-        float s = 1.0F;
-        float b = 1.0F;
-
-        if (isFemale) {
-            if (gene[170] == 1 || gene[171] == 1) {
-//                if (gene[170]==gene[171]) {
-                    //homoautosomal red
-                    if (gene[34] == 1 || gene[35] == 1) {
-                        //mahogany
-                        if (sGene[0] == 1) {
-                            // 10503750
-                            s = 0.39F;
-                            b = 0.45F;
-                        } else {
-                            // 10774594
-                            h = 0.0638F;
-                            s = 0.43F;
-                            b = 0.45F;
-                        }
-                    } else {
-                        if (sGene[0] == 1) {
-                            // 10774594
-                            h = 0.0638F;
-                            s = 0.43F;
-                            b = 0.45F;
-                        } else {
-                            // 10051657
-                            h = 0.0472F;
-                            s = 0.35F;
-                            b = 0.44F;
-                        }
-                    }
-                /*} else {
-                    //hetautosomal red
-                    if (gene[34]==1 || gene[35]==1) {
-                        //mahogany
-                        colour = sGene[0] == 1 ? 10503750 : 10503750;
-                    } else {
-                        colour = sGene[0] == 1 ? 12426889 : 12425353;
-                    }
-                }*/
-            }
-        } else {
+//    private static int calculateAutosomalRedRGB(int[] sGene, int[] gene, boolean isFemale) {
+//        float h = 0.0F;
+//        float s = 1.0F;
+//        float b = 1.0F;
+//
+//        if (isFemale) {
 //            if (gene[170] == 1 || gene[171] == 1) {
-//                if (gene[170]==gene[171]) {
-//                    //gold
-            if (gene[34]==1 || gene[35]==1) {
-                // 5639947
-                h = 0.0083F;
-                s = 0.52F;
-                b = 0.60F;
-
-            } else {
-                // 7541259
-                h = 0.0111F;
-                s = 0.90F;
-                b = 0.45F;
-
-            }
-//                    colour = gene[34]==1 || gene[35]==1 ? 5639947 : 7541259;
-//                } else {
-//                    //lemon
-//                    colour = gene[34]==1 || gene[35]==1 ? 8658186 : 10769441;
-//                }
+////                if (gene[170]==gene[171]) {
+//                    //homoautosomal red
+//                    if (gene[34] == 1 || gene[35] == 1) {
+//                        //mahogany
+//                        if (sGene[0] == 1) {
+//                            // 10503750
+//                            s = 0.39F;
+//                            b = 0.45F;
+//                        } else {
+//                            // 10774594
+//                            h = 0.0638F;
+//                            s = 0.43F;
+//                            b = 0.45F;
+//                        }
+//                    } else {
+//                        if (sGene[0] == 1) {
+//                            // 10774594
+//                            h = 0.0638F;
+//                            s = 0.43F;
+//                            b = 0.45F;
+//                        } else {
+//                            // 10051657
+//                            h = 0.0472F;
+//                            s = 0.35F;
+//                            b = 0.44F;
+//                        }
+//                    }
+//                /*} else {
+//                    //hetautosomal red
+//                    if (gene[34]==1 || gene[35]==1) {
+//                        //mahogany
+//                        colour = sGene[0] == 1 ? 10503750 : 10503750;
+//                    } else {
+//                        colour = sGene[0] == 1 ? 12426889 : 12425353;
+//                    }
+//                }*/
 //            }
-        }
-
-        float a = gene[170] == gene[171] ? 1.0F : 0.75F;
-
-        if (b!=1.0F) {
-            //Lavender
-            if (gene[36] == 2 && gene[37] == 2) {
-                a *= 0.33F;
-//                s *= 0.5F;
-//                b += (1.0F-b)*0.5F;
-
-//                r += (int) ((255 - r) * 0.70F);
-//                g += (int) ((255 - g) * 0.70F);
-//                b += (int) ((255 - b) * 0.65F);
-            }
-        }
-
-        return Colouration.HSBAtoARGB(h, s, b, a);
-    }
+//        } else {
+////            if (gene[170] == 1 || gene[171] == 1) {
+////                if (gene[170]==gene[171]) {
+////                    //gold
+//            if (gene[34]==1 || gene[35]==1) {
+//                // 5639947
+//                h = 0.0083F;
+//                s = 0.52F;
+//                b = 0.60F;
+//
+//            } else {
+//                // 7541259
+//                h = 0.0111F;
+//                s = 0.90F;
+//                b = 0.45F;
+//
+//            }
+////                    colour = gene[34]==1 || gene[35]==1 ? 5639947 : 7541259;
+////                } else {
+////                    //lemon
+////                    colour = gene[34]==1 || gene[35]==1 ? 8658186 : 10769441;
+////                }
+////            }
+//        }
+//
+//        float a = gene[170] == gene[171] ? 1.0F : 0.75F;
+//
+//        if (b!=1.0F) {
+//            //Lavender
+//            if (gene[36] == 2 && gene[37] == 2) {
+//                a *= 0.33F;
+////                s *= 0.5F;
+////                b += (1.0F-b)*0.5F;
+//
+////                r += (int) ((255 - r) * 0.70F);
+////                g += (int) ((255 - g) * 0.70F);
+////                b += (int) ((255 - b) * 0.65F);
+//            }
+//        }
+//
+//        return Colouration.HSBAtoARGB(h, s, b, a);
+//    }
 
     private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping featherGroup, TextureGrouping patternFeatherGroup, TextureGrouping patternCutOutGroup, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
         boolean choc = sGene[2] == 2 && (isFemale || sGene[3] == 2);

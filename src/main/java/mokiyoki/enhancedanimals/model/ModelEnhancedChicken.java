@@ -1703,36 +1703,38 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 /**
                  *      Crest
                  */
-                if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && this.chickenModelData.growthAmount > 0.5F)) {
-                    crestSmall.show();
-                    if (chicken.isCombed() && chicken.comb != Comb.V) {
-                        if (!chicken.comb.hasPeaComb()) {
-                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.85F - (0.4F*(chicken.combSize/4F)), 0.85F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
-                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.85F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
-                            if (chicken.duplex) {
-                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                if (chicken.crestType != Crested.NONE) {
+                    if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) && this.chickenModelData.growthAmount > 0.5F) {
+                        crestSmall.show();
+                        if (chicken.isCombed() && chicken.comb != Comb.V) {
+                            if (!chicken.comb.hasPeaComb()) {
+                                mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.85F - (0.4F * (chicken.combSize / 4F)), 0.85F - (0.4F * (chicken.combSize / 4F)), 0.0F, 0.0625F, 0.0F));
+                                mapOfScale.put("bCrest", ModelHelper.createScalings(0.85F - (0.4F*((2.0F-chicken.combSize)/4F)), 0.0F, 0.0F, 0.03F));
+                                if (chicken.duplex) {
+                                    mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                                }
                             }
                         }
-                    }
-                } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
-                    crestMedium.show();
-                    if (chicken.isCombed() && chicken.comb != Comb.V) {
-                        if (!chicken.comb.hasPeaComb()) {
-                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.75F - (0.4F*(chicken.combSize/4F)), 0.75F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
-                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.75F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
-                            if (chicken.duplex) {
-                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                    } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
+                        crestMedium.show();
+                        if (chicken.isCombed() && chicken.comb != Comb.V) {
+                            if (!chicken.comb.hasPeaComb()) {
+                                mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.75F - (0.4F * (chicken.combSize / 4F)), 0.75F - (0.4F * (chicken.combSize / 4F)), 0.0F, 0.0625F, 0.0F));
+                                mapOfScale.put("bCrest", ModelHelper.createScalings(0.75F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
+                                if (chicken.duplex) {
+                                    mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                                }
                             }
                         }
-                    }
-                } else if (chicken.crestType == Crested.BIG_CREST) {
-                    crestLarge.show();
-                    if (chicken.isCombed() && chicken.comb != Comb.V) {
-                        if (!chicken.comb.hasPeaComb()) {
-                            mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.65F - (0.4F*(chicken.combSize/4F)), 0.65F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0625F, 0.0F));
-                            mapOfScale.put("bCrest", ModelHelper.createScalings(0.65F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
-                            if (chicken.duplex) {
-                                mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                    } else if (chicken.crestType == Crested.BIG_CREST) {
+                        crestLarge.show();
+                        if (chicken.isCombed() && chicken.comb != Comb.V) {
+                            if (!chicken.comb.hasPeaComb()) {
+                                mapOfScale.put("comb", ModelHelper.createScalings(1.0F, 0.65F - (0.4F * (chicken.combSize / 4F)), 0.65F - (0.4F * (chicken.combSize / 4F)), 0.0F, 0.0625F, 0.0F));
+                                mapOfScale.put("bCrest", ModelHelper.createScalings(0.65F - (0.4F*(chicken.combSize/4F)), 0.0F, 0.0F, 0.03F));
+                                if (chicken.duplex) {
+                                    mapOfScale.put("combDuplex", mapOfScale.get("comb"));
+                                }
                             }
                         }
                     }

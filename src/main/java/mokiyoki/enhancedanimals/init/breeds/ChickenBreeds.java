@@ -288,8 +288,14 @@ public final class ChickenBreeds {
                     new GeneSketch().add(20, "1", "1","5").add(38, "2").add(42, "1").add(44, "1", "3", "2", "1").add(52, "2","3","1","2","1","1").add(70, "1", "1").add(80, "2","1","1","2").add(102, "2","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
     public static final Breed SILKIE = new Breed(new Breed.Properties().setData("Silkie", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
-                    new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "1", "1").add(52, "2","1","1","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
+            .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "1", "1", "1", "1", "6", "1-2", "1-2", "1"),
+                    new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "2", "1").add(52, "2","1","2","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "1-4","1-4","1-4","6","24","24","5","2","1","2")));
+
+    public static final Breed BEARDED_SILKIE = new Breed(SILKIE, new Breed.Properties().setData("Silkie", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.BEARDED, GeneSet.PEA).get()));
+
+    public static final Breed SHOWGIRL_SILKIE = new Breed(SILKIE, new Breed.Properties().setData("Silkie", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.NAKEDNECK, GeneSet.PEA).get()));
 
     public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
@@ -407,6 +413,7 @@ public final class ChickenBreeds {
         CLEANLEGS("empty", new GeneSketch().add(58, "3", "2")),
         FLUFFYLEGS("empty", new GeneSketch().add(58, "2", "1").add(102, "2")),
         CREEPER("empty", new GeneSketch().add(70, "1,2")),
+        NAKEDNECK("empty", new GeneSketch().add(52, "1,1|2")),
         CHARCOAL("empty", new GeneSketch(100, "2"));
 
         public final GeneSketch sexlinked;

@@ -67,6 +67,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.EASTEREGGER);
         this.breeds.add(ChickenBreeds.SPANISH);
         this.breeds.add(ChickenBreeds.SILKIE);
+        this.breeds.add(ChickenBreeds.BEARDED_SILKIE);
+        this.breeds.add(ChickenBreeds.SHOWGIRL_SILKIE);
         this.breeds.add(ChickenBreeds.SCOTS_DUMPY);
         this.breeds.add(ChickenBreeds.LA_FLECHE);
         this.breeds.add(ChickenBreeds.SICILIAN_BUTTERCUP);

@@ -765,16 +765,55 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         int startWidth = wholeScreenshot.getWidth() / 4;
         int startHeight = wholeScreenshot.getHeight() / 4;
 
-        for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
-            for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
-                int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
-                if (this.currentMode == TRANSPARENCY && pixel == greenScreenColour) {
-                    selectedPhotoArea.setPixelRGBA(j, i, transparentColour);
-                } else {
+        if (this.currentMode == TRANSPARENCY) {
+            int x = startWidth;
+            int y = startHeight;
+            int x_end = 0;
+            int y_bottom = 0;
+
+            for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
+                for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
+                    int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
+                    if (pixel == greenScreenColour) {
+                        selectedPhotoArea.setPixelRGBA(j, i, transparentColour);
+                    } else {
+                        if (j<x) {
+                            x=j;
+                        }
+                        if (i<y) {
+                            y=i;
+                        }
+                        if (j>x_end) {
+                            x_end=j;
+                        }
+                        if (i>y_bottom) {
+                            y_bottom=i;
+                        }
+                        selectedPhotoArea.setPixelRGBA(j, i, pixel);
+                    }
+                }
+            }
+
+            int width = x_end-x;
+            int height = y_bottom-y;
+            NativeImage croppedImage = new NativeImage(width, height, false);
+            for(int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+                    croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+j, y+i));
+                }
+            }
+
+            selectedPhotoArea = croppedImage;
+
+        } else {
+            for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
+                for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
+                    int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
                     selectedPhotoArea.setPixelRGBA(j, i, pixel);
                 }
             }
         }
+
         return selectedPhotoArea;
     }
 

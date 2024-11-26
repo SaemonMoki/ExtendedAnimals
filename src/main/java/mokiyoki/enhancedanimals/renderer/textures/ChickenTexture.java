@@ -536,8 +536,8 @@ public class ChickenTexture {
         float hue = -1.0F;
 
         if ((sGene[8]==1 || (!isFemale && sGene[9]==1)) && (gene[42]==1 || gene[43]==1)) {
-            value = gene[42]==gene[43]?0.55F:0.75F;
-            saturation = 0.4F;
+            value = gene[42]==gene[43]?0.7F:0.8F;
+            saturation = gene[42]==gene[43]?0.7F:0.35F;
             hue = 0.5833F;
         }
 
@@ -1474,6 +1474,7 @@ public class ChickenTexture {
     private static int[] calculateSkinRGB(int[] sGene, int[] gene, boolean isFemale) {
         int colour = 16777215;
         int highlight = 12655875;
+        if (gene[20] == 3 && gene[21] == 3) return new int[] {colour, highlight};
         if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
             if (gene[42]==1 || gene[43]==1) {
                 colour = gene[42]==gene[43]? 3289655 : 6579303;
@@ -1501,12 +1502,48 @@ public class ChickenTexture {
         return new int[] {colour, highlight};
     }
 
-    private static int calculateCombRGB(int[] sexlinkGenes, int[] autosomalGenes, boolean isFemale) {
-        if (isFemale?(sexlinkGenes[8]==1):(sexlinkGenes[8]==1 && sexlinkGenes[9]==1)) {
-            if (autosomalGenes[42]==1 || autosomalGenes[43]==1) {
-                return autosomalGenes[42]==autosomalGenes[43]? 3289655 : 6579303;
+    private static int calculateCombRGB(int[] sGene, int[] gene, boolean isFemale) {
+        float hue = 0.0F;
+        float sat = 1.0F;
+        float val = 1.0F;
+
+        if (gene[20] == 3 && gene[21] == 3) return 16777215;
+
+        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
+            //Id Gene
+            if (gene[42]==1 || gene[43]==1) {
+                //fibro
+                if (gene[42]!=gene[43]) {
+                    // het fibro
+                    hue = isFemale? 260.0F : 300.0F;
+                    sat *= 0.5F;
+                    val *= isFemale? 0.20F : 0.4F;
+                } else {
+                    // homozygous fibro
+                    hue = 240.0F;
+                    sat *= 0.5F;
+                    val *= isFemale? 0.15F : 0.22F;
+                }
+            }
+
+            if (gene[30]==1 || gene[31]==1) {
+                //melanized
+                val *= 0.9F;
+            }
+
+            if (gene[100] == 2 && gene[101] == 2) {
+                if (gene[24]==5 || gene[25]==5) {
+                    val *= 0.9F;
+                }
             }
         }
-        return 16777215;
+
+
+//        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {
+//            if (gene[42]==1 || gene[43]==1) {
+//                return gene[42]==gene[43]? 3289655 : 6579303;
+//            }
+//        }
+        return Colouration.HSBtoARGB(hue/360F, sat, val);
     }
 }

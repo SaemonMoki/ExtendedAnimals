@@ -94,6 +94,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private EditBox gBox;
     private EditBox bBox;
 
+    private boolean sticker_edge = true;
+
     double xPos = 0;
     int yPos = 0;
 
@@ -212,6 +214,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.bBox.setTextColor(255);
         this.bBox.setFilter(isValidInput);
         this.addWidget(this.bBox);
+
         super.init();
     }
 
@@ -288,6 +291,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
+
                 if (this.prepareForTransparentScreenshot) {
                     int tempColourHolder = this.currentBackgroundColour;
                     this.currentBackgroundColour = this.greenScreenColour;
@@ -796,10 +800,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
             int width = x_end-x;
             int height = y_bottom-y;
-            NativeImage croppedImage = new NativeImage(width, height, false);
-            for(int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-                    croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+j, y+i));
+            NativeImage croppedImage;
+            if (sticker_edge) {
+                croppedImage = new NativeImage(width+6, height+6, false);
+                boolean[][] hassubject = new boolean[width+6][height+6];
+                for(int i = 0; i < height+6; ++i) {
+                    for (int j = 0; j < width+6; ++j) {
+                        if (j<3 || j>=width+3 || i<3 || i>=height+3) {
+                            croppedImage.setPixelRGBA(j, i, transparentColour);
+                            hassubject[j][i] = false;
+                        } else {
+                            int pixel = selectedPhotoArea.getPixelRGBA(x+(j-2), y+(i-2));
+                            croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+(j-2), y+(i-2)));
+                            hassubject[j][i] = pixel != transparentColour;
+
+                        }
+                    }
+                }
+
+                for(int i = 0; i < height+6; ++i) {
+                    for (int j = 0; j < width+6; ++j) {
+                        if (!hassubject[j][i]) {
+                            makeOutline(j, width, i, height, hassubject, croppedImage, -16777216);
+                        }
+                    }
+                }
+
+            } else {
+                croppedImage = new NativeImage(width, height, false);
+                for(int i = 0; i < height; ++i) {
+                    for (int j = 0; j < width; ++j) {
+                        croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+j, y+i));
+                    }
                 }
             }
 
@@ -815,6 +847,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
 
         return selectedPhotoArea;
+    }
+
+    private void makeOutline(int j, int width, int i, int height, boolean[][] hassubject, NativeImage croppedImage, int outlineColour) {
+        for (int l = -1; l < 2; l++) {
+            for (int k = -1; k < 2; k++) {
+                if (!(l==0 && k==0)) {
+                    if (!(j + k == -1 || j + k == width + 6 || i + l == -1 || i + l == height + 6)) {
+                        if (hassubject[j + k][i + l]) {
+                            makeThickOutline(j, width, i, height, hassubject, croppedImage, -1);
+                            if (l==0 || k==0) {
+                                croppedImage.setPixelRGBA(j, i, outlineColour);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void makeThickOutline(int j, int width, int i, int height, boolean[][] hassubject, NativeImage croppedImage, int outlineColour) {
+        for (int l = -2; l < 3; l++) {
+            for (int k = -2; k < 3; k++) {
+                if (l==k && !(l==-1 || l==1)) continue;
+                if (hassubject[j+k][i+l]) continue;
+                if (!(j + k == -1 || j + k == width + 6 || i + l == -1 || i + l == height + 6)) {
+                    if (croppedImage.getPixelRGBA(j+k, i+l) == transparentColour) {
+                        croppedImage.setPixelRGBA(j+k, i+l, outlineColour);
+                    }
+                }
+            }
+        }
     }
 
     private File getFile(File p_92288_) {

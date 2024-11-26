@@ -276,6 +276,7 @@ public class ChickenTexture {
             setSkinColour(chicken, isFemale, sGene, gene, detailGroup, chicken.growthAmount());
             setEarColour(chicken, isFemale, sGene, gene, earColour, detailGroup);
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale, chicken.growthAmount() < 0.25F));
+            chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.MERGE_GROUP, "eye_highlight.png");
             parentGroup.addGrouping(detailGroup);
 
             chicken.setTextureGrouping(parentGroup);
@@ -534,6 +535,8 @@ public class ChickenTexture {
         float value = 1.0F;
         float saturation = 0.0F;
         float hue = -1.0F;
+
+        if (gene[20] == 3 && gene[21] == 3) return 16777215;
 
         if ((sGene[8]==1 || (!isFemale && sGene[9]==1)) && (gene[42]==1 || gene[43]==1)) {
             value = gene[42]==gene[43]?0.7F:0.8F;
@@ -1326,9 +1329,12 @@ public class ChickenTexture {
         return new float[]{patternHue, patternSaturation, patternValue, iridescenceAlpha, iridescenceHueShift};
     }
     private static int calculateShanksRGB(int[] sGene, int[] gene, boolean isFemale) {
-        float hue = 28.0F;
+        if (gene[20] == 3 && gene[21] == 3) return 16777215;
+
+        float hue = 27.0F;
         float sat = 0.18F;
         float val = 0.8F;
+
 
         boolean yellow = false;
         boolean superyellow = false;
@@ -1407,15 +1413,20 @@ public class ChickenTexture {
                 sat *= 0.8F;
             }
             val *= 0.75F;
-        } else if (!(gene[24]==3&&gene[25]==3)) {
+        } else {
             if (yellow) {
                 hue += 10F;
                 sat *= 0.9F;
+            } else {
+                sat *= 0.5F;
             }
-            val *= 0.9F;
+            val += 0.1F;
         }
 
-
+        if (gene[38]==1 && gene[39]==1) {
+            sat *= 0.5F;
+            val += 0.25F;
+        }
 
         return Colouration.HSBtoARGB(hue/360F, sat, val);
     }
@@ -1424,6 +1435,8 @@ public class ChickenTexture {
         float hue = 28.0F;
         float sat = 0.18F;
         float val = 0.8F;
+
+        if (gene[20] == 3 && gene[21] == 3) return 16777215;
 
         if (gene[44]!=1 && gene[45]!=1) {
             if (gene[44]==3 && gene[45]==3) {
@@ -1468,6 +1481,11 @@ public class ChickenTexture {
             }
         }
 
+        if (gene[38]==1 && gene[39]==1) {
+            sat *= 0.5F;
+            val += 0.25F;
+        }
+
         return Colouration.HSBtoARGB(hue/360F, sat, val);
     }
 
@@ -1495,6 +1513,14 @@ public class ChickenTexture {
         if (colour!=16777215) {
             float[] highlightHSB = Colouration.getHSBFromABGR(12655875);
             float[] colourHSB = Colouration.getHSBFromABGR(colour);
+
+            if (gene[38]==1 && gene[39]==1) {
+                colourHSB[1] *= 0.5F;
+                colourHSB[2] += 0.25F;
+
+                highlightHSB[1] *= 0.5F;
+                highlightHSB[2] += 0.25F;
+            }
 
             highlight = Colouration.HSBAtoARGB(colourHSB[0], highlightHSB[1] + ((1.0F-highlightHSB[1])*0.25F), colourHSB[2] + ((1.0F-highlightHSB[2])*0.5F), 0.0F);
         }

@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -94,6 +95,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private EditBox gBox;
     private EditBox bBox;
 
+    private Checkbox cBox;
     private boolean sticker_edge = true;
 
     double xPos = 0;
@@ -111,7 +113,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     int backgroundWidth = 0;
     int backgroundHeight = 0;
 
-    PhotoMode currentMode = RGB;
+    PhotoMode currentMode = TRANSPARENCY;
 
     PhotoPose currentPose = STANDARD_POSE;
 
@@ -215,6 +217,10 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.bBox.setFilter(isValidInput);
         this.addWidget(this.bBox);
 
+        this.cBox = new Checkbox(photoI-44, photoJ+193, 20, 20, new TranslatableComponent("photomode.stickerstyle"), false, false);
+
+        this.addWidget(this.cBox);
+
         super.init();
     }
 
@@ -292,11 +298,17 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
 
+                //sticker style checkbox
+//                this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 28, 256, 256);
+
                 if (this.prepareForTransparentScreenshot) {
                     int tempColourHolder = this.currentBackgroundColour;
                     this.currentBackgroundColour = this.greenScreenColour;
                     renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
                     this.currentBackgroundColour = tempColourHolder;
+                    this.sticker_edge = this.cBox.selected();
+                } else {
+                    this.cBox.render(matrixStack, mouseX, mouseY, p_render_3_);
                 }
             }
 

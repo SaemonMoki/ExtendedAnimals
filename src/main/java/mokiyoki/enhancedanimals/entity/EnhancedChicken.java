@@ -1137,7 +1137,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
         this.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
         this.timeUntilNextEgg = compound.getInt("NextEggTime");
-
+        if (this.timeUntilNextEgg == 0) { this.timeUntilNextEgg = eggLayingTime(); }
 
     }
 

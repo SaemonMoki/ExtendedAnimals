@@ -610,6 +610,12 @@ public class ChickenTexture {
                 b += (1.0F-b) * 0.25F;
             }
 
+            if (gene[296]==2 && gene[297]==2) {
+                h += (60F-h) * 0.5F;
+                s *= 0.3F;
+                b += (1.0F-b)*0.97F;
+            }
+
             return Colouration.HSBtoARGB(h/360F, s, b);
         }
     }

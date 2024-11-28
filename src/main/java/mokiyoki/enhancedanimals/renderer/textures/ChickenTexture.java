@@ -1382,7 +1382,7 @@ public class ChickenTexture {
             if (gene[42]==1 || gene[43]==1) {
                 //fibro
                 if (yellow) {
-                    hue *= 2.0F;
+                    hue *= 1.6F;
                 } else {
                     hue = 240.0F;
                 }
@@ -1398,7 +1398,7 @@ public class ChickenTexture {
             } else {
                 //wildtype slate
                 if (yellow) {
-                    hue *= 2.5F;
+                    hue *= 1.5F;
                 } else {
                     hue = 180.0F;
                 }
@@ -1409,7 +1409,7 @@ public class ChickenTexture {
 
         if (gene[166] == 2 && gene[167] == 2) {
             if (yellow) {
-                hue += 10F;
+                hue += 9F;
                 sat *= 0.9F;
             }
             val *= 0.9F;
@@ -1417,7 +1417,7 @@ public class ChickenTexture {
 
         if (gene[30]==1 || gene[31]==1) {
             if (yellow) {
-                hue += 10F;
+                hue += 9F;
                 sat *= 0.9F;
             }
             val *= 0.9F;
@@ -1425,19 +1425,19 @@ public class ChickenTexture {
 
         if (gene[24]==5 || gene[25]==5) {
             if (yellow) {
-                hue += 20F;
+                hue += 15F;
                 sat *= 0.8F;
             }
             val *= 0.4F;
         } else if (gene[24]==1 || gene[25]==1) {
             if (yellow) {
-                hue += 20F;
+                hue += 9F;
                 sat *= 0.8F;
             }
             val *= 0.75F;
         } else {
             if (yellow) {
-                hue += 10F;
+                hue += 9F;
                 sat *= 0.9F;
             } else {
                 sat *= 0.5F;
@@ -1450,17 +1450,19 @@ public class ChickenTexture {
             val += 0.25F;
         }
 
-        return Colouration.HSBtoARGB(hue/360F, sat, val);
+        return Colouration.HSBtoARGB(hue/360F, sat , val);
     }
 
     private static int calculateShanksRGBUnderColour(int[] sGene, int[] gene, boolean isFemale) {
         float hue = 28.0F;
         float sat = 0.18F;
         float val = 0.8F;
+        boolean yellow = false;
 
         if (gene[20] == 3 && gene[21] == 3) return 16777215;
 
         if (gene[44]!=1 && gene[45]!=1) {
+            yellow = true;
             if (gene[44]==3 && gene[45]==3) {
                 //gold legs
                 hue = 43.0F;
@@ -1478,10 +1480,10 @@ public class ChickenTexture {
             //Id Gene
             if (gene[42]==1 || gene[43]==1) {
                 //fibro
-                if (hue < 40) {
-                    hue = 240.0F;
+                if (yellow) {
+                    hue *= 1.6F;
                 } else {
-                    hue *= 2.0F;
+                    hue = 240.0F;
                 }
                 if (gene[42]!=gene[43]) {
                     // het fibro
@@ -1494,12 +1496,13 @@ public class ChickenTexture {
                 }
             } else {
                 //wildtype slate
-                if (hue < 40) {
-                    hue = 180.0F;
+                if (yellow) {
+                    hue *= 1.5F;
                 } else {
-                    hue *= 2.5F;
+                    hue = 180.0F;
                 }
                 sat *= 0.35F;
+                val -= 0.15F;
             }
         }
 

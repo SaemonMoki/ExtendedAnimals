@@ -276,7 +276,7 @@ public class ChickenTexture {
             setSkinColour(chicken, isFemale, sGene, gene, detailGroup, chicken.growthAmount());
             setEarColour(chicken, isFemale, sGene, gene, earColour, detailGroup);
             chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "eyes.png", calculateEyeRGB(sGene, gene, isFemale, chicken.growthAmount() < 0.25F));
-            chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.MERGE_GROUP, "eye_highlight.png");
+//            chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.MERGE_GROUP, "eye_highlight.png");
             parentGroup.addGrouping(detailGroup);
 
             chicken.setTextureGrouping(parentGroup);
@@ -608,6 +608,17 @@ public class ChickenTexture {
                 //chocolate //2100488
                 h += (60F-h) * 0.25F;
                 b += (1.0F-b) * 0.25F;
+            }
+
+            if (gene[38]==1 && gene[39]==1) {
+                if (isBaby) {
+                    h = 200 - h;
+                    s *= 0.5F;
+                    b += (1.0F-b)*0.75F;
+                } else {
+                    h += (60F-h) * 0.4F;
+                    b += (1.0F-b) * 0.75F;
+                }
             }
 
             if (gene[296]==2 && gene[297]==2) {

@@ -563,51 +563,56 @@ public class ChickenTexture {
         } else {
 
             //8670976
-            float h = 36F;
-            float s = 0.75F;
-            float b = 0.6F;
+//            float h = 36F;
+//            float s = 0.75F;
+//            float b = 0.6F;
+            float h = 34F;
+            float s = 0.8F;
+            float b = 0.15F;
 
             if (gene[170] == 1 || gene[171] == 1) {
                 if (gene[34]==1 || gene[35]==1) {
-                    h *= gene[170]==gene[171] ? 0.6F : 0.75F;
+                    h *= gene[170]==gene[171] ? 0.7F : 0.8F;
                 } else {
-                    h *= gene[170]==gene[171] ? 0.8F : 0.9F;
+                    h *= gene[170]==gene[171] ? 0.85F : 0.95F;
                 }
             }
 
             if (gene[24] == 5 || gene[25] == 5) {
-                h *= 0.5F;
+                h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= gene[24] == gene[25] ? 0.25F : 0.3F;
             } else if (gene[24] == 1 || gene[25] == 1) {
-                h *= 0.5F;
+                h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= gene[24] == gene[25] ? 0.3F : 0.4F;
             }
 
             if (gene[30] == 1 || gene[31] == 1) {
-                h *= 0.5F;
+                //melanized
+                h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= 0.5F;
             }
 
             if (gene[42] == 1 || gene[43] == 1) {
                 //fibromelanin
-                h *= 0.5F;
+                h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= 0.3F;
             }
 
             if (gene[100] == 2 && gene[101] == 2) {
-                h *= 0.5F;
+                h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= 0.5F;
             }
 
             if (sGene[2] == 2 && (isFemale || sGene[3] == 2)) {
                 //chocolate //2100488
-                h += (60F-h) * 0.25F;
-                b += (1.0F-b) * 0.25F;
+                h += (40F-h) * 0.2F;
+                s += 0.1F;
+                b += 0.1F;
             }
 
             if (gene[38]==1 && gene[39]==1) {

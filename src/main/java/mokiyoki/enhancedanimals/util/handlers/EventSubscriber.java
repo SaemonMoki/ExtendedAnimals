@@ -809,6 +809,11 @@ public class EventSubscriber {
                     event.setCanceled(true);
                 }
             }
+        } else if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
+            if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody()))) {
+                event.setCanceled(true);
+                enhancedChicken.teleportTo(enhancedChicken.getNest().getX(), enhancedChicken.getNest().getY(), enhancedChicken.getNest().getZ());
+            }
         }
     }
 

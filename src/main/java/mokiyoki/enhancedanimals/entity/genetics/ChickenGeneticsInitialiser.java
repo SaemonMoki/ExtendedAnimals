@@ -1682,6 +1682,10 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[294] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[295] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
+        //pearl eye
+        autosomalGenes[296] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[297] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 }

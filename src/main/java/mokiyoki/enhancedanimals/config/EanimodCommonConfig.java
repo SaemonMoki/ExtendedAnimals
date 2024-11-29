@@ -139,6 +139,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.DoubleValue woolMultiplierSheep;
         public final ForgeConfigSpec.DoubleValue woolMultiplierRabbit;
         public final ForgeConfigSpec.DoubleValue eggMultiplier;
+        public final ForgeConfigSpec.IntValue eggThrowHatchChance;
 
         //PassageOfTime
         public final ForgeConfigSpec.BooleanValue passageOfTimeEnabled;
@@ -338,6 +339,8 @@ public class EanimodCommonConfig {
                     .defineInRange("The maximum number of ticks till a rooster might crow, Default is 6000ticks", 6000, 2, 24000);
             eggMultiplier = builder
                     .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            eggThrowHatchChance = builder
+                    .defineInRange("This number is a percentage chance for thrown eggs to hatch into chicks, Default is 15%", 15, 0, 100);
             builder.pop();
 
             builder.push("rabbit");

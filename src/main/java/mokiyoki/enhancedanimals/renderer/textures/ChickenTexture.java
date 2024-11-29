@@ -286,7 +286,7 @@ public class ChickenTexture {
     private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {
         int[] skinColour = calculateSkinRGB(sGene, gene, isFemale);
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", skinColour[0]);
-        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShanksRGB(sGene, gene, isFemale));
+        chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "shanks.png", 255 << 24 | calculateShankRGB(sGene, gene, isFemale));
         chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "soles.png", 255 << 24 | calculateShanksRGBUnderColour(sGene, gene, isFemale));
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
         if (age < 0.25F) {
@@ -561,11 +561,6 @@ public class ChickenTexture {
         if (gene[20]==3&&gene[21]==3) {
             return 14560322;
         } else {
-
-            //8670976
-//            float h = 36F;
-//            float s = 0.75F;
-//            float b = 0.6F;
             float h = 34F;
             float s = 0.8F;
             float b = 0.15F;
@@ -603,6 +598,7 @@ public class ChickenTexture {
             }
 
             if (gene[100] == 2 && gene[101] == 2) {
+                //charcoal
                 h *= 0.8F;
                 s += (1.0F - s) * 0.5F;
                 b *= 0.5F;
@@ -629,10 +625,10 @@ public class ChickenTexture {
             if (gene[296]==2 && gene[297]==2) {
                 h += (60F-h) * 0.5F;
                 s *= 0.3F;
-                b += (1.0F-b)*0.97F;
+                b = 0.8F + ((1.0F-b)*0.1F);
             }
 
-            return Colouration.HSBtoARGB(h/360F, s, b);
+            return Colouration.HSBtoARGB(h/360F, Math.max(Math.min(s, 1.0F), 0.0F), Math.max(Math.min(b, 1.0F), 0.0F));
         }
     }
 
@@ -1350,7 +1346,7 @@ public class ChickenTexture {
 
         return new float[]{patternHue, patternSaturation, patternValue, iridescenceAlpha, iridescenceHueShift};
     }
-    private static int calculateShanksRGB(int[] sGene, int[] gene, boolean isFemale) {
+    private static int calculateShankRGB(int[] sGene, int[] gene, boolean isFemale) {
         if (gene[20] == 3 && gene[21] == 3) return 16777215;
 
         float hue = 27.0F;
@@ -1359,12 +1355,10 @@ public class ChickenTexture {
 
 
         boolean yellow = false;
-        boolean superyellow = false;
 
         if (gene[44]!=1 && gene[45]!=1) {
             yellow = true;
             if (gene[44]==3 && gene[45]==3) {
-                superyellow = true;
                 //gold legs
                 hue = 43.0F;
                 sat = 1.0F;
@@ -1382,7 +1376,8 @@ public class ChickenTexture {
             if (gene[42]==1 || gene[43]==1) {
                 //fibro
                 if (yellow) {
-                    hue *= 1.6F;
+                    hue *= 1.5F;
+                    sat *= 0.8F;
                 } else {
                     hue = 240.0F;
                 }
@@ -1398,7 +1393,7 @@ public class ChickenTexture {
             } else {
                 //wildtype slate
                 if (yellow) {
-                    hue *= 1.5F;
+                    hue *= 1.4F;
                 } else {
                     hue = 180.0F;
                 }
@@ -1409,7 +1404,7 @@ public class ChickenTexture {
 
         if (gene[166] == 2 && gene[167] == 2) {
             if (yellow) {
-                hue += 9F;
+                hue += 10F;
                 sat *= 0.9F;
             }
             val *= 0.9F;
@@ -1417,7 +1412,7 @@ public class ChickenTexture {
 
         if (gene[30]==1 || gene[31]==1) {
             if (yellow) {
-                hue += 9F;
+                hue += 10F;
                 sat *= 0.9F;
             }
             val *= 0.9F;
@@ -1425,20 +1420,20 @@ public class ChickenTexture {
 
         if (gene[24]==5 || gene[25]==5) {
             if (yellow) {
-                hue += 15F;
+                hue += 16F;
                 sat *= 0.8F;
             }
             val *= 0.4F;
         } else if (gene[24]==1 || gene[25]==1) {
             if (yellow) {
-                hue += 9F;
+                hue += 14F;
                 sat *= 0.8F;
             }
             val *= 0.75F;
         } else {
             if (yellow) {
-                hue += 9F;
-                sat *= 0.9F;
+                hue += 10F;
+                sat *= 0.8F;
             } else {
                 sat *= 0.5F;
             }
@@ -1481,7 +1476,8 @@ public class ChickenTexture {
             if (gene[42]==1 || gene[43]==1) {
                 //fibro
                 if (yellow) {
-                    hue *= 1.6F;
+                    hue *= 1.5F;
+                    sat *= 0.8F;
                 } else {
                     hue = 240.0F;
                 }
@@ -1497,7 +1493,7 @@ public class ChickenTexture {
             } else {
                 //wildtype slate
                 if (yellow) {
-                    hue *= 1.5F;
+                    hue *= 1.4F;
                 } else {
                     hue = 180.0F;
                 }

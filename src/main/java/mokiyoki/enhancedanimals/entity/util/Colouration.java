@@ -227,6 +227,9 @@ public class Colouration {
     }
 
     public static int HSBtoARGB(float hue, float saturation, float brightness) {
+        hue = Math.max(Math.min(hue, 1.0F), 0.0F);
+        saturation = Math.max(Math.min(saturation, 1.0F), 0.0F);
+        brightness = Math.max(Math.min(brightness, 1.0F), 0.0F);
         int[] color = getRGBFromHSB(hue, saturation, brightness);
         return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
     }

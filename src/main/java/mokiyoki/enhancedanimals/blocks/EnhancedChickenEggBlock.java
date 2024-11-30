@@ -169,7 +169,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                     chicken.setGrowingAge();
                     chicken.initilizeAnimalSize();
                     chicken.setBirthTime();
-                    chicken.moveTo((double) pos.getX() + 0.3D + (random.nextFloat()*0.4D), (double) pos.getY(), (double) pos.getZ() + 0.5D + (random.nextFloat()*0.4D), 0.0F, 0.0F);
+                    chicken.moveTo((double) pos.getX() + 0.3D + (random.nextFloat()*0.4D), (double) pos.getY(), (double) pos.getZ() + 0.3D + (random.nextFloat()*0.4D), 0.0F, 0.0F);
                     level.addFreshEntity(chicken);
                 }
             }

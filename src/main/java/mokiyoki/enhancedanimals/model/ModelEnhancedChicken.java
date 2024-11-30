@@ -2218,7 +2218,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     tailDefault();
                 }
 
-                if (!usingLWing && !usingRWing && wingsFlapping(entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
+                if (!usingLWing && !usingRWing && wingsFlapping(chicken.wingAngle,entityIn.getDeltaMovement().horizontalDistanceSqr() < 0.05F && entityIn.isOnGround(), ageInTicks)) {
                     usingLWing = true;
                     usingRWing = true;
                 }
@@ -2257,7 +2257,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             mouth(crowTimer>60?0.0F:1.0F);
         }
 
-        if (!wingsFlapping(crowTimer < 100, ticks*0.8F)) {
+        if (!wingsFlapping(wingAngle,crowTimer < 100, ticks*0.8F)) {
             wingsDefault(wingAngle);
             theNeck.lerpYRot(0.0F);
             theHead.lerpYRot(0.0F);
@@ -2328,8 +2328,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         theWingRight.lerpYRot(0.0F);
         theWingRight.lerpXRot(wingAngle);
     }
-    public boolean wingsFlapping(boolean stopFlap, float ticks) {
+    public boolean wingsFlapping(float wingAngle, boolean stopFlap, float ticks) {
         if (stopFlap && theWingRight.getZRot() <= 0.001F) {
+            if (theWingRight.getZRot() != 0.0F) {
+                theWingLeft.setZRot(0.0F);
+                theWingRight.setZRot(0.0F);
+                theWingLeft.setXRot(wingAngle);
+                theWingRight.setXRot(wingAngle);
+            }
             return false;
         } else {
             float flap = 1.2F*(Mth.cos(ticks) + 1.0F);

@@ -59,8 +59,11 @@ import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH;
+import static mokiyoki.enhancedanimals.util.Reference.CHICKEN_SEXLINKED_GENES_LENGTH;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.*;
 
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -101,7 +104,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private ChickenModelData chickenModelData;
 
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
-        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
+        super(entityType, worldIn, CHICKEN_SEXLINKED_GENES_LENGTH, CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = eggLayingTime();
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
@@ -342,6 +345,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             this.preening = false;
         } else {
             super.handleEntityEvent(p_29814_);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < CHICKEN_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), CHICKEN_AUTOSOMAL_GENES_LENGTH));
+        }
+
+        if (this.genetics.getNumberOfSexlinkedGenes() < CHICKEN_SEXLINKED_GENES_LENGTH) {
+            this.genetics.setSexlinkedGenes(Arrays.copyOf(this.genetics.getSexlinkedGenes(), CHICKEN_SEXLINKED_GENES_LENGTH));
         }
     }
 

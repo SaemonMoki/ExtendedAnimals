@@ -71,12 +71,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.util.Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
@@ -112,7 +114,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     private TurtleModelData turtleModelData;
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, Level worldIn) {
-        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, false);
+        super(type, worldIn, 2, TURTLE_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.moveControl = new EnhancedTurtle.MoveHelperController(this);
         this.maxUpStep = 1.0F;
@@ -578,6 +580,13 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     protected void geneFixer() {
         super.geneFixer();
         this.homePosFixer = !this.breed.isEmpty();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < TURTLE_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), TURTLE_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     @Nullable

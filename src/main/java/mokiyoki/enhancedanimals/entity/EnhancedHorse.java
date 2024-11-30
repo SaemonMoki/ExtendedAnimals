@@ -42,8 +42,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import java.util.Arrays;
+
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.horseFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_HORSE;
+import static mokiyoki.enhancedanimals.util.Reference.HORSE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
@@ -142,7 +145,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, HORSE_AUTOSOMAL_GENES_LENGTH, true);
     }
 
     protected boolean aiConfigured = false; //TODO move this up
@@ -645,6 +648,13 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         configureAI();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < HORSE_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), HORSE_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     //Health 15-30

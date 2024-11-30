@@ -63,6 +63,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.sheepFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
+import static mokiyoki.enhancedanimals.util.Reference.SHEEP_AUTOSOMAL_GENES_LENGTH;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -150,7 +151,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, SHEEP_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.random.nextInt(this.random.nextInt(8000) + 4000);
     }
@@ -1489,6 +1490,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (!compound.getString("breed").isEmpty()) {
             this.currentCoatLength = this.maxCoatLength;
             this.setCoatLength(this.currentCoatLength);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < SHEEP_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), SHEEP_AUTOSOMAL_GENES_LENGTH));
         }
     }
 

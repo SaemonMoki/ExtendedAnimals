@@ -66,6 +66,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -73,6 +74,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.rabbitFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
+import static mokiyoki.enhancedanimals.util.Reference.RABBIT_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IForgeShearable {
 
@@ -209,7 +211,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private GrazingGoal grazingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, Level worldIn) {
-        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, RABBIT_AUTOSOMAL_GENES_LENGTH, true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpControl = new EnhancedRabbit.JumpHelperController(this);
         this.moveControl = new EnhancedRabbit.MoveHelperController(this);
@@ -457,6 +459,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.spawnSprintParticle();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < RABBIT_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), RABBIT_AUTOSOMAL_GENES_LENGTH));
         }
     }
 

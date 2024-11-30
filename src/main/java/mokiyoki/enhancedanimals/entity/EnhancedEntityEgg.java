@@ -184,7 +184,8 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
                     if (this.random.nextInt(100) > EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
                         EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                         enhancedchicken.setGenes(new Genes(getGenes()));
-                        enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
+                        enhancedchicken.geneFixer();
+                        enhancedchicken.setSharedGenesFromEntityEgg(enhancedchicken.getGenes().getGenesAsString());
                         enhancedchicken.setGrowingAge();
                         enhancedchicken.initilizeAnimalSize();
                         enhancedchicken.setBirthTime();

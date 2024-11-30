@@ -87,6 +87,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -96,6 +97,7 @@ import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
+import static mokiyoki.enhancedanimals.util.Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
@@ -243,7 +245,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private AxolotlModelData axolotlModelData;
 
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
-        super(type, worldIn, 2, Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
+        super(type, worldIn, 2, AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.moveControl = new EnhancedAxolotl.AxolotlMoveControl(this);
         this.lookControl = new EnhancedAxolotl.AxolotlLookControl(this, 20);
@@ -442,6 +444,13 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     public int getHungerRestored(ItemStack stack) {
         return 8000;
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < AXOLOTL_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), AXOLOTL_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     @Override

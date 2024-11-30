@@ -79,6 +79,7 @@ import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.Reference.LLAMA_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements RangedAttackMob, net.minecraftforge.common.IForgeShearable {
 
@@ -159,7 +160,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private LlamaModelData llamaModelData;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, LLAMA_AUTOSOMAL_GENES_LENGTH, true);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
@@ -943,6 +944,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
             int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < LLAMA_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), LLAMA_AUTOSOMAL_GENES_LENGTH));
         }
     }
 

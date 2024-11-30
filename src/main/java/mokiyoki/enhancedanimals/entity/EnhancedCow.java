@@ -58,6 +58,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,7 @@ import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCow
 import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCowTextures;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
@@ -88,7 +90,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private CowModelData cowModelData;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, COW_AUTOSOMAL_GENES_LENGTH, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = (int)((double)(this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300)/ getMilkModifier());
@@ -850,6 +852,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected void dropEquipment() {
         super.dropEquipment();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < COW_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), COW_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     public void addAdditionalSaveData(CompoundTag compound) {

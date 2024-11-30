@@ -63,6 +63,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -70,6 +71,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.pigFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.Reference.PIG_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
@@ -267,7 +269,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, PIG_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
     }
 
@@ -2053,6 +2055,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
         }
         super.geneFixer();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < PIG_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), PIG_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
 /*    @Override

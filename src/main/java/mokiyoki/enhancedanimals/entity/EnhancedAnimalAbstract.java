@@ -1964,6 +1964,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected void geneFixer() {
+        fixGeneLengths();
+
         if (!this.breed.isEmpty()) {
             this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true) : createInitialBreedGenes(this.level, new BlockPos(this.blockPosition()), this.breed);
             setInitialDefaults();
@@ -2015,6 +2017,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             }
         }
     }
+
+    protected abstract void fixGeneLengths();
 
     public void setMateGenes(Genes genes){
         this.mateGenetics = genes;

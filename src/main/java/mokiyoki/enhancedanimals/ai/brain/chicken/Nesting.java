@@ -15,6 +15,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
     private boolean stuck = false;
     private int notReachedNestTicks = 0;
+    private int resetCount = 0;
 
     public Nesting() {
         super(ImmutableMap.of(
@@ -45,6 +49,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
         if (chicken.timeUntilNextEgg < 800 && !chicken.isBroody()) { chicken.getBrain().setMemoryWithExpiry(ModMemoryModuleTypes.EGG_LAYING.get(), true, chicken.timeUntilNextEgg);}
+        confirmNotStuckInFenceWall(serverLevel, chicken);
         if (!isValidPath(chicken, chicken.getNest(), 24)) {
             chicken.setNest(BlockPos.ZERO);
             chicken.currentNestScore = 0.0F;
@@ -53,6 +58,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
         this.stuck = chicken.getNest() == BlockPos.ZERO;
         this.notReachedNestTicks = 0;
+        this.resetCount = 0;
     }
 
     @Override
@@ -71,7 +77,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
         if ((!chicken.isBrooding())) {
             ++this.notReachedNestTicks;
-            if (notReachedNestTicks > 600) { stuck = true; }
+            checkNotReachedNestTicks(serverLevel, chicken);
 
             if (blockPos.closerToCenterThan(chicken.position(), 1.5D)) {
                 if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
@@ -105,8 +111,10 @@ public class Nesting extends Behavior<EnhancedChicken> {
                         }
                     }
                 } else {
-                    chicken.setNest(BlockPos.ZERO);
-                    chicken.currentNestScore = 0.0F;
+                    if (!confirmNotStuckInFenceWall(serverLevel, chicken)) {
+                        chicken.setNest(BlockPos.ZERO);
+                        chicken.currentNestScore = 0.0F;
+                    }
                 }
 
             } else if (chicken.getNavigation().isDone()) {
@@ -134,6 +142,21 @@ public class Nesting extends Behavior<EnhancedChicken> {
         }
     }
 
+    private void checkNotReachedNestTicks(ServerLevel serverLevel, EnhancedChicken chicken) {
+        if (notReachedNestTicks > 600) {
+            if (!confirmNotStuckInFenceWall(serverLevel, chicken)) {
+                stuck = true;
+            } else {
+                resetCount++;
+                if (resetCount > 2) {
+                    stuck = true;
+                } else {
+                    notReachedNestTicks = 0; //reset
+                }
+            }
+        }
+    }
+
     public static void setWalkAndLookTargetMemories(LivingEntity p_22618_, Vec3 vec3, float p_22620_, int p_22621_) {
         WalkTarget walktarget = new WalkTarget(vec3, p_22620_, p_22621_);
         p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(new BlockPos(vec3)));
@@ -154,5 +177,16 @@ public class Nesting extends Behavior<EnhancedChicken> {
         Vec3 newVec = vec1.add(stepVector);
 
         return newVec;
+    }
+
+    private boolean confirmNotStuckInFenceWall(ServerLevel serverLevel, EnhancedChicken chicken) {
+        BlockState blockState = serverLevel.getBlockState(chicken.blockPosition());
+
+        if (!(blockState.getBlock() instanceof AirBlock) && !chicken.isInWater() && !chicken.isInPowderSnow){
+            chicken.teleportTo(chicken.getNest().getX(), chicken.getNest().getY(), chicken.getNest().getZ());
+            return true;
+        }
+
+        return false;
     }
 }

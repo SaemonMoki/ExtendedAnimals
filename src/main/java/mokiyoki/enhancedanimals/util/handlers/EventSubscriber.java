@@ -17,6 +17,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -810,7 +811,7 @@ public class EventSubscriber {
                 }
             }
         } else if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
-            if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody()))) {
+            if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody() || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
                 event.setCanceled(true);
                 enhancedChicken.teleportTo(enhancedChicken.getNest().getX(), enhancedChicken.getNest().getY(), enhancedChicken.getNest().getZ());
             }

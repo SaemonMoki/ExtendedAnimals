@@ -193,6 +193,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //LoadUnload
     protected Long unloadTime;
 
+    //Protections
+    public int invulnerable = 100;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
@@ -775,6 +778,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @Override
     public void aiStep() {
         super.aiStep();
+
+        if (invulnerable > 0) {
+            invulnerable--;
+        }
 
         if (!scheduledToRun.isEmpty()) {
             scheduledToRun.values().forEach(scheduledFunction -> {

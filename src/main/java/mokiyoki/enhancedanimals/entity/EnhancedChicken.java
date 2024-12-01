@@ -676,6 +676,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.msgId.equals("inWall")) {
+            if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
+                this.teleportTo(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D);
+                return false;
+            }
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
     protected void lethalGenes() {
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[70] == 2 && genes[71] == 2) {

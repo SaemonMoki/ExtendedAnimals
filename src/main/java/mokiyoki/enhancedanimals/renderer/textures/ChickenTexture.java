@@ -1399,6 +1399,37 @@ public class ChickenTexture {
                 sat *= 0.35F;
                 val -= 0.15F;
             }
+
+
+            if (gene[30]==1 || gene[31]==1) {
+                if (yellow) {
+                    hue += 10F;
+                    sat *= 0.9F;
+                }
+                val *= 0.9F;
+            }
+
+            if (gene[24]==5 || gene[25]==5) {
+                if (yellow) {
+                    hue += 16F;
+                    sat *= 0.8F;
+                }
+                val *= 0.4F;
+            } else if (gene[24]==1 || gene[25]==1) {
+                if (yellow) {
+                    hue += 14F;
+                    sat *= 0.8F;
+                }
+                val *= 0.75F;
+            } else {
+                if (yellow) {
+                    hue += 10F;
+                    sat *= 0.8F;
+                } else {
+                    sat *= 0.5F;
+                }
+                val += 0.1F;
+            }
         }
 
         if (gene[166] == 2 && gene[167] == 2) {
@@ -1407,36 +1438,6 @@ public class ChickenTexture {
                 sat *= 0.9F;
             }
             val *= 0.9F;
-        }
-
-        if (gene[30]==1 || gene[31]==1) {
-            if (yellow) {
-                hue += 10F;
-                sat *= 0.9F;
-            }
-            val *= 0.9F;
-        }
-
-        if (gene[24]==5 || gene[25]==5) {
-            if (yellow) {
-                hue += 16F;
-                sat *= 0.8F;
-            }
-            val *= 0.4F;
-        } else if (gene[24]==1 || gene[25]==1) {
-            if (yellow) {
-                hue += 14F;
-                sat *= 0.8F;
-            }
-            val *= 0.75F;
-        } else {
-            if (yellow) {
-                hue += 10F;
-                sat *= 0.8F;
-            } else {
-                sat *= 0.5F;
-            }
-            val += 0.1F;
         }
 
         if (gene[38]==1 && gene[39]==1) {

@@ -813,7 +813,7 @@ public class EventSubscriber {
         } else if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
             if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody() || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
                 event.setCanceled(true);
-                enhancedChicken.teleportTo(enhancedChicken.getNest().getX(), enhancedChicken.getNest().getY(), enhancedChicken.getNest().getZ());
+                enhancedChicken.teleportTo(enhancedChicken.getNest().getX()+0.5D, enhancedChicken.getNest().getY()+0.0625D, enhancedChicken.getNest().getZ()+0.5D);
             }
         }
     }

@@ -879,10 +879,11 @@ public class ChickenTexture {
     private static void calculatePatternRGB(EnhancedChicken chicken, TextureGrouping featherGroup, TextureGrouping patternFeatherGroup, TextureGrouping patternCutOutGroup, int[] sGene, int[] gene, boolean isFemale, boolean isNakedNeck) {
         boolean choc = sGene[2] == 2 && (isFemale || sGene[3] == 2);
         boolean lav = gene[36] == 2 && gene[37] == 2;
-        boolean splash = (gene[40] == 2 || gene[41] == 2) && !(gene[24]==5||gene[25]==5);
+        boolean splash = gene[40]==2 && gene[41]==2;
+        boolean blue = gene[40] != gene[41];
         boolean paint = gene[38] == 1 || gene[39] == 1;
 
-        if ((gene[40] == 2 ^ gene[41] == 2) && (gene[24]==5||gene[25]==5)) {
+        if (blue && (gene[24]==5||gene[25]==5)) {
             float[] blueBase = getPatternRGB(choc, lav, true, paint, gene, chicken.growthAmount());
             TextureGrouping blueTextureBase = new TextureGrouping(TexturingType.MERGE_GROUP);
             chicken.addIndividualTextureToAnimalTextureGrouping(blueTextureBase, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(blueBase[0], blueBase[1], blueBase[2]));
@@ -890,8 +891,6 @@ public class ChickenTexture {
         }
 
         float[] colours = getPatternRGB(choc, lav, splash, paint, gene, chicken.growthAmount());
-
-        splash = splash && gene[40]==gene[41];
 
         TextureGrouping baseMelanin = new TextureGrouping(TexturingType.MERGE_GROUP);
         chicken.addIndividualTextureToAnimalTextureGrouping(baseMelanin, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(colours[0], colours[1], colours[2]));
@@ -1400,6 +1399,37 @@ public class ChickenTexture {
                 sat *= 0.35F;
                 val -= 0.15F;
             }
+
+
+            if (gene[30]==1 || gene[31]==1) {
+                if (yellow) {
+                    hue += 10F;
+                    sat *= 0.9F;
+                }
+                val *= 0.9F;
+            }
+
+            if (gene[24]==5 || gene[25]==5) {
+                if (yellow) {
+                    hue += 16F;
+                    sat *= 0.8F;
+                }
+                val *= 0.4F;
+            } else if (gene[24]==1 || gene[25]==1) {
+                if (yellow) {
+                    hue += 14F;
+                    sat *= 0.8F;
+                }
+                val *= 0.75F;
+            } else {
+                if (yellow) {
+                    hue += 10F;
+                    sat *= 0.8F;
+                } else {
+                    sat *= 0.5F;
+                }
+                val += 0.1F;
+            }
         }
 
         if (gene[166] == 2 && gene[167] == 2) {
@@ -1408,36 +1438,6 @@ public class ChickenTexture {
                 sat *= 0.9F;
             }
             val *= 0.9F;
-        }
-
-        if (gene[30]==1 || gene[31]==1) {
-            if (yellow) {
-                hue += 10F;
-                sat *= 0.9F;
-            }
-            val *= 0.9F;
-        }
-
-        if (gene[24]==5 || gene[25]==5) {
-            if (yellow) {
-                hue += 16F;
-                sat *= 0.8F;
-            }
-            val *= 0.4F;
-        } else if (gene[24]==1 || gene[25]==1) {
-            if (yellow) {
-                hue += 14F;
-                sat *= 0.8F;
-            }
-            val *= 0.75F;
-        } else {
-            if (yellow) {
-                hue += 10F;
-                sat *= 0.8F;
-            } else {
-                sat *= 0.5F;
-            }
-            val += 0.1F;
         }
 
         if (gene[38]==1 && gene[39]==1) {

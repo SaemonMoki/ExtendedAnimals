@@ -41,7 +41,7 @@ public class ChickenPanicTrigger extends Behavior<EnhancedChicken> {
       int[] gene = chicken.getGenes().getAutosomalGenes();
 
       //random chance to space the tick and gene check to ensure not scaleless
-      if (p_24702_ % 3L == 0L && !(gene[108] == 2 && gene[109] == 2)) {
+      if (chicken.invulnerable <= 0 && p_24702_ % 3L == 0L && !(gene[108] == 2 && gene[109] == 2)) {
          ItemStack featherStack = new ItemStack(Items.FEATHER, 1);
 
          ItemEntity itementity = new ItemEntity(chicken.level, chicken.getX(), chicken.getY() + 0.0d, chicken.getZ(), featherStack);

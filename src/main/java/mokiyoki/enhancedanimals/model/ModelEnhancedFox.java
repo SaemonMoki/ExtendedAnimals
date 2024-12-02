@@ -343,9 +343,9 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
         map.put("jaw", this.getRotationVector(jaw));
         map.put("bNeck", this.getRotationVector(theNeck));
         map.put("bHead", this.getRotationVector(theHead));
-        if (data.growthAmount == 1.0F && !map.containsKey("bMouthPos")) {
-            map.put("bMouthPos",this.getPosVector(theMouth));
-        }
+//        if (data.growthAmount == 1.0F && !map.containsKey("bMouthPos")) {
+//            map.put("bMouthPos",this.getPosVector(theMouth));
+//        }
         map.put("bEarL", this.getRotationVector(theEarLeft));
         map.put("bEarR", this.getRotationVector(theEarRight));
         map.put("bEarLPos", this.getPosVector(theEarLeft));
@@ -362,30 +362,30 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
     private void readInitialAnimationValues(FoxModelData data, FoxPhenotype fox) {
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
-//            this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
+//            theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
         } else {
-//            this.theFox.setRotation(map.get("bFox"));
-//            this.theFox.setPos(map.get("bFoxPos"));
-//            this.theNeck.setRotation(map.get("bNeck"));
-//            this.theHead.setRotation(map.get("bHead"));
+            theFox.setRotation(map.get("bFox"));
+            theFox.setPos(map.get("bFoxPos"));
+            theNeck.setRotation(map.get("bNeck"));
+            theHead.setRotation(map.get("bHead"));
 //            if (map.containsKey("bMouthPos")) {
-//                this.theMouth.setPos(map.get("bMouthPos"));
+//                theMouth.setPos(map.get("bMouthPos"));
 //            } else {
-//                this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
+//                theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) ));
 //            }
-//            this.nose.setRotation(map.get("nose"));
-//            this.jaw.setRotation(map.get("jaw"));
-//            this.theEarLeft.setRotation(map.get("bEarL"));
-//            this.theEarRight.setRotation(map.get("bEarR"));
-//            this.theEarLeft.setPos(map.get("bEarLPos"));
-//            this.theEarRight.setPos(map.get("bEarRPos"));
-//            this.theLegFrontLeft.setRotation(map.get("bLegFL"));
-//            this.theLegFrontRight.setRotation(map.get("bLegFR"));
-//            this.theLegBackLeft.setRotation(map.get("bLegBL"));
-//            this.theLegBackRight.setRotation(map.get("bLegBR"));
-//            this.tail0.setRotation(map.get("tail0"));
-//            this.tail1.setRotation(map.get("tail1"));
-//            this.tail2.setRotation(map.get("tail2"));
+            nose.setRotation(map.get("nose"));
+            jaw.setRotation(map.get("jaw"));
+            theEarLeft.setRotation(map.get("bEarL"));
+            theEarRight.setRotation(map.get("bEarR"));
+            theEarLeft.setPos(map.get("bEarLPos"));
+            theEarRight.setPos(map.get("bEarRPos"));
+            theLegFrontLeft.setRotation(map.get("bLegFL"));
+            theLegFrontRight.setRotation(map.get("bLegFR"));
+            theLegBackLeft.setRotation(map.get("bLegBL"));
+            theLegBackRight.setRotation(map.get("bLegBR"));
+            tail0.setRotation(map.get("tail0"));
+            tail1.setRotation(map.get("tail1"));
+            tail2.setRotation(map.get("tail2"));
         }
     }
 

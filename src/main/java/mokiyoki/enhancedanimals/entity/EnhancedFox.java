@@ -1176,6 +1176,8 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
                 agoutiTexGroup.addGrouping(agoutiInnerMaskGroup);
 
+                hairTexGroup.addGrouping(redBaseGroup);
+                hairTexGroup.addGrouping(agoutiTexGroup);
             }
 
 

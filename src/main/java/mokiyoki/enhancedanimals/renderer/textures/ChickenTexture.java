@@ -884,13 +884,13 @@ public class ChickenTexture {
         boolean paint = gene[38] == 1 || gene[39] == 1;
 
         if (blue && (gene[24]==5||gene[25]==5)) {
-            float[] blueBase = getPatternRGB(choc, lav, true, paint, gene, chicken.growthAmount());
+            float[] blueBase = getPatternRGB(choc, lav, true, false, paint, gene, chicken.growthAmount()); //TODO it's something to do with this line
             TextureGrouping blueTextureBase = new TextureGrouping(TexturingType.MERGE_GROUP);
             chicken.addIndividualTextureToAnimalTextureGrouping(blueTextureBase, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(blueBase[0], blueBase[1], blueBase[2]));
             featherGroup.addGrouping(blueTextureBase);
         }
 
-        float[] colours = getPatternRGB(choc, lav, splash, paint, gene, chicken.growthAmount());
+        float[] colours = getPatternRGB(choc, lav, blue, splash, paint, gene, chicken.growthAmount()); //TODO and this line
 
         TextureGrouping baseMelanin = new TextureGrouping(TexturingType.MERGE_GROUP);
         chicken.addIndividualTextureToAnimalTextureGrouping(baseMelanin, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(colours[0], colours[1], colours[2]));
@@ -932,7 +932,7 @@ public class ChickenTexture {
         featherGroup.addGrouping(patternFeatherGroup);
     }
 
-    private static float[] getPatternRGB(boolean choc, boolean lav, boolean splash, boolean paint,  int[] gene, float growthamount) {
+    private static float[] getPatternRGB(boolean choc, boolean lav, boolean blue, boolean splash, boolean paint,  int[] gene, float growthamount) {
         float patternHue = 0.07F;
         float patternSaturation = 0.05F;
         float patternValue = 0.075F;
@@ -942,7 +942,7 @@ public class ChickenTexture {
 
         if (choc) {
             if (lav) {
-                if (splash) {
+                if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
                         default -> {
                             // Choc Lavender Blue
@@ -1041,7 +1041,7 @@ public class ChickenTexture {
                     }
                 }
             } else {
-                if (splash) {
+                if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
                         default -> {
                             // Choc Blue
@@ -1142,7 +1142,7 @@ public class ChickenTexture {
             }
         } else {
             if (lav) {
-                if (splash) {
+                if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
                         default -> {
                             // Lavender Blue
@@ -1239,7 +1239,7 @@ public class ChickenTexture {
                     }
                 }
             } else {
-                if (splash) {
+                if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
                         default -> {
                             // Blue
@@ -1338,7 +1338,7 @@ public class ChickenTexture {
             }
         }
 
-        if (splash && gene[40]==gene[41]) {
+        if (splash) {
             patternSaturation *= 0.8F;
             patternValue *=0.8F;
         }

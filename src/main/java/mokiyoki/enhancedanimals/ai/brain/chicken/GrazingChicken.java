@@ -22,7 +22,10 @@ public class GrazingChicken extends Grazing {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
-        return !EanimodCommonConfig.COMMON.chickensRemainOnNest.get();
+        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && geneticAnimal instanceof EnhancedChicken enhancedChicken) {
+            return (enhancedChicken.isBrooding() || enhancedChicken.isBroody());
+        }
+        return true;
     }
 
     @Override

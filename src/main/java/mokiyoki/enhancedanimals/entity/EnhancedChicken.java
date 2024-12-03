@@ -575,6 +575,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     protected void incrementHunger() {
+        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
         if (this.sleeping) {
             hunger = hunger + (0.25F*getHungerModifier());
         } else {
@@ -592,6 +593,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isBaby() && (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
+                if (this.gestationTimer == 0) {
+                    this.mateGenetics = null; //Null them out
+                    this.mateName = null;
+                }
             }
 
             if (hunger <= 24000 && !isAnimalSleeping() && !isBroody() && !isRoosting() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
@@ -1170,7 +1175,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
-        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0) {
+        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0 && this.getOrSetIsFemale() && !this.isBaby()) {
             this.setFertile();
         }
         return livingdata;
@@ -1573,7 +1578,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void setFertile(){
-        this.gestationTimer = 96000;
+        this.gestationTimer = EanimodCommonConfig.COMMON.fertilityTicksChicken.get();
         int firstNewEggTime = eggLayingTime()/2;
         if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
         if (this.timeUntilNextEgg > firstNewEggTime) {

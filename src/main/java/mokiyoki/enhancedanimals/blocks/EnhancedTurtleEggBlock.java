@@ -147,7 +147,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                             int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
                             Genes fixedGenetics = new Genes(length);
                             for (int e = 0; e < length; e++) {
-                                fixedGenetics.setAutosomalGene(e, oldLength < e ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);
+                                fixedGenetics.setAutosomalGene(e, e < oldLength ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);
                             }
                             turtle.setGenes(fixedGenetics);
                             turtle.setSharedGenes(fixedGenetics);

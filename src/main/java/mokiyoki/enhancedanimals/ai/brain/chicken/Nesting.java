@@ -79,11 +79,11 @@ public class Nesting extends Behavior<EnhancedChicken> {
             ++this.notReachedNestTicks;
             checkNotReachedNestTicks(serverLevel, chicken);
 
-            if (blockPos.closerToCenterThan(chicken.position(), 1.5D)) {
+            if (blockPos.closerToCenterThan(chicken.position(), EanimodCommonConfig.COMMON.chickenNestTeleportDistance.get())) {
                 if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
-                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.01));
+                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.02));
                 } else {
-                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.01));
+                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.02));
                 }
             }
 
@@ -123,21 +123,22 @@ public class Nesting extends Behavior<EnhancedChicken> {
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(vec3), 1.0F, 0);
             }
         } else {
-            if (blockPos.closerToCenterThan(chicken.position(), 1.5D)) {
-                if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
-                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.01));
+            if (blockPos.closerToCenterThan(chicken.position(), EanimodCommonConfig.COMMON.chickenNestTeleportDistance.get())) {
+                if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
+                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
+                        chicken.setPos(new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D));
+                    } else {
+                        chicken.setPos(new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D));
+                    }
                 } else {
-                    chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.01));
+                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
+                        chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.02));
+                    } else {
+                        chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.02));
+                    }
                 }
-            }
-            if (!blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
-                setWalkAndLookTargetMemories(chicken, new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
             } else {
-                if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
-                    chicken.setPos(new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D));
-                } else {
-                    chicken.setPos(new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D));
-                }
+                setWalkAndLookTargetMemories(chicken, new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
             }
         }
     }

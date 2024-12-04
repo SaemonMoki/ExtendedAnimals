@@ -885,7 +885,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             boolean tusks = false;
             boolean agouti = true;
             boolean agoutiBlack = false;
-            boolean wideband = false;
+            boolean wideband = gene[164] == 2 && gene[165] == 2;
             boolean brindle = false;
 
 
@@ -909,13 +909,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 agoutiBlack = true;
             }
 
-            if (gene[2] == 3 && gene[3] == 3) {
+            if ( (gene[2] == 3 || gene[3] == 3) && (gene[2] == gene[3] || gene[2] == 4 || gene[3] == 4) ) {
+                //Either nonagouti or het nonagouti/het swallowbelly, since nonagouti is more dominant
                 agouti = false;
             }
 
-            if (gene[164] == 2 && gene[165] == 2) {
-                wideband = true;
-            }
 
             if (agouti) {
                 if (gene[2] == 2 || gene[3] == 2) {

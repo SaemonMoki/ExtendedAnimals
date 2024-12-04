@@ -181,7 +181,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         if (this.level instanceof ServerLevel) {
             if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
-                    if (this.random.nextInt(100) > EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
+                    if (this.random.nextInt(100) < EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
                         EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                         enhancedchicken.setGenes(new Genes(getGenes()));
                         enhancedchicken.geneFixer();

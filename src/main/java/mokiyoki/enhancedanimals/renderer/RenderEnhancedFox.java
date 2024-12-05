@@ -54,7 +54,7 @@ public class RenderEnhancedFox extends MobRenderer<EnhancedFox, ModelEnhancedFox
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_FOX_TEXTURE_LOCATION, textureGrouping, entity.colouration, 64));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_FOX_TEXTURE_LOCATION, textureGrouping, colourRGB, 64));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {
@@ -63,6 +63,11 @@ public class RenderEnhancedFox extends MobRenderer<EnhancedFox, ModelEnhancedFox
         }
 
         return resourcelocation;
+    }
+
+    protected boolean shouldShowName(EnhancedFox entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
     }
 
 }

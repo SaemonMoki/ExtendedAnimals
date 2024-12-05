@@ -518,7 +518,7 @@ public class ModelEnhancedFox<T extends EnhancedFox> extends EnhancedAnimalModel
 
     @Override
     protected Phenotype createPhenotype(T enhancedAnimal) {
-        return new FoxPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
+        return new FoxPhenotype(enhancedAnimal.getGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
     }
 
 

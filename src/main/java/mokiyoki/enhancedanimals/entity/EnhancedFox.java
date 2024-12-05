@@ -469,8 +469,8 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = this.getGenes().getAutosomalGenes();
 
             int idxBlackSolid = 1;
             int idxBlackwt = idxBlackSolid + 1;
@@ -1781,7 +1781,7 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
     @Override
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        Genes genes = getSharedGenes();
+        Genes genes = getGenes();
 
         if ( genes!= null) {
             if (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1 || this.colouration.getLeftEyeColour() == -1 || this.colouration.getRightEyeColour() == -1) {
@@ -2085,6 +2085,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
         super.readAdditionalSaveData(compound);
     }
 
+    @Override
+    protected void fixGeneLengths() {
+
+    }
+
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
@@ -2123,6 +2128,11 @@ public class EnhancedFox extends EnhancedAnimalAbstract {
 
         //TODO [ range goes here ]
         this.setAnimalSize(size);
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level world, EnhancedAnimalAbstract otherParent) {
+        return null;
     }
 
 

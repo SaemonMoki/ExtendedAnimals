@@ -35,8 +35,8 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
     }
 
     @Override
-    public void setGenes(Genes chickGenes) {
-        this.genes = chickGenes;
+    public void setGenes(Genes genes) {
+        this.genes = genes;
     }
 
     private String sireName;

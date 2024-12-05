@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals;
 
+import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
@@ -9,12 +10,15 @@ import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +27,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH;
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH_GOLD;
@@ -135,6 +141,46 @@ public class EnhancedAnimals {
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
         channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
+
+        try {
+            StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));
+
+            if (oldPool != null) {
+                List<StructurePoolElement> jigsawPieces = oldPool.templates;
+
+                StructurePoolElement chickenPiece = StructurePoolElement.legacy("village/common/animals/chickens_1").apply(StructureTemplatePool.Projection.RIGID);
+                oldPool.rawTemplates.add(Pair.of(chickenPiece, 7));
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+                jigsawPieces.add(chickenPiece);
+
+                StructurePoolElement cow2Piece = StructurePoolElement.legacy("village/common/animals/cows_2").apply(StructureTemplatePool.Projection.RIGID);
+                oldPool.rawTemplates.add(Pair.of(cow2Piece, 1));
+                jigsawPieces.add(cow2Piece);
+
+                StructurePoolElement cow3Piece = StructurePoolElement.legacy("village/common/animals/cows_3").apply(StructureTemplatePool.Projection.RIGID);
+                oldPool.rawTemplates.add(Pair.of(cow3Piece, 1));
+                jigsawPieces.add(cow3Piece);
+
+                StructurePoolElement llamaPiece = StructurePoolElement.legacy("village/common/animals/llamas_1").apply(StructureTemplatePool.Projection.RIGID);
+                oldPool.rawTemplates.add(Pair.of(llamaPiece, 3));
+                jigsawPieces.add(llamaPiece);
+                jigsawPieces.add(llamaPiece);
+                jigsawPieces.add(llamaPiece);
+
+                StructurePoolElement sheep3Piece = StructurePoolElement.legacy("village/common/animals/sheep_3").apply(StructureTemplatePool.Projection.RIGID);
+                oldPool.rawTemplates.add(Pair.of(sheep3Piece, 1));
+                jigsawPieces.add(sheep3Piece);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void setupCauldronInteractions(final FMLCommonSetupEvent event) {

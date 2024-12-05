@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.renderer;
 
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
-import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
@@ -15,9 +15,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.Map;
-
 
 /**
  * Created by saemon on 2/09/2018.
@@ -39,9 +36,9 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     public ResourceLocation getTextureLocation(EnhancedChicken entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
-        boolean silkie = false;
-        if (entity.getSharedGenes() != null) {
-            silkie = entity.getSharedGenes().isHomozygousFor(106, 2);
+        boolean use16x = false;
+        if (entity.getGenes() != null) {
+            use16x = EanimodCommonConfig.COMMON.force16x.get() || entity.getGenes().isHomozygousFor(106, 2);
         }
 
         if (s == null || s.isEmpty() || colourRGB == null) {
@@ -50,7 +47,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         s = s + colourRGB.getRGBStrings();
 
-        s = silkie ? s + "1" : s + "-";
+        s = use16x ? s + "1" : s + "-";
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
@@ -64,7 +61,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, silkie ? 64 : 320));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, use16x ? 64 : 320));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

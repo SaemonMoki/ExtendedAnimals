@@ -30,6 +30,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
         public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
         public final ForgeConfigSpec.BooleanValue onlyKilledWithAxe;
+        public final ForgeConfigSpec.BooleanValue force16x;
 
         public final ForgeConfigSpec.BooleanValue leatherWorkerTrades;
         public final ForgeConfigSpec.BooleanValue shepardTrades;
@@ -97,6 +98,9 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue spawnWeightChickens;
         public final ForgeConfigSpec.IntValue minimumChickenGroup;
         public final ForgeConfigSpec.IntValue maximumChickenGroup;
+        public final ForgeConfigSpec.BooleanValue allowRoostersToCrow;
+        public final ForgeConfigSpec.IntValue minimumWaitForCrowTime;
+        public final ForgeConfigSpec.IntValue maximumWaitForCrowTime;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
         public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
@@ -145,6 +149,14 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.DoubleValue woolMultiplierSheep;
         public final ForgeConfigSpec.DoubleValue woolMultiplierRabbit;
         public final ForgeConfigSpec.DoubleValue eggMultiplier;
+        public final ForgeConfigSpec.IntValue eggThrowHatchChance;
+
+        //PassageOfTime
+        public final ForgeConfigSpec.BooleanValue passageOfTimeEnabled;
+        public final ForgeConfigSpec.BooleanValue passageOfTimeChickenEnabled;
+        public final ForgeConfigSpec.IntValue passageOfTimeChickenStages;
+        public final ForgeConfigSpec.BooleanValue passageOfTimeChickenNoHatch;
+
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -163,6 +175,8 @@ public class EanimodCommonConfig {
                     .define("Animals will spawn with random biome type", false);
             onlyKilledWithAxe = builder
                     .define("Genetic animals are immune to all damage unless attacked with an axe by a player", false);
+            force16x = builder
+                    .define("Force Genetic Animals to use a 16x base texture", false);
             builder.pop();
 
             builder.push("Trading");
@@ -327,8 +341,16 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumChickenGroup = builder
                     .defineInRange("The maximum number of Chicken you want to find in a group at spawn, Default is 4", 4, 1, 60);
+            allowRoostersToCrow = builder
+                    .define("Allow roosters to crow:", true);
+            minimumWaitForCrowTime = builder
+                    .defineInRange("The minimum number of ticks till a rooster might crow, Default is 100ticks", 100, 1, 24000);
+            maximumWaitForCrowTime = builder
+                    .defineInRange("The maximum number of ticks till a rooster might crow, Default is 6000ticks", 6000, 2, 24000);
             eggMultiplier = builder
                     .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            eggThrowHatchChance = builder
+                    .defineInRange("This number is a percentage chance for thrown eggs to hatch into chicks, Default is 15%", 15, 0, 100);
             builder.pop();
 
             builder.push("rabbit");
@@ -412,6 +434,17 @@ public class EanimodCommonConfig {
                     .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
                     .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
+            builder.pop();
+
+            builder.push("passageOfTime");
+            passageOfTimeEnabled = builder
+                    .define("Allow 'Passage of Time' feature, which allows animal pregnancy and similar features to progress after player time away from chunk", true);
+            passageOfTimeChickenEnabled = builder
+                    .define("Allow 'Passage of Time' feature for chickens", true);
+            passageOfTimeChickenStages = builder
+                    .defineInRange("How many 'stages' can pass for a chicken when it is loaded in, each of these is one stage: Make a nest, lay in the nest, hatch the nest, Default is 2 stages", 2, 1, 3);
+            passageOfTimeChickenNoHatch = builder
+                    .define("Disable hatching from passage of time regards of stages setting and time passed", false);
             builder.pop();
         }
     }

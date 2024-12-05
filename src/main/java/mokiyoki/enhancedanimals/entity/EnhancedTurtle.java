@@ -71,11 +71,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.util.Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
@@ -111,7 +114,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     private TurtleModelData turtleModelData;
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, Level worldIn) {
-        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, false);
+        super(type, worldIn, 2, TURTLE_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.moveControl = new EnhancedTurtle.MoveHelperController(this);
         this.maxUpStep = 1.0F;
@@ -135,7 +138,9 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public float getScale() {
-        return this.isGrowing() ? (0.2F + (0.8F * (this.growthAmount()))) : 1.0F;
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.2F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -245,7 +250,16 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeTurtle.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeTurtle.get();
+        return this.adultAge;
+    }
+
+    @Override
+    protected int getFullSizeAge() {
+        return (int)(this.getAnimalSize() > 1.0F ? getAdultAge() * this.getAnimalSize() : getAdultAge());
+    }
 
     public void setHasScute() {
         this.hasScute = this.getEnhancedAnimalAge() < 24000;
@@ -290,13 +304,43 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     public void initilizeAnimalSize() {
-        this.setAnimalSize(1.0F);
+        int[] gene = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        for (int i = 14; i < 30; i++) {
+            if (i<20) {
+                if (gene[i] == 2) size -= 0.05F;
+            } else {
+                if (gene[i] == 2) size += 0.05F;
+            }
+        }
+
+        this.setAnimalSize(gene[12]==1||gene[13]==1 ? size : size*0.6F);
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level world) {
-
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        turtle.setGenes(babyGenes);
+        turtle.setSharedGenes(babyGenes);
+        turtle.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        turtle.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        turtle.setGrowingAge();
+        turtle.setBirthTime();
+        turtle.initilizeAnimalSize();
+        turtle.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        turtle.setHome(this.blockPosition());
+        turtle.setHasScute();
+        turtle.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return turtle;
     }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level world) {}
+
+    @Override
+    protected void resetMateName() {}
 
     @Override
     protected boolean canBePregnant() {
@@ -406,8 +450,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
             int base = 0;
             int pibald = 0;
 
@@ -536,6 +580,13 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     protected void geneFixer() {
         super.geneFixer();
         this.homePosFixer = !this.breed.isEmpty();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < TURTLE_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), TURTLE_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     @Nullable
@@ -751,6 +802,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     this.turtle.setHasEgg(false);
                     this.turtle.setDigging(false);
 //                    this.turtle.setInLove(600);
+                    this.turtle.mateName = "???"; //Reset mate name
                 }
 
                 if (this.turtle.isDigging()) {

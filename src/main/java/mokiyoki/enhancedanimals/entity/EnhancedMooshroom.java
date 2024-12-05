@@ -15,7 +15,6 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -100,7 +99,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeMooshroom.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeMooshroom.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {
@@ -126,11 +129,30 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedMooshroom mooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        mooshroom.setGenes(babyGenes);
+        mooshroom.setSharedGenes(babyGenes);
+        mooshroom.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        mooshroom.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        mooshroom.setParent(this.getUUID().toString());
+        mooshroom.setGrowingAge();
+        mooshroom.setBirthTime();
+        mooshroom.initilizeAnimalSize();
+        mooshroom.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        mooshroom.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        mooshroom.configureAI();
+        mooshroom.setMooshroomType(this.getChildMushroomType(((EnhancedMooshroom) otherParent).getMooshroomType()));
+        return mooshroom;
+    }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((this.mateMushroomType)));
-        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
+        enhancedmooshroom.setMooshroomType(this.getChildMushroomType((this.mateMushroomType)));
+        defaultCreateAndSpawn(enhancedmooshroom, level, babyGenes, -this.getAdultAge());
         enhancedmooshroom.configureAI();
         this.level.addFreshEntity(enhancedmooshroom);
     }
@@ -277,13 +299,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return EnhancedMooshroom.Type.getTypeByName(this.entityData.get(MOOSHROOM_TYPE));
     }
 
-    @Override
-    public EnhancedMooshroom getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-        super.getBreedOffspring(serverWorld, ageable);
-        return null;
-    }
-
-    private Type setChildMushroomType(Type otherMooshroom) {
+    private Type getChildMushroomType(Type otherMooshroom) {
         Type thisMooshroom = this.getMooshroomType();
         if (thisMooshroom == otherMooshroom && this.random.nextInt(1024) == 0) {
             return thisMooshroom == Type.BROWN ? Type.RED : Type.BROWN;

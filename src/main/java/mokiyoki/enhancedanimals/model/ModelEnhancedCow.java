@@ -193,22 +193,22 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
 
         bHornNub.addOrReplaceChild("nubXS", CubeListBuilder.create()
-                        .texOffs(44, 42)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 2, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubS", CubeListBuilder.create()
-                        .texOffs(44, 41)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 3, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubM", CubeListBuilder.create()
-                        .texOffs(44, 40)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 4, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHornNub.addOrReplaceChild("nubL", CubeListBuilder.create()
-                        .texOffs(44, 39)
+                        .texOffs(44, 38)
                         .addBox(-2.0F, 1.0F, -0.5F, 4, 5, 2),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
@@ -261,12 +261,12 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
         bEarRight.addOrReplaceChild("earLR", CubeListBuilder.create()
                         .texOffs(0, 51)
-                        .addBox(-2.5F, -6.5F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
+                        .addBox(-2.5F, -7.0F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earXLR", CubeListBuilder.create()
                         .texOffs(0, 51)
-                        .addBox(-2.0F, -8.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
+                        .addBox(-2.0F, -9.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
                 PartPose.ZERO
         );
 
@@ -1643,7 +1643,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     @Override
     protected CowPhenotype createPhenotype(T enhancedAnimal) {
         char[] uuid = (enhancedAnimal.getMooshroomUUID().isEmpty() || enhancedAnimal.getMooshroomUUID().equals("0")) ? enhancedAnimal.getStringUUID().toCharArray() : enhancedAnimal.getMooshroomUUID().toCharArray();
-        return new CowPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), uuid, enhancedAnimal.getOrSetIsFemale(), enhancedAnimal instanceof EnhancedMooshroom || enhancedAnimal instanceof EnhancedMoobloom);
+        return new CowPhenotype(enhancedAnimal.getGenes().getAutosomalGenes(), uuid, enhancedAnimal.getOrSetIsFemale(), enhancedAnimal instanceof EnhancedMooshroom || enhancedAnimal instanceof EnhancedMoobloom);
     }
 }
 

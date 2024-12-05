@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general.chicken;
 
+import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
@@ -24,7 +25,7 @@ public class ECWanderAvoidWater extends RandomStrollGoal {
     }
 
     public boolean canUse() {
-        if (!enhancedChicken.isRoosting()) {
+        if (!enhancedChicken.isRoosting() && this.enhancedChicken.getAIStatus() != AIStatus.FOCUSED) {
             return super.canUse();
         }
         return false;

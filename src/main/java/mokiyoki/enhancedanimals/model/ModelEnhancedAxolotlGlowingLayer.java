@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.renderer.texture.DrawnTexture;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -28,8 +29,11 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, EnhancedAxolotl axolotl, float p_116987_, float p_116988_, float p_116989_, float p_116990_, float p_116991_, float p_116992_) {
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.eyes(this.getTextureLocation(axolotl)));
-        this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        AxolotlModelData modelData = ((AxolotlModelData)this.getParentModel().getCreateAnimalModelData(axolotl));
+        if (modelData != null && modelData.getPhenotype() != null && (modelData.getPhenotype().glowingBody || modelData.getPhenotype().glowingEyes || modelData.getPhenotype().glowingGills)) {
+            VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.eyes(this.getTextureLocation(axolotl)));
+            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        }
     }
 
     @Override //blank as we override render also
@@ -41,7 +45,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
     public ResourceLocation getTextureLocation(EnhancedAxolotl entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
-        Genes genes = entity.getSharedGenes();
+        Genes genes = entity.getGenes();
 
         if (s == null || s.isEmpty() || colourRGB == null || genes == null) {
             return ERROR_TEXTURE_LOCATION;

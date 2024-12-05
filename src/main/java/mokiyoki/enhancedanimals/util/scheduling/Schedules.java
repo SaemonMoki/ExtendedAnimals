@@ -1,12 +1,12 @@
 package mokiyoki.enhancedanimals.util.scheduling;
 
-import mokiyoki.enhancedanimals.blocks.NestBlock;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -29,17 +29,63 @@ public enum Schedules {
     DESPAWN_NO_PASSENGER_SCHEDULE("DespawnNoPassengerSchedule", (ticks) ->
         new AnimalScheduledFunction(ticks, (eaa) -> eaa.despawn(), (eaa) -> !eaa.getPassengers().isEmpty())),
 
+    CROW_SCHEDULE("CrowSchedule", (ticks) ->
+        new AnimalScheduledFunction(ticks, (eaa) -> {
+            if (eaa instanceof EnhancedChicken) {
+                eaa.level.broadcastEntityEvent(eaa, (byte)11);
+                ((EnhancedChicken)eaa).crowTick = 120;
+                eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+                eaa.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_WALKING.get(), true);
+            }
+        })),
+    STOP_BROODING_SCHEDULE("StopBroodingSchedule", (ticks) ->
+        new AnimalScheduledFunction(ticks, (eaa) -> {
+            if (eaa instanceof EnhancedChicken enhancedChicken) {
+                if (!(eaa.level.getBlockEntity(eaa.blockPosition()) instanceof ChickenNestTileEntity)) {
+                    enhancedChicken.setBroody(false);
+                    enhancedChicken.setBrooding(false);
+                    enhancedChicken.setNest(BlockPos.ZERO);
+                    enhancedChicken.currentNestScore = 0;
+                }
+            }
+        })),
+
+    START_PREEN_SCHEDULE("StartPreenSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (eaa instanceof EnhancedChicken) {
+                    eaa.level.broadcastEntityEvent(eaa, (byte)12);
+                    eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                    eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
+                    eaa.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_WALKING.get(), true);
+                }
+            })),
+    STOP_PREEN_SCHEDULE("StopPreenSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (eaa instanceof EnhancedChicken) {
+                    eaa.level.broadcastEntityEvent(eaa, (byte)13);
+                    eaa.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
+                }
+            })),
+
     LOOK_FOR_NEST_SCHEDULE("LookForNestSchedule", (ticks) ->
             new AnimalScheduledFunction(12000, (eaa) -> {
                 if (eaa instanceof EnhancedChicken chicken) {
-                    for (int x = -1; x < 1; x++) {
-                        for (int z = -1; z < 1; z++) {
+                    if (((EnhancedChicken) eaa).getNest() != null && ((EnhancedChicken) eaa).getNest() != BlockPos.ZERO) {
+                        if (chicken.level.getBlockEntity(((EnhancedChicken) eaa).getNest()) instanceof ChickenNestTileEntity nestEntity) {
+                            if (nestEntity.getEggCount() > 0) {
+                                return;
+                            }
+                        }
+                    }
+                    for (int x = -1; x <= 1; x++) {
+                        for (int z = -1; z <= 1; z++) {
                             BlockPos pos = eaa.blockPosition().offset(x, 0, z);
                             if (eaa.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
                                 if (nestTileEntity.isFull()) {
                                     continue;
                                 }
-                                chicken.rateNest(nestTileEntity, pos, false);
+                                chicken.rateAndSetBetterNest(pos);
                             }
 
                             BlockState state = eaa.level.getBlockState(pos);
@@ -53,14 +99,32 @@ public enum Schedules {
                                 }
                             }
                             if (chicken.isGoodNestSite(pos)) {
-                                chicken.rateChickenNestSite(pos);
+                                chicken.rateAndSetBetterNest(pos);
                             }
                         }
                     }
                 }
             }, LivingEntity::isAlive)
-        )
-    ;
+        ),
+
+    CHECK_RAIN_STOPPED_SCHEDULE("CheckRainStoppedSchedule", (ticks) ->
+            new AnimalScheduledFunction(ticks, (eaa) -> {
+                if (!eaa.getLevel().getLevelData().isRaining()) {
+                    eaa.getBrain().eraseMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get());
+                }
+            }, EnhancedAnimalAbstract::isRainingInLevel)
+    ),
+
+    DISMOUNT_SCHEDULE("DismountSchedule", (ticks) -> new AnimalScheduledFunction(ticks, LivingEntity::stopRiding)),
+
+    RIDE_MOTHER_HEN_SCHEDULE("RideMotherHenSchedule", (ticks) -> new AnimalScheduledFunction(ticks, (eaa) -> {
+        if (eaa instanceof EnhancedChicken) {
+            EnhancedAnimalAbstract parent = ((EnhancedChicken) eaa).followParentGoal.getParent();
+            if (parent != null) {
+                eaa.startRiding(parent);
+            }
+        }
+    }));
 
     public final Function<Integer, AnimalScheduledFunction> function;
 

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:enhanced_chicken",
+    "eanimod:enhanced_rabbit",
+    "eanimod:enhanced_cow",
+    "eanimod:enhanced_pig",
+    "eanimod:enhanced_llama",
+    "eanimod:enhanced_sheep",
+    "eanimod:enhanced_axolotl",
+    "eanimod:enhanced_turtle"
+  ]
+}

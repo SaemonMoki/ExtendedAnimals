@@ -7,19 +7,19 @@ public class Reference {
 
     public static final String MODID = "eanimod";
     public static final String NAME = "Genetic Animals Mod";
-    public static final String VERSION = "0.8.24";
+    public static final String VERSION = "0.8.29";
     public static final String ACCEPTED_VERSIONS = "[1.18.2]";
     public static final String CLIENT_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ServerProxy";
-    public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 20;
-    public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 284;
-    public static final int PIG_AUTOSOMAL_GENES_LENGTH = 120;
+    public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 22;
+    public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 298;
+    public static final int PIG_AUTOSOMAL_GENES_LENGTH = 206;
     public static final int COW_AUTOSOMAL_GENES_LENGTH = 254;
     public static final int LLAMA_AUTOSOMAL_GENES_LENGTH = 40;
     public static final int RABBIT_AUTOSOMAL_GENES_LENGTH = 60;
     public static final int SHEEP_AUTOSOMAL_GENES_LENGTH = 104;
     public static final int HORSE_AUTOSOMAL_GENES_LENGTH = 72;
-    public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 12;
+    public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 30;
     public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 46;
     public static final int FOX_AUTOSOMAL_GENES_LENGTH = 104; //number of genes and alleles - size of int array that holds genes
 }

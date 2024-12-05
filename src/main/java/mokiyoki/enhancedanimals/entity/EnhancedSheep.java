@@ -63,6 +63,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.sheepFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_SHEEP;
+import static mokiyoki.enhancedanimals.util.Reference.SHEEP_AUTOSOMAL_GENES_LENGTH;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -150,7 +151,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, SHEEP_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.random.nextInt(this.random.nextInt(8000) + 4000);
     }
@@ -272,7 +273,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
+        return this.adultAge;
+    }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
@@ -424,10 +429,30 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
     }
 
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        enhancedsheep.setGenes(babyGenes);
+        enhancedsheep.setSharedGenes(babyGenes);
+        enhancedsheep.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedsheep.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedsheep.setParent(this.getUUID().toString());
+        enhancedsheep.setGrowingAge();
+        enhancedsheep.setBirthTime();
+        enhancedsheep.initilizeAnimalSize();
+        enhancedsheep.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedsheep.setMaxCoatLength();
+        enhancedsheep.currentCoatLength = 0;
+        enhancedsheep.setCoatLength(0);
+        enhancedsheep.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedsheep;
+    }
+
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedsheep, level, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = 0;
         enhancedsheep.setCoatLength(0);
@@ -942,8 +967,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
 
             boolean mealy = false;
             int pattern1 = 0;
@@ -1058,7 +1083,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         }
 
                         if (gene[90] == 1 || gene[91] == 1) {
-                            mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                            mealy = (pattern1 == 3 || (pattern1 < 14 && pattern1 > 6)) || (pattern2 == 3 || (pattern2 < 14 && pattern2 > 6));
                         }
                     }
 
@@ -1166,7 +1191,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public Colouration getRgb() {
-        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getSharedGenes()!=null;
+        boolean flag = (this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1) && getGenes()!=null;
         this.colouration = super.getRgb();
 
         if(this.colouration == null) {
@@ -1174,7 +1199,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
 
         if (flag) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+            int[] gene = getGenes().getAutosomalGenes();
             float[] melanin = {0.02F, 0.5F, 0.02F};
             float[] pheomelanin = getBasePheomelanin(gene[72]);
             float[] f = getBasePheomelanin(gene[73]);
@@ -1465,6 +1490,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (!compound.getString("breed").isEmpty()) {
             this.currentCoatLength = this.maxCoatLength;
             this.setCoatLength(this.currentCoatLength);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < SHEEP_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), SHEEP_AUTOSOMAL_GENES_LENGTH));
         }
     }
 

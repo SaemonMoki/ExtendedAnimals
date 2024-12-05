@@ -34,6 +34,15 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
     private static Map<String, AnimalFoodMap> compiledAnimalFoodMap = new HashMap<>();
 
+    //Getter and setter written by Bearded for addon usage
+    public static void addAnimalFoodMap(AnimalFoodMap foodMap, String animal) {
+        compiledAnimalFoodMap.put(animal, foodMap);
+    }
+
+    public static AnimalFoodMap getAnimalFoodMap(String animal) {
+        return compiledAnimalFoodMap.get(animal);
+    }
+
     public FoodSerialiser() {
         super((new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create(), "animal_food");
     }

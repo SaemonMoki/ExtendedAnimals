@@ -99,6 +99,78 @@ public class WrappedModelPart {
     public float getZRot() {
         return this.modelPart.zRot;
     }
+    
+    public boolean lerpXRot(float xRot) {
+        if (this.modelPart.xRot != xRot) {
+            if (Mth.abs(this.modelPart.xRot - xRot) < 0.0001F) {
+                this.modelPart.xRot = xRot;
+            } else {
+                this.modelPart.xRot = Mth.lerp(0.05F, this.modelPart.xRot, xRot);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpYRot(float yRot) {
+        if (this.modelPart.yRot != yRot) {
+            if (Mth.abs(this.modelPart.yRot - yRot) < 0.0001F) {
+                this.modelPart.yRot = yRot;
+            } else {
+                this.modelPart.yRot = Mth.lerp(0.05F, this.modelPart.yRot, yRot);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpZRot(float zRot) {
+        if (this.modelPart.zRot != zRot) {
+            if (Mth.abs(this.modelPart.zRot - zRot) < 0.0001F) {
+                this.modelPart.zRot = zRot;
+            } else {
+                this.modelPart.zRot = Mth.lerp(0.05F, this.modelPart.zRot, zRot);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpX(float x) {
+        if (this.modelPart.x != x) {
+            if (Mth.abs(this.modelPart.x - x) < 0.0001F) {
+                this.modelPart.x = x;
+            } else {
+                this.modelPart.x = Mth.lerp(0.05F, this.modelPart.x, x);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpY(float y) {
+        if (this.modelPart.y != y) {
+            if (Mth.abs(this.modelPart.y - y) < 0.0001F) {
+                this.modelPart.y = y;
+            } else {
+                this.modelPart.y = Mth.lerp(0.05F, this.modelPart.y, y);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpZ(float z) {
+        if (this.modelPart.z != z) {
+            if (Mth.abs(this.modelPart.z - z) < 0.0001F) {
+                this.modelPart.z = z;
+            } else {
+                this.modelPart.z = Mth.lerp(0.05F, this.modelPart.z, z);
+                return false;
+            }
+        }
+        return true;
+    }
 
     public boolean lerpXRot(float xRot) {
         if (this.modelPart.xRot != xRot) {

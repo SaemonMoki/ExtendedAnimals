@@ -26,6 +26,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mokiyoki.enhancedanimals.init.ModBlocks.CHICKEN_NEST;
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_ALLIUM;
 import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_AZURE_BLUET;
@@ -430,6 +431,7 @@ public class ModItems {
     public static final RegistryObject<Item> POST_OAK_ITEM = ITEMS_DEFERRED_REGISTRY.register("post_oak", () -> new BlockItem(POST_OAK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> POST_SPRUCE_ITEM = ITEMS_DEFERRED_REGISTRY.register("post_spruce", () -> new BlockItem(POST_SPRUCE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
 
+    public static final RegistryObject<Item> CHICKEN_NEST_ITEM = ITEMS_DEFERRED_REGISTRY.register("chicken_nest_item", () -> new BlockItem(CHICKEN_NEST.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> EGG_CARTON_ITEM = ITEMS_DEFERRED_REGISTRY.register("egg_carton", () -> new BlockItem(EGG_CARTON.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> TURTLE_EGG_ITEM = ITEMS_DEFERRED_REGISTRY.register("turtle_egg", () -> new BlockItem(TURTLE_EGG.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> UNBOUNDHAY_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new BlockItem(UNBOUNDHAY_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));

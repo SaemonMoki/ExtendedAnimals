@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
@@ -18,15 +17,13 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
-import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
-import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -73,7 +70,6 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -87,6 +83,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -98,7 +95,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -125,6 +121,19 @@ public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
+        if (event.loadedFromDisk()) {
+            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
+                if (EanimodCommonConfig.COMMON.passageOfTimeEnabled.get() && !((EnhancedAnimalAbstract) entity).isNoAi()) {
+                    ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+                }
+            }
+        } else {
+            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedChicken enhancedChicken) {
+                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos
+                enhancedChicken.currentNestScore = 0.0F;
+            }
+        }
+
 
         if (entity instanceof Villager) {
             Set<String> tags = entity.getTags();
@@ -179,8 +188,16 @@ public class EventSubscriber {
                 if (((EnhancedChicken) entity).isChickenJockey()) {
                     ((EnhancedChicken) entity).scheduleDespawn(4000);
                 }
-                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(12000));
+                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {
+        Entity entity = event.getEntity();
+        if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract && entity.getRemovalReason() != Entity.RemovalReason.KILLED) {
+            ((EnhancedAnimalAbstract)entity).setUnloadTime(event.getWorld().getGameTime());
         }
     }
 
@@ -794,6 +811,11 @@ public class EventSubscriber {
                 if (name.equals("technoblade") || name.equals("techno")) {
                     event.setCanceled(true);
                 }
+            }
+        } else if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
+            if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody() || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
+                event.setCanceled(true);
+                enhancedChicken.teleportTo(enhancedChicken.getNest().getX(), enhancedChicken.getNest().getY(), enhancedChicken.getNest().getZ());
             }
         }
     }

@@ -58,6 +58,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,7 @@ import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCow
 import static mokiyoki.enhancedanimals.renderer.textures.CowTexture.calculateCowTextures;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
@@ -88,7 +90,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private CowModelData cowModelData;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, COW_AUTOSOMAL_GENES_LENGTH, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = (int)((double)(this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300)/ getMilkModifier());
@@ -152,7 +154,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeCow.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeCow.get();
+        return this.adultAge;
+    }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
@@ -389,11 +395,28 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void runExtraIdleTimeTick() {
     }
 
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        enhancedcow.setGenes(babyGenes);
+        enhancedcow.setSharedGenes(babyGenes);
+        enhancedcow.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedcow.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedcow.setParent(this.getUUID().toString());
+        enhancedcow.setGrowingAge();
+        enhancedcow.setBirthTime();
+        enhancedcow.initilizeAnimalSize();
+        enhancedcow.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        enhancedcow.configureAI();
+        return enhancedcow;
+    }
 
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedcow, level, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
         this.level.addFreshEntity(enhancedcow);
@@ -599,7 +622,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        Genes genes = getSharedGenes();
+        Genes genes = getGenes();
 
         if (genes != null) {
             calculateCowRGB(this.colouration, genes, this.getOrSetIsFemale());
@@ -633,14 +656,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
 
 
-            if (genes[38] == 6){
-                maxBagSize = maxBagSize - 0.01F;
+            if (genes[38] >= 5){
+                maxBagSize -= genes[38]==6? 0.01F : 0.005F;
             }
-            if (genes[39] == 6){
-                maxBagSize = maxBagSize - 0.01F;
+            if (genes[39] >= 5){
+                maxBagSize -= genes[39]==6? 0.01F : 0.005F;
             }
 
-            if (genes[40] == 1){
+            if (genes[40] >= 3){
                 maxBagSize = maxBagSize - 0.01F;
             }
             if (genes[41] == 1){
@@ -829,6 +852,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected void dropEquipment() {
         super.dropEquipment();
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < COW_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), COW_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     public void addAdditionalSaveData(CompoundTag compound) {

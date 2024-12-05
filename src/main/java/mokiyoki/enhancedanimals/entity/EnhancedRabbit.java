@@ -66,6 +66,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -73,6 +74,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.rabbitFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
+import static mokiyoki.enhancedanimals.util.Reference.RABBIT_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IForgeShearable {
 
@@ -209,7 +211,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private GrazingGoal grazingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, Level worldIn) {
-        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, RABBIT_AUTOSOMAL_GENES_LENGTH, true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpControl = new EnhancedRabbit.JumpHelperController(this);
         this.moveControl = new EnhancedRabbit.MoveHelperController(this);
@@ -373,7 +375,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeRabbit.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeRabbit.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {
@@ -453,6 +459,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.spawnSprintParticle();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < RABBIT_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), RABBIT_AUTOSOMAL_GENES_LENGTH));
         }
     }
 
@@ -622,6 +635,26 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         }
 
         return ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        enhancedrabbit.setGenes(babyGenes);
+        enhancedrabbit.setSharedGenes(babyGenes);
+        enhancedrabbit.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedrabbit.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedrabbit.setParent(this.getUUID().toString());
+        enhancedrabbit.setGrowingAge();
+        enhancedrabbit.setBirthTime();
+        enhancedrabbit.initilizeAnimalSize();
+        enhancedrabbit.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedrabbit.setMaxCoatLength();
+        enhancedrabbit.currentCoatLength = 0;
+        enhancedrabbit.setCoatLength(0);
+        enhancedrabbit.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedrabbit;
     }
 
     protected void createAndSpawnEnhancedChild(Level level) {
@@ -924,8 +957,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] genesForText = this.getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] genesForText = this.getGenes().getAutosomalGenes();
 
             int under = 0;
             int lower = 0;

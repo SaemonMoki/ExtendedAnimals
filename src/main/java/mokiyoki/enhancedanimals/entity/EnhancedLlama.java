@@ -79,6 +79,7 @@ import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.Reference.LLAMA_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements RangedAttackMob, net.minecraftforge.common.IForgeShearable {
 
@@ -159,7 +160,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private LlamaModelData llamaModelData;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, Level worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, LLAMA_AUTOSOMAL_GENES_LENGTH, true);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
@@ -236,7 +237,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeLlama.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeLlama.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {
@@ -384,6 +389,27 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         } else {
             hunger = hunger + (1.0F*getHungerModifier());
         }
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        enhancedllama.setGenes(babyGenes);
+        enhancedllama.setSharedGenes(babyGenes);
+        enhancedllama.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        enhancedllama.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        enhancedllama.setParent(this.getUUID().toString());
+        enhancedllama.setAge(-enhancedllama.getAdultAge());
+        enhancedllama.setBirthTime();
+        enhancedllama.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedllama.initilizeAnimalSize();
+        enhancedllama.setStrengthAndInventory();
+        enhancedllama.setMaxCoatLength();
+        enhancedllama.currentCoatLength = 0;
+        enhancedllama.setCoatLength(0);
+        enhancedllama.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return enhancedllama;
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
@@ -657,8 +683,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] genesForText = this.getGenes().getAutosomalGenes();
 
             int ground = 0;
             int pattern = 0;
@@ -918,6 +944,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
             int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < LLAMA_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), LLAMA_AUTOSOMAL_GENES_LENGTH));
         }
     }
 

@@ -50,7 +50,11 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeMoobloom.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeMoobloom.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {
@@ -64,10 +68,10 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(Level inWorld) {
+    protected void createAndSpawnEnhancedChild(Level level) {
         EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedmoobloom, level, babyGenes, -this.getAdultAge());
         enhancedmoobloom.configureAI();
         this.level.addFreshEntity(enhancedmoobloom);
     }

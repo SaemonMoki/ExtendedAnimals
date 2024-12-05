@@ -87,6 +87,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -94,7 +95,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
+import static mokiyoki.enhancedanimals.util.Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
@@ -242,7 +245,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private AxolotlModelData axolotlModelData;
 
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
-        super(type, worldIn, 2, Reference.AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
+        super(type, worldIn, 2, AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.moveControl = new EnhancedAxolotl.AxolotlMoveControl(this);
         this.lookControl = new EnhancedAxolotl.AxolotlLookControl(this, 20);
@@ -352,7 +355,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeAxolotl.get();}
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = EanimodCommonConfig.COMMON.adultAgeAxolotl.get();
+        return this.adultAge;
+    }
 
     @Override
     protected int gestationConfig() {
@@ -414,10 +421,36 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
+        axolotl.setGenes(babyGenes);
+        axolotl.setSharedGenes(babyGenes);
+        axolotl.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+        axolotl.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+        axolotl.setGrowingAge();
+        axolotl.setBirthTime();
+        axolotl.initilizeAnimalSize();
+        axolotl.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+        axolotl.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        return axolotl;
+    }
+
+    @Override
     protected void createAndSpawnEnhancedChild(Level world) {}
+
+    @Override
+    protected void resetMateName() {}
 
     public int getHungerRestored(ItemStack stack) {
         return 8000;
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < AXOLOTL_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), AXOLOTL_AUTOSOMAL_GENES_LENGTH));
+        }
     }
 
     @Override
@@ -537,8 +570,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        if (this.getSharedGenes() != null) {
-            int[] gene = getSharedGenes().getAutosomalGenes();
+        if (this.getGenes() != null) {
+            int[] gene = getGenes().getAutosomalGenes();
             int gills = 0;
             int gillsColour = 0;
             int gillsColour2 = 0;
@@ -591,6 +624,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
+            if (gillsColour < 0) gillsColour = 0;
+            if (gillsColour2 < 0) gillsColour2 = 0;
             TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
             addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
             addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour2, gills, true);
@@ -600,6 +635,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
             addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+            if (pied < 0) pied = 0;
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
             parentGroup.addGrouping(bodyGroup);
 
@@ -625,18 +661,71 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @OnlyIn(Dist.CLIENT)
+    private float[] calculateEyeColor(int[] gene, int eyeType) {
+        //NormalEyes
+        float[] eyeHSB = {0.75F, 0.5F, 0.25F};
+
+        switch (eyeType) {
+            case 2 -> {
+                //DarkEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+                eyeHSB[2] *= 0.5F;
+            }
+            case 3 -> {
+                //PigmentedEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+            }
+            case 4 -> {
+                //LightEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+                eyeHSB[2] = 1.0F;
+            }
+            case 5 -> {
+                //PastelEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+                eyeHSB[1] *= 0.5F;
+                eyeHSB[2] = 1.0F;
+            }
+            case 6 -> {
+                //GlowEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
+            }
+            default -> {
+                //NormalEyes
+                if (gene[0] == 2 && gene[1] == 2) {
+                    //Albino
+                    if (gene[2] == 2 && gene[3] == 2) {
+                        //Axanthic Albino
+                        eyeHSB[0] = 0.95F;
+                        eyeHSB[2] = 0.8F;
+                    } else {
+                        eyeHSB[0] = 0.09F;
+                        eyeHSB[1] = 0.75F;
+                        eyeHSB[2] = 0.8F;
+                    }
+                }
+            }
+
+
+        }
+        return eyeHSB;
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        Genes genes = getSharedGenes();
+        Genes genes = getGenes();
         if (genes != null) {
             if (this.colouration.getDyeColour() == -1 || this.colouration.getLeftEyeColour() == -1 || this.colouration.getRightEyeColour() == -1 || this.colouration.getBridleColour() == -1) {
                 int[] gene = genes.getAutosomalGenes();
 
                 if (gene[10] != 1 || gene[11] != 1) {
-                    this.colouration.setDyeColour(Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255));
+                    float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255);
+                    this.colouration.setDyeColour(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
                 }
 
-                float eyeHue = 0.75F;
+                /*float eyeHue = 0.75F;
                 float eyeSaturation = 0.5F;
                 float eyeBrightness = 0.25F;
 
@@ -712,10 +801,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                             eyeBrightness = 0.75F;
                         }
                     }
-                }
+                }*/
 
-                this.colouration.setLeftEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
-                this.colouration.setRightEyeColour(Colouration.HSBtoARGB(eyeHue, eyeSaturation, eyeBrightness));
+                int eyeColor = Colouration.getAxolotlEyes(calculateEyeColor(gene, gene[20]), calculateEyeColor(gene, gene[21]));
+
+                this.colouration.setLeftEyeColour(eyeColor);
+                this.colouration.setRightEyeColour(eyeColor);
             }
         }
 
@@ -772,9 +863,9 @@ NBT read/write
     @OnlyIn(Dist.CLIENT)
     public void setBucketImageData(EnhancedLayeredTexturer texture) {
         if (this.isAlive()) {
-            if (this.getSharedGenes() != null && texture.hasImage()) {
-                boolean g = this.getSharedGenes().isHomozygousFor(34, 2) ^ this.getSharedGenes().isHomozygousFor(36, 2);
-                boolean l = this.getSharedGenes().isHomozygousFor(32, 2);
+            if (this.getGenes() != null && texture.hasImage()) {
+                boolean g = this.getGenes().isHomozygousFor(34, 2) ^ this.getGenes().isHomozygousFor(36, 2);
+                boolean l = this.getGenes().isHomozygousFor(32, 2);
                 int[] axolotlBucketImage = new int[86];
                 int[] x = new int[]{
                         g?40:39, 40, 41, 46, 47, g?47:48,
@@ -876,7 +967,7 @@ NBT read/write
         Bucketable.saveDefaultDataToBucketTag(this, stack);
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
             EnhancedAxolotlBucket.setImage(stack, getImageArrayFromString(this.getBucketImage()));
-            EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
+            EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
             if (this.hasEgg() && this.mateGenetics != null) {
@@ -1152,6 +1243,7 @@ NBT read/write
                         this.axolotl.setHasEgg(false);
                         this.axolotl.pregnant = false;
                         this.axolotl.eggLayingTimer = -1;
+                        this.axolotl.mateName = "???"; //Reset mate name
                     }
 //                    this.axolotl.setInLove(600);
                 }

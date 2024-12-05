@@ -69,10 +69,12 @@ public abstract class NestBlock extends Block {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
 
-        EggHolder eggHolder = context.getItemInHand().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItemInHand());
+        if (context.getItemInHand().getItem() instanceof EnhancedEgg) {
+            EggHolder eggHolder = context.getItemInHand().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItemInHand());
 
-        if (eggHolder.getGenes()!=null) {
-            context.getLevel().getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(context.getClickedPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
+            if (eggHolder.getGenes() != null) {
+                context.getLevel().getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(context.getClickedPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
+            }
         }
 
         return blockstate.is(this) ? blockstate : super.getStateForPlacement(context);

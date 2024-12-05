@@ -3,9 +3,12 @@ package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
@@ -34,6 +37,7 @@ import net.minecraft.server.level.ServerLevel;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 
@@ -137,8 +141,20 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                     for (EggHolder egg : eggList) {
                         level.levelEvent(2001, pos, Block.getId(state));
                         EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-                        turtle.setGenes(egg.getGenes());
-                        turtle.setSharedGenes(egg.getGenes());
+                        if (egg.getGenes().getNumberOfAutosomalGenes() < Reference.TURTLE_AUTOSOMAL_GENES_LENGTH) {
+                            int length = Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
+                            int oldLength = egg.getGenes().getNumberOfAutosomalGenes();
+                            int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+                            Genes fixedGenetics = new Genes(length);
+                            for (int e = 0; e < length; e++) {
+                                fixedGenetics.setAutosomalGene(e, oldLength < e ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);
+                            }
+                            turtle.setGenes(fixedGenetics);
+                            turtle.setSharedGenes(fixedGenetics);
+                        } else {
+                            turtle.setGenes(egg.getGenes());
+                            turtle.setSharedGenes(egg.getGenes());
+                        }
                         turtle.setSireName(egg.getSire());
                         turtle.setDamName(egg.getDam());
                         turtle.setGrowingAge();

@@ -19,9 +19,9 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -95,6 +95,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private EditBox gBox;
     private EditBox bBox;
 
+    private Checkbox cBox;
+    private boolean sticker_edge = true;
+
     double xPos = 0;
     int yPos = 0;
 
@@ -110,7 +113,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     int backgroundWidth = 0;
     int backgroundHeight = 0;
 
-    PhotoMode currentMode = RGB;
+    PhotoMode currentMode = TRANSPARENCY;
 
     PhotoPose currentPose = STANDARD_POSE;
 
@@ -200,17 +203,24 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         this.gBox.setMaxLength(3);
         this.gBox.setBordered(false);
         this.gBox.setVisible(true);
-        this.gBox.setTextColor(65280);
         this.gBox.setValue("0");
+        this.gBox.setTextColor(65280);
+        this.gBox.setFilter(isValidInput);
         this.addWidget(this.gBox);
 
         this.bBox = new EditBox(this.font, photoI-44, photoJ+233, 20, 9, new TranslatableComponent("photomode.bBox"));
         this.bBox.setMaxLength(3);
         this.bBox.setBordered(false);
         this.bBox.setVisible(true);
-        this.bBox.setTextColor(255);
         this.bBox.setValue("0");
+        this.bBox.setTextColor(255);
+        this.bBox.setFilter(isValidInput);
         this.addWidget(this.bBox);
+
+        this.cBox = new Checkbox(photoI-44, photoJ+193, 20, 20, new TranslatableComponent("photomode.stickerstyle"), false, false);
+
+        this.addWidget(this.cBox);
+
         super.init();
     }
 
@@ -247,7 +257,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
-                renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
+                renderCameraBackground(matrixStack, photoI, photoJ+68, -100, 0, 0, photoWidth, photoHeight, 384, 256);
 
                 //RGB Box Backgrounds
                 this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);
@@ -287,11 +297,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, photoI-46, photoJ+113, 0, 303, 48, 28, 31, 384, 256);
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
+
+                //sticker style checkbox
+//                this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 28, 256, 256);
+
                 if (this.prepareForTransparentScreenshot) {
                     int tempColourHolder = this.currentBackgroundColour;
                     this.currentBackgroundColour = this.greenScreenColour;
                     renderCameraBackground(matrixStack, photoI, photoJ+68, 0, 0, 0, photoWidth, photoHeight, 384, 256);
                     this.currentBackgroundColour = tempColourHolder;
+                    this.sticker_edge = this.cBox.selected();
+                } else {
+                    this.cBox.render(matrixStack, mouseX, mouseY, p_render_3_);
                 }
             }
 
@@ -447,18 +464,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         double d0;
         double d1;
 
-        if (this.menu.enhancedAnimal.canHaveChest()) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                d0 = p_mouseClicked_1_ - (double) (i + 140);
-                d1 = p_mouseClicked_3_ - (double) (j - 28);
-                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
-                    this.chestTabEnabled = false;
-                    this.photoModeEnabled = false;
-                    this.menu.getAnimal().isInPhotoMode = false;
-                    toggleSlots();
-                    return true;
-                }
+        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            d0 = p_mouseClicked_1_ - (double) (i + 140);
+            d1 = p_mouseClicked_3_ - (double) (j - 28);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
+                this.chestTabEnabled = false;
+                this.photoModeEnabled = false;
+                this.menu.getAnimal().isInPhotoMode = false;
+                toggleSlots();
+                return true;
+            }
 
+            if (this.menu.enhancedAnimal.canHaveChest()) {
                 d0 = p_mouseClicked_1_ - (double) (i + 111);
                 d1 = p_mouseClicked_3_ - (double) (j - 28);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
@@ -468,17 +485,18 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     toggleSlots();
                     return true;
                 }
+            }
 
+        } else {
+            d0 = p_mouseClicked_1_ - (double) (i + 176);
+            d1 = p_mouseClicked_3_ - (double) (j + 42);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                this.chestTabEnabled = false;
+                toggleSlots();
+                return true;
+            }
 
-            } else {
-                d0 = p_mouseClicked_1_ - (double) (i + 176);
-                d1 = p_mouseClicked_3_ - (double) (j + 42);
-                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
-                    this.chestTabEnabled = false;
-                    toggleSlots();
-                    return true;
-                }
-
+            if (this.menu.enhancedAnimal.canHaveChest()) {
                 d0 = p_mouseClicked_1_ - (double) (i + 176);
                 d1 = p_mouseClicked_3_ - (double) (j + 17);
                 if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
@@ -685,6 +703,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
                     if (selectedImage instanceof File) {
                         previousSelectionWasFile = true;
+
                         InputStream inputStream = Files.newInputStream(((File)selectedImage).toPath());
 
                         NativeImage nativeImage = NativeImage.read(inputStream);
@@ -693,7 +712,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                         this.backgroundHeight = nativeImage.getHeight();
 
                         DynamicTexture dynamicTexture = new DynamicTexture(nativeImage);
-                        BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(((File)selectedImage).getName(), dynamicTexture);
+
+                        BACKGROUND_TEXTURE = Minecraft.getInstance().getTextureManager().register(((File)selectedImage).getName().toLowerCase(), dynamicTexture);
 
                     } else if (selectedImage instanceof ResourceLocation) {
                         previousSelectionWasFile = false;
@@ -705,8 +725,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     }
 
 
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
 
             }
 
@@ -762,17 +781,116 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         int startWidth = wholeScreenshot.getWidth() / 4;
         int startHeight = wholeScreenshot.getHeight() / 4;
 
-        for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
-            for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
-                int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
-                if (this.currentMode == TRANSPARENCY && pixel == greenScreenColour) {
-                    selectedPhotoArea.setPixelRGBA(j, i, transparentColour);
-                } else {
+        if (this.currentMode == TRANSPARENCY) {
+            int x = startWidth;
+            int y = startHeight;
+            int x_end = 0;
+            int y_bottom = 0;
+
+            for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
+                for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
+                    int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
+                    if (pixel == greenScreenColour) {
+                        selectedPhotoArea.setPixelRGBA(j, i, transparentColour);
+                    } else {
+                        if (j<x) {
+                            x=j;
+                        }
+                        if (i<y) {
+                            y=i;
+                        }
+                        if (j>x_end) {
+                            x_end=j;
+                        }
+                        if (i>y_bottom) {
+                            y_bottom=i;
+                        }
+                        selectedPhotoArea.setPixelRGBA(j, i, pixel);
+                    }
+                }
+            }
+
+            int width = x_end-x;
+            int height = y_bottom-y;
+            NativeImage croppedImage;
+            if (sticker_edge) {
+                croppedImage = new NativeImage(width+6, height+6, false);
+                boolean[][] hassubject = new boolean[width+6][height+6];
+                for(int i = 0; i < height+6; ++i) {
+                    for (int j = 0; j < width+6; ++j) {
+                        if (j<3 || j>=width+3 || i<3 || i>=height+3) {
+                            croppedImage.setPixelRGBA(j, i, transparentColour);
+                            hassubject[j][i] = false;
+                        } else {
+                            int pixel = selectedPhotoArea.getPixelRGBA(x+(j-2), y+(i-2));
+                            croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+(j-2), y+(i-2)));
+                            hassubject[j][i] = pixel != transparentColour;
+
+                        }
+                    }
+                }
+
+                for(int i = 0; i < height+6; ++i) {
+                    for (int j = 0; j < width+6; ++j) {
+                        if (!hassubject[j][i]) {
+                            makeOutline(j, width, i, height, hassubject, croppedImage, -16777216);
+                        }
+                    }
+                }
+
+            } else {
+                croppedImage = new NativeImage(width, height, false);
+                for(int i = 0; i < height; ++i) {
+                    for (int j = 0; j < width; ++j) {
+                        croppedImage.setPixelRGBA(j, i, selectedPhotoArea.getPixelRGBA(x+j, y+i));
+                    }
+                }
+            }
+
+            selectedPhotoArea = croppedImage;
+
+        } else {
+            for(int i = 0; i < selectedPhotoArea.getHeight(); ++i) {
+                for(int j = 0; j < selectedPhotoArea.getWidth(); ++j) {
+                    int pixel = wholeScreenshot.getPixelRGBA(startWidth+j, startHeight+i) | 255 << NativeImage.Format.RGBA.alphaOffset();
                     selectedPhotoArea.setPixelRGBA(j, i, pixel);
                 }
             }
         }
+
         return selectedPhotoArea;
+    }
+
+    private void makeOutline(int j, int width, int i, int height, boolean[][] hassubject, NativeImage croppedImage, int outlineColour) {
+        for (int l = -1; l < 2; l++) {
+            for (int k = -1; k < 2; k++) {
+                if (!(l==0 && k==0)) {
+                    if (!(j + k == -1 || j + k == width + 6 || i + l == -1 || i + l == height + 6)) {
+                        if (hassubject[j + k][i + l]) {
+                            makeThickOutline(j, width, i, height, hassubject, croppedImage, -1);
+                            if (l==0 || k==0) {
+                                croppedImage.setPixelRGBA(j, i, outlineColour);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void makeThickOutline(int j, int width, int i, int height, boolean[][] hassubject, NativeImage croppedImage, int outlineColour) {
+        for (int l = -2; l < 3; l++) {
+            for (int k = -2; k < 3; k++) {
+                if (l==k && !(l==-1 || l==1)) continue;
+                if (hassubject[j+k][i+l]) continue;
+                if (!(j + k == -1 || j + k == width + 6 || i + l == -1 || i + l == height + 6)) {
+                    if (croppedImage.getPixelRGBA(j+k, i+l) == transparentColour) {
+                        croppedImage.setPixelRGBA(j+k, i+l, outlineColour);
+                    }
+                }
+            }
+        }
     }
 
     private File getFile(File p_92288_) {
@@ -998,7 +1116,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             renderTabs(matrixStack, i, j, 0, 0, 256, 256);
 
             if (this.enhancedAnimalInfo.created && !this.photoModeEnabled) {
-                InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
+                renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
             }
 
             if (!this.chestTabEnabled && !this.photoModeEnabled) {
@@ -1102,6 +1220,46 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
     }
 
+    public void renderEntityInInventory(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity p_98856_) {
+        float $$6 = (float)Math.atan((double)(facingDirectionX / 40.0F));
+        float $$7 = (float)Math.atan((double)(facingDirectionY / 40.0F));
+        PoseStack poseStack = RenderSystem.getModelViewStack();
+        poseStack.pushPose();
+        poseStack.translate((double)xPos, (double)yPose, 1050.0);
+        poseStack.scale(1.0F, 1.0F, -1.0F);
+        RenderSystem.applyModelViewMatrix();
+        PoseStack poseStack1 = new PoseStack();
+        poseStack1.translate(0.0, 0.0, 1000.0);
+        poseStack1.scale((float)scale, (float)scale, (float)scale);
+        Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
+        Quaternion quaternion1 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
+        quaternion.mul(quaternion1);
+        poseStack1.mulPose(quaternion);
+        float $$12 = p_98856_.yBodyRot;
+        float $$13 = p_98856_.getYRot();
+        float $$14 = p_98856_.getXRot();
+        p_98856_.yBodyRot = 180.0F + $$6 * 20.0F;
+        p_98856_.setYRot(180.0F + $$6 * 40.0F);
+        p_98856_.setXRot(-$$7 * 20.0F);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher $$17 = Minecraft.getInstance().getEntityRenderDispatcher();
+        quaternion1.conj();
+        $$17.overrideCameraOrientation(quaternion1);
+        $$17.setRenderShadow(false);
+        MultiBufferSource.BufferSource $$18 = Minecraft.getInstance().renderBuffers().bufferSource();
+        RenderSystem.runAsFancy(() -> {
+            $$17.render(p_98856_, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack1, $$18, 15728880);
+        });
+        $$18.endBatch();
+        $$17.setRenderShadow(true);
+        p_98856_.yBodyRot = $$12;
+        p_98856_.setYRot($$13);
+        p_98856_.setXRot($$14);
+        poseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        Lighting.setupFor3DItems();
+    }
+
     public void renderEntityPhotoMode(int xPos, int yPose, int scale, float facingDirectionX, float facingDirectionY, LivingEntity entity) {
         float f = (float)Math.atan((facingDirectionX / 40.0F));
         float f1 = (float)Math.atan((facingDirectionY / 40.0F));
@@ -1127,8 +1285,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         entity.yBodyRot = 180.0F + f * 20.0F;
         entity.setYRot(180.0F + f * 40.0F);
         entity.setXRot(-f1 * 20.0F);
-        entity.yHeadRot = entity.getYRot();
-        entity.yHeadRotO = entity.getYRot();
+        entity.yHeadRot = 180.0F + f * 20.0F;
+//        entity.yHeadRotO = 180.0F + f * 20.0F;
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         quaternion1.conj();
@@ -1186,6 +1344,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     @Override
     public void onClose() {
         this.menu.getAnimal().isInPhotoMode = false;
+        Minecraft.getInstance().getTextureManager().release(BACKGROUND_TEXTURE);
         super.onClose();
     }
 

@@ -97,6 +97,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue fertilityTicksChicken;
         public final ForgeConfigSpec.DoubleValue chickenNestTeleportDistance;
         public final ForgeConfigSpec.BooleanValue chickensRemainOnNest;
+        public final ForgeConfigSpec.IntValue nestDecayTime;
         public final ForgeConfigSpec.IntValue adultAgeChicken;
         public final ForgeConfigSpec.IntValue spawnWeightChickens;
         public final ForgeConfigSpec.IntValue minimumChickenGroup;
@@ -330,6 +331,8 @@ public class EanimodCommonConfig {
                     .defineInRange("How many ticks a chicken remains fertile for after being bred, 24000 = 1 Minecraft Day:", 96000, 1, Integer.MAX_VALUE);
             chickensRemainOnNest = builder
                     .define("If enabled hens never leave their nests even if they are hungry", false);
+            nestDecayTime = builder
+                    .defineInRange("How many ticks it takes before a nest could start to decay, this resets every time an eggs is laid or incubated", 24000, 1, Integer.MAX_VALUE);
             chickenNestTeleportDistance = builder
                     .defineInRange("How far away a chicken must be from the centre of the next to start teleporting to guarantee it is aligned, Default is 1.0 blocks", 1.0D, 0.5D, 10D);
             adultAgeChicken = builder

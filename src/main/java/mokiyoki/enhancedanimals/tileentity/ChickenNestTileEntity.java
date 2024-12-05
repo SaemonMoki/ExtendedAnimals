@@ -23,6 +23,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
     private static final int incubationTime = EanimodCommonConfig.COMMON.incubationDaysChicken.get()==0?1:EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     private int incubation;
+    private long nestDecayTime = -1;
     private boolean resetNest = false;
 
     public ChickenNestTileEntity(BlockPos p_155229_, BlockState p_155230_) {
@@ -61,13 +62,22 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         return tag;
     }
 
-    public boolean tick(Level level) {
-        return incubate();
-    }
+    public boolean tick(ServerLevel level) {
+        if (this.nestDecayTime != -1 && level.getGameTime() > (this.nestDecayTime + EanimodCommonConfig.COMMON.nestDecayTime.get())) {
+            level.removeBlock(this.getBlockPos(), true);
+            return false;
+        }
 
-    public boolean incubate() {
         if (!isEmpty()) {
             this.incubation--;
+        }
+        return this.incubation < 0;
+    }
+
+    public boolean incubate(Level level) {
+        if (!isEmpty()) {
+            this.incubation--;
+            setNestDecayTime(level.getGameTime());
         }
         return this.incubation < 0;
     }
@@ -182,7 +192,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         return true;
     }
 
-    public void addEggToNest(ItemStack itemStack) {
+    public void addEggToNest(Level level, ItemStack itemStack) {
         for (int i=0; i<getContainerSize();i++) {
             if (this.items.get(i).isEmpty()) {
                 this.items.set(i, itemStack);
@@ -192,6 +202,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
             }
         }
         nestChanged();
+        setNestDecayTime(level.getGameTime());
     }
 
     public void hatchEggs(Level level, BlockPos pos, Random random) {
@@ -206,6 +217,10 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     private void nestChanged() {
         this.setChanged();
         this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public void setNestDecayTime(long gametime) {
+        this.nestDecayTime = gametime;
     }
 
 }

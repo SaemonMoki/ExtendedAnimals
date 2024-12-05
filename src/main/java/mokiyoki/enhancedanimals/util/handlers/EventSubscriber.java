@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
@@ -128,9 +129,22 @@ public class EventSubscriber {
                 }
             }
         } else {
-            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedChicken enhancedChicken) {
-                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos
+            if (event.getWorld() instanceof ServerLevel serverLevel && entity instanceof EnhancedChicken enhancedChicken) {
+                ChickenNestTileEntity chickenNestEntity =
+                    event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestBelow
+                    ? chickenNestBelow
+                    : event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestAt
+                        ? chickenNestAt
+                        : null;
+
+                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
                 enhancedChicken.currentNestScore = 0.0F;
+
+                if (chickenNestEntity != null) {
+                    chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                    enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                    enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                }
             }
         }
 

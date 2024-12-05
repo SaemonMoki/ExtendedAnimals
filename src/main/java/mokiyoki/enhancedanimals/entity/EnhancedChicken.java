@@ -419,7 +419,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         if (this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
                             if (!nestEntity.isFull()) {
                                 ItemStack eggItem = createEgg();
-                                nestEntity.addEggToNest(eggItem);
+                                nestEntity.addEggToNest(this.level, eggItem);
                             }
                             if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                                 this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
@@ -619,7 +619,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 } else if (this.currentNestScore<0.0F) {
                     this.currentNestScore = -this.currentNestScore + 0.1F;
                 }
-                if (!nestEntity.isFull()) { nestEntity.addEggToNest(eggItem); }
+                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level, eggItem); }
                 if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                     this.setBroody(true);
                 }
@@ -638,7 +638,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         if (this.isBroody()) {
             if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
-                if (nestEntity.incubate()) {
+                if (nestEntity.incubate(this.level)) {
                     nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
                     this.setBroody(false);
                     this.setBrooding(false);

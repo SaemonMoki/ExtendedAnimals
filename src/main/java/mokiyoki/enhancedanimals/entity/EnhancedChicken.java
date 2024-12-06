@@ -419,7 +419,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         if (this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
                             if (!nestEntity.isFull()) {
                                 ItemStack eggItem = createEgg();
-                                nestEntity.addEggToNest(eggItem);
+                                nestEntity.addEggToNest(this.level, eggItem);
                             }
                             if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                                 this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
@@ -575,6 +575,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     protected void incrementHunger() {
+        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
         if (this.sleeping) {
             hunger = hunger + (0.25F*getHungerModifier());
         } else {
@@ -592,6 +593,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isBaby() && (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
+                if (this.gestationTimer == 0) {
+                    this.mateGenetics = null; //Null them out
+                    this.mateName = null;
+                }
             }
 
             if (hunger <= 24000 && !isAnimalSleeping() && !isBroody() && !isRoosting() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
@@ -614,7 +619,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 } else if (this.currentNestScore<0.0F) {
                     this.currentNestScore = -this.currentNestScore + 0.1F;
                 }
-                if (!nestEntity.isFull()) { nestEntity.addEggToNest(eggItem); }
+                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level, eggItem); }
                 if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                     this.setBroody(true);
                 }
@@ -633,7 +638,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         if (this.isBroody()) {
             if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
-                if (nestEntity.incubate()) {
+                if (nestEntity.incubate(this.level)) {
                     nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
                     this.setBroody(false);
                     this.setBrooding(false);
@@ -673,6 +678,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             return super.causeFallDamage(distance, damageMultiplier, damageSource);
         }
             return false;
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.msgId.equals("inWall")) {
+            if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
+                this.teleportTo(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D);
+                return false;
+            }
+        }
+        return super.hurt(source, amount);
     }
 
     @Override
@@ -1159,7 +1175,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
-        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0) {
+        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0 && this.getOrSetIsFemale() && !this.isBaby()) {
             this.setFertile();
         }
         return livingdata;
@@ -1562,7 +1578,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void setFertile(){
-        this.gestationTimer = 96000;
+        this.gestationTimer = EanimodCommonConfig.COMMON.fertilityTicksChicken.get();
         int firstNewEggTime = eggLayingTime()/2;
         if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
         if (this.timeUntilNextEgg > firstNewEggTime) {

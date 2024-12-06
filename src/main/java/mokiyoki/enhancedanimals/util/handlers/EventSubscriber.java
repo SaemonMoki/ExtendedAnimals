@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.animal.Turtle;
@@ -128,9 +129,22 @@ public class EventSubscriber {
                 }
             }
         } else {
-            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedChicken enhancedChicken) {
-                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos
+            if (event.getWorld() instanceof ServerLevel serverLevel && entity instanceof EnhancedChicken enhancedChicken) {
+                ChickenNestTileEntity chickenNestEntity =
+                    event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestBelow
+                    ? chickenNestBelow
+                    : event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestAt
+                        ? chickenNestAt
+                        : null;
+
+                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
                 enhancedChicken.currentNestScore = 0.0F;
+
+                if (chickenNestEntity != null) {
+                    chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                    enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                    enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                }
             }
         }
 
@@ -791,6 +805,10 @@ public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLivingHurtEvent(LivingHurtEvent event) {
+        if (event.getEntity() instanceof EnhancedAnimalAbstract geneticAnimal && geneticAnimal.invulnerable > 0) {
+            event.setCanceled(true);
+        }
+        if (checkHenInWall(event)) { return; };
         if (EanimodCommonConfig.COMMON.onlyKilledWithAxe.get()) {
             if (event.getEntity() instanceof EnhancedAnimalAbstract) {
                 Entity damageSource = event.getSource().getDirectEntity();
@@ -810,12 +828,18 @@ public class EventSubscriber {
                     event.setCanceled(true);
                 }
             }
-        } else if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
+        }
+    }
+
+    private boolean checkHenInWall(LivingHurtEvent event) {
+        if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
             if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody() || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
                 event.setCanceled(true);
-                enhancedChicken.teleportTo(enhancedChicken.getNest().getX(), enhancedChicken.getNest().getY(), enhancedChicken.getNest().getZ());
+                enhancedChicken.teleportTo(enhancedChicken.getNest().getX()+0.5D, enhancedChicken.getNest().getY()+0.0625D, enhancedChicken.getNest().getZ()+0.5D);
+                return true;
             }
         }
+        return false;
     }
 
 //    @SubscribeEvent

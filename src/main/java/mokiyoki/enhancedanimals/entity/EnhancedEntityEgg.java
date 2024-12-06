@@ -141,7 +141,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
-        if (this.level instanceof ServerLevel && this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nest) {
+        if (this.level instanceof ServerLevel serverLevel && this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nest) {
             ItemStack egg = this.getItem();
             ((EnhancedEgg) egg.getItem()).setHasParents(egg, hasParents);
             if (!getGenes().equals("INFERTILE")) {
@@ -149,8 +149,8 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
                 CompoundTag nbtTagCompound = egg.serializeNBT();
                 egg.deserializeNBT(nbtTagCompound);
             }
-            nest.addEggToNest(egg);
-            this.level.broadcastEntityEvent(this, (byte) 3);
+            nest.addEggToNest(serverLevel, egg);
+            serverLevel.broadcastEntityEvent(this, (byte) 3);
             this.remove(RemovalReason.DISCARDED);
             return;
         }
@@ -181,7 +181,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         if (this.level instanceof ServerLevel) {
             if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
-                    if (this.random.nextInt(100) > EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
+                    if (this.random.nextInt(100) < EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
                         EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                         enhancedchicken.setGenes(new Genes(getGenes()));
                         enhancedchicken.geneFixer();

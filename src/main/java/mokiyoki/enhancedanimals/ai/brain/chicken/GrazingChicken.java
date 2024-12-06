@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.ai.brain.chicken;
 
 import mokiyoki.enhancedanimals.ai.brain.Grazing;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,6 +18,14 @@ public class GrazingChicken extends Grazing {
     protected void start(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal, long gameTime) {
         super.start(serverLevel, geneticAnimal, gameTime);
         ((EnhancedChicken)geneticAnimal).setBrooding(false);
+    }
+
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
+        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && geneticAnimal instanceof EnhancedChicken enhancedChicken) {
+            return (enhancedChicken.isBrooding() || enhancedChicken.isBroody());
+        }
+        return true;
     }
 
     @Override

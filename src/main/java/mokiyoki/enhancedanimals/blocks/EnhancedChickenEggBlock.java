@@ -189,7 +189,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                 level.playSound(player, player.getX(), player.getY(),player.getZ(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             } else if (itemStack.getItem() instanceof EnhancedEgg && !nestEntity.isFull()) {
-                nestEntity.addEggToNest(itemStack);
+                nestEntity.addEggToNest(level, itemStack);
                 level.playSound(player, player.getX(), player.getY(),player.getZ(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.setItemInHand(interactionHand, new ItemStack(Items.AIR));
                 return InteractionResult.sidedSuccess(level.isClientSide);

@@ -98,6 +98,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.types.add(ChickenBreeds.SLATE_LEGS);
         this.types.add(ChickenBreeds.FIBRO);
         this.types.add(ChickenBreeds.BUTTERCUP_COMB);
+        this.types.add(ChickenBreeds.SCALELESS);
 
         this.types.addAll(this.breeds);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
@@ -999,7 +1000,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[107] = 1;
         }
 
-        // Scaless [ wildtype, scaleless ]
+        // Scaleless [ wildtype, scaleless ]
         autosomalGenes[108] = ThreadLocalRandom.current().nextInt(200) > 198 ? 2 : 1;
         autosomalGenes[109] = 1;
 

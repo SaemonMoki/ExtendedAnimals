@@ -336,6 +336,7 @@ public final class ChickenBreeds {
     public static final Breed WILLOW_LEGS = new Breed(new Breed.Properties().setData("willowlegs", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.WILLOWLEGS.get()));
     public static final Breed GREEN_LEGS = new Breed(new Breed.Properties().setData("greenlegs", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.GREENLEGS.get()));
     public static final Breed FIBRO = new Breed(new Breed.Properties().setData("fibromelanosis", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.FIBROMELANOSIS.get()));
+    public static final Breed SCALELESS = new Breed(new Breed.Properties().setData("scaless", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.SCALELESS.get()));
 
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(
@@ -414,6 +415,7 @@ public final class ChickenBreeds {
         FLUFFYLEGS("empty", new GeneSketch().add(58, "2", "1").add(102, "2")),
         CREEPER("empty", new GeneSketch().add(70, "1,2")),
         NAKEDNECK("empty", new GeneSketch().add(52, "1,1|2")),
+        SCALELESS("empty", new GeneSketch().add(108, "2")),
         CHARCOAL("empty", new GeneSketch(100, "2"));
 
         public final GeneSketch sexlinked;

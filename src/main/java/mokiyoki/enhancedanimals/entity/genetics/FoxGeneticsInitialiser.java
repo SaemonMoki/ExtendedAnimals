@@ -200,6 +200,10 @@ public class FoxGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
+        //burgandy [normal, wideband]
+        autosomalGenes[104] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        autosomalGenes[105] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
 
 
         // SMOKY FACTOR - increases levels of dark hairs scattered thru coat

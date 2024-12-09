@@ -423,9 +423,9 @@ public class EanimodCommonConfig {
 
             builder.push("passageOfTime");
             passageOfTimeEnabled = builder
-                    .define("Allow 'Passage of Time' feature, which allows animal pregnancy and similar features to progress after player time away from chunk", true);
+                    .define("Allow 'Passage of Time' feature, which allows animal pregnancy and similar features to progress after player time away from chunk", false);
             passageOfTimeChickenEnabled = builder
-                    .define("Allow 'Passage of Time' feature for chickens", true);
+                    .define("Allow 'Passage of Time' feature for chickens", false);
             passageOfTimeChickenStages = builder
                     .defineInRange("How many 'stages' can pass for a chicken when it is loaded in, each of these is one stage: Make a nest, lay in the nest, hatch the nest, Default is 2 stages", 2, 1, 3);
             passageOfTimeChickenNoHatch = builder

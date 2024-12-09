@@ -682,9 +682,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.msgId.equals("inWall")) {
-            if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
-                this.teleportTo(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D);
+        if (this.level instanceof ServerLevel) {
+            if (source.msgId.equals("inWall")) {
+                if (this.suffocationTimer > 50) {
+                    if (this.getNavigation().getPath() != null && this.getNavigation().getPath().getNextNodeIndex() > 0) {
+                        BlockPos previousPos = this.getNavigation().getPath().getPreviousNode().asBlockPos();
+                        this.setPos(previousPos.getX()+0.5D, previousPos.getY(), previousPos.getZ()+0.5D);
+                        return false;
+                    }
+                    if (!((this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level.getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
+                        this.setNest(BlockPos.ZERO);
+                    }
+                    if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
+                        this.setPos(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D);
+                    }
+                }
+                this.suffocationTimer++;
                 return false;
             }
         }

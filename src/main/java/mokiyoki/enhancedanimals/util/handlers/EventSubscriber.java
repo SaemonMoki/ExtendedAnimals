@@ -808,7 +808,6 @@ public class EventSubscriber {
         if (event.getEntity() instanceof EnhancedAnimalAbstract geneticAnimal && geneticAnimal.invulnerable > 0) {
             event.setCanceled(true);
         }
-        if (checkHenInWall(event)) { return; };
         if (EanimodCommonConfig.COMMON.onlyKilledWithAxe.get()) {
             if (event.getEntity() instanceof EnhancedAnimalAbstract) {
                 Entity damageSource = event.getSource().getDirectEntity();
@@ -829,17 +828,6 @@ public class EventSubscriber {
                 }
             }
         }
-    }
-
-    private boolean checkHenInWall(LivingHurtEvent event) {
-        if (event.getEntity() instanceof EnhancedChicken enhancedChicken && event.getSource().msgId.equals("inWall")) {
-            if (enhancedChicken.getNest() != BlockPos.ZERO && ((enhancedChicken.isBrooding() || enhancedChicken.isBroody() || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || enhancedChicken.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
-                event.setCanceled(true);
-                enhancedChicken.teleportTo(enhancedChicken.getNest().getX()+0.5D, enhancedChicken.getNest().getY()+0.0625D, enhancedChicken.getNest().getZ()+0.5D);
-                return true;
-            }
-        }
-        return false;
     }
 
 //    @SubscribeEvent

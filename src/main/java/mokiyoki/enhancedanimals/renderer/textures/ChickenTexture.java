@@ -475,9 +475,13 @@ public class ChickenTexture {
             TextureGrouping featherCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
             if (isNakedNeck) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/" + (gene[52] == gene[53] ? "naked" : "bowtie") + "_neck.png", gene[52] == gene[53] ? "bt" : "nn");
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
             }
             if (facefeathers != -1) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/baldface_" + facefeathers + ".png");
+            } else {
+                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
             }
             featherMask.addGrouping(featherCutout);
         }
@@ -496,12 +500,14 @@ public class ChickenTexture {
                         /**
                          *      This one controls the sickle feather
                          */
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
                     } else {
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailType);
+                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
                     }
                 }
-        }
+        } else {
+                chicken.addTextureToAnimalTextureGrouping(featherMask, "", false);
+            }
         featherGroup.addGrouping(featherMask);
     }
 
@@ -530,6 +536,8 @@ public class ChickenTexture {
             chicken.addTextureToAnimalTextureGrouping(earCutout, "ear/" + ear, ear);
 
             parentGroup.addGrouping(earCutout);
+        } else {
+            chicken.addTextureToAnimalTextureGrouping(parentGroup, "", false);
         }
     }
 

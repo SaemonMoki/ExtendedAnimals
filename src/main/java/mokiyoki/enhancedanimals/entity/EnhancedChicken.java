@@ -995,7 +995,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         int age = this.getEnhancedAnimalAge();
         int bodyType = 0;
         int meatSize;
-        int featherCount = random.nextInt(4+looting)-1;
+        int featherCount = (genes[108]==2&&genes[109]==2)||(genes[106]==2&&genes[107]==2) ? 0 : random.nextInt(4+looting)-1;
 
         if (genes[146] == 2 && genes[147] == 2) {
             if (genes[148] != 2 || genes[149] != 2) {
@@ -1009,16 +1009,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         }
 
-        if (age < 60000) {
-            if (age > 40000) {
-                bodyType = bodyType - 1;
-                featherCount = featherCount - 1;
-            } else if (age > 20000){
-                bodyType = bodyType - (random.nextInt(2)+1);
-                featherCount = featherCount - 2;
-            } else {
-                bodyType = bodyType - 2;
-                featherCount = featherCount - 3;
+        if (featherCount>0) {
+            if (age < 60000) {
+                if (age > 40000) {
+                    bodyType = bodyType - 1;
+                    featherCount = featherCount - 1;
+                } else if (age > 20000) {
+                    bodyType = bodyType - (random.nextInt(2) + 1);
+                    featherCount = featherCount - 2;
+                } else {
+                    bodyType = bodyType - 2;
+                    featherCount = featherCount - 3;
+                }
+            }
+            if (genes[52]==1 || genes[53]==1) {
+                featherCount = (int) (featherCount * (genes[52] == genes[53] ? 0.5 : 0.8));
             }
         }
 

@@ -1009,19 +1009,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         }
 
-        if (featherCount>0) {
-            if (age < 60000) {
-                if (age > 40000) {
-                    bodyType = bodyType - 1;
-                    featherCount = featherCount - 1;
-                } else if (age > 20000) {
-                    bodyType = bodyType - (random.nextInt(2) + 1);
-                    featherCount = featherCount - 2;
-                } else {
-                    bodyType = bodyType - 2;
-                    featherCount = featherCount - 3;
-                }
+        if (age < 60000) {
+            if (age > 40000) {
+                bodyType = bodyType - 1;
+                if (featherCount>0) featherCount = featherCount - 1;
+            } else if (age > 20000) {
+                bodyType = bodyType - (random.nextInt(2) + 1);
+                if (featherCount>0) featherCount = featherCount - 2;
+            } else {
+                bodyType = bodyType - 2;
+                if (featherCount>0) featherCount = featherCount - 3;
             }
+        }
+
+        if (featherCount>0) {
             if (genes[52]==1 || genes[53]==1) {
                 featherCount = (int) (featherCount * (genes[52] == genes[53] ? 0.5 : 0.8));
             }

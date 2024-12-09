@@ -196,6 +196,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //Protections
     public int invulnerable = 100;
 
+    public int suffocationTimer = 0;
+
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
@@ -781,6 +783,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         if (invulnerable > 0) {
             invulnerable--;
+        }
+
+        if (suffocationTimer > 0 && !this.isInWall()) {
+            suffocationTimer = 0;
         }
 
         if (!scheduledToRun.isEmpty()) {

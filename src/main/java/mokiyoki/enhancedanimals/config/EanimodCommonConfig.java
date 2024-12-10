@@ -28,6 +28,8 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
         public final ForgeConfigSpec.IntValue wildTypeChance;
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
+        public final ForgeConfigSpec.EnumValue<IconStyleConfigEnum> fullIconStyle;
+        public final ForgeConfigSpec.EnumValue<IconStyleConfigEnum> emptyIconStyle;
         public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
         public final ForgeConfigSpec.BooleanValue onlyKilledWithAxe;
         public final ForgeConfigSpec.BooleanValue force16x;
@@ -165,6 +167,10 @@ public class EanimodCommonConfig {
                     .defineInRange("How random the genes should be, 100 is all wildtype animals, 0 is completely random which often results in all white animals:", 90, 0, 100);
             tabsOnTop = builder
                     .define("Animal inventory tabs will be on the top if true and tabs will be on the side if false:", true);
+            fullIconStyle = builder
+                    .defineEnum("What icon set is used when an icon is displaying full: ", IconStyleConfigEnum.GREY);
+            emptyIconStyle = builder
+                    .defineEnum("What icon set is used when an icon is displaying empty: ", IconStyleConfigEnum.SILHOUETTE);
             spawnWithRandomBiome = builder
                     .define("Animals will spawn with random biome type", false);
             onlyKilledWithAxe = builder

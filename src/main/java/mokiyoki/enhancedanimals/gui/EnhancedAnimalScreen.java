@@ -73,6 +73,24 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     /** The mouse y-position recorded during the last renderered frame. */
     private float mousePosY;
 
+    /** Icon set config*/
+    private static final int[] fullIconPos = switch (EanimodCommonConfig.COMMON.fullIconStyle.get()) {
+        case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
+        case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
+        case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
+        case SILHOUETTE -> new int[]{125,54, 134,54, 143,54, 152,54};
+        case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
+        default -> new int[]{125,64, 134,64, 143,64, 152,64};
+    };
+    private static final int[] emptyIconPos = switch (EanimodCommonConfig.COMMON.emptyIconStyle.get()) {
+        case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
+        case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
+        case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
+        case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
+        case GREY -> new int[]{125,64, 134,64, 143,64, 152,64};
+        default -> new int[]{125,54, 134,54, 143,54, 152,54};
+    };
+
     /** temp booleans */
     boolean chestTabEnabled = false;
     boolean omniToggle = false;
@@ -1060,15 +1078,21 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 }
             }
 
-            this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
-            this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
-            this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
+//            this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
+//            this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
+//            this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
+
+            this.blit(matrixStack, i + 136, j + 5, emptyIconPos[0], this.imageHeight + emptyIconPos[1], 9, 10); // health icon
+            this.blit(matrixStack, i + 147, j + 5, emptyIconPos[2], this.imageHeight + emptyIconPos[3], 9, 10); // hunger icon
+            this.blit(matrixStack, i + 158, j + 5, emptyIconPos[4], this.imageHeight + emptyIconPos[5], 10, 10); // tameness icon
 
             int health = Math.min(enhancedAnimalInfo.health, 10);
             int hunger = 10 - enhancedAnimalInfo.hunger;
 //            int tameness = enhancedAnimalInfo.tameness;
-            this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
-            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
+//            this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
+//            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
+            this.blit(matrixStack, i + 136, j + 5 + (10-health), fullIconPos[0], this.imageHeight + fullIconPos[1] + (10-health), 9, health); // health icon
+            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), fullIconPos[2], this.imageHeight + fullIconPos[3] + (10-hunger), 9, hunger); // hunger icon
 //            this.blit(matrixStack, i + 158, j + 5 + (10-tameness), 143, this.imageHeight + 64 + (10-tameness), 10, tameness); // tameness icon
 
             if (this.menu.enhancedAnimal.canHaveSaddle()) {

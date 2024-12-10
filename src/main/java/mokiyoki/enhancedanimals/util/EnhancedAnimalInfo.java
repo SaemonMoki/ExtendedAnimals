@@ -4,6 +4,7 @@ public class EnhancedAnimalInfo {
 
     public int health = 0;
     public int hunger = 0;
+    public int tameness = 0;
     public boolean isFemale = true;
     public int pregnant = 0;
     public String name = "Animal";
@@ -28,6 +29,7 @@ public class EnhancedAnimalInfo {
             age = Integer.valueOf(splits[6]);
             sire = String.valueOf(splits[7]);
             dam = String.valueOf(splits[8]);
+            tameness = Integer.valueOf(splits[9]);
             created = true;
         }
     }
@@ -43,6 +45,7 @@ public class EnhancedAnimalInfo {
         sb.append(age).append("|");
         sb.append(sire).append("|");
         sb.append(dam).append("|");
+        sb.append(tameness).append("|");
         return sb.toString();
     }
 

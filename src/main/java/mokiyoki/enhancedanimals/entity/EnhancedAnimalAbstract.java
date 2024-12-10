@@ -1600,6 +1600,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             animalInfo.age = this.getEnhancedAnimalAge();
             animalInfo.sire = this.sireName;
             animalInfo.dam = this.damName;
+            animalInfo.tameness = this.isTame()?10:0;
 
             if(playerEntity instanceof ServerPlayer) {
                 ServerPlayer entityPlayerMP = (ServerPlayer)playerEntity;
@@ -1622,7 +1623,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected int getPregnancyProgression() {
-        return this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
+        if (this.canBePregnant() && this.pregnant) {
+            return (10 * this.gestationTimer)/gestationConfig();
+        }
+        return -1;
     }
 
     protected String getAnimalsName(String species) {

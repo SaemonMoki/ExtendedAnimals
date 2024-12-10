@@ -174,6 +174,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
+    protected int getPregnancyProgression() {
+        return gestationTimer>0 ? 11 : -1;
+    }
+
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(ROOSTING, Boolean.FALSE);

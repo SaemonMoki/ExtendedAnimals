@@ -109,7 +109,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
-        return super.generateWithBreed(world, pos, this.types, breed);
+        return super.generateWithBreed(world, pos, breed.equals("WanderingTrader")? this.breeds : this.types, breed);
     }
 
     @Override

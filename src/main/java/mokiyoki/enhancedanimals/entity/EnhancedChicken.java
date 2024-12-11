@@ -594,8 +594,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
                 if (this.gestationTimer == 0) {
-                    this.mateGenetics = null; //Null them out
-                    this.mateName = null;
+                    this.mateGenetics = new Genes(new int[CHICKEN_SEXLINKED_GENES_LENGTH], new int[CHICKEN_AUTOSOMAL_GENES_LENGTH]); //Empty them out
+                    this.mateName = "???";
                 }
             }
 

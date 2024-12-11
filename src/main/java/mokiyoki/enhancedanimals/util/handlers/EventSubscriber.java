@@ -17,7 +17,6 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
@@ -79,6 +78,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
@@ -103,6 +104,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
+import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
@@ -119,7 +121,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
  */
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EventSubscriber {
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (event.loadedFromDisk()) {
@@ -130,24 +132,29 @@ public class EventSubscriber {
             }
         } else {
             if (event.getWorld() instanceof ServerLevel serverLevel && entity instanceof EnhancedChicken enhancedChicken) {
-                ChickenNestTileEntity chickenNestEntity =
-                    event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestBelow
-                    ? chickenNestBelow
-                    : event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestAt
-                        ? chickenNestAt
-                        : null;
+                if (enhancedChicken.getOrSetIsFemale()) {
+                    ChunkAccess chunk = serverLevel.getChunkSource().getChunkNow((int)enhancedChicken.getX() >> 4, (int)enhancedChicken.getZ() >> 4);
 
-                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
-                enhancedChicken.currentNestScore = 0.0F;
+                    if (chunk != null && chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
+                        if (enhancedChicken.getNest() != BlockPos.ZERO) {
+                            if (!isValidPath(enhancedChicken, enhancedChicken.getNest(), 24)) {
+                                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
+                            }
+                        }
 
-                if (chickenNestEntity != null) {
-                    chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
-                    enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
-                    enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                        if(event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                            chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                            enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                            enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                        } else if (event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                            chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                            enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                            enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                        }
+                    }
                 }
             }
         }
-
 
         if (entity instanceof Villager) {
             Set<String> tags = entity.getTags();

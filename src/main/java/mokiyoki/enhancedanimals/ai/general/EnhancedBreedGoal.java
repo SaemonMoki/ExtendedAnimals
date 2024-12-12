@@ -15,7 +15,7 @@ public class EnhancedBreedGoal extends BreedGoal {
         if (this.animal.isVehicle() || ((EnhancedAnimalAbstract)this.animal).isAnimalSleeping()) {
             return false;
         }
-        return super.canUse();
+        return super.canUse() && (this.animal.canBreed() && this.partner != null && this.partner.canBreed()); //partner won't be null as it is assigned in super and super must be true to reach this check
     }
 
     /**

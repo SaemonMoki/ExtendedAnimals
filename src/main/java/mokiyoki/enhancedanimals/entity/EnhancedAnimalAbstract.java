@@ -1388,9 +1388,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     public boolean canBreed() {
         if (this.getEnhancedAnimalAge() < this.getAdultAge() || !this.breedable) {
             return false;
-        } else {
-            return super.canBreed();
         }
+        return true;
     }
 
     @Override

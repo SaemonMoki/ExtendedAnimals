@@ -1185,7 +1185,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
 
-        this.breedable = compound.getBoolean("Breedable");
+        // If the breedable tag doesn't exist, default to true
+        this.breedable = !compound.contains("Breedable") || compound.getBoolean("Breedable");
 
         this.hunger = compound.getFloat("Hunger");
 

@@ -73,6 +73,24 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     /** The mouse y-position recorded during the last renderered frame. */
     private float mousePosY;
 
+    /** Icon set config*/
+    private static final int[] fullIconPos = switch (EanimodCommonConfig.COMMON.fullIconStyle.get()) {
+        case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
+        case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
+        case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
+        case SILHOUETTE -> new int[]{125,54, 134,54, 143,54, 152,54};
+        case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
+        default -> new int[]{125,64, 134,64, 143,64, 152,64};
+    };
+    private static final int[] emptyIconPos = switch (EanimodCommonConfig.COMMON.emptyIconStyle.get()) {
+        case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
+        case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
+        case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
+        case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
+        case GREY -> new int[]{125,64, 134,64, 143,64, 152,64};
+        default -> new int[]{125,54, 134,54, 143,54, 152,54};
+    };
+
     /** temp booleans */
     boolean chestTabEnabled = false;
     boolean omniToggle = false;
@@ -380,11 +398,19 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         if (!this.photoModeEnabled) {
             if (this.isHovering(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
                 if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-                    if (this.enhancedAnimalInfo.pregnant > 0) {
-                        if (this.omniToggle) {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                    if (this.enhancedAnimalInfo.pregnant >= 0) {
+                        if (this.enhancedAnimalInfo.pregnant == 11) {
+                            if (this.omniToggle) {
+                                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female").append(" Fertilized"), mouseX, mouseY);
+                            } else {
+                                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male").append(" Fertilized"), mouseX, mouseY);
+                            }
                         } else {
-                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                            if (this.omniToggle) {
+                                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                            } else {
+                                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                            }
                         }
                     } else {
                         if (this.omniToggle) {
@@ -394,14 +420,22 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                         }
                     }
                 } else if (this.enhancedAnimalInfo.isFemale) {
-                    if (this.enhancedAnimalInfo.pregnant > 0) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                    if (this.enhancedAnimalInfo.pregnant >= 0) {
+                        if (this.enhancedAnimalInfo.pregnant == 11) {
+                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female").append(" Fertilized"), mouseX, mouseY);
+                        } else {
+                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                        }
                     } else {
                         this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                     }
                 } else {
-                    if (this.enhancedAnimalInfo.pregnant > 0) {
-                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                    if (this.enhancedAnimalInfo.pregnant >= 0) {
+                        if (this.enhancedAnimalInfo.pregnant == 11) {
+                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male").append(" Fertilized"), mouseX, mouseY);
+                        } else {
+                            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                        }
                     } else {
                         this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                     }
@@ -410,10 +444,21 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.omniToggle = !this.omniToggle;
             }
             if (this.isHovering(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.health").append(" " + (enhancedAnimalInfo.health*10)+"%"), mouseX, mouseY);
             }
-            if (this.isHovering(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+            if (this.isHovering(147, 5, 8, 9, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.hunger").append(" " + (enhancedAnimalInfo.hunger*10)+"%"), mouseX, mouseY);
+            }
+            if (this.isHovering(158, 5, 8, 9, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.tameness").append(": WIP"), mouseX, mouseY);
+            }
+            if (!this.chestTabEnabled) {
+                if (this.isHovering(100, 30, 50, 9, (double)mouseX, (double)mouseY)) {
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").append(": "+enhancedAnimalInfo.sire), mouseX, mouseY);
+                }
+                if (this.isHovering(100, 40, 50, 9, (double)mouseX, (double)mouseY)) {
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").append(": "+enhancedAnimalInfo.dam), mouseX, mouseY);
+                }
             }
         } else {
             if (this.isHoveringPhotoMode(-106, 11, 27, 23, (double)mouseX, (double)mouseY)) {
@@ -1033,16 +1078,22 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 }
             }
 
-            this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
-            this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
-            this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
+//            this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
+//            this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
+//            this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
+
+            this.blit(matrixStack, i + 136, j + 5, emptyIconPos[0], this.imageHeight + emptyIconPos[1], 9, 10); // health icon
+            this.blit(matrixStack, i + 147, j + 5, emptyIconPos[2], this.imageHeight + emptyIconPos[3], 9, 10); // hunger icon
+            this.blit(matrixStack, i + 158, j + 5, emptyIconPos[4], this.imageHeight + emptyIconPos[5], 10, 10); // tameness icon
 
             int health = Math.min(enhancedAnimalInfo.health, 10);
             int hunger = 10 - enhancedAnimalInfo.hunger;
-    //        int tameness = enhancedAnimalInfo.tameness;
-            this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
-            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
-    //        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
+//            int tameness = enhancedAnimalInfo.tameness;
+//            this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
+//            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
+            this.blit(matrixStack, i + 136, j + 5 + (10-health), fullIconPos[0], this.imageHeight + fullIconPos[1] + (10-health), 9, health); // health icon
+            this.blit(matrixStack, i + 147, j + 5 + (10-hunger), fullIconPos[2], this.imageHeight + fullIconPos[3] + (10-hunger), 9, hunger); // hunger icon
+//            this.blit(matrixStack, i + 158, j + 5 + (10-tameness), 143, this.imageHeight + 64 + (10-tameness), 10, tameness); // tameness icon
 
             if (this.menu.enhancedAnimal.canHaveSaddle()) {
                 if (retrievedInventory.getItem(1).isEmpty()) {

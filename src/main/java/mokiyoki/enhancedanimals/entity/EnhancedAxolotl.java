@@ -830,7 +830,7 @@ NBT read/write
 
     @Override
     protected int getPregnancyProgression() {
-        return this.hasEgg() ? 10 : 0;
+        return this.hasEgg() ? 11 : -1;
     }
 
     @Nullable

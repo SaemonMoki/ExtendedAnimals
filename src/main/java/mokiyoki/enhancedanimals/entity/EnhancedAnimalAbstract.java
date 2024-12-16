@@ -130,7 +130,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected Integer adultAge = null;
 
-    protected Boolean breedable = true;
+    protected Boolean unbreedable = false;
 
     //Hunger
     protected float hunger = 0F;
@@ -1095,7 +1095,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.writeNBTGenes("Genetics", compound, this.genetics);
         this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
-        compound.putBoolean("Breedable", this.breedable);
+        compound.putBoolean("Unbreedable", this.unbreedable);
 
         compound.putFloat("Hunger", hunger);
 
@@ -1185,7 +1185,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
 
-        this.breedable = compound.getBoolean("Breedable");
+        this.unbreedable = compound.getBoolean("Unbreedable");
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1386,7 +1386,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean canBreed() {
-        if (this.getEnhancedAnimalAge() < this.getAdultAge() || !this.breedable) {
+        if (this.getEnhancedAnimalAge() < this.getAdultAge() || this.unbreedable) {
             return false;
         }
         return true;

@@ -28,6 +28,8 @@ import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & LerpingModel> extends GAModel<T> {
+    protected static final float PI = Mth.PI;
+    protected static final float HALF_PI = Mth.HALF_PI;
     protected static final float PI_FRACTION = 1.0F/Mth.PI;
     protected static final float HALF_PI_FRACTION = 1.0F/Mth.HALF_PI;
 

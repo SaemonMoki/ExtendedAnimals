@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
+import mokiyoki.enhancedanimals.renderer.textures.HorseTexture;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,99 +47,10 @@ import java.util.Arrays;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.horseFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_HORSE;
+import static mokiyoki.enhancedanimals.renderer.textures.HorseTexture.*;
 import static mokiyoki.enhancedanimals.util.Reference.HORSE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
-
-    private static final String[] HORSE_TEXTURES_TESTNUMBER = new String[] {
-            "0.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_TESTLETTER = new String[] {
-            "a.png", "b.png", "c.png", "d.png", "e.png", "f.png", "g.png", "h.png", "i.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SKIN = new String[] {
-            "skin_black.png", "skin_freckled.png", "skin_rosy.png", "skin_pink.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SKINSPOT_TOBIANO = new String[] {
-            "",
-            "skinspot_tobiano_0.png", "skinspot_tobiano_1.png", "skinspot_tobiano_2.png", "skinspot_tobiano_3.png", "skinspot_tobiano_4.png", "skinspot_tobiano_5.png", "skinspot_tobiano_6.png", "skinspot_tobiano_7.png", "skinspot_tobiano_8.png", "skinspot_tobiano_9.png", "skinspot_tobiano_a.png", "skinspot_tobiano_b.png", "skinspot_tobiano_c.png", "skinspot_tobiano_d.png", "skinspot_tobiano_e.png", "skinspot_tobiano_f.png"
-    };
-    private static final String[] HORSE_TEXTURES_SKINSPOT_DOMINANTWHITE1 = new String[] {
-            "",
-            "skinspot_domwhite1_0.png", "skinspot_domwhite1_1.png", "skinspot_domwhite1_2.png", "skinspot_domwhite1_3.png", "skinspot_domwhite1_4.png", "skinspot_domwhite1_5.png", "skinspot_domwhite1_6.png", "skinspot_domwhite1_7.png", "skinspot_domwhite1_8.png", "skinspot_domwhite1_9.png", "skinspot_domwhite1_a.png", "skinspot_domwhite1_b.png", "skinspot_domwhite1_c.png", "skinspot_domwhite1_d.png", "skinspot_domwhite1_e.png", "skinspot_domwhite1_f.png"
-    };
-    private static final String[] HORSE_TEXTURES_SKINSPOT_DOMINANTWHITE2 = new String[] {
-            "",
-            "skinspot_domwhite2_0.png", "skinspot_domwhite2_1.png", "skinspot_domwhite2_2.png", "skinspot_domwhite2_3.png", "skinspot_domwhite2_4.png", "skinspot_domwhite2_5.png", "skinspot_domwhite2_6.png", "skinspot_domwhite2_7.png", "skinspot_domwhite2_8.png", "skinspot_domwhite2_9.png", "skinspot_domwhite2_a.png", "skinspot_domwhite2_b.png", "skinspot_domwhite2_c.png", "skinspot_domwhite2_d.png", "skinspot_domwhite2_e.png", "skinspot_domwhite2_f.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SKINSPOT_APPALOOSA = new String[] {
-            "",
-            "skinspot_appaloosa_0.png", "skinspot_appaloosa_1.png", "skinspot_appaloosa_2.png", "skinspot_appaloosa_3.png", "skinspot_appaloosa_4.png", "skinspot_appaloosa_5.png", "skinspot_appaloosa_6.png", "skinspot_appaloosa_7.png", "skinspot_appaloosa_8.png", "skinspot_appaloosa_9.png", "skinspot_appaloosa_a.png", "skinspot_appaloosa_b.png", "skinspot_appaloosa_c.png", "skinspot_appaloosa_d.png", "skinspot_appaloosa_e.png", "skinspot_appaloosa_f.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_BASE = new String[] {
-            "r_solid_white.png"
-    };
-//    private static final String[] HORSE_TEXTURES_RED = new String[] {
-//            "", "solid_red.png"
-//    };
-    private static final String[] HORSE_TEXTURES_DUN = new String[] {
-            "", "dun_smooth_strong.png", "dun_smooth_medium.png", "dun_smooth_weak.png",
-                "dun_wild_strong.png", "dun_wild_medium.png", "dun_wild_weak.png"
-    };
-    private static final String[] HORSE_TEXTURES_BLACKPATTERN = new String[] {
-            "", "b_bay_smooth_strong.png", "b_sealbrown.png"
-    };
-    private static final String[] HORSE_TEXTURES_SPOT_TOBIANO = new String[] {
-            "",
-            "spot_tobiano_0.png", "spot_tobiano_1.png", "spot_tobiano_2.png", "spot_tobiano_3.png", "spot_tobiano_4.png", "spot_tobiano_5.png", "spot_tobiano_6.png", "spot_tobiano_7.png", "spot_tobiano_8.png", "spot_tobiano_9.png", "spot_tobiano_a.png", "spot_tobiano_b.png", "spot_tobiano_c.png", "spot_tobiano_d.png", "spot_tobiano_e.png", "spot_tobiano_f.png"
-    };
-    private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE = new String[] {
-            "", "spot_domwhite_solid.png", "spot_domwhite_1.png", "spot_domwhite1_2.png", "spot_domwhite1_3.png", "spot_domwhite1_4.png", "spot_domwhite1_5.png", "spot_domwhite1_6.png", "spot_domwhite1_7.png", "spot_domwhite1_8.png", "spot_domwhite1_9.png", "spot_domwhite1_a.png", "spot_domwhite1_b.png", "spot_domwhite1_c.png", "spot_domwhite1_d.png", "spot_domwhite1_e.png", "spot_domwhite1_f.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SPOT_APPALOOSA = new String[] {
-            "",
-            "spot_appaloosa_0.png", "spot_appaloosa_1.png", "spot_appaloosa_2.png", "spot_appaloosa_3.png", "spot_appaloosa_4.png", "spot_appaloosa_5.png", "spot_appaloosa_6.png", "spot_appaloosa_7.png", "spot_appaloosa_8.png", "spot_appaloosa_9.png", "spot_appaloosa_a.png", "spot_appaloosa_b.png", "spot_appaloosa_c.png", "spot_appaloosa_d.png", "spot_appaloosa_e.png", "spot_appaloosa_f.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SILVER = new String[]  {
-            "silver_mask.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_MOUTH = new String[]  {
-            "mouth.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_SCLERA = new String[]  {
-            "sclera_black.png", "sclera_white.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_EYES = new String[]  {
-            "eyel_black.png", "eyel_brown.png", "eyel_hazel.png", "eyel_yellow.png", "eyel_blue.png", "eyel_white.png"
-    };
-
-    private static final String[] HORSE_TEXTURES_HOOVES = new String[]  {
-            "hooves_black.png", "hooves_brown.png"
-    };
-
-//    private static final String[] HORSE_TEXTURES_BLANKETS = new String[]  {
-//            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
-//    };
-//
-//    private static final String[] HORSE_TEXTURES_SADDLE = new String[]  {
-//            "", "saddle_vanilla.png", "saddle_western_dyeable.png", "saddle_english.png"
-//    };
-//
-//    private static final String[] HORSE_TEXTURES_SADDLE_DECO = new String[]  {
-//            "", "c_saddleseat.png"
-//    };
-
-//    private final List<String> horseTextures = new ArrayList<>();
 
     private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE.get(), ModItems.HALF_MILK_BOTTLE.get());
 
@@ -420,135 +332,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void setTexturePaths() {
-        if (this.getGenes() != null) {
-            int[] genesForText = getGenes().getAutosomalGenes();
-
-            if (genesForText != null) {
-                int dun = 0;
-                int pattern = 0;
-                int number = 0;
-                int letter = 0;
-                int sclera = 0;
-                boolean silver = false;
-                char[] uuidArry = getStringUUID().toCharArray();
-
-                if ((genesForText[18] == 20 || genesForText[18] == 28 || genesForText[18] == 29) && (genesForText[19] == 20 || genesForText[19] == 28 || genesForText[19] == 29)) {
-
-                    if (genesForText[12] == 2 && genesForText[13] == 2) {
-                        //horse is red based
-                    } else {
-                        if (genesForText[14] == 4 && genesForText[15] == 4) {
-                            //horse is black based
-                        } else if (genesForText[14] == 1 || genesForText[15] == 1) {
-                            //wildtype bay
-                            pattern = 1;
-                        } else if (genesForText[14] == 2 || genesForText[15] == 2) {
-                            //heavy marked bay
-                            pattern = 1;
-                        } else {
-                            //seal brown
-                            pattern = 2;
-                        }
-                    }
-
-                    //TODO mushroom
-
-                    if (genesForText[16] == 1 && genesForText[17] == 1) {
-                        //dun
-                        dun = 1;
-                    }
-
-                    if (genesForText[60] == 1 || genesForText[61] == 1) {
-                        //mealy markings
-                    }
-
-                    //TODO sooty
-
-                    //TODO liver
-
-                    if (Character.isDigit(uuidArry[16])) {
-                        number = uuidArry[16] - 48;
-                        if (number >= 8) {
-                            number = number - 8;
-                        }
-                    } else {
-                        char test = uuidArry[16];
-                        switch (test) {
-                            case 'a':
-                                number = 3;
-                                break;
-                            case 'b':
-                                number = 4;
-                                break;
-                            case 'c':
-                                number = 5;
-                                break;
-                            case 'd':
-                                number = 6;
-                                break;
-                            case 'e':
-                                number = 7;
-                                break;
-                            case 'f':
-                                number = 8;
-                                break;
-                        }
-                    }
-
-                    if (Character.isDigit(uuidArry[17])) {
-                        letter = uuidArry[17] - 48;
-                        if (letter >= 8) {
-                            letter = letter - 8;
-                        }
-                    } else {
-                        char test = uuidArry[17];
-                        switch (test) {
-                            case 'a':
-                                letter = 3;
-                                break;
-                            case 'b':
-                                letter = 4;
-                                break;
-                            case 'c':
-                                letter = 5;
-                                break;
-                            case 'd':
-                                letter = 6;
-                                break;
-                            case 'e':
-                                letter = 7;
-                                break;
-                            case 'f':
-                                letter = 8;
-                                break;
-                        }
-                    }
-                }
-
-                if (genesForText[26] == 2 && genesForText[27] == 2) {
-                    silver = true;
-                }
-
-                if (genesForText[36] == 2 || genesForText[37] == 2) {
-                    sclera = 1;
-                }
-
-                addTextureToAnimal(HORSE_TEXTURES_SKIN, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_BASE, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_DUN, dun, d -> d != 0);
-                addTextureToAnimal(HORSE_TEXTURES_BLACKPATTERN, pattern, p -> p != 0);
-                addTextureToAnimal(HORSE_TEXTURES_SILVER, silver? 1 : 0, s -> s != 0);
-                addTextureToAnimal(HORSE_TEXTURES_EYES, 1, null);
-                addTextureToAnimal(HORSE_TEXTURES_SCLERA, sclera, null);
-                addTextureToAnimal(HORSE_TEXTURES_HOOVES, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_MOUTH, 0, null);
-
-//                this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
-//                this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);
-            }
-        }
-    }
+    protected void setTexturePaths() { if (getGenes()!=null) calculateHorseTextures(this);}
 
     @Override
     protected void setAlphaTexturePaths() {

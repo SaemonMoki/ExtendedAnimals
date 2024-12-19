@@ -1020,10 +1020,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             //wideband increases saturation
             if (wideband) {
-                s += 5;
+                s += 2;
             }
-
-            float saturation = s*0.12F;
 
             int r = 0;
             for (int i = 120; i < 148; i++) {
@@ -1040,12 +1038,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
 
             if (s != 0) {
-                if (saturation < 0) {
-                    maxYellow += (0.0016F * saturation);
-                    //pheomelanin[0] += (0.002F * darkness);
+                if (s < 0) {
+                    maxYellow += (0.001F * s);
                 }
-                pheomelanin[1] += (0.02F * saturation);
-                melanin[1] += (0.005F * saturation);
+                pheomelanin[1] += (0.0075F * s);
+                melanin[1] += (0.0025F * s);
             }
 
             if (r != 0) {

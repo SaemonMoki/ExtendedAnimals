@@ -830,7 +830,7 @@ NBT read/write
 
     @Override
     protected int getPregnancyProgression() {
-        return this.hasEgg() ? 10 : 0;
+        return this.hasEgg() ? 11 : -1;
     }
 
     @Nullable
@@ -1285,7 +1285,7 @@ NBT read/write
          * method as well.
          */
         public boolean canUse() {
-            return super.canUse() && !this.axolotl.hasEgg();
+            return super.canUse() && !this.axolotl.hasEgg() && (this.animal.canBreed() && this.partner != null && this.partner.canBreed()); //partner won't be null as it is assigned in super and super must be true to reach this check
         }
 
         /**

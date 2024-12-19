@@ -516,7 +516,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         //hypertrophy reduces fertility
-        if (genes[172] == 1 || genes[173] == 1) {
+        if (genes[172] == 2 || genes[173] == 2) {
             pigletAverage = (pigletAverage*2)/3;
         }
 

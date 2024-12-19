@@ -130,7 +130,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected Integer adultAge = null;
 
-    protected Boolean breedable = true;
+    protected Boolean unbreedable = false;
 
     //Hunger
     protected float hunger = 0F;
@@ -1095,7 +1095,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.writeNBTGenes("Genetics", compound, this.genetics);
         this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
-        compound.putBoolean("Breedable", this.breedable);
+        compound.putBoolean("Unbreedable", this.unbreedable);
 
         compound.putFloat("Hunger", hunger);
 
@@ -1185,7 +1185,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
 
-        this.breedable = compound.getBoolean("Breedable");
+        this.unbreedable = compound.getBoolean("Unbreedable");
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1386,11 +1386,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean canBreed() {
-        if (this.getEnhancedAnimalAge() < this.getAdultAge() || !this.breedable) {
+        if (this.getEnhancedAnimalAge() < this.getAdultAge() || this.unbreedable) {
             return false;
-        } else {
-            return super.canBreed();
         }
+        return true;
     }
 
     @Override
@@ -1600,6 +1599,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             animalInfo.age = this.getEnhancedAnimalAge();
             animalInfo.sire = this.sireName;
             animalInfo.dam = this.damName;
+            animalInfo.tameness = this.isTame()?10:0;
 
             if(playerEntity instanceof ServerPlayer) {
                 ServerPlayer entityPlayerMP = (ServerPlayer)playerEntity;
@@ -1622,7 +1622,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected int getPregnancyProgression() {
-        return this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
+        if (this.canBePregnant() && this.pregnant) {
+            return (10 * this.gestationTimer)/gestationConfig();
+        }
+        return -1;
     }
 
     protected String getAnimalsName(String species) {

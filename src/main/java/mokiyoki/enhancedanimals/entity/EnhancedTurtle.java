@@ -534,7 +534,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected int getPregnancyProgression() {
-        return this.hasEgg() ? 10 : 0;
+        return this.hasEgg() ? 11 : -1;
     }
 
     protected void defineSynchedData() {

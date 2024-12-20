@@ -329,7 +329,7 @@ public final class ChickenBreeds {
                     new GeneSketch().add(20, "1").add(24, "4").add(98, "2").add(26, "1")
             ));
     public static final Breed WHITE_LEGS = new Breed(new Breed.Properties().setData("whitelegs", 0.0F, 0.0F, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.WHITELEGS.get()));
-    public static final Breed SLATE_LEGS = new Breed(new Breed.Properties().setData("greylegsgraylegsslatelegs", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.GREYLEGS.get()));
+    public static final Breed SLATE_LEGS = new Breed(new Breed.Properties().setData("greylegsgraylegsslatelegs", 0.0F, 0.0F, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.GREYLEGS.get()));
     public static final Breed GOLD_LEGS = new Breed(new Breed.Properties().setData("goldlegs", 0.0F, 0.0F, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.GOLDENLEGS.get()));
     public static final Breed YELLOW_LEGS = new Breed(new Breed.Properties().setData("yellowlegs", 0.0F, 0.0F, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.YELLOWLEGS.get()));
     public static final Breed WILLOW_LEGS = new Breed(new Breed.Properties().setData("willowlegs", 0.0F, 0.0F, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.WILLOWLEGS.get()));

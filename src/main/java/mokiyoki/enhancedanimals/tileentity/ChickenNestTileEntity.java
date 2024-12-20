@@ -65,7 +65,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     public boolean tick(ServerLevel level) {
-        if (this.nestDecayTime != -1 && level.getGameTime() > (this.nestDecayTime + EanimodCommonConfig.COMMON.nestDecayTime.get())) {
+        if (this.nestDecayTime != -1 && level.getGameTime() > (this.nestDecayTime + GeneticAnimalsConfig.COMMON.nestDecayTime.get())) {
             level.removeBlock(this.getBlockPos(), true);
             return false;
         }

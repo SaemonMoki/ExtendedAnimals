@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.ai.brain.chicken;
 
 import mokiyoki.enhancedanimals.ai.brain.Grazing;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.core.BlockPos;
@@ -22,7 +22,7 @@ public class GrazingChicken extends Grazing {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
-        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && geneticAnimal instanceof EnhancedChicken enhancedChicken) {
+        if (GeneticAnimalsConfig.COMMON.chickensRemainOnNest.get() && geneticAnimal instanceof EnhancedChicken enhancedChicken) {
             return (enhancedChicken.isBrooding() || enhancedChicken.isBroody());
         }
         return true;

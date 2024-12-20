@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Lists;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -181,7 +181,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         if (this.level() instanceof ServerLevel) {
             if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
-                    if (this.random.nextInt(100) < EanimodCommonConfig.COMMON.eggThrowHatchChance.get()) {
+                    if (this.random.nextInt(100) < GeneticAnimalsConfig.COMMON.eggThrowHatchChance.get()) {
                         EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
                         enhancedchicken.setGenes(new Genes(getGenes()));
                         enhancedchicken.geneFixer();

@@ -72,7 +72,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private float mousePosY;
 
     /** Icon set config*/
-    private static final int[] fullIconPos = switch (EanimodCommonConfig.COMMON.fullIconStyle.get()) {
+    private static final int[] fullIconPos = switch (GeneticAnimalsConfig.COMMON.fullIconStyle.get()) {
         case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
         case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
         case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
@@ -80,7 +80,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
         default -> new int[]{125,64, 134,64, 143,64, 152,64};
     };
-    private static final int[] emptyIconPos = switch (EanimodCommonConfig.COMMON.emptyIconStyle.get()) {
+    private static final int[] emptyIconPos = switch (GeneticAnimalsConfig.COMMON.emptyIconStyle.get()) {
         case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
         case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
         case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
@@ -324,7 +324,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                     this.currentBackgroundColour = tempColourHolder;
                     this.sticker_edge = this.cBox.selected();
                 } else {
-                    this.cBox.render(matrixStack, mouseX, mouseY, p_render_3_);
+                    this.cBox.render(guiGraphics, mouseX, mouseY, p_render_3_);
                 }
             }
 

@@ -143,11 +143,11 @@ public class EventSubscriber {
                             }
                         }
 
-                        if(event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                        if(event.getLevel().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
                             chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
                             enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
                             enhancedChicken.setNest(chickenNestEntity.getBlockPos());
-                        } else if (event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                        } else if (event.getLevel().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
                             chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
                             enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
                             enhancedChicken.setNest(chickenNestEntity.getBlockPos());

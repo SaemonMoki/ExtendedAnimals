@@ -579,7 +579,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     protected void incrementHunger() {
-        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
+        if (GeneticAnimalsConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
         if (this.sleeping) {
             hunger = hunger + (0.25F*getHungerModifier());
         } else {
@@ -623,7 +623,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 } else if (this.currentNestScore<0.0F) {
                     this.currentNestScore = -this.currentNestScore + 0.1F;
                 }
-                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level, eggItem); }
+                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level(), eggItem); }
                 if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                     this.setBroody(true);
                 }
@@ -686,15 +686,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.level instanceof ServerLevel) {
-            if (source.msgId.equals("inWall")) {
+        if (this.level() instanceof ServerLevel) {
+            if (source.getMsgId().equals("inWall")) {
                 if (this.suffocationTimer > 50) {
                     if (this.getNavigation().getPath() != null && this.getNavigation().getPath().getNextNodeIndex() > 0) {
                         BlockPos previousPos = this.getNavigation().getPath().getPreviousNode().asBlockPos();
                         this.setPos(previousPos.getX() + 0.5D, previousPos.getY(), previousPos.getZ() + 0.5D);
                         return false;
                     }
-                    if (!((this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level.getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
+                    if (!((this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level().getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
                         this.setNest(BlockPos.ZERO);
                     }
                     if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
@@ -1601,7 +1601,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void setFertile(){
-        this.gestationTimer = EanimodCommonConfig.COMMON.fertilityTicksChicken.get();
+        this.gestationTimer = GeneticAnimalsConfig.COMMON.fertilityTicksChicken.get();
         int firstNewEggTime = eggLayingTime()/2;
         if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
         if (this.timeUntilNextEgg > firstNewEggTime) {

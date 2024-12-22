@@ -84,7 +84,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
                         .texOffs(7, 37)
                         .addBox(-9.5F, 0.0F, 0.0F, 19, 20, 6)
                         .texOffs(31, 1)
-                        .addBox(-5.5F, 0.0F, -1.0F, 11, 18, 3)
+                        .addBox(-5.5F, 0.0F, -3.0F, 11, 18, 3)
                         .texOffs(70, 33)
                         .addBox(-4.5F, 0.0F, -4.0F, 9, 18, 1),
                 PartPose.offset(0.0F, 0.1F, 0.0F)

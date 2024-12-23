@@ -333,7 +333,7 @@ public class ChickenTexture {
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
                 if (
                         pattern.contains("het") &&
-                                !Minecraft.getInstance().getResourceManager().hasResource( new ResourceLocation("eanimod:textures/entities/chicken/pattern/"+pattern+".png"))
+                                Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entities/chicken/pattern/"+pattern+".png")).isEmpty()
                 ) {
 
                     TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);

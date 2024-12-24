@@ -1316,8 +1316,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         posestack1.translate(0.0D, 0.0D, 10.0D);
         posestack1.scale((float)scale, (float)scale, (float)scale);
 //        Quaternionf quaternion = (new Quaternionf()).rotateZ(180F);
-        Quaternionf quaternion1 = (new Quaternionf()).rotateX(f1 * 20.0F + dragOffsetY * -0.017453292F);
-        Quaternionf quaternion2 = (new Quaternionf()).rotateY(f1 * 20.0F + dragOffsetX * 0.017453292F);
+        Quaternionf quaternion1 = (new Quaternionf()).rotateX(3.14159F + dragOffsetY * -0.017453292F);
+        Quaternionf quaternion2 = (new Quaternionf()).rotateY(3.14159F + dragOffsetX * 0.017453292F);
 //        quaternion.mul(quaternion1);
 //        quaternion.mul(quaternion2);
 //        posestack1.mulPose(quaternion);

@@ -344,9 +344,9 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
          */
         base.addOrReplaceChild("chests", CubeListBuilder.create()
                         .texOffs(80, 14)
-                        .addBox(-8.0F, 0.0F, 0.0F, 8, 8, 3)
+                        .addBox(0.0F, 0.0F, -5.0F, 8, 8, 3)
                         .texOffs(80, 25)
-                        .addBox(8.0F, 0.0F, 0.0F, 8, 8, 3),
+                        .addBox(0.0F, 0.0F, 5.0F, 8, 8, 3),
                 PartPose.offsetAndRotation(0.0F, 8.0F, 3.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
         base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F));
@@ -614,6 +614,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theBody.addChild(this.saddleWestern);
         this.theBody.addChild(this.saddleEnglish);
         this.theBody.addChild(this.saddleVanilla);
+        this.theBody.addChild(this.chests);
 
         this.saddleWestern.addChild(this.saddleHorn);
         this.saddleWestern.addChild(this.saddleSideLeft);
@@ -1152,6 +1153,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
+        animalModelData.chests = enhancedAnimal.hasChest();
     }
 
     @Override

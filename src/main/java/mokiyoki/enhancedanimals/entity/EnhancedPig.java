@@ -1873,7 +1873,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             if (tusks) {
             	addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_TUSKS, tusks ? 1 : 0, tusks);	
             }
-//            addTextureToAnimal("pigbase.png");
             this.setTextureGrouping(parentGroup);
         }
     }

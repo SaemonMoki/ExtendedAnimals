@@ -23,9 +23,9 @@ public class GrazingChicken extends Grazing {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
         if (GeneticAnimalsConfig.COMMON.chickensRemainOnNest.get() && geneticAnimal instanceof EnhancedChicken enhancedChicken) {
-            return (enhancedChicken.isBrooding() || enhancedChicken.isBroody());
+            return !(enhancedChicken.isBrooding() || enhancedChicken.isBroody()) && super.checkExtraStartConditions(serverLevel, geneticAnimal);
         }
-        return true;
+        return super.checkExtraStartConditions(serverLevel, geneticAnimal);
     }
 
     @Override

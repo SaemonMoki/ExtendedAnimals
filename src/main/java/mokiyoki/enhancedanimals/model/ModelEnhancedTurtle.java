@@ -81,10 +81,6 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
                 PartPose.offset(0.0F, 0.1F, 0.0F)
         );
         bBody.addOrReplaceChild("bodyP", CubeListBuilder.create()
-                        .texOffs(7, 37)
-                        .addBox(-9.5F, 0.0F, 0.0F, 19, 20, 6)
-                        .texOffs(31, 1)
-                        .addBox(-5.5F, 0.0F, -1.0F, 11, 18, 3)
                         .texOffs(70, 33)
                         .addBox(-4.5F, 0.0F, -4.0F, 9, 18, 1),
                 PartPose.offset(0.0F, 0.1F, 0.0F)
@@ -190,10 +186,8 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
             if (turtleModelData.hasEggs) {
                 this.pregnantBody.show();
-                this.body.hide();
             } else {
                 this.pregnantBody.hide();
-                this.body.show();
             }
 
             float size =turtleModelData.growthAmount<1.0F? ((1.0F + (turtleModelData.growthAmount * 11.0F))/12.0F) * (turtleModelData.size+((1.0F-turtleModelData.size)*(1.0F-turtleModelData.growthAmount))) : turtleModelData.size;

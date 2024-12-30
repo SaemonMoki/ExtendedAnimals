@@ -5,7 +5,7 @@ license="All rights reserved"
 
 [[mods]]
 modId="eanimod"
-version="0.8.48"
+version="0.8.52"
 displayName="Genetic Animals"
 logoFile="icon.png"
 authors="Moki, BeardedDev, Nicole, Mika, Navia"

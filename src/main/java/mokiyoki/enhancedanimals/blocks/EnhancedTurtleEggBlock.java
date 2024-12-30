@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -122,68 +123,71 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         }
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (this.canGrow(level) && hasProperHabitat(level, pos)) {
-            int i = state.getValue(HATCH);
-            if (i < 2) {
-                level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                level.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
-            } else {
-                level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                level.removeBlock(pos, false);
+            hatch(state, level, pos, random);
+        }
+    }
 
-                List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
-                int j = 1;
+    private static void hatch(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        int i = state.getValue(HATCH);
+        if (i < 2) {
+            level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+            level.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
+        } else {
+            level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+            level.removeBlock(pos, false);
 
-                if (eggList!=null) {
-                    for (EggHolder egg : eggList) {
-                        level.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-                        if (egg.getGenes().getNumberOfAutosomalGenes() < Reference.TURTLE_AUTOSOMAL_GENES_LENGTH) {
-                            int length = Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
-                            int oldLength = egg.getGenes().getNumberOfAutosomalGenes();
-                            int WTC = GeneticAnimalsConfig.COMMON.wildTypeChance.get();
-                            Genes fixedGenetics = new Genes(length);
-                            for (int e = 0; e < length; e++) {
-                                fixedGenetics.setAutosomalGene(e, e < oldLength ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);
-                            }
-                            turtle.setGenes(fixedGenetics);
-                            turtle.setSharedGenes(fixedGenetics);
-                        } else {
-                            turtle.setGenes(egg.getGenes());
-                            turtle.setSharedGenes(egg.getGenes());
+            List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
+            int j = 1;
+
+            if (eggList!=null) {
+                for (EggHolder egg : eggList) {
+                    level.levelEvent(2001, pos, Block.getId(state));
+                    EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+                    if (egg.getGenes().getNumberOfAutosomalGenes() < Reference.TURTLE_AUTOSOMAL_GENES_LENGTH) {
+                        int length = Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
+                        int oldLength = egg.getGenes().getNumberOfAutosomalGenes();
+                        int WTC = GeneticAnimalsConfig.COMMON.wildTypeChance.get();
+                        Genes fixedGenetics = new Genes(length);
+                        for (int e = 0; e < length; e++) {
+                            fixedGenetics.setAutosomalGene(e, e < oldLength ? egg.getGenes().getAutosomalGene(e) : ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1);
                         }
-                        turtle.setSireName(egg.getSire());
-                        turtle.setDamName(egg.getDam());
-                        turtle.setGrowingAge();
-                        turtle.initilizeAnimalSize();
-                        turtle.setBirthTime();
-                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        turtle.setHome(pos);
-                        turtle.setHasScute();
-                        level.addFreshEntity(turtle);
+                        turtle.setGenes(fixedGenetics);
+                        turtle.setSharedGenes(fixedGenetics);
+                    } else {
+                        turtle.setGenes(egg.getGenes());
+                        turtle.setSharedGenes(egg.getGenes());
                     }
-                } else {
-                    for (int k = 0; k < state.getValue(EGGS); k++) {
-                        level.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
-                        turtle.setGenes(turtleGenes);
-                        turtle.setSharedGenes(turtleGenes);
-                        turtle.setSireName("???");
-                        turtle.setDamName("???");
-                        turtle.setGrowingAge();
-                        turtle.initilizeAnimalSize();
-                        turtle.setBirthTime();
-                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        turtle.setHome(pos);
-                        turtle.setHasScute();
-                        level.addFreshEntity(turtle);
-                    }
+                    turtle.setSireName(egg.getSire());
+                    turtle.setDamName(egg.getDam());
+                    turtle.setGrowingAge();
+                    turtle.initilizeAnimalSize();
+                    turtle.setBirthTime();
+                    turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                    turtle.setHome(pos);
+                    turtle.setHasScute();
+                    level.addFreshEntity(turtle);
+                }
+            } else {
+                for (int k = 0; k < state.getValue(EGGS); k++) {
+                    level.levelEvent(2001, pos, Block.getId(state));
+                    EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+                    Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
+                    turtle.setGenes(turtleGenes);
+                    turtle.setSharedGenes(turtleGenes);
+                    turtle.setSireName("???");
+                    turtle.setDamName("???");
+                    turtle.setGrowingAge();
+                    turtle.initilizeAnimalSize();
+                    turtle.setBirthTime();
+                    turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                    turtle.setHome(pos);
+                    turtle.setHasScute();
+                    level.addFreshEntity(turtle);
                 }
             }
         }
-
     }
 
     public static boolean hasProperHabitat(BlockGetter reader, BlockPos blockReader) {
@@ -203,10 +207,12 @@ public class EnhancedTurtleEggBlock extends NestBlock {
 
     private boolean canGrow(Level worldIn) {
         float f = worldIn.getTimeOfDay(1.0F);
-        if ((double)f < 0.69D && (double)f > 0.65D) {
+        double start = GeneticAnimalsConfig.COMMON.hatchingWindowStart.get()/24000D - 0.25D;
+        double end = GeneticAnimalsConfig.COMMON.hatchingWindowEnd.get()/24000D - 0.25D;
+        if (start<=end ? (double)f < end && (double)f > start : (double)f < end || (double)f  > start) {
             return true;
         } else {
-            return worldIn.random.nextInt(500) == 0;
+            return worldIn.random.nextInt(GeneticAnimalsConfig.COMMON.daytimeChanceToNotHatch.get()) == 0;
         }
     }
 

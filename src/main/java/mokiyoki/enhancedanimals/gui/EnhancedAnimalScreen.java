@@ -274,7 +274,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 //Transparency Button
                 guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+148, 0, 303, 80, 28, 31, 384, 256);
 
-                renderCameraBackground(guiGraphics, photoI, photoJ+68, -100, 0, 0, photoWidth, photoHeight, 384, 256);
+                renderCameraBackground(guiGraphics, photoI, photoJ+68, +100, 0, 0, photoWidth, photoHeight, 384, 256);
 
                 //RGB Box Backgrounds
                 guiGraphics.blit(PHOTO_MODE_GUI_TEXTURE, photoI-46, photoJ+190, 0, 0, 167, 28, 14, 384, 256);
@@ -372,22 +372,22 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         tesselator.end();
     }
 
-    public void renderCameraBackground(GuiGraphics guiGraphics, int startX, int startY, int p_93147_, float p_93148_, float p_93149_, int width, int height, int textureXWidth, int textureYWidth) {
-        innerRenderCameraBackground(guiGraphics, startX, startX + width, startY, startY + height, p_93147_, width, height, p_93148_, p_93149_, textureXWidth, textureYWidth);
+    public void renderCameraBackground(GuiGraphics guiGraphics, int startX, int startY, int depth, float p_93148_, float p_93149_, int width, int height, int textureXWidth, int textureYWidth) {
+        innerRenderCameraBackground(guiGraphics, startX, startX + width, startY, startY + height, depth, width, height, p_93148_, p_93149_, textureXWidth, textureYWidth);
     }
 
-    private void innerRenderCameraBackground(GuiGraphics guiGraphics, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int p_93193_, int width, int height, float p_93196_, float p_93197_, int textureXWidth, int textureYHeight) {
-        completeRenderCameraBackground(guiGraphics.pose().last().pose(), startX, startXPlusWidth, startY, startYPlusHeight, p_93193_, (p_93196_ + 0.0F) / (float)textureXWidth, (p_93196_ + (float)width) / (float)textureXWidth, (p_93197_ + 0.0F) / (float)textureYHeight, (p_93197_ + (float)height) / (float)textureYHeight);
+    private void innerRenderCameraBackground(GuiGraphics guiGraphics, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int depth, int width, int height, float p_93196_, float p_93197_, int textureXWidth, int textureYHeight) {
+        completeRenderCameraBackground(guiGraphics.pose().last().pose(), startX, startXPlusWidth, startY, startYPlusHeight, depth, (p_93196_ + 0.0F) / (float)textureXWidth, (p_93196_ + (float)width) / (float)textureXWidth, (p_93197_ + 0.0F) / (float)textureYHeight, (p_93197_ + (float)height) / (float)textureYHeight);
     }
 
-    private void completeRenderCameraBackground(Matrix4f pose, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int p_93118_, float p_93119_DivideTextureXWidth, float p_93120_PlusTextureWidthDivideTextureXWidth, float p_93121TextureYHeight, float p_93122_PlusTextureHeightDivideTextureYHeight) {
+    private void completeRenderCameraBackground(Matrix4f pose, int startX, int startXPlusWidth, int startY, int startYPlusHeight, int depth, float p_93119_DivideTextureXWidth, float p_93120_PlusTextureWidthDivideTextureXWidth, float p_93121TextureYHeight, float p_93122_PlusTextureHeightDivideTextureYHeight) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(pose, (float)startX, (float)startYPlusHeight, (float)p_93118_).uv(p_93119_DivideTextureXWidth, p_93122_PlusTextureHeightDivideTextureYHeight).color(currentBackgroundColour).endVertex();
-        bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startYPlusHeight, (float)p_93118_).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93122_PlusTextureHeightDivideTextureYHeight).color(currentBackgroundColour).endVertex();
-        bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startY, (float)p_93118_).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
-        bufferbuilder.vertex(pose, (float)startX, (float)startY, (float)p_93118_).uv(p_93119_DivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
+        bufferbuilder.vertex(pose, (float)startX, (float)startYPlusHeight, (float)depth).uv(p_93119_DivideTextureXWidth, p_93122_PlusTextureHeightDivideTextureYHeight).color(currentBackgroundColour).endVertex();
+        bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startYPlusHeight, (float)depth).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93122_PlusTextureHeightDivideTextureYHeight).color(currentBackgroundColour).endVertex();
+        bufferbuilder.vertex(pose, (float)startXPlusWidth, (float)startY, (float)depth).uv(p_93120_PlusTextureWidthDivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
+        bufferbuilder.vertex(pose, (float)startX, (float)startY, (float)depth).uv(p_93119_DivideTextureXWidth, p_93121TextureYHeight).color(currentBackgroundColour).endVertex();
         BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
@@ -1316,8 +1316,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         posestack1.translate(0.0D, 0.0D, 10.0D);
         posestack1.scale((float)scale, (float)scale, (float)scale);
 //        Quaternionf quaternion = (new Quaternionf()).rotateZ(180F);
-        Quaternionf quaternion1 = (new Quaternionf()).rotateX(f1 * 20.0F + dragOffsetY * -0.017453292F);
-        Quaternionf quaternion2 = (new Quaternionf()).rotateY(f1 * 20.0F + dragOffsetX * 0.017453292F);
+        Quaternionf quaternion1 = (new Quaternionf()).rotateX(3.14159F + dragOffsetY * -0.017453292F);
+        Quaternionf quaternion2 = (new Quaternionf()).rotateY(3.14159F + dragOffsetX * 0.017453292F);
 //        quaternion.mul(quaternion1);
 //        quaternion.mul(quaternion2);
 //        posestack1.mulPose(quaternion);

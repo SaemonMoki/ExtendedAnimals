@@ -123,6 +123,9 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightTurtles;
         public final ForgeConfigSpec.IntValue minimumTurtleGroup;
         public final ForgeConfigSpec.IntValue maximumTurtleGroup;
+        public final ForgeConfigSpec.IntValue turtleHatchingWindowStart;
+        public final ForgeConfigSpec.IntValue turtleHatchingWindowEnd;
+        public final ForgeConfigSpec.IntValue turtleDaytimeChanceToNotHatch;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
         public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
@@ -277,6 +280,8 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of Mooshrooms you want to find in a group at spawn, Default is 4", 4, 1, 60);
             mushroomStewMultiplier = builder
                     .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            builder.comment("Mooshrooms spawn only on Mycylium blocks by default, If you wish to change that you can do so by using a datapack to modify the mooshrooms_spawnable_on block tag");
+            builder.comment("");
             builder.pop();
 
             builder.push("moobloom");
@@ -340,7 +345,7 @@ public class GeneticAnimalsConfig {
             nestDecayTime = builder
                     .defineInRange("How many ticks it takes before a nest could start to decay, this resets every time an eggs is laid or incubated", 24000, 1, Integer.MAX_VALUE);
             chickenNestTeleportDistance = builder
-                    .defineInRange("How far away a chicken must be from the centre of the next to start teleporting to guarantee it is aligned, Default is 1.0 blocks", 1.0D, 0.5D, 10D);
+                    .defineInRange("How far away a chicken must be from the centre of the next to start teleporting to guarantee it is aligned, Default is 1 block", 1.0D, 0.5D, 10D);
             adultAgeChicken = builder
                     .defineInRange("How many ticks it takes for a Chicken to become an adult, 24000 = 1 Minecraft Day:", 60000, 1, Integer.MAX_VALUE);
             spawnWeightChickens = builder
@@ -395,6 +400,14 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of Turtle you want to find in a group at spawn, Default is 1", 1, 1, 60);
             maximumTurtleGroup = builder
                     .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 5, 1, 60);
+            turtleHatchingWindowStart = builder
+                    .defineInRange("If the eggs are randomly ticked and the time is after this but before hatchingWindowEnd their hatch level will increase", 21600, 0, 24000);
+            turtleHatchingWindowEnd = builder
+                    .defineInRange("If the eggs are randomly ticked and the time is after hatchingWindowStart but before this their hatch level will increase", 22550, 0, 24000);
+            turtleDaytimeChanceToNotHatch = builder
+                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 500, 0, Integer.MAX_VALUE);
+            builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
+            builder.comment("");
             builder.pop();
 
             builder.push("horse");

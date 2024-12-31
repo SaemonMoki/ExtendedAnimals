@@ -344,10 +344,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
          */
         base.addOrReplaceChild("chests", CubeListBuilder.create()
                         .texOffs(80, 14)
-                        .addBox(-8.0F, 0.0F, 0.0F, 8, 8, 3)
+                        .addBox(0.0F, 0.0F, -7.0F, 8, 8, 3)
                         .texOffs(80, 25)
-                        .addBox(8.0F, 0.0F, 0.0F, 8, 8, 3),
-                PartPose.offsetAndRotation(0.0F, 8.0F, 3.0F, 0.0F, Mth.HALF_PI, 0.0F)
+                        .addBox(0.0F, 0.0F, 4.0F, 8, 8, 3),
+                PartPose.offsetAndRotation(0.0F, 7.0F, 8.0F, -Mth.HALF_PI, 0.0F, Mth.HALF_PI)
         );
         base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F));
         base.addOrReplaceChild("saddleW", CubeListBuilder.create()
@@ -614,6 +614,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theBody.addChild(this.saddleWestern);
         this.theBody.addChild(this.saddleEnglish);
         this.theBody.addChild(this.saddleVanilla);
+        this.theBody.addChild(this.chests);
 
         this.saddleWestern.addChild(this.saddleHorn);
         this.saddleWestern.addChild(this.saddleSideLeft);
@@ -689,6 +690,13 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                     mapOfScale.put("saddlePad", ModelHelper.createScalings(1.125F, 1.125F, 1.125F, 0.0F, -1.125F * 0.01F, (1.125F - 1.0F) * 0.04F));
                 }
                 mapOfScale.put(pigModelData.saddle.getName(), ModelHelper.createScalings((pig.bodyScale+pig.bodyWidth)*0.75F, pig.bodyScale*0.75F, pig.bodyScale*0.75F, 0.0F, (1.0F-pig.bodyScale) - (pig.bodyZ + 0.02F), ((0.75F - 1.0F) * 0.04F)*pig.lengthScaling));
+
+                if (pigModelData.chests && this.chests.getY() != 7.0F) {
+                    this.chests.setY(7.0F);
+                }
+
+            } else if (pigModelData.chests && this.chests.getY() == 7.0F) {
+                this.chests.setY(3.0F);
             }
 
             float finalPigSize = ((3.0F * pigModelData.size * pigModelData.growthAmount) + pigModelData.size) / 4.0F;
@@ -1152,6 +1160,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
+        animalModelData.chests = enhancedAnimal.hasChest();
     }
 
     @Override

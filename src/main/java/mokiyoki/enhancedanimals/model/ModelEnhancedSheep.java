@@ -296,7 +296,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         base.addOrReplaceChild("chestL", CubeListBuilder.create()
                         .texOffs(64, 42)
                         .addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3, new CubeDeformation(0.01F)),
-                PartPose.offsetAndRotation(-7.0F, -2.0F, 4.0F, 0.0F, Mth.HALF_PI, 0.0F)
+                PartPose.offsetAndRotation(-7.0F, -2.0F, 2.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
         base.addOrReplaceChild("chestR", CubeListBuilder.create()
                         .texOffs(64, 53)

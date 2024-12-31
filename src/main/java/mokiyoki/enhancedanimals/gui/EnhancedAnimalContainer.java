@@ -52,6 +52,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
                     return 1;
                 }
 
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
+                }
+
             });
             yShift = yShift + 18;
             numberOfEquipmentSlots++;
@@ -69,6 +74,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
                     return 1;
                 }
 
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
+                }
+
             });
             yShift = yShift + 18;
             numberOfEquipmentSlots++;
@@ -84,6 +94,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
                 public int getMaxStackSize() {
                     return 1;
+                }
+
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
                 }
 
             });
@@ -107,6 +122,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
                     return 1;
                 }
 
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
+                }
+
             });
             yShift = yShift + 18;
             if (yShift >= 54) {
@@ -126,6 +146,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
                 public int getMaxStackSize() {
                     return 1;
+                }
+
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
                 }
 
             });
@@ -149,6 +174,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
                     return 1;
                 }
 
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
+                }
+
             });
             yShift = yShift + 18;
             if (yShift >= 54) {
@@ -167,6 +197,11 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
                 public int getMaxStackSize() {
                     return 1;
+                }
+
+                @Override
+                public boolean isActive() {
+                    return !enhancedAnimal.isInPhotoMode;
                 }
 
             });
@@ -198,6 +233,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
                             break;
                         }
                         this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
+
                         });
                         inventoryShift++;
                         totalNumberOfAnimalSlots++;

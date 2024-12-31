@@ -476,38 +476,39 @@ public class ChickenTexture {
             if (isNakedNeck) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/" + (gene[52] == gene[53] ? "naked" : "bowtie") + "_neck.png", gene[52] == gene[53] ? "bt" : "nn");
             } else {
-                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
+                chicken.addDelimiter();
             }
             if (facefeathers != -1) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/baldface_" + facefeathers + ".png");
             } else {
-                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
+                chicken.addDelimiter();
             }
             featherMask.addGrouping(featherCutout);
+        } else {
+            chicken.addDelimiter();
         }
         chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/feathers.png");
 
-            if (!tailType.isEmpty()) {
+        if (!tailType.isEmpty()) {
+            int tailLength = 1;
+            if (gene[198]==2&&gene[199]==2) tailLength +=1;
+            if (gene[280]==2&&gene[281]==2) tailLength +=1;
+            if (gene[282]==2&&gene[283]==2) tailLength -=1;
 
-                int tailLength = 1;
-                if (gene[198]==2&&gene[199]==2) tailLength +=1;
-                if (gene[280]==2&&gene[281]==2) tailLength +=1;
-                if (gene[282]==2&&gene[283]==2) tailLength -=1;
-
-                int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
-                for (int i = 0; i <= tailNumber; i++) {
-                    if (i == 0) {
-                        /**
-                         *      This one controls the sickle feather
-                         */
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
-                    } else {
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
-                    }
+            int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
+            for (int i = 0; i <= tailNumber; i++) {
+                if (i == 0) {
+                    /**
+                     *      This one controls the sickle feather
+                     */
+                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
+                } else {
+                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
                 }
-        } else {
-                chicken.addTextureToAnimalTextureGrouping(featherMask, "", false);
             }
+        } else {
+            chicken.addDelimiter();
+        }
         featherGroup.addGrouping(featherMask);
     }
 
@@ -516,28 +517,38 @@ public class ChickenTexture {
             parentGroup.setTexturingType(TexturingType.CUTOUT_GROUP);
             TextureGrouping earCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            String ear = "";
+            String earTexture = "";
             if (earSize > 15) earSize = 15;
             switch (earSize) {
-                case 2, 3, 4 -> ear = "tiny.png";
-                case 5, 6 -> ear = "small.png";
-                case 7, 8, 9 -> ear = "medium.png";
-                case 10, 11, 12 -> ear = "large.png";
-                case 13, 14, 15 -> ear = "xlarge.png";
+                case 2, 3, 4 -> {
+                    earTexture = "tiny.png";
+                }
+                case 5, 6 -> earTexture = "small.png";
+                case 7, 8, 9 -> earTexture = "medium.png";
+                case 10, 11, 12 -> earTexture = "large.png";
+                case 13, 14, 15 -> earTexture = "xlarge.png";
             }
+
+            String earKey = String.valueOf(earTexture.charAt(0));
 
             earSize = 0;
             for (int i = 152; i < 163; i++) {
                 if (i < 158 || i > 159) earSize += gene[i] % 2 == 0 ? 1 : -1;
             }
 
-            ear = (earSize > 0 ? "round_" : "long_") + ear;
+            if (earSize>0) {
+                earTexture = "round_" + earTexture;
+                earKey += "r";
+            } else {
+                earTexture = "long_" + earTexture;
+                earKey += "l";
+            }
 
-            chicken.addTextureToAnimalTextureGrouping(earCutout, "ear/" + ear, ear);
+            chicken.addTextureToAnimalTextureGrouping(earCutout, "ear/" + earTexture, earKey);
 
             parentGroup.addGrouping(earCutout);
         } else {
-            chicken.addTextureToAnimalTextureGrouping(parentGroup, "", false);
+            chicken.addDelimiter();
         }
     }
 

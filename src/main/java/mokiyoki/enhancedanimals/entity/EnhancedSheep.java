@@ -1153,7 +1153,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(foundationGroup, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
             hairGroup.addGrouping(foundationGroup);
 
-            if (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) {
+            if (pattern1 == 14 || (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) ) {
                 TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
                 addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
                 addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);

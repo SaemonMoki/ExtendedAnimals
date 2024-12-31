@@ -75,14 +75,20 @@ public class ChickenTexture {
                     if (!pattern.isEmpty() || mottled) {
                         TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", pattern);
+                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", "chick"+pattern);
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
                         calculatePatternWithRGB(chicken, featherGroup, patternFeatherGroup, patternCutOutGroup, false, sGene, gene, isFemale, isNakedNeck);
+                    } else {
+                        chicken.addDelimiter();
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, !isFemale&&sGene[6]==2&&sGene[7]==2?"chick/doublebarred.png":"chick/barred.png", isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2);
+                    if (isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2) {
+                        chicken.addTextureToAnimalTextureGrouping(featherGroup, isFemale||sGene[6]!=sGene[7]?"chick/barred.png":"chick/doublebarred.png", isFemale||sGene[6]!=sGene[7] ? "s" : "d");
+                    } else {
+                        chicken.addDelimiter();
+                    }
                 } else {
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);
+                    chicken.addDelimiter();
                 }
 
                 chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/feather_noise.png");
@@ -293,6 +299,8 @@ public class ChickenTexture {
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
         if (age < 0.25F) {
             chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", skinColour[0]);
+        } else {
+            chicken.addDelimiter();
         }
 //        chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/top.png", "t", skinColour[1]);
     }
@@ -909,6 +917,8 @@ public class ChickenTexture {
             TextureGrouping blueTextureBase = new TextureGrouping(TexturingType.MERGE_GROUP);
             chicken.addIndividualTextureToAnimalTextureGrouping(blueTextureBase, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(blueBase[0], blueBase[1], blueBase[2]));
             featherGroup.addGrouping(blueTextureBase);
+        } else {
+            chicken.addDelimiter();
         }
 
         float[] colours = getPatternRGB(choc, lav, blue, splash, patternedBlue, paint, gene, chicken.growthAmount());
@@ -925,30 +935,45 @@ public class ChickenTexture {
             iriFeatherGroup.addGrouping(patternCutOutGroup);
             iriFeatherGroup.addGrouping(iri);
             patternFeatherGroup.addGrouping(iriFeatherGroup);
+        } else {
+            chicken.addDelimiter();
         }
 
             if (splash) {
+                char[] uuid = chicken.getStringUUID().toCharArray();
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
-                for (int i=0; i<3;i++) {
-                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + ThreadLocalRandom.current().nextInt(16) + ".png");
-                }
+                int spotVal = Integer.parseInt(String.valueOf(uuid[1]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+                spotVal = Integer.parseInt(String.valueOf(uuid[2]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+                spotVal = Integer.parseInt(String.valueOf(uuid[3]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+
                 spots.addGrouping(spotsCutout);
                 chicken.addTextureToAnimalTextureGrouping(spots, "feather_colour/spots/splash_base.png");
                 patternFeatherGroup.addGrouping(spots);
+            } else {
+                chicken.addDelimiter();
             }
+
             if (paint) {
                 TextureGrouping spots = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (!(gene[38] == 1 && gene[39] == 1)) {
                     spots.setTexturingType(TexturingType.CUTOUT_GROUP);
                     TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
                     for (int i=0; i<5;i++) {
-                        chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/paint" + ThreadLocalRandom.current().nextInt(9) + ".png");
+                        int spotVal = ThreadLocalRandom.current().nextInt(9);
+                        chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/paint" + spotVal + ".png", String.valueOf(spotVal));
                     }
                     spots.addGrouping(spotsCutout);
+                } else {
+                    chicken.addDelimiter();
                 }
                 chicken.addTextureToAnimalTextureGrouping(spots, "feather_colour/feather_base.png");
                 patternFeatherGroup.addGrouping(spots);
+            } else {
+                chicken.addDelimiter();
             }
         featherGroup.addGrouping(patternFeatherGroup);
     }
@@ -1573,7 +1598,7 @@ public class ChickenTexture {
     }
 
     private static int calculateCombRGB(int[] sGene, int[] gene, boolean isFemale) {
-        float hue = 0.0F;
+        float hue = 1.0F;
         float sat = 1.0F;
         float val = 1.0F;
 
@@ -1606,6 +1631,10 @@ public class ChickenTexture {
                     val *= 0.9F;
                 }
             }
+
+            if (val == 1.0F) return 16777215;
+        } else {
+            return 16777215;
         }
 
 

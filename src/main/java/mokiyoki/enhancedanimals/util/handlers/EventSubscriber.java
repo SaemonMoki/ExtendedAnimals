@@ -21,6 +21,7 @@ import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
@@ -83,6 +84,7 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
@@ -94,6 +96,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -136,22 +139,25 @@ public class EventSubscriber {
                     ChunkAccess chunk = serverLevel.getChunkSource().getChunkNow((int)enhancedChicken.getX() >> 4, (int)enhancedChicken.getZ() >> 4);
 
                     if (chunk != null && chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
-                        if (enhancedChicken.getNest() != BlockPos.ZERO) {
-                            if (!isValidPath(enhancedChicken, enhancedChicken.getNest(), 24)) {
-                                enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
-                                enhancedChicken.currentNestScore = 0.0F;
-                            }
-                        }
 
-                        if(event.getLevel().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
-                            chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
-                            enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
-                            enhancedChicken.setNest(chickenNestEntity.getBlockPos());
-                        } else if (event.getLevel().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
-                            chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
-                            enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
-                            enhancedChicken.setNest(chickenNestEntity.getBlockPos());
-                        }
+                        var executor = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
+                        executor.tell(new TickTask( serverLevel.getServer().getTickCount() + 1, () -> {
+                            if (enhancedChicken.getNest() != BlockPos.ZERO) {
+                                if (!isValidPath(enhancedChicken, enhancedChicken.getNest(), 24)) {
+                                    enhancedChicken.setNest(BlockPos.ZERO); //Loaded into the world unusually means we reset the nest pos or reset for following comparison
+                                }
+                            }
+
+                            if(event.getLevel().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                                chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                                enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                                enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                            } else if (event.getLevel().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                                chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
+                                enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
+                                enhancedChicken.setNest(chickenNestEntity.getBlockPos());
+                            }
+                        }));
                     }
                 }
             }

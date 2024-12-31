@@ -123,9 +123,9 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightTurtles;
         public final ForgeConfigSpec.IntValue minimumTurtleGroup;
         public final ForgeConfigSpec.IntValue maximumTurtleGroup;
-        public final ForgeConfigSpec.IntValue hatchingWindowStart;
-        public final ForgeConfigSpec.IntValue hatchingWindowEnd;
-        public final ForgeConfigSpec.IntValue daytimeChanceToNotHatch;
+        public final ForgeConfigSpec.IntValue turtleHatchingWindowStart;
+        public final ForgeConfigSpec.IntValue turtleHatchingWindowEnd;
+        public final ForgeConfigSpec.IntValue turtleDaytimeChanceToNotHatch;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
         public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
@@ -400,11 +400,11 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of Turtle you want to find in a group at spawn, Default is 1", 1, 1, 60);
             maximumTurtleGroup = builder
                     .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 5, 1, 60);
-            hatchingWindowStart = builder
+            turtleHatchingWindowStart = builder
                     .defineInRange("If the eggs are randomly ticked and the time is after this but before hatchingWindowEnd their hatch level will increase", 21600, 0, 24000);
-            hatchingWindowEnd = builder
+            turtleHatchingWindowEnd = builder
                     .defineInRange("If the eggs are randomly ticked and the time is after hatchingWindowStart but before this their hatch level will increase", 22550, 0, 24000);
-            daytimeChanceToNotHatch = builder
+            turtleDaytimeChanceToNotHatch = builder
                     .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 500, 0, Integer.MAX_VALUE);
             builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
             builder.comment("");

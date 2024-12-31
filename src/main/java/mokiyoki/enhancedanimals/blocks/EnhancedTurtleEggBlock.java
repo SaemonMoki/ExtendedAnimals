@@ -35,7 +35,6 @@ import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
@@ -123,6 +122,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         }
     }
 
+    @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (this.canGrow(level) && hasProperHabitat(level, pos)) {
             hatch(state, level, pos, random);
@@ -207,12 +207,12 @@ public class EnhancedTurtleEggBlock extends NestBlock {
 
     private boolean canGrow(Level worldIn) {
         float f = worldIn.getTimeOfDay(1.0F);
-        double start = GeneticAnimalsConfig.COMMON.hatchingWindowStart.get()/24000D - 0.25D;
-        double end = GeneticAnimalsConfig.COMMON.hatchingWindowEnd.get()/24000D - 0.25D;
+        double start = GeneticAnimalsConfig.COMMON.turtleHatchingWindowStart.get()/24000D - 0.25D;
+        double end = GeneticAnimalsConfig.COMMON.turtleHatchingWindowEnd.get()/24000D - 0.25D;
         if (start<=end ? (double)f < end && (double)f > start : (double)f < end || (double)f  > start) {
             return true;
         } else {
-            return worldIn.random.nextInt(GeneticAnimalsConfig.COMMON.daytimeChanceToNotHatch.get()) == 0;
+            return worldIn.random.nextInt(GeneticAnimalsConfig.COMMON.turtleDaytimeChanceToNotHatch.get()) == 0;
         }
     }
 

@@ -31,6 +31,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH;
+import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH_DIAMOND;
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_CLOTH_GOLD;
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_LEATHER;
 import static mokiyoki.enhancedanimals.init.ModItems.BRIDLE_BASIC_LEATHER_DIAMOND;
@@ -226,6 +227,7 @@ public class EnhancedAnimals {
             CauldronInteraction.WATER.put(BRIDLE_BASIC_LEATHER_DIAMOND.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH_GOLD.get(), DYEABLE_ITEM);
+            CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH_DIAMOND.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH_IRONRING.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH_IRONBELL.get(), DYEABLE_ITEM);

@@ -1599,7 +1599,7 @@ public class ChickenTexture {
 
     private static int calculateCombRGB(int[] sGene, int[] gene, boolean isFemale) {
         float hue = 1.0F;
-        float sat = 1.0F;
+        float sat = 0.0F;
         float val = 1.0F;
 
         if (gene[20] == 3 && gene[21] == 3) return 16777215;
@@ -1611,12 +1611,12 @@ public class ChickenTexture {
                 if (gene[42]!=gene[43]) {
                     // het fibro
                     hue = isFemale? 260.0F : 300.0F;
-                    sat *= 0.5F;
+                    sat = 0.5F;
                     val *= isFemale? 0.20F : 0.4F;
                 } else {
                     // homozygous fibro
                     hue = 240.0F;
-                    sat *= 0.5F;
+                    sat = 0.5F;
                     val *= isFemale? 0.15F : 0.22F;
                 }
             }
@@ -1632,10 +1632,11 @@ public class ChickenTexture {
                 }
             }
 
-            if (val == 1.0F) return 16777215;
-        } else {
-            return 16777215;
+//            if (val == 1.0F) return 16777215;
         }
+//        else {
+//            return 16777215;
+//        }
 
 
 //        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {

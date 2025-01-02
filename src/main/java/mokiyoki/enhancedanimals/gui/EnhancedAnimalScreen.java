@@ -316,9 +316,6 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 //Transparency Button
                 this.blit(matrixStack, photoI-46, photoJ+148, 0, 335, 80, 28, 31, 384, 256);
 
-                //sticker style checkbox
-//                this.blit(matrixStack, photoI-46, photoJ+190, 0, 0, 167, 28, 28, 256, 256);
-
                 if (this.prepareForTransparentScreenshot) {
                     int tempColourHolder = this.currentBackgroundColour;
                     this.currentBackgroundColour = this.greenScreenColour;
@@ -470,6 +467,10 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             if (this.isHoveringPhotoMode(-106, 83, 27, 23, (double)mouseX, (double)mouseY)) {
                 this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.transparent"), mouseX, mouseY);
             }
+            if (this.isHoveringPhotoMode(-106, 125, 27, 23, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.stickerstyle"), mouseX, mouseY);
+            }
+
             if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 123, 27, 14, (double)mouseX, (double)mouseY)) {
                 this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.red"), mouseX, mouseY);
             }
@@ -478,6 +479,11 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
             if (this.currentMode == RGB && this.isHoveringPhotoMode(-106, 163, 27, 14, (double)mouseX, (double)mouseY)) {
                 this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.rgb.blue"), mouseX, mouseY);
+            }
+
+            //            this.blit(matrixStack, photoI+26, photoJ+40, 0, 335, 112, 28, 31, 384, 256);
+            if (this.isHoveringPhotoMode(-36, -25, 28, 31, (double)mouseX, (double)mouseY)) {
+                this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.photomode.takephoto"), mouseX, mouseY);
             }
         }
     }

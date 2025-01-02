@@ -1586,7 +1586,7 @@ public class ChickenTexture {
     }
 
     private static int calculateCombRGB(int[] sGene, int[] gene, boolean isFemale) {
-        float hue = 1.0F;
+        float hue = 0.0F;
         float sat = 0.0F;
         float val = 1.0F;
 
@@ -1619,12 +1619,7 @@ public class ChickenTexture {
                     val *= 0.9F;
                 }
             }
-
-//            if (val == 1.0F) return 16777215;
         }
-//        else {
-//            return 16777215;
-//        }
 
 
 //        if (isFemale?(sGene[8]==1):(sGene[8]==1 && sGene[9]==1)) {

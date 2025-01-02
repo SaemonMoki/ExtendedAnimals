@@ -129,6 +129,7 @@ public class GeneticAnimals {
             CauldronInteraction.WATER.put(BRIDLE_BASIC_LEATHER_DIAMOND.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH_GOLD.get(), DYEABLE_ITEM);
+            CauldronInteraction.WATER.put(BRIDLE_BASIC_CLOTH_DIAMOND.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH_IRONRING.get(), DYEABLE_ITEM);
             CauldronInteraction.WATER.put(COLLAR_BASIC_CLOTH_IRONBELL.get(), DYEABLE_ITEM);

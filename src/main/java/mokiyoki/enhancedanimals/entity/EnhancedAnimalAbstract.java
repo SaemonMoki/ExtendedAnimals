@@ -1913,6 +1913,15 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
+    public void addDelimiter() {
+        addDelimiter(String.valueOf(0));
+    }
+
+    public void addDelimiter(String delimiter) {
+        this.texturesIndexes.add(delimiter);
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.enhancedAnimalTextures.isEmpty()) {

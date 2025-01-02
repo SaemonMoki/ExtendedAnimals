@@ -337,6 +337,16 @@ public final class ChickenBreeds {
     public static final Breed GREEN_LEGS = new Breed(new Breed.Properties().setData("greenlegs", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.GREENLEGS.get()));
     public static final Breed FIBRO = new Breed(new Breed.Properties().setData("fibromelanosis", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.FIBROMELANOSIS.get()));
     public static final Breed SCALELESS = new Breed(new Breed.Properties().setData("scaless", Biomes.THE_VOID, Breed.Rarity.ORDINARY).setGeneSketch(GeneSet.SCALELESS.get()));
+    public static final Breed PAINT = new Breed(new Breed.Properties().setData("paint", Biomes.THE_VOID, Breed.Rarity.ORDINARY)
+            .setGeneSketch(
+                    new GeneSketch(),
+                    new GeneSketch().add(20, "1").add(38, "1,2")
+            ));
+    public static final Breed SPLASH = new Breed(new Breed.Properties().setData("splash", Biomes.THE_VOID, Breed.Rarity.ORDINARY)
+            .setGeneSketch(
+                    new GeneSketch(),
+                    new GeneSketch().add(20, "1").add(38, "2","2")
+            ));
 
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(

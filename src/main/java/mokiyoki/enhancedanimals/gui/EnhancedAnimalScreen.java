@@ -450,7 +450,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.tameness").append(": WIP"), mouseX, mouseY);
             }
             if (!this.chestTabEnabled) {
-                if (this.isHovering(100, 30, 50, 9, (double)mouseX, (double)mouseY)) {
+                if (this.isHovering(100, 29, 50, 9, (double)mouseX, (double)mouseY)) {
                     guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.sire").append(": "+enhancedAnimalInfo.sire), mouseX, mouseY);
                 }
                 if (this.isHovering(100, 40, 50, 9, (double)mouseX, (double)mouseY)) {

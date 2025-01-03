@@ -450,7 +450,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.tameness").append(": WIP"), mouseX, mouseY);
             }
             if (!this.chestTabEnabled) {
-                if (this.isHovering(100, 30, 50, 9, (double)mouseX, (double)mouseY)) {
+                if (this.isHovering(100, 29, 50, 9, (double)mouseX, (double)mouseY)) {
                     guiGraphics.renderTooltip(this.font, Component.translatable("eanimod.animalinfocontainer.sire").append(": "+enhancedAnimalInfo.sire), mouseX, mouseY);
                 }
                 if (this.isHovering(100, 40, 50, 9, (double)mouseX, (double)mouseY)) {
@@ -1178,28 +1178,28 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 } else {
                     age = Component.translatable("eanimod.animalinfocontainer.ancient").getString();
                 }
-                guiGraphics.drawString(this.font, (Component.translatable("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
+                guiGraphics.drawString(this.font, (Component.translatable("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752, false);
 
                 String sireName = this.enhancedAnimalInfo.sire;
                 int s = sireName.length();
                 String damName = this.enhancedAnimalInfo.dam;
                 int d = damName.length();
                 if (s > 8) {
-                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
-                    guiGraphics.drawString(this.font, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
+                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752, false);
+                    guiGraphics.drawString(this.font, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752, false);
                     if (d > 8) {
-                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
-                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752, false);
+                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752, false);
                     } else {
-                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752, false);
                     }
                 } else {
-                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
+                    guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752, false);
                     if (d > 8) {
-                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
-                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752, false);
+                        guiGraphics.drawString(this.font, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752, false);
                     } else {
-                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
+                        guiGraphics.drawString(this.font, Component.translatable("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752, false);
                     }
                 }
             }

@@ -237,10 +237,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "hooves_black.png", "hoovesmulefoot_black.png"
     };
 
-    private static final String[] PIG_TEXTURES_TUSKS = new String[] {
-            "", "tusks.png"
-    };
-
     private static final String[] PIG_TEXTURES_ALPHA = new String[] {
             "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
@@ -1724,6 +1720,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, skinBlack, black != 0);
                 blackSkinGroup.addGrouping(blackSkinAlpha);
                 parentGroup.addGrouping(blackSkinGroup);
+            } else {
+                addDelimiter("nb");
             }
 
             if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
@@ -1742,6 +1740,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 whiteSkinAlpha.addGrouping(whSkinTex);
                 whiteSkinGroup.addGrouping(whiteSkinAlpha);
                 parentGroup.addGrouping(whiteSkinGroup);
+            } else {
+                addDelimiter("nw");
             }
 
             if (gene[36] != 1 || gene[37] != 1) {
@@ -1764,8 +1764,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 	coat_alpha = coat_alpha + 1;
                     coat_texture = 1;
                 }
-            }
-            if (gene[36] != 1 || gene[37] != 1) {
+
                 boolean baby = this.isBaby();
                 int darkAgouti = baby ? 2 : 1;
 
@@ -1783,12 +1782,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (whitebelly != 0) {
-                    addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
-                }
-                else if (swallowbelly != 0) {
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
-                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
+                    addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, true);
+                } else if (swallowbelly != 0) {
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, true);
+                    addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, "coat_base.png", "sb", swallowbellyRGB);
                     addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? roan+1 : roan, roan != 0);
+                } else {
+                    addDelimiter("nsb");
                 }
 
                 int agoutiTex = 0;
@@ -1798,9 +1798,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     if (brindle && agouti) {
                         agoutiTex = wideband ? 2 : 1;
                     }
-                }
-                else {
+                } else {
                     agoutiTex = wideband ? 2 : 1;
+                    addDelimiter("a");
                 }
 
                 if (black != 0) {
@@ -1812,21 +1812,31 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     if ( agoutiBlack && (swallowbelly == 0 || baby)) {
                         if (!wideband || baby) { // Dark agouti
                             int camoColor = (wideband && swallowbelly == 0) ? darkAgoutiRedRGB : darkAgoutiRGB;
-                            addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-d", camoColor);
+                            addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag"+darkAgouti, camoColor);
+                        } else {
+                            addDelimiter("nwb");
                         }
                         if (!baby) { // Light agouti layer
                             addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
+                        } else {
+                            addDelimiter("b");
                         }
+                    } else {
+                        addDelimiter();
                     }
                     addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? roan+1 : roan, roan != 0 && !brindle);
                     blackGroup.addGrouping(blackAlphaGroup);
                     blackGroup.addGrouping(blackTexGroup);
                     hairTexGroup.addGrouping(blackGroup);
+                } else {
+                    addDelimiter("nb");
                 }
 
                 if (agoutiBlack) {
                     hairTexGroup.addGrouping(swallowbellyGroup);
                     hairTexGroup.addGrouping(whitebellyGroup);
+                } else {
+                    addDelimiter("nab");
                 }
 
                 if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
@@ -1843,6 +1853,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     whiteGroup.addGrouping(whiteAlphaGroup);
                     whiteGroup.addGrouping(whiteTextureGroup);
                     hairTexGroup.addGrouping(whiteGroup);
+                } else {
+                    addDelimiter("nw");
                 }
                 TextureGrouping overlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 addTextureToAnimalTextureGrouping(overlayGroup, PIG_TEXTURES_COAT, coat_texture, true);
@@ -1867,9 +1879,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
             addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_EYES, eyes, true);
             addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_HOOVES, hooves, true);
-            if (tusks) {
-            	addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_TUSKS, tusks ? 1 : 0, tusks);	
-            }
+            addTextureToAnimalTextureGrouping(parentGroup, "tusks.png", tusks);
             this.setTextureGrouping(parentGroup);
         }
     }

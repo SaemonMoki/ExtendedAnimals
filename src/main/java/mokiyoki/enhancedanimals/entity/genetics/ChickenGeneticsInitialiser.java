@@ -100,6 +100,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.types.add(ChickenBreeds.FIBRO);
         this.types.add(ChickenBreeds.BUTTERCUP_COMB);
         this.types.add(ChickenBreeds.SCALELESS);
+        this.types.add(ChickenBreeds.PAINT);
+        this.types.add(ChickenBreeds.SPLASH);
 
         this.types.addAll(this.breeds);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);

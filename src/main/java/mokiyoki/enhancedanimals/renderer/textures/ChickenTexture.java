@@ -75,21 +75,27 @@ public class ChickenTexture {
                     if (!pattern.isEmpty() || mottled) {
                         TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", pattern);
+                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", "chick"+pattern);
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
                         calculatePatternWithRGB(chicken, featherGroup, patternFeatherGroup, patternCutOutGroup, false, sGene, gene, isFemale, isNakedNeck);
+                    } else {
+                        chicken.addDelimiter();
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, !isFemale&&sGene[6]==2&&sGene[7]==2?"chick/doublebarred.png":"chick/barred.png", isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2);
+                    if (isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2) {
+                        chicken.addTextureToAnimalTextureGrouping(featherGroup, isFemale||sGene[6]!=sGene[7]?"chick/barred.png":"chick/doublebarred.png", isFemale||sGene[6]!=sGene[7] ? "s" : "d");
+                    } else {
+                        chicken.addDelimiter();
+                    }
                 } else {
-                    chicken.addTextureToAnimalTextureGrouping(featherGroup, "", false);
+                    chicken.addDelimiter();
                 }
 
                 chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/feather_noise.png");
                 parentGroup.addGrouping(featherGroup);
             } else {
                 boolean femFeathers = isFemale || (gene[196] == 2 || gene[197] == 2); //TODO roosters can be het for henny feather and express an intermediate form.
-                String tailType = "";
+                String tailType;
                 String tailSickle = "";
                 boolean patternedBlue = false;
 
@@ -102,14 +108,6 @@ public class ChickenTexture {
                     patternedBlue = gene[40] != gene[41] && (gene[24]==5||gene[25]==5) && ((gene[30]==1 || gene[31]==1) && (gene[26]==1 || gene[27]==1));
 
                     switch (extension) {
-                        default -> {
-                            if (patternedBlue) {
-                                pattern = "birchen";
-                            } else {
-                                pattern = "black";
-                            }
-                            ground = femFeathers? "duckwing_female" : "duckwing_male";
-                        }
                         case 1 -> {
                             pattern = "birchen";
                             ground = femFeathers? "duckwing_female" : "duckwing_male";
@@ -126,17 +124,25 @@ public class ChickenTexture {
                             pattern = "brown";
                             ground = femFeathers? "duckwing_female" : "duckwing_male";
                         }
+                        default -> {
+                            if (patternedBlue) {
+                                pattern = "birchen";
+                            } else {
+                                pattern = "black";
+                            }
+                            ground = femFeathers? "duckwing_female" : "duckwing_male";
+                        }
                     }
 
                     switch (columbian) {
-                        default -> pattern += "/noncolumbian";
                         case 1 -> pattern += "/hetcolumbian";
                         case 2 -> pattern +=    "/columbian";
+                        default -> pattern += "/noncolumbian";
                     }
                     switch (darkbrown) {
-                        default -> pattern += "/nondarkbrown";
                         case 1 -> pattern += "/hetdarkbrown";
                         case 2 -> pattern +=    "/darkbrown";
+                        default -> pattern += "/nondarkbrown";
                     }
 
                     if (gene[170]==1 || gene[171]==1) {
@@ -145,14 +151,14 @@ public class ChickenTexture {
                     }
 
                     switch (patternGene) {
-                        default -> pattern += "/nonpattern";
                         case 1 -> pattern += "/hetpattern";
                         case 2 -> pattern +=    "/pattern";
+                        default -> pattern += "/nonpattern";
                     }
                     switch (melanized) {
-                        default -> pattern += "/nonmelanized";
                         case 1 -> pattern += "/hetmelanized";
                         case 2 -> pattern +=    "/melanized";
+                        default -> pattern += "/nonmelanized";
                     }
 
                     pattern += femFeathers ? "/female" : "/male";
@@ -160,22 +166,14 @@ public class ChickenTexture {
                     if (gene[24]!=gene[25]) {
                         int e = gene[24] == extension ? gene[25]:gene[24];
                         switch (e) {
+                            case 1 -> pattern = "birchenhet" + pattern;
+                            case 2 -> pattern = "duckwinghet" + pattern;
+                            case 3 -> pattern = "wheatenhet" + pattern;
+                            case 4 -> pattern = "brownhet" + pattern;
                             default -> {
                                 if ((gene[40] == 2) == (gene[41] == 2)) {
                                     pattern = "blackhet" + pattern;
                                 }
-                            }
-                            case 1 -> {
-                                pattern = "birchenhet" + pattern;
-                            }
-                            case 2 -> {
-                                pattern = "duckwinghet" + pattern;
-                            }
-                            case 3 -> {
-                                pattern = "wheatenhet" + pattern;
-                            }
-                            case 4 -> {
-                                pattern = "brownhet" + pattern;
                             }
                         }
                     }
@@ -246,7 +244,7 @@ public class ChickenTexture {
                 }
 
                 if (sGene[18] != 1 && (isFemale || sGene[19] != 1)) {
-                    earSize *= sGene[18] == 2 && (isFemale || sGene[19] == 2) ? 0.75 : 0.5F;
+                    earSize *= sGene[18] == 2 && (isFemale || sGene[19] == 2) ? 0.75F : 0.5F;
                 }
 
                 earColour = Math.min(gene[164], gene[165]) - 1;
@@ -293,6 +291,8 @@ public class ChickenTexture {
         chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/comb_" + (isFemale ? "female" : "male") + ".png", isFemale ? "f" : "m", calculateCombRGB(sGene, gene, isFemale));
         if (age < 0.25F) {
             chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/baby.png","b", skinColour[0]);
+        } else {
+            chicken.addDelimiter();
         }
 //        chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/top.png", "t", skinColour[1]);
     }
@@ -476,38 +476,39 @@ public class ChickenTexture {
             if (isNakedNeck) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/" + (gene[52] == gene[53] ? "naked" : "bowtie") + "_neck.png", gene[52] == gene[53] ? "bt" : "nn");
             } else {
-                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
+                chicken.addDelimiter();
             }
             if (facefeathers != -1) {
                 chicken.addTextureToAnimalTextureGrouping(featherCutout, "feather_type/baldface_" + facefeathers + ".png");
             } else {
-                chicken.addTextureToAnimalTextureGrouping(featherCutout, "", false);
+                chicken.addDelimiter();
             }
             featherMask.addGrouping(featherCutout);
+        } else {
+            chicken.addDelimiter();
         }
         chicken.addTextureToAnimalTextureGrouping(featherMask, "feather_type/feathers.png");
 
-            if (!tailType.isEmpty()) {
+        if (!tailType.isEmpty()) {
+            int tailLength = 1;
+            if (gene[198]==2&&gene[199]==2) tailLength +=1;
+            if (gene[280]==2&&gene[281]==2) tailLength +=1;
+            if (gene[282]==2&&gene[283]==2) tailLength -=1;
 
-                int tailLength = 1;
-                if (gene[198]==2&&gene[199]==2) tailLength +=1;
-                if (gene[280]==2&&gene[281]==2) tailLength +=1;
-                if (gene[282]==2&&gene[283]==2) tailLength -=1;
-
-                int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
-                for (int i = 0; i <= tailNumber; i++) {
-                    if (i == 0) {
-                        /**
-                         *      This one controls the sickle feather
-                         */
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
-                    } else {
-                        chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", tailLength + tailType + tailNumber);
-                    }
+            int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
+            for (int i = 0; i <= tailNumber; i++) {
+                if (i == 0) {
+                    /**
+                     *      This one controls the sickle feather
+                     */
+                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", "0" + tailLength + tailType + tailNumber);
+                } else {
+                    chicken.addTextureToAnimalTextureGrouping(featherMask, "tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png", i + tailLength + tailType + tailNumber);
                 }
-        } else {
-                chicken.addTextureToAnimalTextureGrouping(featherMask, "", false);
             }
+        } else {
+            chicken.addDelimiter();
+        }
         featherGroup.addGrouping(featherMask);
     }
 
@@ -516,28 +517,36 @@ public class ChickenTexture {
             parentGroup.setTexturingType(TexturingType.CUTOUT_GROUP);
             TextureGrouping earCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            String ear = "";
+            String earTexture = "";
             if (earSize > 15) earSize = 15;
             switch (earSize) {
-                case 2, 3, 4 -> ear = "tiny.png";
-                case 5, 6 -> ear = "small.png";
-                case 7, 8, 9 -> ear = "medium.png";
-                case 10, 11, 12 -> ear = "large.png";
-                case 13, 14, 15 -> ear = "xlarge.png";
+                case 2, 3, 4 -> earTexture = "tiny.png";
+                case 5, 6 -> earTexture = "small.png";
+                case 7, 8, 9 -> earTexture = "medium.png";
+                case 10, 11, 12 -> earTexture = "large.png";
+                case 13, 14, 15 -> earTexture = "xlarge.png";
             }
+
+            String earKey = String.valueOf(earTexture.charAt(0));
 
             earSize = 0;
             for (int i = 152; i < 163; i++) {
                 if (i < 158 || i > 159) earSize += gene[i] % 2 == 0 ? 1 : -1;
             }
 
-            ear = (earSize > 0 ? "round_" : "long_") + ear;
+            if (earSize>0) {
+                earTexture = "round_" + earTexture;
+                earKey += "r";
+            } else {
+                earTexture = "long_" + earTexture;
+                earKey += "l";
+            }
 
-            chicken.addTextureToAnimalTextureGrouping(earCutout, "ear/" + ear, ear);
+            chicken.addTextureToAnimalTextureGrouping(earCutout, "ear/" + earTexture, earKey);
 
             parentGroup.addGrouping(earCutout);
         } else {
-            chicken.addTextureToAnimalTextureGrouping(parentGroup, "", false);
+            chicken.addDelimiter();
         }
     }
 
@@ -765,14 +774,14 @@ public class ChickenTexture {
 //                }
             } else {
                 switch (autosomalRed[0]) {
-                    default -> {
-                        if (isFemale) { h = 0.05F; s = 0.53F; b = 0.41F; } else { h = 0.05F; s = 0.53F; b = 0.41F; }
-                    }
                     case "birchen", "brown", "duckwing" -> {
                         if (isFemale) { h = 0.05F; s = 0.7F; b = 0.63F; } else { h = 7F/360F; s = 0.88F; b = 0.5F; }
                     }
                     case "wheaten" -> {
                         if (isFemale) { h = 0.05F; s = 0.75F; b = 0.6F; a=gene[170]==gene[171]?1.0F:0.8F; } else { h = 7F/360F; s = 0.88F; b = 0.5F; }
+                    }
+                    default -> {
+                        if (isFemale) { h = 0.05F; s = 0.53F; b = 0.41F; } else { h = 0.05F; s = 0.53F; b = 0.41F; }
                     }
                 }
             }
@@ -898,6 +907,8 @@ public class ChickenTexture {
             TextureGrouping blueTextureBase = new TextureGrouping(TexturingType.MERGE_GROUP);
             chicken.addIndividualTextureToAnimalTextureGrouping(blueTextureBase, TexturingType.APPLY_RGB, "feather_colour/feather_base.png", Colouration.HSBtoARGB(blueBase[0], blueBase[1], blueBase[2]));
             featherGroup.addGrouping(blueTextureBase);
+        } else {
+            chicken.addDelimiter();
         }
 
         float[] colours = getPatternRGB(choc, lav, blue, splash, patternedBlue, paint, gene, chicken.growthAmount());
@@ -914,30 +925,45 @@ public class ChickenTexture {
             iriFeatherGroup.addGrouping(patternCutOutGroup);
             iriFeatherGroup.addGrouping(iri);
             patternFeatherGroup.addGrouping(iriFeatherGroup);
+        } else {
+            chicken.addDelimiter();
         }
 
             if (splash) {
+                char[] uuid = chicken.getStringUUID().toCharArray();
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
-                for (int i=0; i<3;i++) {
-                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + ThreadLocalRandom.current().nextInt(16) + ".png");
-                }
+                int spotVal = Integer.parseInt(String.valueOf(uuid[1]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+                spotVal = Integer.parseInt(String.valueOf(uuid[2]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+                spotVal = Integer.parseInt(String.valueOf(uuid[3]),16);
+                chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/splash" + spotVal + ".png", String.valueOf(spotVal));
+
                 spots.addGrouping(spotsCutout);
                 chicken.addTextureToAnimalTextureGrouping(spots, "feather_colour/spots/splash_base.png");
                 patternFeatherGroup.addGrouping(spots);
+            } else {
+                chicken.addDelimiter();
             }
+
             if (paint) {
                 TextureGrouping spots = new TextureGrouping(TexturingType.MERGE_GROUP);
                 if (!(gene[38] == 1 && gene[39] == 1)) {
                     spots.setTexturingType(TexturingType.CUTOUT_GROUP);
                     TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
                     for (int i=0; i<5;i++) {
-                        chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/paint" + ThreadLocalRandom.current().nextInt(9) + ".png");
+                        int spotVal = ThreadLocalRandom.current().nextInt(9);
+                        chicken.addTextureToAnimalTextureGrouping(spotsCutout, "feather_colour/spots/paint" + spotVal + ".png", String.valueOf(spotVal));
                     }
                     spots.addGrouping(spotsCutout);
+                } else {
+                    chicken.addDelimiter();
                 }
                 chicken.addTextureToAnimalTextureGrouping(spots, "feather_colour/feather_base.png");
                 patternFeatherGroup.addGrouping(spots);
+            } else {
+                chicken.addDelimiter();
             }
         featherGroup.addGrouping(patternFeatherGroup);
     }
@@ -956,14 +982,6 @@ public class ChickenTexture {
             if (lav) {
                 if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Choc Lavender Blue
-                            patternHue = 0.0222F;
-                            patternSaturation = 0.09F;
-                            patternValue = 0.85F;
-                            iridescenceAlpha = 0.05F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1001,18 +1019,18 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Choc Lavender Blue
+                            patternHue = 0.0222F;
+                            patternSaturation = 0.09F;
+                            patternValue = 0.85F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
                     }
                 } else {
                     // Choc Lavender
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Choc Lavender
-                            patternHue = 0.0222F;
-                            patternSaturation = 0.09F;
-                            patternValue = 0.65F;
-                            iridescenceAlpha = 0.05F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1050,19 +1068,19 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Choc Lavender
+                            patternHue = 0.0222F;
+                            patternSaturation = 0.09F;
+                            patternValue = 0.65F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
                     }
                 }
             } else {
                 if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Choc Blue
-                            patternHue = 0.0694F;
-                            patternSaturation = 0.37F;
-                            patternValue = 0.51F;
-                            iridescenceAlpha = 0.05F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1100,18 +1118,18 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Choc Blue
+                            patternHue = 0.0694F;
+                            patternSaturation = 0.37F;
+                            patternValue = 0.51F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
                     }
                 } else {
                     // Choc
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Choc
-                            patternHue = 0.0472F;
-                            patternSaturation = 0.56F;
-                            patternValue = 0.28F;
-                            iridescenceAlpha = 0.1F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1149,6 +1167,14 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Choc
+                            patternHue = 0.0472F;
+                            patternSaturation = 0.56F;
+                            patternValue = 0.28F;
+                            iridescenceAlpha = 0.1F;
+                            iridescenceHueShift = 0.05F;
+                        }
                     }
                 }
             }
@@ -1156,13 +1182,6 @@ public class ChickenTexture {
             if (lav) {
                 if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Lavender Blue
-                            patternHue = 0.6666F;
-                            patternSaturation = 0.06F;
-                            patternValue = 0.85F;
-                            iridescenceAlpha = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1199,17 +1218,16 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Lavender Blue
+                            patternHue = 0.6666F;
+                            patternSaturation = 0.06F;
+                            patternValue = 0.85F;
+                            iridescenceAlpha = 0.05F;
+                        }
                     }
                 } else {
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Lavender
-                            patternHue = 0.0722F;
-                            patternSaturation = 0.02F;
-                            patternValue = 0.6F;
-                            iridescenceAlpha = 0.05F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1248,19 +1266,19 @@ public class ChickenTexture {
                                 iridescenceAlpha = 0.0F;
                             }
                         }
+                        default -> {
+                            // Lavender
+                            patternHue = 0.0722F;
+                            patternSaturation = 0.02F;
+                            patternValue = 0.6F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
+                        }
                     }
                 }
             } else {
                 if (blue || splash) {
                     switch (Math.max(gene[38], gene[39])) {
-                        default -> {
-                            // Blue
-                            patternHue = 0.6222F;
-                            patternSaturation = 0.1F;
-                            patternValue = 0.40F;
-                            iridescenceAlpha = 0.05F;
-                            iridescenceHueShift = 0.05F;
-                        }
                         case 3 -> {
                             if (paint) {
                                 // White
@@ -1292,7 +1310,6 @@ public class ChickenTexture {
                                 patternSaturation = 0.07F;
                                 patternValue = 0.54F;
                                 iridescenceAlpha = 0.0F;
-                                paint = false;
                             } else {
                                 //het
                                 patternHue = 0.61F;
@@ -1300,6 +1317,14 @@ public class ChickenTexture {
                                 patternValue = 0.45F;
                                 iridescenceAlpha = 0.0F;
                             }
+                        }
+                        default -> {
+                            // Blue
+                            patternHue = 0.6222F;
+                            patternSaturation = 0.1F;
+                            patternValue = 0.40F;
+                            iridescenceAlpha = 0.05F;
+                            iridescenceHueShift = 0.05F;
                         }
                     }
                 } else {
@@ -1336,7 +1361,6 @@ public class ChickenTexture {
                                 patternSaturation = 0.07F;
                                 patternValue = 0.35F;
                                 iridescenceAlpha = 0.0F;
-                                paint = false;
                             } else {
                                 //het
                                 patternHue = 0.0725F;
@@ -1563,7 +1587,7 @@ public class ChickenTexture {
 
     private static int calculateCombRGB(int[] sGene, int[] gene, boolean isFemale) {
         float hue = 0.0F;
-        float sat = 1.0F;
+        float sat = 0.0F;
         float val = 1.0F;
 
         if (gene[20] == 3 && gene[21] == 3) return 16777215;
@@ -1575,12 +1599,12 @@ public class ChickenTexture {
                 if (gene[42]!=gene[43]) {
                     // het fibro
                     hue = isFemale? 260.0F : 300.0F;
-                    sat *= 0.5F;
+                    sat = 0.5F;
                     val *= isFemale? 0.20F : 0.4F;
                 } else {
                     // homozygous fibro
                     hue = 240.0F;
-                    sat *= 0.5F;
+                    sat = 0.5F;
                     val *= isFemale? 0.15F : 0.22F;
                 }
             }

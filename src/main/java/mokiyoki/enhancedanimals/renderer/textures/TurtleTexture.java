@@ -12,6 +12,8 @@ public class TurtleTexture {
     public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, char[] uuid) {
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         int base = 0;
+        int pibald = 0;
+
 
         if (gene[0] == 1 || gene[1] == 1) {
             //non-albino
@@ -19,21 +21,13 @@ public class TurtleTexture {
                 //non-axanthic
                 if (gene[4] == 2 || gene[5] == 2) {
                     //melanized
-                    if (gene[4] == gene[5]) {
-                        base = 4;
-                    } else {
-                        base = 5;
-                    }
+                    base = gene[4] == gene[5] ? 4 : 5;
                 }
             } else {
                 //axanthic
                 if (gene[4] == 2 || gene[5] == 2) {
                     //melanized
-                    if (gene[4] == gene[5]) {
-                        base = 6;
-                    } else {
-                        base = 7;
-                    }
+                    base = gene[4] == gene[5] ? 6 : 7;
                 } else {
                     base = 2;
                 }
@@ -49,62 +43,48 @@ public class TurtleTexture {
             }
         }
 
-        TextureGrouping baseTexture = new TextureGrouping(TexturingType.MERGE_GROUP);
-        turtle.addTextureToAnimalTextureGrouping(baseTexture, TURTLE_TEXTURES_BASE[base], String.valueOf(base));
-        parentGroup.addGrouping(baseTexture);
+        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+        turtle.addTextureToAnimalTextureGrouping(parentGroup, "albino_turtle.png");
 
         if (gene[6] == 2 && gene[7] == 2) {
-            piebald(turtle, gene, uuid, parentGroup);
-        } else {
-            turtle.addDelimiter();
-        }
+            TextureGrouping spotShapes = new TextureGrouping(TexturingType.MERGE_GROUP);
+            if ( Character.isDigit(uuid[5]) ){
+                pibald = 1 + (uuid[5]-48);
+            } else {
+                char d = uuid[5];
 
-        turtle.setTextureGrouping(parentGroup);
-    }
+                switch (d) {
+                    case 'a':
+                        pibald = 11;
+                        break;
+                    case 'b':
+                        pibald = 12;
+                        break;
+                    case 'c':
+                        pibald = 13;
+                        break;
+                    case 'd':
+                        pibald = 14;
+                        break;
+                    case 'e':
+                        pibald = 15;
+                        break;
+                    case 'f':
+                        pibald = 16;
+                        break;
+                    default:
+                        pibald = 0;
+                }
+            }
 
-    private static void piebald(EnhancedTurtle turtle, int[] gene, char[] uuid, TextureGrouping parentGroup) {
-        int piebald;
-        TextureGrouping spots = new TextureGrouping(TexturingType.MASK_GROUP);
-
-        if ( Character.isDigit(uuid[5]) ){
-            piebald = 1 + (uuid[5]-48);
-        } else {
-            char d = uuid[5];
-
-            switch (d) {
-                case 'a':
-                    piebald = 11;
-                    break;
-                case 'b':
-                    piebald = 12;
-                    break;
-                case 'c':
-                    piebald = 13;
-                    break;
-                case 'd':
-                    piebald = 14;
-                    break;
-                case 'e':
-                    piebald = 15;
-                    break;
-                case 'f':
-                    piebald = 16;
-                    break;
-                default:
-                    piebald = 0;
+            if (gene[8] == 2 && gene[9] == 2) {
+                pibald = 1;
+            } else if ((pibald-1) % 4 == 0){
+                pibald = (int)(pibald + (pibald*0.25F));
             }
         }
 
-        if (gene[8] == 2 && gene[9] == 2) {
-            piebald = 1;
-        } else {
-            piebald = piebald%11;
-        }
-
-        turtle.addTextureToAnimalTextureGrouping(spots, "spots/piebald/" + piebald + ".png", String.valueOf(piebald));
-
-        turtle.addTextureToAnimalTextureGrouping(spots, "spots/white1.png");
-
-        parentGroup.addGrouping(spots);
+        turtle.setTextureGrouping(parentGroup);
     }
 }

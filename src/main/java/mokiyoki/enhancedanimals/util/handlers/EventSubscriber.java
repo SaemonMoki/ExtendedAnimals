@@ -99,7 +99,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
@@ -713,7 +718,7 @@ public class EventSubscriber {
                     }
                 }
 
-                if (true) {
+                if (ThreadLocalRandom.current().nextInt(5) == 0) {
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
                         animals.add(ENHANCED_COW.get());

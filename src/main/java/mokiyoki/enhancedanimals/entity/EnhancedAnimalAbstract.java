@@ -27,7 +27,6 @@ import mokiyoki.enhancedanimals.util.scheduling.AnimalScheduledFunction;
 import mokiyoki.enhancedanimals.util.scheduling.Schedules;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LerpingModel;
 import net.minecraft.world.entity.npc.WanderingTrader;
@@ -237,7 +236,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected void registerGoals() { }
 
     protected void setMateName(String mateName) {
-        if (mateName!=null && !mateName.equals("")) {
+        if (mateName!=null && !mateName.isEmpty()) {
             this.mateName = mateName;
         } else {
             this.mateName = "???";
@@ -245,7 +244,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void setSireName(String sireName) {
-        if (sireName!=null && !sireName.equals("")) {
+        if (sireName!=null && !sireName.isEmpty()) {
             this.sireName = sireName;
         } else {
             this.sireName = "???";
@@ -253,7 +252,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void setDamName(String damName) {
-        if (damName!=null && !damName.equals("")) {
+        if (damName!=null && !damName.isEmpty()) {
             this.damName = damName;
         } else {
             this.damName = "???";
@@ -553,7 +552,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //overloaded version of getAge
     public int getEnhancedAnimalAge() {
         String birthTime = getBirthTime();
-        if (!(birthTime == null) && !birthTime.equals("") && !birthTime.equals(0)) {
+        if (!(birthTime == null) && !birthTime.isEmpty() && !birthTime.equals("0")) {
             return (int)(this.level().getLevelData().getGameTime() - Long.parseLong(birthTime));
         } else {
             setBirthTime(String.valueOf(this.level().getLevelData().getGameTime() - this.getAdultAge()));
@@ -1944,7 +1943,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             return null;
         }
 
-        return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
+        return this.enhancedAnimalAlphaTextures.toArray(String[]::new);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -408,9 +408,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         enhancedllama.setAge(-enhancedllama.getAdultAge());
         enhancedllama.setBirthTime();
         enhancedllama.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedllama.initilizeAnimalSize();
-        enhancedllama.setStrengthAndInventory();
-        enhancedllama.setMaxCoatLength();
+        enhancedllama.setInitialDefaults();
         enhancedllama.currentCoatLength = 0;
         enhancedllama.setCoatLength(0);
         enhancedllama.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
@@ -421,8 +419,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -this.getAdultAge());
-        enhancedllama.setStrengthAndInventory();
-        enhancedllama.setMaxCoatLength();
+        enhancedllama.setInitialDefaults();
         enhancedllama.currentCoatLength = 0;
         enhancedllama.setCoatLength(0);
 
@@ -983,6 +980,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    public void setInitialDefaults() {
+        super.setInitialDefaults();
+        setStrengthAndInventory();
+        setInitialCoat();
     }
 
     @Override

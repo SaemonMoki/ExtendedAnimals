@@ -43,6 +43,8 @@
   "eanimod.animalinfocontainer.photomode.rgb.green": "Green Value:",
   "eanimod.animalinfocontainer.photomode.rgb.red": "Red Value:",
   "eanimod.animalinfocontainer.photomode.transparent": "Enable Transparent Mode For Photo",
+  "eanimod.animalinfocontainer.photomode.stickerstyle": "Add a sticker style edge to the picture",
+  "eanimod.animalinfocontainer.photomode.takephoto": "Click this to take photo!",
   "eanimod.animalinfocontainer.sire": "Sire",
   "eanimod.animalinfocontainer.weeks": "weeks",
   "eanimod.animalinfocontainer.years": "years",

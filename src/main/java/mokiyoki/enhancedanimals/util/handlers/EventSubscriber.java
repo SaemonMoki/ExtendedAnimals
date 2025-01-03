@@ -104,6 +104,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
@@ -750,6 +751,8 @@ public class EventSubscriber {
                         animals.add(ENHANCED_AXOLOTL.get());
                     }
 
+                    Collections.shuffle(animals);
+
                     int selection = animals.size()==1?0:ThreadLocalRandom.current().nextInt(animals.size());
 
                     if (animals.get(selection) == ENHANCED_TURTLE.get()) {
@@ -769,9 +772,9 @@ public class EventSubscriber {
                     } else {
                         for (int i = 1; i <= 2; i++) {
                             BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
-                            Entity animal = animals.get(selection).spawn((ServerLevel) world, blockPos, MobSpawnType.EVENT);
-                            if (animal instanceof EnhancedAnimalAbstract) {
-                                EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animal;
+                            EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animals.get(selection).create(((ServerLevel) world).getLevel());
+
+                            if (enhancedAnimal != null) {
                                 Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
                                 enhancedAnimal.setGenes(animalGenes);
                                 enhancedAnimal.setSharedGenes(animalGenes);
@@ -780,9 +783,13 @@ public class EventSubscriber {
                                 enhancedAnimal.getReloadTexture();
                                 enhancedAnimal.setLeashedTo(entity, true);
                                 enhancedAnimal.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
-                            }
-                            if (animal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
-                                break;
+
+                                enhancedAnimal.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                                world.addFreshEntity(enhancedAnimal);
+
+                                if (enhancedAnimal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
+                                    break;
+                                }
                             }
                         }
                     }

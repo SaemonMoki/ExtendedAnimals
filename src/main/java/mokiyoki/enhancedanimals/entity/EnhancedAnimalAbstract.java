@@ -2126,7 +2126,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     public void setInitialDefaults() {
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
-        initializeHealth(this, 1F);
+        initializeHealth(this, this.getMaxHealth());
     }
 
     protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {

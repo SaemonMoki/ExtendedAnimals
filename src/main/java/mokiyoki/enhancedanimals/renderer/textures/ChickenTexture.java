@@ -79,7 +79,7 @@ public class ChickenTexture {
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
                         calculatePatternWithRGB(chicken, featherGroup, patternFeatherGroup, patternCutOutGroup, false, sGene, gene, isFemale, isNakedNeck);
                     } else {
-                        chicken.addDelimiter();
+                        chicken.addDelimiter("np");
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
                     if (isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2) {
@@ -405,6 +405,8 @@ public class ChickenTexture {
                     } else {
                         chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
                     }
+                } else {
+                    chicken.addDelimiter("np");
                 }
 
                 if (charcoal) {

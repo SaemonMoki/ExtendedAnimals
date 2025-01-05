@@ -72,7 +72,7 @@ public class ChickenTexture {
                 featherGroup.addGrouping(baseFeatherColour);
 
                 if (gene[20] == 1 || gene[21] == 1) {
-                    if (!pattern.isEmpty()) {
+                    if (!pattern.isEmpty() || mottled) {
                         TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                         chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", "chick"+pattern);

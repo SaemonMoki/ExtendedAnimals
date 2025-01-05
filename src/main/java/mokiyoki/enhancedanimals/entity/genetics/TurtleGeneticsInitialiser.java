@@ -73,6 +73,18 @@ public class TurtleGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1;
         }
 
+        /**
+         *      [30,31] - pattern [1=wildtype, 2=solid, 3=scale]
+         */
+        autosomalGenes[30] = ThreadLocalRandom.current().nextInt(100) > WTC ? 5 : 1;
+        autosomalGenes[31] = ThreadLocalRandom.current().nextInt(100) > WTC ? 5 : 1;
+
+        /**
+         *      [30,31] - pattern [1=wildtype, 2=solid, 3=scale, 4=clown, 5=patternless]
+         */
+        autosomalGenes[30] = ThreadLocalRandom.current().nextInt(100) > WTC ? 5 : 1;
+        autosomalGenes[31] = ThreadLocalRandom.current().nextInt(100) > WTC ? 5 : 1;
+
         return new Genes(autosomalGenes);
     }
 }

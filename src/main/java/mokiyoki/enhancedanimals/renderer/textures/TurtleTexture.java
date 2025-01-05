@@ -42,12 +42,39 @@ public class TurtleTexture {
             }
         }
 
-        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        boolean nonaxanthic = gene[2] == 1 || gene[3] == 1;
+        String axanthic = nonaxanthic ? "nonaxanthic/" : "axanthic/";
+        String eyeColour;
 
-        turtle.addTextureToAnimalTextureGrouping(parentGroup, "albino_turtle.png");
+        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        TextureGrouping baseColour = new TextureGrouping(TexturingType.MERGE_GROUP);
+        parentGroup.addGrouping(baseColour);
+
+        if (gene[0]==1 || gene[1]==1) {
+            turtle.addTextureToAnimalTextureGrouping(baseColour, "base/" + axanthic + "patternless.png", nonaxanthic?"nx":"ax");
+            TextureGrouping patternGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            String pattern;
+            if (gene[4] == 1 || gene[5] == 1) {
+                turtle.addTextureToAnimalTextureGrouping(patternGroup, "pattern/colour/" + axanthic + "green.png", nonaxanthic ? "nx" : "ax");
+                if (gene[4]!=gene[5]) {
+                    turtle.addIndividualTextureToAnimalTextureGrouping(patternGroup, TexturingType.APPLY_RGBA, "pattern/colour/charcoal.png", 128 << 24 | 255 << 16 | 255 << 8 | 255);
+                    eyeColour = "black";
+                } else {
+                    turtle.addDelimiter("nc");
+                    eyeColour = nonaxanthic?"grey":"navy";
+                }
+            } else {
+                turtle.addTextureToAnimalTextureGrouping(patternGroup, "pattern/colour/charcoal.png", "c");
+                eyeColour = "black";
+            }
+            parentGroup.addGrouping(patternGroup);
+        } else {
+            turtle.addTextureToAnimalTextureGrouping(baseColour, "base/" + axanthic + "albino.png", nonaxanthic?"anx":"aax");
+            eyeColour = nonaxanthic ? "blue" : "pink";
+        }
 
         if (gene[6] == 2 && gene[7] == 2) {
-            TextureGrouping spotShapes = new TextureGrouping(TexturingType.MERGE_GROUP);
+            TextureGrouping spots = new TextureGrouping(TexturingType.MERGE_GROUP);
             if ( Character.isDigit(uuid[5]) ){
                 pibald = 1 + (uuid[5]-48);
             } else {
@@ -79,11 +106,23 @@ public class TurtleTexture {
 
             if (gene[8] == 2 && gene[9] == 2) {
                 pibald = 1;
-            } else if ((pibald-1) % 4 == 0){
+            } else if ((pibald-1) % 4 == 0) {
                 pibald = (int)(pibald + (pibald*0.25F));
             }
+
+
+            turtle.addTextureToAnimalTextureGrouping(spots, "pibald"+pibald, String.valueOf(pibald));
+            parentGroup.addGrouping(spots);
+        } else {
+            turtle.addDelimiter();
         }
 
+        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+
+
+        parentGroup.addGrouping(detailGroup);
+        turtle.addTextureToAnimalTextureGrouping(parentGroup, "eyes/" + eyeColour + ".png", eyeColour);
         turtle.setTextureGrouping(parentGroup);
     }
 }

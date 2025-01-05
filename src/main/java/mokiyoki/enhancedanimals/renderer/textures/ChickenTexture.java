@@ -327,7 +327,7 @@ public class ChickenTexture {
 
     private static void setPatternColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, boolean isNakedNeck, boolean patternedBlue, String pattern, boolean mottled, boolean charcoal, boolean femFeathers, TextureGrouping featherGroup) {
         if (gene[20] == 1 || gene[21] == 1) {
-            if (!pattern.isEmpty() || mottled || charcoal) {
+            if (!pattern.isEmpty() || charcoal || (mottled && (gene[22]==2 || gene[23]==2))) {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
@@ -414,7 +414,7 @@ public class ChickenTexture {
                     charcoalType+= femFeathers ? "cha_female.png" : "cha_male.png";
                     chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, charcoalType, charcoalType.substring(17,18));
                 } else {
-                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "", false);
+                    chicken.addDelimiter("nc");
                 }
 //                if (patternedBlue || (gene[40]!=gene[41] && (gene[100]==2&&gene[101]==2))) {
 //                    TextureGrouping blueUnderlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);

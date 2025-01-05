@@ -334,7 +334,7 @@ public class ChickenTexture {
                 if (!pattern.isEmpty()) {
                     if (
                             pattern.contains("het") &&
-                                    !Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation("eanimod:textures/entities/chicken/pattern/" + pattern + ".png"))
+                                    !Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entities/chicken/pattern/" + pattern + ".png")).isEmpty()
                     ) {
 
                         TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);

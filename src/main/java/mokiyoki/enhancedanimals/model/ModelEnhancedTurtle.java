@@ -60,11 +60,11 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
         PartDefinition bLegBackRight = bTurtle.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-3.5F, 0.0F, 18.0F));
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
-                        .texOffs(69, 15)
-                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
-                        .texOffs(0, 40)
-                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.ZERO
+                        .texOffs(3, 3)
+                        .addBox(2.0F, 0.0F, 0.0F, 1, 1, 2, new CubeDeformation(0.01F))
+                        .texOffs(21, 3)
+                        .addBox(-3.0F, 0.0F, 0.0F, 1, 1, 2, new CubeDeformation(0.01F)),
+                PartPose.offset(0.0F, 1.0F, -2.0F)
         );
 
         bHead.addOrReplaceChild("head", CubeListBuilder.create()

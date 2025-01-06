@@ -72,7 +72,7 @@ public class ChickenTexture {
                 featherGroup.addGrouping(baseFeatherColour);
 
                 if (gene[20] == 1 || gene[21] == 1) {
-                    if (!pattern.isEmpty() || mottled) {
+                    if (!pattern.isEmpty()) {
                         TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                         TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                         chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "chick/pattern/" + pattern + ".png", "chick"+pattern);
@@ -331,10 +331,7 @@ public class ChickenTexture {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
-                if (
-                        pattern.contains("het") &&
-                                !Minecraft.getInstance().getResourceManager().hasResource( new ResourceLocation("eanimod:textures/entities/chicken/pattern/"+pattern+".png"))
-                ) {
+                if (pattern.contains("het") && !Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation("eanimod:textures/entities/chicken/pattern/" + pattern + ".png"))) {
 
                     TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
                     String[] patterns = pattern.split("/");

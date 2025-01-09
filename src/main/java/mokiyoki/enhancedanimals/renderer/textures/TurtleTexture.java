@@ -146,7 +146,6 @@ public class TurtleTexture {
     private static void piebald(EnhancedTurtle turtle, int[] gene, char[] uuid, TextureGrouping parentGroup) {
         int piebald;
         TextureGrouping spots = new TextureGrouping(TexturingType.MASK_GROUP);
-        turtle.addTextureToAnimalTextureGrouping(spots, "spots/white1.png");
 
         if ( Character.isDigit(uuid[5]) ){
             piebald = 1 + (uuid[5]-48);
@@ -183,8 +182,10 @@ public class TurtleTexture {
             piebald = piebald%11;
         }
 
-
         turtle.addTextureToAnimalTextureGrouping(spots, "spots/piebald/" + piebald + ".png", String.valueOf(piebald));
+
+        turtle.addTextureToAnimalTextureGrouping(spots, "spots/white1.png");
+
         parentGroup.addGrouping(spots);
     }
 

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
@@ -19,7 +19,6 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -357,7 +356,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeAxolotl.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get();
         return this.adultAge;
     }
 

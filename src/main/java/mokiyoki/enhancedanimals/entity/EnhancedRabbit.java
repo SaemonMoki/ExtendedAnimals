@@ -19,7 +19,7 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.RabbitModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -377,13 +377,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeRabbit.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysRabbit.get();
     }
 
     private void setCoatLength(int coatLength) {
@@ -552,19 +552,19 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
         if (maxcoat == 1){
-            if (timeForGrowth >= 48000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 48000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 2){
-            if (timeForGrowth >= 24000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 24000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 3){
-            if (timeForGrowth >= 16000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 16000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }else if (maxcoat == 4){
-            if (timeForGrowth >= 12000 / EanimodCommonConfig.COMMON.woolMultiplierRabbit.get()) {
+            if (timeForGrowth >= 12000 / GeneticAnimalsConfig.COMMON.woolMultiplierRabbit.get()) {
                 resetTimeForGrowthAndCheckCoatGrowth(maxcoat);
             }
         }

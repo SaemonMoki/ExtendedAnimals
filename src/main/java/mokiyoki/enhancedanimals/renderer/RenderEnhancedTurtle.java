@@ -5,6 +5,8 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -25,14 +27,6 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
         super(renderManager, new ModelEnhancedTurtle<>(renderManager.bakeLayer(TURTLE_LAYER)), 0.5F);
     }
 
-//    public void render(EnhancedTurtle entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-//        if (entityIn.isBaby()) {
-//            this.shadowRadius *= 0.5F;
-//        }
-//
-//        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-//    }
-
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
@@ -49,16 +43,16 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            String[] textures = entity.getVariantTexturePaths();
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
 
-            if (textures == null || textures.length == 0) {
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_TURTLE_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_TURTLE_TEXTURE_LOCATION, textureGrouping, entity.colouration, 128, 64));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

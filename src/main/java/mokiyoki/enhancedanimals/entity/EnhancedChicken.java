@@ -5,7 +5,7 @@ import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain;
 import mokiyoki.enhancedanimals.ai.general.*;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -13,7 +13,6 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -217,21 +216,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeChicken.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
+        return GeneticAnimalsConfig.COMMON.incubationDaysChicken.get();
     }
 
     //TODO make some genes to alter these numbers
     protected int eggLayingTime() {
         if (this.gestationTimer > 0) {
-            return (int)((int)(6000/EanimodCommonConfig.COMMON.eggMultiplier.get())/2.5);
+            return (int)((int)(6000/ GeneticAnimalsConfig.COMMON.eggMultiplier.get())/2.5);
         }
-        return (int)(6000/EanimodCommonConfig.COMMON.eggMultiplier.get());
+        return (int)(6000/ GeneticAnimalsConfig.COMMON.eggMultiplier.get());
     }
 
     @Override
@@ -371,11 +370,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public void checkActionsForPassageOfTime(long loadTime) {
-        if (this.unloadTime != null && this.unloadTime > 0 && loadTime > (this.unloadTime + 4000) && EanimodCommonConfig.COMMON.passageOfTimeChickenEnabled.get()) {
+        if (this.unloadTime != null && this.unloadTime > 0 && loadTime > (this.unloadTime + 4000) && GeneticAnimalsConfig.COMMON.passageOfTimeChickenEnabled.get()) {
             if (this.getOrSetIsFemale() && !this.isBaby()) {
                 if (this.isBrooding()) {
                     long difference = loadTime - unloadTime;
-                    double iterations = difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get());
+                    double iterations = difference / (GeneticAnimalsConfig.COMMON.incubationDaysChicken.get());
                     broodingForPassageOfTime(iterations);
                 } else {
                     calculateActionsForPassageOfTime(loadTime);
@@ -385,8 +384,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     private void broodingForPassageOfTime(double iterations) {
-        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !EanimodCommonConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
-            if (nestEntity.incubateByAmount((int)iterations * EanimodCommonConfig.COMMON.incubationDaysChicken.get())) {
+        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+            if (nestEntity.incubateByAmount((int)iterations * GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) {
                 nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
                 this.setBroody(false);
                 this.setBrooding(false);
@@ -394,14 +393,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
             this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
-            if (!EanimodCommonConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+            if (!GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
                 this.setNest(BlockPos.ZERO);
             }
         }
     }
 
     private void calculateActionsForPassageOfTime(long loadTime) {
-        int stagesPossibleToAdvance = EanimodCommonConfig.COMMON.passageOfTimeChickenStages.get();
+        int stagesPossibleToAdvance = GeneticAnimalsConfig.COMMON.passageOfTimeChickenStages.get();
         int totalStagesAdvanced = 0;
 
         long difference = loadTime - unloadTime;
@@ -414,7 +413,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
                 for (int i = 0; i < iterations; i++) {
                     if (this.isBrooding() && totalStagesAdvanced < stagesPossibleToAdvance) { //made brooding via this loop but has iterations left
-                        double broodingIterations = (difference / (EanimodCommonConfig.COMMON.incubationDaysChicken.get())) * (100-(((double) i / iterations)*100))/100;
+                        double broodingIterations = (difference / (GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) * (100-(((double) i / iterations)*100))/100;
                         broodingForPassageOfTime(broodingIterations);
                         break; //Even if we have iterations left we stop here
                     } else {
@@ -552,7 +551,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
-        if (!this.getOrSetIsFemale() && !this.isBaby() && EanimodCommonConfig.COMMON.allowRoostersToCrow.get()) {
+        if (!this.getOrSetIsFemale() && !this.isBaby() && GeneticAnimalsConfig.COMMON.allowRoostersToCrow.get()) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level.isClientSide) {
@@ -567,7 +566,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
                     //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
                     //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
-                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(EanimodCommonConfig.COMMON.minimumWaitForCrowTime.get(), EanimodCommonConfig.COMMON.maximumWaitForCrowTime.get())));
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(GeneticAnimalsConfig.COMMON.minimumWaitForCrowTime.get(), GeneticAnimalsConfig.COMMON.maximumWaitForCrowTime.get())));
                 }
             }
         }
@@ -581,7 +580,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     protected void incrementHunger() {
-        if (EanimodCommonConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
+        if (GeneticAnimalsConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
         if (this.sleeping) {
             hunger = hunger + (0.25F*getHungerModifier());
         } else {
@@ -596,7 +595,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (!this.isBaby() && (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
+        if (!this.isBaby() && (GeneticAnimalsConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
                 if (this.gestationTimer == 0) {
@@ -800,7 +799,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void handlePartnerBreeding(AgeableMob ageable) {
-        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+        if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(((EnhancedChicken)ageable).getOrSetIsFemale());
@@ -1603,7 +1602,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void setFertile(){
-        this.gestationTimer = EanimodCommonConfig.COMMON.fertilityTicksChicken.get();
+        this.gestationTimer = GeneticAnimalsConfig.COMMON.fertilityTicksChicken.get();
         int firstNewEggTime = eggLayingTime()/2;
         if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
         if (this.timeUntilNextEgg > firstNewEggTime) {

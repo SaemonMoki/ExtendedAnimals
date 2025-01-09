@@ -9,7 +9,6 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.TurtleModelData;
-import mokiyoki.enhancedanimals.renderer.textures.TurtleTexture;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.InteractionHand;
@@ -78,6 +77,7 @@ import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.renderer.textures.TurtleTexture.calculateTurtleTextures;
 import static mokiyoki.enhancedanimals.util.Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
@@ -426,7 +426,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.reload) {
             this.reload = false;
@@ -440,7 +440,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            TurtleTexture.calculateTurtleTextures(this, this.getGenes().getAutosomalGenes(), this.getStringUUID().toCharArray());
+            calculateTurtleTextures(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
         }
     }
 

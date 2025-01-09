@@ -5,9 +5,13 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class TurtleTexture {
+    private static final String[] TURTLE_TEXTURES_BASE = new String[] {
+            "normal_turtle.png", "albino_turtle.png", "axanthic_turtle.png", "axanthic_albino_turtle.png", "black_turtle.png", "het_melanised_normal.png", "axanthic_black_turtle.png", "het_melanised_axanthic.png"
+    };
 
     public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, char[] uuid) {
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        int base = 0;
 
         if (gene[0] == 1 || gene[1] == 1) {
             //non-albino
@@ -16,9 +20,9 @@ public class TurtleTexture {
                 if (gene[4] == 2 || gene[5] == 2) {
                     //melanized
                     if (gene[4] == gene[5]) {
-                        turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "4");
+                        base = 4;
                     } else {
-                        turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "5");
+                        base = 5;
                     }
                 }
             } else {
@@ -26,24 +30,28 @@ public class TurtleTexture {
                 if (gene[4] == 2 || gene[5] == 2) {
                     //melanized
                     if (gene[4] == gene[5]) {
-                        turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "6");
+                        base = 6;
                     } else {
-                        turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "7");
+                        base = 7;
                     }
                 } else {
-                    turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "2");
+                    base = 2;
                 }
             }
         } else {
             //albino
             if (gene[2] == 1 || gene[3] == 1 ) {
                 //non-axanthic
-                turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "1");
+                base = 1;
             } else {
                 //axanthic
-                turtle.addTextureToAnimalTextureGrouping(parentGroup, "", "3");
+                base = 3;
             }
         }
+
+        TextureGrouping baseTexture = new TextureGrouping(TexturingType.MERGE_GROUP);
+        turtle.addTextureToAnimalTextureGrouping(baseTexture, TURTLE_TEXTURES_BASE[base], String.valueOf(base));
+        parentGroup.addGrouping(baseTexture);
 
         if (gene[6] == 2 && gene[7] == 2) {
             piebald(turtle, gene, uuid, parentGroup);

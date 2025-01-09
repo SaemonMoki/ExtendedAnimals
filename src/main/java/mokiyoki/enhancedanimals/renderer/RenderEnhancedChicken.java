@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
@@ -38,7 +38,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         Colouration colourRGB = entity.getRgb();
         boolean use16x = false;
         if (entity.getGenes() != null) {
-            use16x = EanimodCommonConfig.COMMON.force16x.get() || entity.getGenes().isHomozygousFor(106, 2);
+            use16x = GeneticAnimalsConfig.COMMON.force16x.get() || entity.getGenes().isHomozygousFor(106, 2);
         }
 
         if (s == null || s.isEmpty() || colourRGB == null) {

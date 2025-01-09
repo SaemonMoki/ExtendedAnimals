@@ -16,13 +16,12 @@ import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -275,7 +274,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get();
         return this.adultAge;
     }
 
@@ -288,7 +287,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysSheep.get();
     }
 
     private void setCoatLength(int coatLength) {
@@ -366,7 +365,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             if (this.currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && this.timeForGrowth >= 24000) {
                 this.timeForGrowth = 0;
                 this.currentCoatLength = maxcoat >= 2 ? this.random.nextInt(maxcoat/2) : 0;
-            } else if (this.timeForGrowth >= ((int)(24000 / maxcoat)/EanimodCommonConfig.COMMON.woolMultiplierSheep.get())) {
+            } else if (this.timeForGrowth >= ((int)(24000 / maxcoat)/ GeneticAnimalsConfig.COMMON.woolMultiplierSheep.get())) {
                 this.timeForGrowth = 0;
                 if (maxcoat > this.currentCoatLength) {
                     this.currentCoatLength++;

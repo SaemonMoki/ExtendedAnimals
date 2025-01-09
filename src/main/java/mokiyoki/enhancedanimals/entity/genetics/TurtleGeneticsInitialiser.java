@@ -37,6 +37,7 @@ public class TurtleGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.types.add(TurtleBreeds.LAVENDER);
         this.types.add(TurtleBreeds.TORTISHELL);
         this.types.add(TurtleBreeds.COLOURFUL_TORTISHELL);
+        this.types.add(TurtleBreeds.COLOURFUL_DARK);
 
         this.types.addAll(this.breeds);
     }
@@ -60,12 +61,17 @@ public class TurtleGeneticsInitialiser extends AbstractGeneticsInitialiser {
          *      [4,5]   - Melanized
          *      [6,7]   - Piebald
          *      [8,9]   - speckle to spot piebald modifier
-         *      [10,11] - pattern
          */
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 10; i++) {
             autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1;
         }
+
+        /**
+         *      [10,11] - tortishell
+         */
+        autosomalGenes[10] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
+        autosomalGenes[11] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
 
         /**
          *      [12,13] - major miniature
@@ -159,10 +165,18 @@ public class TurtleGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
 
         /**
-         *      [72,73] - brindle
+         *      [72,73] - countershaded [non-countershaded, crispcountershaded, countershaded, scale-countershaded]
          */
-        autosomalGenes[72] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
-        autosomalGenes[73] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
+        autosomalGenes[72] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(4)+1 : 1;
+        autosomalGenes[73] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(4)+1 : 1;
+
+        /**
+         *      [74,75] golden
+         *      [76,77] golden
+         */
+        for (int i = 74; i < 78; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? 2 : 1;
+        }
 
         return new Genes(autosomalGenes);
     }

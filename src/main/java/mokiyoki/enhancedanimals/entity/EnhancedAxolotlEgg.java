@@ -1,12 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -56,7 +55,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
-        setHatchTime(EanimodCommonConfig.COMMON.axolotlHatchTime.get());
+        setHatchTime(GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
     }
 
     public void setGenes(Genes eggGenes) {
@@ -296,7 +295,7 @@ public class EnhancedAxolotlEgg extends Entity {
         this.getEntityData().set(SIRE, compound.getString("SireName"));
         this.getEntityData().set(DAM, compound.getString("DamName"));
         this.hasParents = compound.getBoolean("hasParents");
-        this.setHatchTime(compound.contains("HatchTime") ? compound.getInt("HatchTime") : EanimodCommonConfig.COMMON.axolotlHatchTime.get());
+        this.setHatchTime(compound.contains("HatchTime") ? compound.getInt("HatchTime") : GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
     }
 
     @Override

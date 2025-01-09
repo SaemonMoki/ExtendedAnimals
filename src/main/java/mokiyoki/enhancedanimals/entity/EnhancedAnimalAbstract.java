@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
@@ -121,7 +121,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected Genes mateGenetics;
     protected Boolean mateGender;
     protected Genes genesSplitForClient;
-    protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+    protected static final int WTC = GeneticAnimalsConfig.COMMON.wildTypeChance.get();
     public String breed = "";
     protected String mateName = "???";
     protected String sireName = "???";
@@ -514,7 +514,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected float getHungerModifier() {
-        return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
+        return GeneticAnimalsConfig.COMMON.hungerScaling.get().hungerScalingValue;
     }
 
     public boolean isRainingInLevel() {
@@ -991,9 +991,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                     return InteractionResult.PASS;
                 }
             } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
-                if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
+                if (this.hunger >= 4000 || GeneticAnimalsConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
-                    if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+                    if (GeneticAnimalsConfig.COMMON.feedGrowth.get()) {
                         this.ageUp((int) ((float) (-this.getEnhancedAnimalAge() / 20) * 0.1F), true);
                     }
                     if (MILK_ITEMS.test(itemStack)) {
@@ -1399,7 +1399,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
 
         if (this.getAdultAge() <= this.getEnhancedAnimalAge()) {
-            if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+            if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
                 if (this.pregnant) {
                     ((EnhancedAnimalAbstract)ageable).handlePartnerBreeding(this);
                 } else {
@@ -1448,7 +1448,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         } else if (otherAnimal.getClass() != this.getClass()) {
             return false;
         } else {
-            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getOrSetIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getOrSetIsFemale())) {
+            if (GeneticAnimalsConfig.COMMON.omnigenders.get() || (this.getOrSetIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getOrSetIsFemale())) {
                 return this.isInLove() && otherAnimal.isInLove();
             }
             return false;
@@ -2096,7 +2096,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             }
 
             if (spawnReason.equals(MobSpawnType.CHUNK_GENERATION)) {
-                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.random.nextInt(50) == 0 : this.getOrSetIsFemale() && this.random.nextInt(25) == 0;
+                canBePregnant = GeneticAnimalsConfig.COMMON.omnigenders.get() ? this.random.nextInt(50) == 0 : this.getOrSetIsFemale() && this.random.nextInt(25) == 0;
             }
         }
 

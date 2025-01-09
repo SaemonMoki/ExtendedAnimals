@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
@@ -158,7 +158,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     private ChickenModelData chickenModelData;
     private static Map<String, WrappedModelPart> chickenModelParts = new HashMap<>();
-    private static final float earMaxGrowth = EanimodCommonConfig.COMMON.adultAgeChicken.get();
+    private static final float earMaxGrowth = GeneticAnimalsConfig.COMMON.adultAgeChicken.get();
 
     private static Map<String, WrappedModelPart> getModelParts() {
         Map<String, WrappedModelPart> map = new HashMap<>();

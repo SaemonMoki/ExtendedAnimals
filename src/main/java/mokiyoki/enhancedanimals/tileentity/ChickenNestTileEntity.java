@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.tileentity;
 
 import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -21,7 +21,7 @@ import java.util.Random;
 
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
-    private static final int incubationTime = EanimodCommonConfig.COMMON.incubationDaysChicken.get()==0?1:EanimodCommonConfig.COMMON.incubationDaysChicken.get();
+    private static final int incubationTime = GeneticAnimalsConfig.COMMON.incubationDaysChicken.get()==0?1: GeneticAnimalsConfig.COMMON.incubationDaysChicken.get();
     private int incubation;
     private long nestDecayTime = -1;
     private boolean resetNest = false;
@@ -63,7 +63,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     public boolean tick(ServerLevel level) {
-        if (this.nestDecayTime != -1 && level.getGameTime() > (this.nestDecayTime + EanimodCommonConfig.COMMON.nestDecayTime.get())) {
+        if (this.nestDecayTime != -1 && level.getGameTime() > (this.nestDecayTime + GeneticAnimalsConfig.COMMON.nestDecayTime.get())) {
             level.removeBlock(this.getBlockPos(), true);
             return false;
         }

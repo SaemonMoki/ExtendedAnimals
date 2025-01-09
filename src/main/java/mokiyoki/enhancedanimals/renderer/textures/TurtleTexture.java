@@ -7,7 +7,6 @@ import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 public class TurtleTexture {
 
     public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, char[] uuid) {
-        int piebald;
         boolean tortishell = gene[10]==2 || gene[11]==2;
         boolean nonaxanthic = gene[2] == 1 || gene[3] == 1;
         String axanthic = nonaxanthic ? "nonaxanthic/" : "axanthic/";

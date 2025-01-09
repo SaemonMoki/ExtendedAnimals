@@ -19,7 +19,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0_8_60'
+version = '0_8_57_topsecretturts'
 group = 'com.mokiyoki.enhancedanimals' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'GeneticAnimals'
 

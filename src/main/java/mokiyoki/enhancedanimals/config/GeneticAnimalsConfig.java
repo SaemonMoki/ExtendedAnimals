@@ -281,7 +281,6 @@ public class GeneticAnimalsConfig {
             mushroomStewMultiplier = builder
                     .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.comment("Mooshrooms spawn only on Mycylium blocks by default, If you wish to change that you can do so by using a datapack to modify the mooshrooms_spawnable_on block tag");
-            builder.comment("");
             builder.pop();
 
             builder.push("moobloom");
@@ -405,9 +404,9 @@ public class GeneticAnimalsConfig {
             turtleHatchingWindowEnd = builder
                     .defineInRange("If the eggs are randomly ticked and the time is after hatchingWindowStart but before this their hatch level will increase", 22550, 0, 24000);
             turtleDaytimeChanceToNotHatch = builder
-                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 500, 0, Integer.MAX_VALUE);
+                    .defineInRange("The chance that eggs won't hatch if their block is ticked, default is 500, use 1 to guarantee they increment hatching", 500, 0, Integer.MAX_VALUE);
+
             builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
-            builder.comment("");
             builder.pop();
 
             builder.push("horse");

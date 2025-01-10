@@ -93,7 +93,7 @@ public class TurtleTexture {
                         brindleColourGroup.addGrouping(colour);
                     }
                 } else {
-                    createPatternColour(turtle, brindleColourGroup, nonaxanthic, pigmentType, 0, gene, pigmentFlag, true);
+                    createPatternColour(turtle, brindleColourGroup, nonaxanthic, pigmentType, gene[4]==1&&gene[5]==1 ? 0 : pigmentHueMod, gene, pigmentFlag, true);
                 }
                 brindleGroup.addGrouping(brindleColourGroup);
 
@@ -249,8 +249,15 @@ public class TurtleTexture {
     private static void createPatternColour(EnhancedTurtle turtle, TextureGrouping patternColourGroup, boolean nonaxanthic, String pigmentType, int hueMod, int[] gene, boolean pigmentFlag, boolean secondaryColour) {
         TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        if (gene[4]==1 || gene[5]==1) {
+        if (gene[4]==1 || gene[5]==1 || secondaryColour) {
             if (hueMod > 7) hueMod = 7;
+            if (gene[4]==2 || gene[5]==2) {
+                if (gene[4]==gene[5]) {
+                    hueMod = (hueMod+1)/2;
+                } else {
+                    hueMod = (hueMod+1)/3;
+                }
+            }
             if (nonaxanthic) {
                 turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/nonaxanthic/" + pigmentType + hueMod + ".png", "a" + pigmentType + hueMod);
             } else {
@@ -266,11 +273,11 @@ public class TurtleTexture {
 
             if (gene[4] != gene[5]) {
                 pigmentType = getCharcoalPigmentType(hueMod);
-                turtle.addTextureToAnimalTextureGrouping(patternColourGroup, TexturingType.APPLY_RGBA, "pattern/colour/" + pigmentType + ".png", pigmentType, 128 << 24 | 255 << 16 | 255 << 8 | 255);
+                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/" + pigmentType + ".png", pigmentType, 128 << 24 | 255 << 16 | 255 << 8 | 255);
             }
         } else {
             pigmentType = getCharcoalPigmentType(getPigmentHueMod(gene));
-            turtle.addTextureToAnimalTextureGrouping(patternColourGroup, "pattern/colour/"+ pigmentType + ".png", "c"+pigmentType);
+            turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/"+ pigmentType + ".png", "c"+pigmentType);
         }
 
         patternColourGroup.addGrouping(colour);

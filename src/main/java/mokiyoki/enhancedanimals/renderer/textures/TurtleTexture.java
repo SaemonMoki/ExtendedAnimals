@@ -38,7 +38,7 @@ public class TurtleTexture {
                 turtle.addTextureToAnimalTextureGrouping(patternCutoutGroup, "pattern/" + pattern + ".png", pattern);
                 if (gene[32]!=1 || gene[33]!=1) {
                     if (gene[32]==2 || gene[33]==2) {
-                        pattern = tortishell ? "tortishell_scale2" : "scale";
+                        pattern = tortishell ? "tortishell_scale1" : "scale";
                     } else {
                         pattern = "clown";
                     }

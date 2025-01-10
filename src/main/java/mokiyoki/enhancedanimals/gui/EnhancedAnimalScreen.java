@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.ChatFormatting;
@@ -74,7 +74,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private float mousePosY;
 
     /** Icon set config*/
-    private static final int[] fullIconPos = switch (EanimodCommonConfig.COMMON.fullIconStyle.get()) {
+    private static final int[] fullIconPos = switch (GeneticAnimalsConfig.COMMON.fullIconStyle.get()) {
         case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
         case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
         case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
@@ -82,7 +82,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         case EMPTY -> new int[]{181,54, 190,54, 199,54, 208,54};
         default -> new int[]{125,64, 134,64, 143,64, 152,64};
     };
-    private static final int[] emptyIconPos = switch (EanimodCommonConfig.COMMON.emptyIconStyle.get()) {
+    private static final int[] emptyIconPos = switch (GeneticAnimalsConfig.COMMON.emptyIconStyle.get()) {
         case SOFT_GREY -> new int[]{181,64, 190,64, 199,64, 208,64};
         case COLOURFUL -> new int[]{153,64, 162,64, 171,64, 180,64};
         case BRIGHT -> new int[]{153,54, 162,54, 171,54, 180,54};
@@ -394,7 +394,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     private void renderInfoToolTip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (!this.photoModeEnabled) {
             if (this.isHovering(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-                if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+                if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
                     if (this.enhancedAnimalInfo.pregnant >= 0) {
                         if (this.enhancedAnimalInfo.pregnant == 11) {
                             if (this.omniToggle) {
@@ -515,7 +515,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         double d0;
         double d1;
 
-        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+        if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
             d0 = p_mouseClicked_1_ - (double) (i + 140);
             d1 = p_mouseClicked_3_ - (double) (j - 28);
             if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && (chestTabEnabled || photoModeEnabled)) {
@@ -1068,7 +1068,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             int shiftX = 7;
             this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
-            if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+            if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
                 this.blit(matrixStack, i + 126, j + 5, 125, this.imageHeight + 74, 8, 10); // pregnancy icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
                 this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 133, this.imageHeight + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
@@ -1222,7 +1222,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
     private void renderTabs(PoseStack matrixStack, int i, int j, int offsetX, int offsetTextureX, int sizeX, int sizeY) {
         if (this.photoModeEnabled) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
                 this.blit(matrixStack, i + 82+offsetX, j - 28, 0, 209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
                 this.blit(matrixStack, i + 111+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
                 this.blit(matrixStack, i + 140+offsetX,j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
@@ -1235,7 +1235,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, i + 173+offsetX, j + 69, 177+offsetTextureX, 44, 30, 28, sizeX, sizeY); //shadow info
             }
         } else if (this.chestTabEnabled) {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
                 this.blit(matrixStack, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
                 this.blit(matrixStack, i + 111+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab
                 this.blit(matrixStack, i + 140+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
@@ -1262,7 +1262,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
                 this.blit(matrixStack, i + 79, j + 17, 90, this.imageHeight, 90, 54);
             }
         } else {
-            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            if (GeneticAnimalsConfig.COMMON.tabsOnTop.get()) {
                 this.blit(matrixStack, i + 82+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
                 this.blit(matrixStack, i + 111+offsetX, j - 28, 0,   177+offsetTextureX, 131, 28, 31, sizeX, sizeY); //shadow tab
                 this.blit(matrixStack, i + 140+offsetX, j - 28, 0,   209+offsetTextureX, 131, 28, 31, sizeX, sizeY); //highlight tab

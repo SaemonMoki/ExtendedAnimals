@@ -7,7 +7,7 @@ import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.data.BuiltinRegistries;
@@ -113,11 +113,11 @@ public class EnhancedAnimals {
 
     public static EnhancedAnimals instance;
 
-    public static final EanimodCommonConfig commonConfig = new EanimodCommonConfig();
+    public static final GeneticAnimalsConfig commonConfig = new GeneticAnimalsConfig();
 
     public EnhancedAnimals() {
         instance = this;
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EanimodCommonConfig.getConfigSpecForLoader(), EanimodCommonConfig.getFileNameForLoader());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, GeneticAnimalsConfig.getConfigSpecForLoader(), GeneticAnimalsConfig.getFileNameForLoader());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 

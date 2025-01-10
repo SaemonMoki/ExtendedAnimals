@@ -16,13 +16,12 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.CowModelData;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -156,7 +155,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeCow.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get();
         return this.adultAge;
     }
 
@@ -169,7 +168,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysCow.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysCow.get();
     }
 
     protected void setMooshroomUUID(String uuid) {
@@ -364,7 +363,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     protected Double getMilkModifier() {
-        return EanimodCommonConfig.COMMON.milkMultiplier.get();
+        return GeneticAnimalsConfig.COMMON.milkMultiplier.get();
     }
 
     @Override
@@ -641,7 +640,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
-        if (this.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()){
+        if (this.getOrSetIsFemale() || GeneticAnimalsConfig.COMMON.omnigenders.get()){
             for (int i = 1; i < genes[62]; i++){
                 maxBagSize = maxBagSize + 0.01F;
             }

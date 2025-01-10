@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -10,7 +10,6 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.TurtleModelData;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -242,7 +241,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeTurtle.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeTurtle.get();
         return this.adultAge;
     }
 
@@ -256,7 +255,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public boolean canDropScute() {
-        return this.hasScute && this.isAddedToWorld() && EanimodCommonConfig.COMMON.turtleScuteDropAge.get() <= this.getEnhancedAnimalAge();
+        return this.hasScute && this.isAddedToWorld() && GeneticAnimalsConfig.COMMON.turtleScuteDropAge.get() <= this.getEnhancedAnimalAge();
     }
 
     @Override

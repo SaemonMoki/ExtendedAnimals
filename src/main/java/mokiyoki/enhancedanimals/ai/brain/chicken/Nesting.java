@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.ai.brain.chicken;
 
 import com.google.common.collect.ImmutableMap;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
@@ -41,7 +41,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
     protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedChicken chicken) {
         if (chicken.getNest() == BlockPos.ZERO) return false;
-        return ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())));
+        return ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || GeneticAnimalsConfig.COMMON.omnigenders.get())));
     }
 
     public void start(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
@@ -63,7 +63,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
     @Override
     protected boolean canStillUse(ServerLevel serverLevel, EnhancedChicken chicken, long gameTime) {
         return !stuck
-                && ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get())))
+                && ((chicken.isBrooding() || chicken.isBroody()) || (chicken.timeUntilNextEgg < 800 && (chicken.getOrSetIsFemale() || GeneticAnimalsConfig.COMMON.omnigenders.get())))
                 && !chicken.getBrain().hasMemoryValue(SEEKING_FOOD.get());
     }
 
@@ -75,7 +75,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
             ++this.notReachedNestTicks;
             checkNotReachedNestTicks(serverLevel, chicken);
 
-            if (blockPos.closerToCenterThan(chicken.position(), EanimodCommonConfig.COMMON.chickenNestTeleportDistance.get())) {
+            if (blockPos.closerToCenterThan(chicken.position(), GeneticAnimalsConfig.COMMON.chickenNestTeleportDistance.get())) {
                 if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
                     chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.02));
                 } else {
@@ -117,7 +117,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
                 BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(vec3), 1.0F, 0);
             }
         } else {
-            if (blockPos.closerToCenterThan(chicken.position(), EanimodCommonConfig.COMMON.chickenNestTeleportDistance.get())) {
+            if (blockPos.closerToCenterThan(chicken.position(), GeneticAnimalsConfig.COMMON.chickenNestTeleportDistance.get())) {
                 if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
                     if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
                         chicken.setPos(new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D));

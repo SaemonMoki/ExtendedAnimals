@@ -16,14 +16,13 @@ import mokiyoki.enhancedanimals.entity.genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.LlamaModelData;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -147,7 +146,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private int despawnDelay = -1;
     private boolean resetTexture = true;
 
-    private static final int woolRegenTimer = (int)(24000/EanimodCommonConfig.COMMON.woolMultiplierLlama.get());
+    private static final int woolRegenTimer = (int)(24000/ GeneticAnimalsConfig.COMMON.woolMultiplierLlama.get());
 
     private GrazingGoal grazingGoal;
 
@@ -239,13 +238,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeLlama.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysLlama.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysLlama.get();
     }
 
     private void setStrength(int strengthIn) {

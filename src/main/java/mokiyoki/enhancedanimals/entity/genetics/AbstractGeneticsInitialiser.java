@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
 import com.mojang.datafixers.util.Pair;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -19,12 +19,12 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractGeneticsInitialiser {
-    int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+    int WTC = GeneticAnimalsConfig.COMMON.wildTypeChance.get();
 
     protected Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
         Holder<Biome> holder = world.getBiome(pos);
 
-        Genes localWildType = generateLocalWildGenetics(holder,holder.value() == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()) || EanimodCommonConfig.COMMON.spawnWithRandomBiome.get());
+        Genes localWildType = generateLocalWildGenetics(holder,holder.value() == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()) || GeneticAnimalsConfig.COMMON.spawnWithRandomBiome.get());
 
         if (generateBreed) {
             int areaSize = 1; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1

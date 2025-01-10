@@ -9,7 +9,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -101,13 +101,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected int getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = EanimodCommonConfig.COMMON.adultAgeMooshroom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get();
         return this.adultAge;
     }
 
     @Override
     protected int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysMooshroom.get();
+        return GeneticAnimalsConfig.COMMON.gestationDaysMooshroom.get();
     }
 
     @Override
@@ -229,7 +229,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected Double getMilkModifier() {
-        return EanimodCommonConfig.COMMON.mushroomStewMultiplier.get();
+        return GeneticAnimalsConfig.COMMON.mushroomStewMultiplier.get();
     }
 
     @Override

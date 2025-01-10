@@ -54,6 +54,6 @@ public class TurtleBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(2,"1|2").add(10, "2").add(50, "1|2","1|2","1|2","1|2","1|2","1|2","1|2","1|2").add(66, "1|2", "1|2")));
 
     public static final Breed COLOURFUL_DARK = new Breed(new Breed.Properties().setData("darkcolours", 0.8F, 0.4F, Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(2,"1|2").add(10, "2|1").add(34, "1|2","1|2","1|2","1|2","1|2","1|2","1|2","1|2").add(50, "2","2","2","2","2","2","2","2").add(66, "1|2", "1|2").add(72, "1|2|3")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(2,"1|2","2").add(10, "2|1").add(34, "1|2","1|2","1|2","1|2","1|2","1|2","1|2","1|2").add(50, "2","2","2","2","2","2","2","2").add(66, "1|2", "1|2").add(72, "1|2|3")));
 
 }

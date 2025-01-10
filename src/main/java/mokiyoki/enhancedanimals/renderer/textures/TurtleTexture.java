@@ -50,69 +50,61 @@ public class TurtleTexture {
             }
 
             boolean pigmentFlag = false;
-            if (gene[4] == 1 || gene[5] == 1) {
-                String pigmentType = "green";
-                if (gene[66] == 2 || gene[67] == 2) {
-                    if (gene[68] == 2 || gene[69] == 2) {
-                        pigmentType = "melanin";
-                    } else {
-                        pigmentFlag = true;
-                    }
-                } else if (gene[68] == 2 || gene[69] == 2) {
+            String pigmentType = "green";
+            if (gene[66] == 2 || gene[67] == 2) {
+                if (gene[68] == 2 || gene[69] == 2) {
+                    pigmentType = "melanin";
+                } else {
                     pigmentFlag = true;
                 }
+            } else if (gene[68] == 2 || gene[69] == 2) {
+                pigmentFlag = true;
+            }
 
-                int pigmentHueMod = getPigmentHueMod(gene);
+            int pigmentHueMod = getPigmentHueMod(gene);
 
-                createPatternColour(turtle, nonaxanthic, patternColourGroup, pigmentType, pigmentHueMod, pigmentFlag);
+            createPatternColour(turtle, patternColourGroup, nonaxanthic, pigmentType, pigmentHueMod, gene, pigmentFlag, false);
 
-                if (tortishell) {
-                    TextureGrouping brindleGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                    TextureGrouping brindleShapeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    TextureGrouping brindleColourGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                    turtle.addIndividualTextureToAnimalTextureGrouping(brindleShapeGroup, TexturingType.MERGE_GROUP, "tortishell/tortishell.png");
-                    brindleGroup.addGrouping(brindleShapeGroup);
+            if (tortishell) {
+                TextureGrouping brindleGroup = new TextureGrouping(TexturingType.MASK_GROUP);
+                TextureGrouping brindleShapeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                TextureGrouping brindleColourGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                turtle.addIndividualTextureToAnimalTextureGrouping(brindleShapeGroup, TexturingType.MERGE_GROUP, "tortishell/tortishell.png");
+                brindleGroup.addGrouping(brindleShapeGroup);
 
-                    if (pigmentHueMod-5 < 0) {
-                        createBaseColour(turtle, gene, nonaxanthic, pigmentHueMod+2, brindleColourGroup);
-                        if (pigmentHueMod!=0) {
-                            float a = (pigmentHueMod/5.0F) * 200F;
-                            int argb = ((int)a) << 24 | 255 << 16 | 255 << 8 | 255;
-                            TextureGrouping colour = new TextureGrouping(TexturingType.APPLY_RGBA);
-                            if (nonaxanthic) {
-                                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/"+ pigmentType + "0.png", "a"+ pigmentType + pigmentHueMod, argb);
-                            } else {
-                                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/" + pigmentType + "0.png", "ax"+ pigmentType + pigmentHueMod, argb);
-                            }
-                            if (pigmentFlag) {
-                                if (nonaxanthic) {
-                                    turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/melanin0.png", "a"+ pigmentType + pigmentHueMod, argb);
-                                } else {
-                                    turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/melanin0.png", "ax"+ pigmentType + pigmentHueMod, argb);
-                                }
-                            }
-                            brindleColourGroup.addGrouping(colour);
+                if (pigmentHueMod-5 < 0) {
+                    createBaseColour(turtle, gene, nonaxanthic, pigmentHueMod+2, brindleColourGroup);
+                    if (pigmentHueMod!=0) {
+                        float a = (pigmentHueMod/5.0F) * 200F;
+                        int argb = ((int)a) << 24 | 255 << 16 | 255 << 8 | 255;
+                        TextureGrouping colour = new TextureGrouping(TexturingType.APPLY_RGBA);
+                        if (nonaxanthic) {
+                            turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/"+ pigmentType + "0.png", "a"+ pigmentType + pigmentHueMod, argb);
+                        } else {
+                            turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/" + pigmentType + "0.png", "ax"+ pigmentType + pigmentHueMod, argb);
                         }
-                    } else {
-                        createPatternColour(turtle, nonaxanthic, brindleColourGroup, pigmentType, 0, pigmentFlag);
+                        if (pigmentFlag) {
+                            if (nonaxanthic) {
+                                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/melanin0.png", "a"+ pigmentType + pigmentHueMod, argb);
+                            } else {
+                                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/melanin0.png", "ax"+ pigmentType + pigmentHueMod, argb);
+                            }
+                        }
+                        brindleColourGroup.addGrouping(colour);
                     }
-                    brindleGroup.addGrouping(brindleColourGroup);
-
-                    patternColourGroup.addGrouping(brindleGroup);
-                }
-
-                if (gene[4]!=gene[5]) {
-                    pigmentType = getCharcoalPigmentType(pigmentHueMod);
-                    turtle.addTextureToAnimalTextureGrouping(patternColourGroup, TexturingType.APPLY_RGBA, "pattern/colour/" + pigmentType + ".png", pigmentType, 128 << 24 | 255 << 16 | 255 << 8 | 255);
-                    eyeColour = "black";
                 } else {
-                    turtle.addDelimiter("nc");
-                    eyeColour = nonaxanthic?"grey":"navy";
+                    createPatternColour(turtle, brindleColourGroup, nonaxanthic, pigmentType, gene[4]==1&&gene[5]==1 ? 0 : pigmentHueMod, gene, pigmentFlag, true);
                 }
-            } else {
-                String pigmentType = getCharcoalPigmentType(getPigmentHueMod(gene));
-                turtle.addTextureToAnimalTextureGrouping(patternColourGroup, "pattern/colour/"+ pigmentType + ".png", "c"+pigmentType);
+                brindleGroup.addGrouping(brindleColourGroup);
+
+                patternColourGroup.addGrouping(brindleGroup);
+            }
+
+            if (gene[4]==2 || gene[5]==2) {
                 eyeColour = "black";
+            } else {
+                turtle.addDelimiter("nch");
+                eyeColour = nonaxanthic?"grey":"navy";
             }
 
             patternGroup.addGrouping(patternColourGroup);
@@ -254,21 +246,40 @@ public class TurtleTexture {
         return hueModifier;
     }
 
-    private static void createPatternColour(EnhancedTurtle turtle, boolean nonaxanthic, TextureGrouping patternColourGroup, String pigmentType, int hueMod, boolean pigmentFlag) {
+    private static void createPatternColour(EnhancedTurtle turtle, TextureGrouping patternColourGroup, boolean nonaxanthic, String pigmentType, int hueMod, int[] gene, boolean pigmentFlag, boolean secondaryColour) {
         TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
-        if (hueMod > 7) hueMod = 7;
-        if (nonaxanthic) {
-            turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/nonaxanthic/"+ pigmentType + hueMod + ".png", "a"+ pigmentType + hueMod);
-        } else {
-            turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/axanthic/" + pigmentType + hueMod + ".png", "ax"+ pigmentType + hueMod);
-        }
-        if (pigmentFlag) {
-            if (nonaxanthic) {
-                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/melanin" + hueMod + ".png", "a"+ pigmentType + hueMod, 128 << 24 | 255 << 16 | 255 << 8 | 255);
-            } else {
-                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/melanin" + hueMod + ".png", "ax"+ pigmentType + hueMod, 128 << 24 | 255 << 16 | 255 << 8 | 255);
+
+        if (gene[4]==1 || gene[5]==1 || secondaryColour) {
+            if (hueMod > 7) hueMod = 7;
+            if (gene[4]==2 || gene[5]==2) {
+                if (gene[4]==gene[5]) {
+                    hueMod = (hueMod+1)/2;
+                } else {
+                    hueMod = (hueMod+1)/3;
+                }
             }
+            if (nonaxanthic) {
+                turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/nonaxanthic/" + pigmentType + hueMod + ".png", "a" + pigmentType + hueMod);
+            } else {
+                turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/axanthic/" + pigmentType + hueMod + ".png", "ax" + pigmentType + hueMod);
+            }
+            if (pigmentFlag) {
+                if (nonaxanthic) {
+                    turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/nonaxanthic/melanin" + hueMod + ".png", "a" + pigmentType + hueMod, 128 << 24 | 255 << 16 | 255 << 8 | 255);
+                } else {
+                    turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/axanthic/melanin" + hueMod + ".png", "ax" + pigmentType + hueMod, 128 << 24 | 255 << 16 | 255 << 8 | 255);
+                }
+            }
+
+            if (gene[4] != gene[5]) {
+                pigmentType = getCharcoalPigmentType(hueMod);
+                turtle.addTextureToAnimalTextureGrouping(colour, TexturingType.APPLY_RGBA, "pattern/colour/" + pigmentType + ".png", pigmentType, 128 << 24 | 255 << 16 | 255 << 8 | 255);
+            }
+        } else {
+            pigmentType = getCharcoalPigmentType(getPigmentHueMod(gene));
+            turtle.addTextureToAnimalTextureGrouping(colour, "pattern/colour/"+ pigmentType + ".png", "c"+pigmentType);
         }
+
         patternColourGroup.addGrouping(colour);
     }
 

@@ -186,7 +186,7 @@ public class SheepTexture {
 
         //basic spots
         if (gene[8] == 2 && gene[9] == 2){
-//                if (Character.isDigit(uuidArry[1])){
+//                if (Character.isDigit(uuid[1])){
 //                    spots = 2;
 //                }else {
             spots = 1;

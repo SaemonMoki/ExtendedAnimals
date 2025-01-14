@@ -990,7 +990,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void setTexturePaths() { if (this.getGenes() != null) {calculateChickenTextures(this, this.getGenes());} }
+    protected void setTexturePaths() {
+        if (this.getGenes() != null) {
+            calculateChickenTextures(this, this.getGenes());
+        }
+    }
 
     @Override
     protected void setAlphaTexturePaths() {

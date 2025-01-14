@@ -36,6 +36,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     public ResourceLocation getTextureLocation(EnhancedChicken entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
+
         boolean use16x = false;
         if (entity.getGenes() != null) {
             use16x = GeneticAnimalsConfig.COMMON.force16x.get() || entity.getGenes().isHomozygousFor(106, 2);

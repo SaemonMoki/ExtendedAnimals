@@ -70,7 +70,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.pigFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
-moveimport static mokiyoki.enhancedanimals.renderer.textures.PigTexture.calculatePigTexture;
+import static mokiyoki.enhancedanimals.renderer.textures.PigTexture.calculatePigTexture;
 import static mokiyoki.enhancedanimals.util.Reference.PIG_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedPig extends EnhancedAnimalRideableAbstract {

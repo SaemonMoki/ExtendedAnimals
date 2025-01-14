@@ -483,7 +483,7 @@ public class RabbitTexture {
 
     private static void addSkinDetails(EnhancedRabbit rabbit, TextureGrouping parentGroup, int skin) {
         TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.addTextureToAnimalTextureGrouping(detailGroup, RABBIT_TEXTURES_EYES[skin], String.valueOf(skin));
+        rabbit.addTextureToAnimalTextureGrouping(detailGroup, RABBIT_TEXTURES_SKIN[skin], String.valueOf(skin));
         parentGroup.addGrouping(detailGroup);
     }
 

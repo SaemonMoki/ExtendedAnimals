@@ -245,8 +245,9 @@ public class TextureGrouping {
 
     private void applyLayerSpecifics(TextureLayer layer, Colouration colouration) {
         switch(layer.getTexturingType()) {
-            case APPLY_RED -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getPheomelaninColour()));
-            case APPLY_BLACK -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getMelaninColour()));
+            case APPLY_RED -> layer.setTextureImage(applySetRGB(layer.getTextureImage(), colouration.getPheomelaninColour()));
+            case APPLY_BLACK -> layer.setTextureImage(applySetRGB(layer.getTextureImage(), colouration.getMelaninColour()));
+            case APPLY_SHADE_MELANIN -> layer.setTextureImage(applyShadeMelanin(layer.getTextureImage(), colouration.getMelaninColour()));
             case APPLY_COLLAR_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getCollarColour()));
             case APPLY_BRIDLE_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getBridleColour()));
             case APPLY_SADDLE_COLOUR -> layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getSaddleColour()));

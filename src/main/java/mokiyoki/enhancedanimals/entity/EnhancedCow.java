@@ -70,14 +70,14 @@ import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     /** avalible UUID spaces : [ S X X X X X X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-     *  1 -> piebald
-     *  2 -> piebald2
+     *  1,2 -> piebald
      *  3 -> belt
      *  4 -> horns
      *  5 -> blaze
      *  6 -> coloursided
      *  7 -> roan
      *  8 -> speckled
+     *  20-35 -> mushrooms/flowers
      */
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> MOOSHROOM_UUID = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.STRING);

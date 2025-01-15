@@ -227,8 +227,8 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //Legacy belted [belted, blaze, brockling, wildtype]
         //Brockling [Brockling, wildtype]
-        autosomalGenes[18] = 4;
-        autosomalGenes[19] = 4;
+        autosomalGenes[18] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 3 : 4;
+        autosomalGenes[19] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 3 : 4;
 
         //colour sided [colour sided, wildtype]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

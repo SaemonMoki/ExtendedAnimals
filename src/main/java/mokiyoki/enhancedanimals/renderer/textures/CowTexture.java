@@ -354,12 +354,23 @@ public class CowTexture {
         //Blaze
         if (gene[252] == 2 || gene[253] == 2) {
             if (gene[252] == 2 && gene[253] == 2) {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/blaze/" + (uuid[5]%7) +".png", String.valueOf(uuid[5]));
-            } else {
                 cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[5]%3) +".png", String.valueOf(uuid[5]));
+            } else {
+                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/blaze/" + (uuid[5]%7) +".png", String.valueOf(uuid[5]));
             }
         } else {
             key += "6";
+        }
+
+        //Legacy Genes
+        if (gene[18] == 1 || gene[19] == 1) {
+            //belted
+            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[3] +".png", String.valueOf(uuid[3]));
+        } else if (gene[18] == 2 || gene[19] == 2) {
+            //blaze
+            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[5]%3) +".png", String.valueOf(uuid[5]));
+        } else {
+            key += "7";
         }
 
         if (spotShape.isPopulated()) {

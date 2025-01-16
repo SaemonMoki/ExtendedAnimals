@@ -230,6 +230,7 @@ public class CowTexture {
 
             if (whiteface || (gene[20] == 1 || gene[21] == 1) || (gene[252] == 2 || gene[253] == 2) || (gene[18]<=2 || gene[19]<=2)) {
                 TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
+                cow.addDelimiter("legacy");
                 if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12) {
                     cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_SHADE_MELANIN, "spots/brockling/0.png");
                 } else {

@@ -18,7 +18,6 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> types = new ArrayList<>();
 
     public ChickenGeneticsInitialiser() {
-//        this.breeds.add(ChickenBreeds.LEGHORN);
         this.breeds.add(ChickenBreeds.GOLD_DUCKWING_LEGHORN);
         this.breeds.add(ChickenBreeds.SILVER_DUCKWING_LEGHORN);
         this.breeds.add(ChickenBreeds.WHITE_LEGHORN);
@@ -103,7 +102,6 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.types.add(ChickenBreeds.SPLASH);
 
         this.types.addAll(this.breeds);
-//        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

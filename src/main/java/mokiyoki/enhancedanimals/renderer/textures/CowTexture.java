@@ -329,7 +329,7 @@ public class CowTexture {
 
         //Belted
         if (gene[250] == 2 || gene[251] == 2) {
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[3] +".png", String.valueOf(uuid[3]));
+            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[5] +".png", String.valueOf(uuid[3]));
         } else {
             key += "5";
         }
@@ -337,9 +337,9 @@ public class CowTexture {
         //Blaze
         if (gene[252] == 2 || gene[253] == 2) {
             if (gene[252] == 2 && gene[253] == 2) {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[5]%3) +".png", String.valueOf(uuid[5]));
+                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[3]%3) +".png", String.valueOf(uuid[5]));
             } else {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/blaze/" + (uuid[5]%7) +".png", String.valueOf(uuid[5]));
+                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/blaze/" + (uuid[3]%7) +".png", String.valueOf(uuid[5]));
             }
         } else {
             key += "6";
@@ -351,7 +351,7 @@ public class CowTexture {
             cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[3] +".png", String.valueOf(uuid[3]));
         } else if (gene[18] == 2 || gene[19] == 2) {
             //blaze
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[5]%3) +".png", String.valueOf(uuid[5]));
+            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[3]%3) +".png", String.valueOf(uuid[5]));
         } else {
             key += "7";
         }

@@ -361,10 +361,10 @@ public class CowTexture {
                 cow.addDelimiter("nos"+key);
             }
             TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
-//            if (gene[254] == 2 || gene[255] == 2) {
-//                colour.setTexturingType(TexturingType.CUTOUT_GROUP);
-//                cow.addTextureToAnimalTextureGrouping(colour, "spots/brockling/0.png", "0");
-//            }
+            if (gene[254] == 2 || gene[255] == 2) {
+                colour.setTexturingType(TexturingType.CUTOUT_GROUP);
+                cow.addTextureToAnimalTextureGrouping(colour, "spots/brockling/0.png", "0");
+            }
             cow.addTextureToAnimalTextureGrouping(colour, "spots/white.png");
             grouping.addGrouping(colour);
             grouping.addGrouping(spotShape);

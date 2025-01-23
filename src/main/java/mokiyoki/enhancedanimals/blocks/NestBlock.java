@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.blocks;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -14,7 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -42,9 +40,6 @@ public abstract class NestBlock extends Block {
     protected abstract int getNumberOfEggs(BlockState state);
 
     protected abstract SoundEvent getEggBreakSound();
-
-    protected abstract boolean isEgg(Item item);
-    protected abstract boolean usesCapabilities();
 
     protected List<EggHolder> getEggsRemoveNestCapability(Level world, BlockPos pos) {
         return world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
@@ -74,7 +69,7 @@ public abstract class NestBlock extends Block {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
 
-        if (usesCapabilities() && isEgg(context.getItemInHand().getItem())) {
+        if (context.getItemInHand().getItem() instanceof EnhancedEgg) {
             EggHolder eggHolder = context.getItemInHand().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItemInHand());
 
             if (eggHolder.getGenes() != null) {

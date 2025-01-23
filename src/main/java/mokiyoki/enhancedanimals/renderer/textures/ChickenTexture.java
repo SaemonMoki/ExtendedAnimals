@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -435,7 +435,7 @@ public class ChickenTexture {
             } else if (sGene[6] == 2 || sGene[7] == 2) {
                 barred = sGene[6]==sGene[7]?"barred_double":"barred";
             }
-            if (!barred.isEmpty() && (EanimodCommonConfig.COMMON.force16x.get() || gene[106]==2&&gene[107]==2)) {
+            if (!barred.isEmpty() && (GeneticAnimalsConfig.COMMON.force16x.get() || gene[106]==2&&gene[107]==2)) {
                 barred += "_silkie";
             }
             chicken.addTextureToAnimalTextureGrouping(featherGroup, "feather_colour/"+barred+".png", barred);

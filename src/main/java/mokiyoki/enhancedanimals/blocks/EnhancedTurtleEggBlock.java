@@ -77,6 +77,16 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         return SoundEvents.TURTLE_EGG_BREAK;
     }
 
+    @Override
+    protected boolean isEgg(Item item) {
+        return item == this.asItem();
+    }
+
+    @Override
+    protected boolean usesCapabilities() {
+        return true;
+    }
+
     public void stepOn(Level level, BlockPos pos, BlockState blockState, Entity entity) {
         this.tryTrample(level, pos, entity, 100);
         super.stepOn(level, pos, blockState, entity);
@@ -218,7 +228,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
-        return useContext.getItemInHand().getItem() == this.asItem() && state.getValue(EGGS) < 4 || super.canBeReplaced(state, useContext);
+        return isEgg(useContext.getItemInHand().getItem()) && state.getValue(EGGS) < 4 || super.canBeReplaced(state, useContext);
     }
 
     @Nullable

@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -84,16 +83,6 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     @Override
     protected SoundEvent getEggBreakSound() {
         return SoundEvents.TURTLE_EGG_BREAK;
-    }
-
-    @Override
-    protected boolean isEgg(Item item) {
-        return item instanceof EnhancedEgg;
-    }
-
-    @Override
-    protected boolean usesCapabilities() {
-        return true;
     }
 
     public void stepOn(Level level, BlockPos pos, BlockState blockState, Entity entity) {

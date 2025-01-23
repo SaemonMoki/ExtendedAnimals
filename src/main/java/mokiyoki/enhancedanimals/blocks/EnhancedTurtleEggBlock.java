@@ -6,9 +6,11 @@ import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,6 +76,16 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     @Override
     protected SoundEvent getEggBreakSound() {
         return SoundEvents.TURTLE_EGG_BREAK;
+    }
+
+    @Override
+    protected boolean isEgg(Item item) {
+        return item == this.asItem();
+    }
+
+    @Override
+    protected boolean usesCapabilities() {
+        return true;
     }
 
     public void stepOn(Level level, BlockPos pos, BlockState blockState, Entity entity) {
@@ -217,7 +229,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
-        return useContext.getItemInHand().getItem() == this.asItem() && state.getValue(EGGS) < 4 || super.canBeReplaced(state, useContext);
+        return isEgg(useContext.getItemInHand().getItem()) && state.getValue(EGGS) < 4 || super.canBeReplaced(state, useContext);
     }
 
     @Nullable

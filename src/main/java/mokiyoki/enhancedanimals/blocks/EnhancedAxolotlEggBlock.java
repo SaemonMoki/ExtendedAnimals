@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -76,6 +78,16 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
         return (blockstate.is(this) ? super.getStateForPlacement(context).setValue(EGGS, Integer.valueOf(Math.min(4, blockstate.getValue(EGGS) + 1))) : super.getStateForPlacement(context)).setValue(WATERLOGGED, true);
+    }
+
+    @Override
+    protected boolean isEgg(Item item) {
+        return item instanceof EnhancedAxolotlEggBucket;
+    }
+
+    @Override
+    protected boolean usesCapabilities() {
+        return false;
     }
 
     /**

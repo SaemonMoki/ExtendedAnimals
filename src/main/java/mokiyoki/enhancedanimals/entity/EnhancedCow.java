@@ -22,7 +22,6 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.CowModelData;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;

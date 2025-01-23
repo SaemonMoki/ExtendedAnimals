@@ -25,7 +25,6 @@ import mokiyoki.enhancedanimals.model.modeldata.PigModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;

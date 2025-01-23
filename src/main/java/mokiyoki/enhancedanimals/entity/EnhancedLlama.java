@@ -147,7 +147,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     private int despawnDelay = -1;
     private boolean resetTexture = true;
 
-    private int woolRegenTimer = -1;
+    private static final int woolRegenTimer = (int)(24000/ GeneticAnimalsConfig.COMMON.woolMultiplierLlama.get());
 
     private GrazingGoal grazingGoal;
 

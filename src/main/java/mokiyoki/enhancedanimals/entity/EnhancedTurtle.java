@@ -10,7 +10,6 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.TurtleModelData;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -79,6 +78,7 @@ import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.renderer.textures.TurtleTexture.calculateTurtleTextures;
 import static mokiyoki.enhancedanimals.util.Reference.TURTLE_AUTOSOMAL_GENES_LENGTH;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
@@ -98,17 +98,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     public static final Predicate<LivingEntity> TARGET_DRY_BABY = (turtle) -> {
         return turtle.isBaby() && !turtle.isInWater();
-    };
-
-    private static final String[] TURTLE_TEXTURES_BASE = new String[] {
-            "normal_turtle.png", "albino_turtle.png", "axanthic_turtle.png", "axanthic_albino_turtle.png", "black_turtle.png", "het_melanised_normal.png", "axanthic_black_turtle.png", "het_melanised_axanthic.png"
-    };
-
-    private static final String[] TURTLE_TEXTURES_PIBALD = new String[] {
-            "","pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
-            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
-            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
-            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png"
     };
 
     @OnlyIn(Dist.CLIENT)
@@ -277,11 +266,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected void incrementHunger() {
-        if(this.sleeping) {
-            this.hunger = this.hunger + (0.5F*getHungerModifier());
-        } else {
-            this.hunger = this.hunger + (1.0F*getHungerModifier());
-        }
+//        if(this.sleeping) {
+//            this.hunger = this.hunger + (0.5F*getHungerModifier());
+//        } else {
+//            this.hunger = this.hunger + (1.0F*getHungerModifier());
+//        }
     }
 
     @Override
@@ -438,7 +427,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.reload) {
             this.reload = false;
@@ -452,79 +441,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            int[] gene = getGenes().getAutosomalGenes();
-            int base = 0;
-            int pibald = 0;
-
-            char[] uuidArry = getStringUUID().toCharArray();
-
-            if (gene[0] == 1 || gene[1] == 1) {
-                //non-albino
-                if (gene[2] == 1 || gene[3] == 1 ) {
-                    //non-axanthic
-                    if (gene[4] == 2 || gene[5] == 2) {
-                        //melanized
-                        base = gene[4] == gene[5] ? 4 : 5;
-                    }
-                } else {
-                    //axanthic
-                    if (gene[4] == 2 || gene[5] == 2) {
-                        //melanized
-                        base = gene[4] == gene[5] ? 6 : 7;
-                    } else {
-                        base = 2;
-                    }
-                }
-            } else {
-                //albino
-                if (gene[2] == 1 || gene[3] == 1 ) {
-                    //non-axanthic
-                    base = 1;
-                } else {
-                    //axanthic
-                    base = 3;
-                }
-            }
-
-            if (gene[6] == 2 && gene[7] == 2) {
-                if ( Character.isDigit(uuidArry[5]) ){
-                    pibald = 1 + (uuidArry[5]-48);
-                } else {
-                    char d = uuidArry[5];
-
-                    switch (d) {
-                        case 'a':
-                            pibald = 11;
-                            break;
-                        case 'b':
-                            pibald = 12;
-                            break;
-                        case 'c':
-                            pibald = 13;
-                            break;
-                        case 'd':
-                            pibald = 14;
-                            break;
-                        case 'e':
-                            pibald = 15;
-                            break;
-                        case 'f':
-                            pibald = 16;
-                            break;
-                        default:
-                            pibald = 0;
-                    }
-                }
-
-                if (gene[8] == 2 && gene[9] == 2) {
-                    pibald = 1;
-                } else if ((pibald-1) % 4 == 0){
-                    pibald = (int)(pibald + (pibald*0.25F));
-                }
-            }
-
-            addTextureToAnimal(TURTLE_TEXTURES_BASE, base, null);
-            addTextureToAnimal(TURTLE_TEXTURES_PIBALD, pibald, i -> i != 0);
+            calculateTurtleTextures(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
         }
     }
 

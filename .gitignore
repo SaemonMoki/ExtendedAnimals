@@ -25,3 +25,7 @@ run
 forge*changelog.txt
 /classes/
 /logs/
+
+# Locally added mods
+/extra-mods/
+/mod-bk/

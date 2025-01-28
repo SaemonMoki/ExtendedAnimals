@@ -1629,7 +1629,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String getAnimalsName(String species) {
         String name = species;
         if (this.getCustomName() != null) {
-            name = this.getCustomName().getContents().toString();
+            name = this.getCustomName().getString();
             if (name.equals("")) {
                 name = species;
             }

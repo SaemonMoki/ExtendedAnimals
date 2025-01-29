@@ -58,6 +58,8 @@ public class ModItems {
 
     private static final DeferredRegister<Item> ITEMS_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MODID);
 
+    public static final RegistryObject<Item> TURTLE_SCUTE = ITEMS_DEFERRED_REGISTRY.register("turtle_scute", () -> new TurtleScute(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+
     public static final RegistryObject<Item> EGG_WHITE = ITEMS_DEFERRED_REGISTRY.register("egg_white", () -> new EnhancedEgg(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1), 16777215));
     public static final RegistryObject<Item> EGG_CREAMLIGHT = ITEMS_DEFERRED_REGISTRY.register("egg_creamlight", () -> new EnhancedEgg(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1), 15722189));
     public static final RegistryObject<Item> EGG_PINKLIGHT = ITEMS_DEFERRED_REGISTRY.register("egg_pinklight", () -> new EnhancedEgg(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1), 15915479));

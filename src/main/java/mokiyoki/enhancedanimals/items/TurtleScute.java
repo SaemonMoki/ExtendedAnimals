@@ -59,11 +59,13 @@ public class TurtleScute extends Item {
 
                 if (baseColour.length == stack.getCount()) {
                     int[] updatedBaseColour = new int[baseColour.length - 1];
+
                     for (int i = 0; i < updatedBaseColour.length; i++) {
                         updatedBaseColour[i] = baseColour[i + 1];
                     }
-                    tag.remove(BASE_COLOUR);
-                    tag.putIntArray(BASE_COLOUR, updatedBaseColour);
+
+                    updateItemStack(tag, updatedBaseColour);
+                    stack.shrink(1);
 
                     System.out.println("UPDATED TOP STACK DATA");
                 }
@@ -78,8 +80,8 @@ public class TurtleScute extends Item {
                     for (int i = 0; i < slotBaseColour.length; i++) {
                         updatedSlotBaseColour[i + 1] = slotBaseColour[i];
                     }
-                    slotTag.remove(BASE_COLOUR);
-                    slotTag.putIntArray(BASE_COLOUR, updatedSlotBaseColour);
+                    updateItemStack(slotTag, updatedSlotBaseColour);
+                    slotStack.grow(1);
 
                     System.out.println("UPDATED BOTTOM STACK DATA");
 
@@ -90,21 +92,34 @@ public class TurtleScute extends Item {
                     slot.set(slotStack);
 
                     System.out.println("TOP DROP ONE");
-
                 }
+                return true;
             }
         }
 
         return super.overrideStackedOnOther(stack, slot, clickAction, player);
     }
 
+    private static void updateItemStack(CompoundTag slotTag, int[] updatedSlotBaseColour) {
+        slotTag.remove(BASE_COLOUR);
+        slotTag.putIntArray(BASE_COLOUR, updatedSlotBaseColour);
+    }
+
     @Override
-    public boolean overrideOtherStackedOnMe(ItemStack bottom, ItemStack top, Slot p_150894_, ClickAction clickAction, Player p_150896_, SlotAccess p_150897_) {
+    public boolean overrideOtherStackedOnMe(ItemStack bottom, ItemStack top, Slot p_150894_, ClickAction clickAction, Player p_150896_, SlotAccess slotAccess) {
 
         if (clickAction == ClickAction.SECONDARY) {
             if (top.isEmpty()) {
                 if (bottom.getCount() > 1) {
+                    int split = bottom.getCount()/2;
+                    slotAccess.set(bottom.split(split));
+                    top.setCount(split);
+
+                    removeBottomHalfData(top);
+                    removeTopHalfData(bottom);
+
                     System.out.println("BOTTOM SPLIT");
+                    return true;
                 }
             } else if (top.is(this)) {
                 System.out.println("BOTTOM GET ONE FROM TOP");
@@ -115,10 +130,10 @@ public class TurtleScute extends Item {
             }
         }
 
-        return super.overrideOtherStackedOnMe(bottom, top, p_150894_, clickAction, p_150896_, p_150897_);
+        return super.overrideOtherStackedOnMe(bottom, top, p_150894_, clickAction, p_150896_, slotAccess);
     }
 
-    private void combineStackInfo(ItemStack top, ItemStack bottom) {
+    private void combineStackInfo(ItemStack bottom, ItemStack top) {
         int size = top.getCount()+bottom.getCount();
         CompoundTag tagTop = getStackInfo(top);
         CompoundTag tagBottom = getStackInfo(bottom);
@@ -138,11 +153,6 @@ public class TurtleScute extends Item {
         }
     }
 
-    private void splitHalves(ItemStack top, ItemStack bottom) {
-        removeBottomHalfData(top);
-        removeTopHalfData(bottom);
-    }
-
     private void removeBottomHalfData(ItemStack top) {
         CompoundTag tag = getStackInfo(top);
         int size = top.getCount();
@@ -153,6 +163,7 @@ public class TurtleScute extends Item {
             updatedBaseColours[i] = baseColours[i];
         }
 
+        tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
     }
 
@@ -167,6 +178,7 @@ public class TurtleScute extends Item {
             updatedBaseColours[i] = baseColours[i+sizeDif];
         }
 
+        tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
     }
 

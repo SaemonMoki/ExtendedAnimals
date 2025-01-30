@@ -1,7 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "eanimod:items/bridle_basic",
-    "layer1": "eanimod:items/bridle_basic_iron"
+    "layer0": "eanimod:items/turtle_scute/green"
   }
 }

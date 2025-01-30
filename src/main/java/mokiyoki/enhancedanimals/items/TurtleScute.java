@@ -23,13 +23,15 @@ public class TurtleScute extends Item {
         CompoundTag tag = getStackInfo(itemStack);
         if (!tag.contains(BASE_COLOUR)) {
             if (itemStack.getCount() == 1) {
-                int colour = switch (ThreadLocalRandom.current().nextInt(5)) {
+                int colour = 6842986/*switch (ThreadLocalRandom.current().nextInt(5)) {
                     case 1 -> 16776960;
                     case 2 -> 16753920;
                     case 3 -> 16777215;
                     case 4 -> 1052688;
-                    default -> 32768;
-                };
+                    case 5 -> 32768;
+                    case 6 -> 9983008;
+                    default -> 4702026;
+                }*/;
                 tag.putIntArray(BASE_COLOUR, new int[] {colour});
             } else {
                 int[] colours = new int[itemStack.getCount()];
@@ -52,6 +54,7 @@ public class TurtleScute extends Item {
         if (clickAction == ClickAction.PRIMARY) {
             if (slot.getItem().is(this)) {
                 combineStackInfo(stack, slot.getItem());
+                System.out.println("COMBINED STACKED ON OTHER");
             }
         } else if (clickAction == ClickAction.SECONDARY) {
             if (stack.getCount() > 1) {
@@ -101,11 +104,6 @@ public class TurtleScute extends Item {
         return super.overrideStackedOnOther(stack, slot, clickAction, player);
     }
 
-    private static void updateItemStack(CompoundTag slotTag, int[] updatedSlotBaseColour) {
-        slotTag.remove(BASE_COLOUR);
-        slotTag.putIntArray(BASE_COLOUR, updatedSlotBaseColour);
-    }
-
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack bottom, ItemStack top, Slot p_150894_, ClickAction clickAction, Player p_150896_, SlotAccess slotAccess) {
 
@@ -127,29 +125,30 @@ public class TurtleScute extends Item {
         } else if (clickAction == ClickAction.PRIMARY) {
             if (bottom.is(this) && top.is(this)) {
                 combineStackInfo(top, bottom);
+                System.out.println("COMBINED STACKED ON ME");
             }
         }
 
         return super.overrideOtherStackedOnMe(bottom, top, p_150894_, clickAction, p_150896_, slotAccess);
     }
 
-    private void combineStackInfo(ItemStack bottom, ItemStack top) {
-        int size = top.getCount()+bottom.getCount();
-        CompoundTag tagTop = getStackInfo(top);
-        CompoundTag tagBottom = getStackInfo(bottom);
-        if (top.getCount() == tagTop.getIntArray(BASE_COLOUR).length && bottom.getCount() == tagBottom.getIntArray(BASE_COLOUR).length) {
+    private void combineStackInfo(ItemStack top, ItemStack bottom) {
+        int size = bottom.getCount()+top.getCount();
+        CompoundTag tagTop = getStackInfo(bottom);
+        CompoundTag tagBottom = getStackInfo(top);
+        if (bottom.getCount() == tagTop.getIntArray(BASE_COLOUR).length && top.getCount() == tagBottom.getIntArray(BASE_COLOUR).length) {
             int[] colours = new int[size];
 
             for (int i = 0; i < size; i++) {
-                if (i < bottom.getCount()) {
+                if (i < top.getCount()) {
                     colours[i] = tagBottom.getIntArray(BASE_COLOUR)[i];
                 } else {
-                    colours[i] = tagTop.getIntArray(BASE_COLOUR)[i - bottom.getCount()];
+                    colours[i] = tagTop.getIntArray(BASE_COLOUR)[i - top.getCount()];
                 }
             }
 
-            tagTop.putIntArray(BASE_COLOUR, colours);
-            tagBottom.putIntArray(BASE_COLOUR, colours);
+            updateItemStack(tagTop, colours);
+            updateItemStack(tagBottom, colours);
         }
     }
 
@@ -165,7 +164,7 @@ public class TurtleScute extends Item {
 
         tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
-//        top.setHoverName(new TextComponent("Top Item"));
+        top.getOrCreateTagElement("t");
     }
 
     private void removeTopHalfData(ItemStack bottom) {
@@ -181,10 +180,18 @@ public class TurtleScute extends Item {
 
         tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
-//        bottom.setHoverName(new TextComponent("Bottom Item"));
     }
 
     protected CompoundTag getStackInfo(ItemStack stack) {
+        stack.removeTagKey("t");
         return stack.getOrCreateTagElement("stackInfo");
     }
+
+    private static void updateItemStack(CompoundTag slotTag, int[] updatedSlotBaseColour) {
+        slotTag.remove(BASE_COLOUR);
+        slotTag.putIntArray(BASE_COLOUR, updatedSlotBaseColour);
+    }
+
+
+
 }

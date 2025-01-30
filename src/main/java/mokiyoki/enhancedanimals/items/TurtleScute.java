@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.items;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -119,7 +120,6 @@ public class TurtleScute extends Item {
                     removeTopHalfData(bottom);
 
                     System.out.println("BOTTOM SPLIT");
-                    return true;
                 }
             } else if (top.is(this)) {
                 System.out.println("BOTTOM GET ONE FROM TOP");
@@ -165,6 +165,7 @@ public class TurtleScute extends Item {
 
         tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
+//        top.setHoverName(new TextComponent("Top Item"));
     }
 
     private void removeTopHalfData(ItemStack bottom) {
@@ -180,6 +181,7 @@ public class TurtleScute extends Item {
 
         tag.remove(BASE_COLOUR);
         tag.putIntArray(BASE_COLOUR, updatedBaseColours);
+//        bottom.setHoverName(new TextComponent("Bottom Item"));
     }
 
     protected CompoundTag getStackInfo(ItemStack stack) {

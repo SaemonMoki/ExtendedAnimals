@@ -721,7 +721,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
                 if (gene[10] != 1 || gene[11] != 1) {
                     float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255);
-                    this.colouration.setDyeColour(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
+                    this.colouration.setDyeColour(Colouration.HSBtoABGR(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
                 }
 
                 /*float eyeHue = 0.75F;

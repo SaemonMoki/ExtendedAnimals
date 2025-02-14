@@ -812,40 +812,42 @@ public class EventSubscriber {
                         animals.add(ENHANCED_AXOLOTL.get());
                     }
 
-                    Collections.shuffle(animals);
+                    if (!animals.isEmpty()) {
+                        Collections.shuffle(animals);
 
-                    int listSize = animals.size();
-                    int selection = listSize == 1 ? 0 : ThreadLocalRandom.current().nextInt(listSize);
+                        int listSize = animals.size();
+                        int selection = listSize == 1 ? 0 : ThreadLocalRandom.current().nextInt(listSize);
 
-                    if (animals.get(selection) == ENHANCED_TURTLE.get()) {
-                        ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
-                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
-                    } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
-                        ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
-                        CompoundTag tag = stack.getOrCreateTag();
-                        tag.putInt("Variant", ThreadLocalRandom.current().nextInt(5));
-                        //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
-                        ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
-                    } else {
-                        for (int i = 1; i <= 2; i++) {
-                            BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
-                            EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animals.get(selection).create(((ServerLevel) world).getLevel());
+                        if (animals.get(selection) == ENHANCED_TURTLE.get()) {
+                            ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
+                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                        } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
+                            ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
+                            CompoundTag tag = stack.getOrCreateTag();
+                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(5));
+                            //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
+                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean()?1:2, 1, 0.0F));
+                        } else {
+                            for (int i = 1; i <= 2; i++) {
+                                BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
+                                EnhancedAnimalAbstract enhancedAnimal = (EnhancedAnimalAbstract) animals.get(selection).create(((ServerLevel) world).getLevel());
 
-                            if (enhancedAnimal != null) {
-                                Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
-                                enhancedAnimal.setGenes(animalGenes);
-                                enhancedAnimal.setSharedGenes(animalGenes);
-                                enhancedAnimal.setInitialDefaults();
-                                enhancedAnimal.initilizeAnimalSize();
-                                enhancedAnimal.getReloadTexture();
-                                enhancedAnimal.setLeashedTo(entity, true);
-                                enhancedAnimal.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
+                                if (enhancedAnimal != null) {
+                                    Genes animalGenes = enhancedAnimal.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), "WanderingTrader");
+                                    enhancedAnimal.setGenes(animalGenes);
+                                    enhancedAnimal.setSharedGenes(animalGenes);
+                                    enhancedAnimal.setInitialDefaults();
+                                    enhancedAnimal.initilizeAnimalSize();
+                                    enhancedAnimal.getReloadTexture();
+                                    enhancedAnimal.setLeashedTo(entity, true);
+                                    enhancedAnimal.scheduleDespawn(((WanderingTrader) entity).getDespawnDelay());
 
-                                enhancedAnimal.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-                                world.addFreshEntity(enhancedAnimal);
+                                    enhancedAnimal.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                                    world.addFreshEntity(enhancedAnimal);
 
-                                if (enhancedAnimal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
-                                    break;
+                                    if (enhancedAnimal instanceof EnhancedLlama || ThreadLocalRandom.current().nextBoolean()) {
+                                        break;
+                                    }
                                 }
                             }
                         }

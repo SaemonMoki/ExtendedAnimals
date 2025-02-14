@@ -302,7 +302,7 @@ public class ChickenTexture {
             String ear = "ear";
             if (earColour < 7) ear += "_mottled" + earColour;
             earColour = calculateEarRGB(sGene, gene, isFemale);
-            chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + ear + ".png", earColour);
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + ear + ".png", ear, earColour);
 
             int face = 6 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
 
@@ -320,7 +320,7 @@ public class ChickenTexture {
                 if (face >= 7) { //TODO increment when more faces are added
                     face = 6;
                 }
-                chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/face" + face + ".png", earColour);
+                chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/face" + face + ".png", String.valueOf(face), earColour);
             }
         }
     }

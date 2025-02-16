@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.config;
 
+import mokiyoki.enhancedanimals.init.breeds.ChickenBreeds;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -140,6 +141,10 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.BooleanValue spawnGeneticHorses;
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
         public final ForgeConfigSpec.IntValue adultAgeHorse;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaBees;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticBees;
+        public final ForgeConfigSpec.IntValue adultAgeBee;
 
         //Multipliers
         public final ForgeConfigSpec.DoubleValue milkMultiplier;
@@ -437,6 +442,15 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
                     .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
+            builder.pop();
+
+            builder.push("bee");
+            adultAgeBee = builder
+                    .defineInRange("How many ticks it takes for a Bee to become an adult, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
+            spawnVanillaBees = builder
+                    .define("Allow vanilla minecraft Bees to spawn/exist:", false);
+            spawnGeneticBees = builder
+                    .define("Allow Genetic Bees to continue to spawn/exist:", true);
             builder.pop();
 
             builder.push("passageOfTime");

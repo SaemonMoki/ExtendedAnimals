@@ -42,14 +42,14 @@ public class Genes {
 
             Genes genes = new Genes(sexlink.length, autosomal.length);
             int i = 0;
-            for (String allele : sexlink) {
-                genes.setSexlinkedGene(i, Integer.parseInt(allele));
+            for (String allelee : sexlink) {
+                genes.setSexlinkedGene(i, Integer.parseInt(allelee));
                 i++;
             }
 
             i = 0;
-            for (String allele : autosomal) {
-                genes.setAutosomalGene(i, Integer.parseInt(allele));
+            for (String allelee : autosomal) {
+                genes.setAutosomalGene(i, Integer.parseInt(allelee));
                 i++;
             }
 
@@ -68,11 +68,11 @@ public class Genes {
                     genes.setSexlinkedGene((i*2)+1, Integer.parseInt(genesToSplit[i]));
                 }
                 int i = 0;
-                for (String allele : genesToSplit) {
+                for (String allelee : genesToSplit) {
                     if (i < 20) {
                         genes.setAutosomalGene(i, 1);
                     } else {
-                        genes.setAutosomalGene(i, Integer.parseInt(allele));
+                        genes.setAutosomalGene(i, Integer.parseInt(allelee));
                     }
                     i++;
                 }
@@ -81,8 +81,8 @@ public class Genes {
             } else {
                 Genes genes = new Genes(genesToSplit.length);
                 int i = 0;
-                for (String allele : genesToSplit) {
-                    genes.setSexlinkedGene(i, Integer.parseInt(allele));
+                for (String allelee : genesToSplit) {
+                    genes.setSexlinkedGene(i, Integer.parseInt(allelee));
                 }
                 this.sexlinked = new int[]{1, 1};
                 this.autosomal = genes.getAutosomalGenes();
@@ -138,27 +138,27 @@ public class Genes {
         this.autosomal = autosomalGenes;
     }
 
-    public void setSexlinkedGene(int gene, int allel) {
-        this.sexlinked[gene] = allel;
+    public void setSexlinkedGene(int gene, int allele) {
+        this.sexlinked[gene] = allele;
     }
 
-    public void setAutosomalGene(int gene, int allel) {
-        this.autosomal[gene] = allel;
+    public void setAutosomalGene(int gene, int allele) {
+        this.autosomal[gene] = allele;
     }
 
-    public void setAutosomalGene(int gene, int ... allels) {
-        for (int allel : allels) {
-            this.autosomal[gene] = allel;
+    public void setAutosomalGene(int gene, int ... alleles) {
+        for (int allele : alleles) {
+            this.autosomal[gene] = allele;
             gene++;
         }
     }
 
-    public void setGeneOfChromosome(boolean isAutosomal, int gene, int allel) {
-        if (allel != 0) {
+    public void setGeneOfChromosome(boolean isAutosomal, int gene, int allelee) {
+        if (allelee != 0) {
             if (isAutosomal) {
-                this.autosomal[gene] = allel;
+                this.autosomal[gene] = allelee;
             } else {
-                this.sexlinked[gene] = allel;
+                this.sexlinked[gene] = allelee;
             }
         }
     }
@@ -182,6 +182,19 @@ public class Genes {
 
     public int[] getAutosomalGenes() {
         return this.autosomal;
+    }
+    
+    public int[] getAutosomalGenes(boolean isDiploid) {
+        if (isDiploid) {
+            return this.autosomal;
+        } else {
+            int[] haploid = new int[this.autosomal.length];
+            for (int i = 0; i < haploid.length;i+=2){
+                haploid[i] = this.autosomal[i];
+                haploid[i+1] = this.autosomal[i];
+            }
+            return haploid;
+        }
     }
 
     public int getAutosomalGene(int gene) {
@@ -312,25 +325,25 @@ public class Genes {
         return this.makeChild(isDiploid, donor, donorIsDiploid, Species.UNIMPORTANT);
     }
 
-    public boolean has(int gene, int allel) {
+    public boolean has(int gene, int allele) {
         if (this.autosomal.length >= gene+1) {
-            return this.autosomal[gene] == allel || this.autosomal[gene + 1] == allel;
+            return this.autosomal[gene] == allele || this.autosomal[gene + 1] == allele;
         } else {
             return false;
         }
     }
 
-    public boolean isHomozygousFor(int gene, int allel) {
+    public boolean isHomozygousFor(int gene, int allele) {
         if (this.autosomal.length >= gene+1) {
-            return this.autosomal[gene] == allel && this.autosomal[gene+1] == allel;
+            return this.autosomal[gene] == allele && this.autosomal[gene+1] == allele;
         } else {
             return false;
         }
     }
 
-    public boolean isHeterozygousFor(int gene, int allel) {
+    public boolean isHeterozygousFor(int gene, int allele) {
         if (this.autosomal.length >= gene+1) {
-            return this.autosomal[gene] == allel ^ this.autosomal[gene+1] == allel;
+            return this.autosomal[gene] == allele ^ this.autosomal[gene+1] == allele;
         } else {
             return false;
         }

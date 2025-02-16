@@ -1,39 +1,137 @@
-//package mokiyoki.enhancedanimals.entity;
-//
-//import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-//import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
-//import net.minecraft.advancements.CriteriaTriggers;
-//import net.minecraft.entity.AgeableEntity;
-//import net.minecraft.entity.EntityType;
-//import net.minecraft.entity.ILivingEntityData;
-//import net.minecraft.entity.SpawnReason;
-//import net.minecraft.entity.passive.AnimalEntity;
-//import net.minecraft.entity.player.ServerPlayerEntity;
-//import net.minecraft.inventory.Inventory;
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.item.Items;
-//import net.minecraft.item.crafting.Ingredient;
-//import net.minecraft.nbt.CompoundNBT;
-//import net.minecraft.network.datasync.DataParameter;
-//import net.minecraft.network.datasync.DataSerializers;
-//import net.minecraft.network.datasync.EntityDataManager;
-//import net.minecraft.stats.Stats;
-//import net.minecraft.util.math.MathHelper;
-//import net.minecraft.world.DifficultyInstance;
-//import net.minecraft.world.IWorld;
-//import net.minecraft.world.World;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
-//
-//import javax.annotation.Nullable;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Random;
-//import java.util.UUID;
-//import java.util.concurrent.ThreadLocalRandom;
-//import java.util.stream.Collectors;
-//
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
+package mokiyoki.enhancedanimals.entity;
+
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import static mokiyoki.enhancedanimals.renderer.textures.BeeTexture.calculateBeeTexture;
+
+public class EnhancedBee extends EnhancedAnimalAbstract {
+
+    protected EnhancedBee(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
+    }
+
+    @Override
+    protected String getSpecies() {
+        return "entity.eanimod.enhanced_bee";
+    }
+
+    @Override
+    protected int getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeBee.get();
+        return this.adultAge;
+    }
+
+    @Override
+    protected int gestationConfig() {
+        return 24000;
+    }
+
+    @Override
+    protected void incrementHunger() {
+
+    }
+
+    @Override
+    protected void runExtraIdleTimeTick() {
+
+    }
+
+    @Override
+    protected void lethalGenes() {
+
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public String getTexture() {
+        if (this.enhancedAnimalTextureGrouping == null) {
+            this.setTexturePaths();
+        } else if (this.reload) {
+            this.reload = false;
+            this.reloadTextures();
+        }
+
+        return getCompiledTextures("enhanced_bee");
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
+        this.setTexturePaths();
+    }
+
+    @Override
+    protected void setTexturePaths() {
+        if (this.getGenes() != null) {
+            calculateBeeTexture(this, this.getGenes());
+        }
+    }
+
+    @Override
+    protected void setAlphaTexturePaths() {}
+
+    @Override
+    public void initilizeAnimalSize() {
+
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level world, EnhancedAnimalAbstract otherParent) {
+        return null;
+    }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level world) {
+
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return false;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return null;
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+
+    }
+
+    @Override
+    protected Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic) {
+        return null;
+    }
+
+    @Override
+    public Genes createInitialBreedGenes(LevelAccessor inWorld, BlockPos pos, String breed) {
+        return null;
+    }
+}
+
+/**
+ *      delete below once the good stuff is stripped out
+ */
 //
 //public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
 //
@@ -94,7 +192,7 @@
 //
 //    public EnhancedBee(EntityType<? extends EnhancedBee> entityType, World worldIn) {
 //        super(entityType, worldIn);
-////        this.setBeeSize();
+//        this.setBeeSize();
 //    }
 //
 //    protected void registerData() {

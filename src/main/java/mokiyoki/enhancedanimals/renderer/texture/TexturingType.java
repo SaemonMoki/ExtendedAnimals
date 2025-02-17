@@ -16,7 +16,8 @@ public enum TexturingType {
     //Layer texturing types
 
     APPLY_RED, //a layer specific type, used to apply a red blend to an individual texture from global rgb
-    APPLY_BLACK, //a layer specific type, used to apply a red blend to an individual texture from global rgb
+    APPLY_BLACK, //a layer specific type, used to apply a black blend to an individual texture from global rgb
+    APPLY_SHADE_MELANIN, //a layer specific type, used to apply a black blend to an individual texture from global rgb with legacy cow pattern shading
     APPLY_COLLAR_COLOUR, //a layer specific type, used to apply the collar colour to an individual texture from global rgb
     APPLY_BRIDLE_COLOUR, //a layer specific type, used to apply the bridle colour to an individual texture from global rgb
     APPLY_SADDLE_COLOUR, //a layer specific type, used to apply the saddle colour to an individual texture from global rgb

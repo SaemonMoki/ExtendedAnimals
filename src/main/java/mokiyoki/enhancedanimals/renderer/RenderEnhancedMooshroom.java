@@ -3,7 +3,8 @@ package mokiyoki.enhancedanimals.renderer;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
-import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -43,15 +44,15 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            String[] textures = entity.getVariantTexturePaths();
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
 
-            if (textures == null || textures.length == 0) {
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, textures, null, colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_COW_TEXTURE_LOCATION, textureGrouping, colourRGB, 256));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

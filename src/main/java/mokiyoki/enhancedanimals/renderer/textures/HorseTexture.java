@@ -10,25 +10,27 @@ public class HorseTexture {
         int[] gene = horse.getGenes().getAutosomalGenes();
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-
-        if (addSkinPattern(horse, skinGroup)) horse.addDelimiter();
-
-        parentGroup.addGrouping(skinGroup);
-
-        TextureGrouping furGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-
-        if (addRedPattern(horse, furGroup)) horse.addDelimiter();
-
-        if (addPattern(horse, gene, furGroup)) horse.addDelimiter();
-
-        if (createLeopardSpots(horse, gene, furGroup)) horse.addDelimiter();
-
-        parentGroup.addGrouping(furGroup);
-
-        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        horse.addIndividualTextureToAnimalTextureGrouping(detailGroup,TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
-        horse.addIndividualTextureToAnimalTextureGrouping(detailGroup,TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_right.png");
+//        TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+//
+//        if (addSkinPattern(horse, skinGroup)) horse.addDelimiter();
+//
+//        parentGroup.addGrouping(skinGroup);
+//
+//        TextureGrouping furGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+//
+//        if (addRedPattern(horse, furGroup)) horse.addDelimiter();
+//
+//        if (addPattern(horse, gene, furGroup)) horse.addDelimiter();
+//
+//        if (createLeopardSpots(horse, gene, furGroup)) horse.addDelimiter();
+//
+//        parentGroup.addGrouping(furGroup);
+//
+//        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+//        horse.addIndividualTextureToAnimalTextureGrouping(detailGroup,TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
+//        horse.addIndividualTextureToAnimalTextureGrouping(detailGroup,TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_right.png");
+        horse.addTextureToAnimalTextureGrouping(parentGroup,"horsebase.png");
+        horse.addTextureToAnimalTextureGrouping(parentGroup,"modelassist.png");
         horse.setTextureGrouping(parentGroup);
     }
 

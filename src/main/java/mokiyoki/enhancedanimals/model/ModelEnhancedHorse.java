@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,16 +30,30 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     protected WrappedModelPart theEarRight;
     protected WrappedModelPart theNeck;
     protected WrappedModelPart theBody;
+    protected WrappedModelPart theShoulders;
+    protected WrappedModelPart theHips;
     protected WrappedModelPart theLegFrontLeft;
     protected WrappedModelPart theLegFrontRight;
+
     protected WrappedModelPart theLegBackLeft;
+    protected WrappedModelPart theLegBottomBackLeft;
+    protected WrappedModelPart theFootBackLeft;
+    protected WrappedModelPart theToeBackLeft;
+
     protected WrappedModelPart theLegBackRight;
+    protected WrappedModelPart theLegBottomBackRight;
+    protected WrappedModelPart theFootBackRight;
+    protected WrappedModelPart theToeBackRight;
+
     protected WrappedModelPart theTail;
 
     protected WrappedModelPart forehead;
     protected WrappedModelPart cheek;
+    protected WrappedModelPart muzzle;
     protected WrappedModelPart nose;
     protected WrappedModelPart jaw;
+    protected WrappedModelPart lip;
+    protected WrappedModelPart tongue;
 
     protected WrappedModelPart earLeft;
     protected WrappedModelPart earTopLeft;
@@ -47,107 +62,148 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
     protected WrappedModelPart crest;
     protected WrappedModelPart neck;
-    protected WrappedModelPart[] wither = new WrappedModelPart[7];
-    protected WrappedModelPart[] body = new WrappedModelPart[7];;
+    protected WrappedModelPart wither;
+    protected WrappedModelPart body;
 
-    private WrappedModelPart legFrontLeft;
-    private WrappedModelPart legFrontRight;
-    private WrappedModelPart legBackLeft;
-    private WrappedModelPart legBackRight;
+    private WrappedModelPart shoulderL;
+    private WrappedModelPart shoulderR;
+    private WrappedModelPart thighL;
+    private WrappedModelPart thighR;
 
-    private WrappedModelPart tail;
+//    private WrappedModelPart shoulderL;
+//    private WrappedModelPart shoulderR;
+    private WrappedModelPart calfL;
+    private WrappedModelPart calfR;
+
+//    private WrappedModelPart shoulderL;
+//    private WrappedModelPart shoulderR;
+    private WrappedModelPart footL;
+    private WrappedModelPart footR;
+
+//    private WrappedModelPart shoulderL;
+//    private WrappedModelPart shoulderR;
+    private WrappedModelPart hoofL;
+    private WrappedModelPart hoofR;
+
+    private WrappedModelPart[] tail = new WrappedModelPart[3];
 
     private HorseModelData horseModelData;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bHorse = base.addOrReplaceChild("bHorse", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bHorse = base.addOrReplaceChild("bHorse", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bBody = bHorse.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
         PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
-        PartDefinition bLegFrontLeft = bHorse.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
-        PartDefinition bLegFrontRight = bHorse.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
-        PartDefinition bLegBackLeft = bHorse.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 9.0F));
-        PartDefinition bLegBackRight = bHorse.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, 9.0F));
-        PartDefinition bTail = bBody.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 22.0F));
+        PartDefinition bShoulders = bBody.addOrReplaceChild("bShoulders", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bHips = bBody.addOrReplaceChild("bHips", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -18.0F, 30.0F, Mth.HALF_PI * -0.1667F, 0.0F, 0.0F));
+        PartDefinition bLegFrontLeft = bShoulders.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
+        PartDefinition bLegFrontRight = bShoulders.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
+
+        PartDefinition bLegBackLeft = bHips.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-1.0F, 0.0F, 0.0F));
+        PartDefinition bLegBottomBackLeft = bLegBackLeft.addOrReplaceChild("bLegBBL", CubeListBuilder.create(), PartPose.offsetAndRotation(-4.0F, 19.5F, 3.0F, Mth.HALF_PI * 0.5833F, 0.0F, 0.0F));
+        PartDefinition bLegFootBackLeft = bLegBottomBackLeft.addOrReplaceChild("bLegFBL", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 6.0F, Mth.HALF_PI * -0.4166F, 0.0F, 0.0F));
+        PartDefinition bLegToeBackLeft = bLegFootBackLeft.addOrReplaceChild("bLegTBL", CubeListBuilder.create(), PartPose.offset(0.0F, 12.5F, -3.5F));
+
+        PartDefinition bLegBackRight = bHips.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(1.0F, 0.0F, 0.0F));
+        PartDefinition bLegBottomBackRight = bLegBackRight.addOrReplaceChild("bLegBBR", CubeListBuilder.create(), PartPose.offsetAndRotation(4.0F, 19.5F, 3.0F, Mth.HALF_PI * 0.5833F, 0.0F, 0.0F));
+        PartDefinition bLegFootBackRight = bLegBottomBackRight.addOrReplaceChild("bLegFBR", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 6.0F, Mth.HALF_PI * -0.4166F, 0.0F, 0.0F));
+        PartDefinition bLegToeBackRight = bLegFootBackRight.addOrReplaceChild("bLegTBR", CubeListBuilder.create(), PartPose.offset(0.0F, 12.5F, -3.5F));
+
+
+        PartDefinition bTail = bHips.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -Mth.HALF_PI, 0.0F, 0.0F));
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
-                        .texOffs(42, 31)
-                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
-                        .texOffs(0, 40)
-                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.ZERO
-        );
-
-        bHead.addOrReplaceChild("forehead", CubeListBuilder.create()
-                        .texOffs(49, 0)
-                        .addBox(-2.5F, -5.0F, -4.0F, 5, 5, 3, new CubeDeformation(-0.5F, 0.0F, 0.0F)),
+                        .texOffs(10, 44)
+                        .addBox(2.5F, 0.0F, 0.0F, 2, 2, 2, new CubeDeformation(0.01F))
+                        .texOffs(50, 44)
+                        .addBox(-3.5F, 0.0F, 0.0F, 2, 2, 2, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("cheek", CubeListBuilder.create()
-                        .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 5, 4, 5, new CubeDeformation(-0.5F, 0.0F, 0.0F)),
+                        .texOffs(92, 4)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 8, 8),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("forehead", CubeListBuilder.create()
+                        .texOffs(72, 0)
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 6, 6),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("muzzle", CubeListBuilder.create()
+                        .texOffs(120, 0)
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 8, 4)
+                        .texOffs(22, 4)
+                        .addBox(-4.0F, 0.0F, 0.0F, 5, 2, 4),
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("nose", CubeListBuilder.create()
-                        .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 5, 3, 3, new CubeDeformation(-0.5F, 0.0F, 0.0F)),
+                        .texOffs(32, 20)
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 4, 4),
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
-                        .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
-                PartPose.offset(0.0F, 1.0F, -4.0F)
+                        .texOffs(56, 78)
+                        .addBox(-3.0F, 0.0F, 0.0F, 6, 10, 6),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("lip", CubeListBuilder.create()
+                        .texOffs(52, 78)
+                        .addBox(-3.0F, 0.0F, 0.0F, 6, 4, 2),
+                PartPose.ZERO
         );
 
         bEarLeft.addOrReplaceChild("earL", CubeListBuilder.create()
-                        .texOffs(36, 29)
-                        .addBox(-1.0F, -2.0F, 0.0F, 2, 3, 1),
+                        .texOffs(0, 34)
+                        .addBox(-1.0F, 0.0F, 0.0F, 4, 8, 2),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earTL", CubeListBuilder.create()
-                        .texOffs(30, 28)
-                        .addBox(-1.0F, -3.0F, 0.0F, 2, 1, 1),
+                        .texOffs(0, 30)
+                        .addBox(-1.0F, 0.0F, 0.0F, 4, 2, 2),
                 PartPose.ZERO
         );
 
         bEarRight.addOrReplaceChild("earR", CubeListBuilder.create()
-                        .texOffs(50, 29)
-                        .addBox(-2.0F, -2.0F, 0.0F, 3, 4, 1),
+                        .texOffs(50, 34)
+                        .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 2),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earTR", CubeListBuilder.create()
-                        .texOffs(54, 27)
-                        .addBox(-2.5F, -3.0F, 0.0F, 3.5F, 5, 1),
+                        .texOffs(50, 30)
+                        .addBox(-2.5F, 0.0F, 0.0F, 4, 2, 2),
                 PartPose.ZERO
         );
 
+        bBody.addOrReplaceChild("body", CubeListBuilder.create()
+                        .texOffs(0, 30)
+                        .addBox(-8.0F, -30.0F, -18.0F, 16, 30, 18),
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
+        );
+
+        /**
+         *      TODO \/ \/ \/ \/
+         */
+
+        bNeck.addOrReplaceChild("wither", CubeListBuilder.create()
+                        .texOffs(32, 0)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 10, 10),
+                PartPose.ZERO
+        );
         bNeck.addOrReplaceChild("crest", CubeListBuilder.create()
                         .texOffs(0, 0)
-                        .addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9),
+                        .addBox(-4.5F, -6.75F, -9.0F, 6, 20, 10),
                 PartPose.ZERO
         );
         bNeck.addOrReplaceChild("neck", CubeListBuilder.create()
-                        .texOffs(0, 0)
-                        .addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9),
+                        .texOffs(64, 12)
+                        .addBox(-4.5F, -6.75F, -9.0F, 8, 26, 8),
                 PartPose.ZERO
         );
 
-        for (int i = 6; i<=12; i++) {
-            bBody.addOrReplaceChild("wither"+i, CubeListBuilder.create()
-                            .texOffs(0, 0)
-                            .addBox(-4.5F, -i, 0.0F, 9, i, 9, new CubeDeformation(-0.5F, 0.0F, -0.5F)),
-                    PartPose.rotation(0.75F*HALF_PI, 0.0F, 0.0F)
-            );
-            bBody.addOrReplaceChild("body"+i, CubeListBuilder.create()
-                            .texOffs(0, 21)
-                            .addBox(-4.5F, -i, -9.0F, 9, i, 9, new CubeDeformation(-0.5F, 0.0F, -0.5F)),
-                    PartPose.rotation(-0.9444F*HALF_PI, 0.0F, 0.0F)
-            );
-        }
 
         bLegFrontLeft.addOrReplaceChild("shoulderL", CubeListBuilder.create()
                         .texOffs(60, 0)
@@ -170,7 +226,70 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
                 PartPose.ZERO
         );
 
-        return LayerDefinition.create(meshdefinition, 128, 128);
+        /**
+         *      TODO ^^^^
+         */
+
+        bLegBackLeft.addOrReplaceChild("thighL", CubeListBuilder.create()
+                        .texOffs(0, 176)
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 20, 12),
+                PartPose.offset(-4.0F, 0.0F, 0.0F)
+        );
+        bLegBottomBackLeft.addOrReplaceChild("calfL", CubeListBuilder.create()
+                        .texOffs(0, 208)
+                        .addBox(-3.0F, 0.0F, 0.0F, 6, 12, 6),
+                PartPose.ZERO
+        );
+        bLegFootBackLeft.addOrReplaceChild("footL", CubeListBuilder.create()
+                        .texOffs(0, 226)
+                        .addBox(-3.0F, -1.5F, -5.5F, 6, 14, 6, new CubeDeformation(-0.001F, 0.0F, 0.0F)),
+                PartPose.ZERO
+        );
+        bLegToeBackLeft.addOrReplaceChild("hoofL", CubeListBuilder.create()
+                        .texOffs(0, 246)
+                        .addBox(-3.0F, 0.0F, -4.0F, 6, 4, 6),
+                PartPose.ZERO
+        );
+
+        bLegBackRight.addOrReplaceChild("thighR", CubeListBuilder.create()
+                        .texOffs(28, 156)
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 20, 12),
+                PartPose.offset(4.0F, 0.0F, 0.0F)
+        );
+        bLegBottomBackRight.addOrReplaceChild("calfR", CubeListBuilder.create()
+                        .texOffs(28, 208)
+                        .addBox(-3.0F, 0.0F, 0.0F, 6, 12, 6),
+                PartPose.ZERO
+        );
+        bLegFootBackRight.addOrReplaceChild("footR", CubeListBuilder.create()
+                        .texOffs(28, 226)
+                        .addBox(-3.0F, -1.5F, -5.5F, 6, 14, 6, new CubeDeformation(-0.001F, 0.0F, 0.0F)),
+                PartPose.ZERO
+        );
+        bLegToeBackRight.addOrReplaceChild("hoofR", CubeListBuilder.create()
+                        .texOffs(28, 246)
+                        .addBox(-3.0F, 0.0F, -4.0F, 6, 4, 6),
+                PartPose.ZERO
+        );
+
+
+        bTail.addOrReplaceChild("tail0", CubeListBuilder.create()
+                        .texOffs(12, 144)
+                        .addBox(-1.0F, -8.0F, -1.0F, 2, 8, 12),
+                PartPose.offset(0.0F, 0.0F, 1.0F)
+        );
+        bTail.addOrReplaceChild("tail1", CubeListBuilder.create()
+                        .texOffs(12, 164)
+                        .addBox(-1.0F, -10.0F, -1.0F, 2, 10, 2),
+                PartPose.offset(0.0F, -8.0F, 0.0F)
+        );
+        bTail.addOrReplaceChild("tail2", CubeListBuilder.create()
+                        .texOffs(20, 164)
+                        .addBox(-1.0F, -10.0F, -1.0F, 2, 10, 2),
+                PartPose.offset(0.0F, -10.0F, 0.0F)
+        );
+
+        return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
     public ModelEnhancedHorse(ModelPart modelPart) {
@@ -182,85 +301,134 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         ModelPart bHead = bNeck.getChild("bHead");
         ModelPart bEarLeft = bHead.getChild("bEarL");
         ModelPart bEarRight = bHead.getChild("bEarR");
-        ModelPart bLegFL = bHorse.getChild("bLegFL");
-        ModelPart bLegFR = bHorse.getChild("bLegFR");
-        ModelPart bLegBL = bHorse.getChild("bLegBL");
-        ModelPart bLegBR = bHorse.getChild("bLegBR");
-        ModelPart bTail = bBody.getChild("bTail");
+        ModelPart bShoulders = bBody.getChild("bShoulders");
+        ModelPart bHips = bBody.getChild("bHips");
+        ModelPart bLegFL = bShoulders.getChild("bLegFL");
+        ModelPart bLegFR = bShoulders.getChild("bLegFR");
+
+        ModelPart bLegBL = bHips.getChild("bLegBL");
+        ModelPart bbLegBBL = bLegBL.getChild("bLegBBL");
+        ModelPart bbLegFBL = bbLegBBL.getChild("bLegFBL");
+        ModelPart bbLegTBL = bbLegFBL.getChild("bLegTBL");
+
+        ModelPart bLegBR = bHips.getChild("bLegBR");
+        ModelPart bbLegBBR = bLegBR.getChild("bLegBBR");
+        ModelPart bbLegFBR = bbLegBBR.getChild("bLegFBR");
+        ModelPart bbLegTBR = bbLegFBR.getChild("bLegTBR");
+
+        ModelPart bTail = bHips.getChild("bTail");
 
         this.theHorse = new WrappedModelPart(bHorse, "bHorse");
         this.theBody = new WrappedModelPart(bBody, "bBody");
-        this.theNeck = new WrappedModelPart(bNeck, "bNeck");
+        this.theHips = new WrappedModelPart(bHips, "bHips");
+//        this.theNeck = new WrappedModelPart(bNeck, "bNeck");
         this.theHead = new WrappedModelPart(bHead, "bHead");
-        this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
-        this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
-        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
-        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
+//        this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
+//        this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
+//        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
+//        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
+
         this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
+        this.theLegBottomBackLeft = new WrappedModelPart(bbLegBBL, "bLegBBL");
+        this.theFootBackLeft = new WrappedModelPart(bbLegFBL, "bLegFBL");
+        this.theToeBackLeft = new WrappedModelPart(bbLegTBL, "bLegTBL");
+
         this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
+        this.theLegBottomBackRight = new WrappedModelPart(bbLegBBR, "bLegBBR");
+        this.theFootBackRight = new WrappedModelPart(bbLegFBR, "bLegFBR");
+        this.theToeBackRight = new WrappedModelPart(bbLegTBR, "bLegTBR");
+
         this.theTail = new WrappedModelPart(bTail, "bTail");
 
-        this.eyes = new WrappedModelPart("eyes", bHead);
+        this.body = new WrappedModelPart("body", bBody);
 
-        this.forehead = new WrappedModelPart("forehead", bHead);
+        this.eyes = new WrappedModelPart("eyes", bHead);
         this.cheek = new WrappedModelPart("cheek", bHead);
+        this.forehead = new WrappedModelPart("forehead", bHead);
+        this.muzzle = new WrappedModelPart("muzzle", bHead);
         this.nose = new WrappedModelPart("nose", bHead);
         this.jaw = new WrappedModelPart("jaw", bHead);
+        this.lip = new WrappedModelPart("lip", bHead);
 
-        this.earLeft = new WrappedModelPart("earL", bEarLeft);
-        this.earTopLeft = new WrappedModelPart("earTL", bEarLeft);
-
-        this.earRight = new WrappedModelPart("earR", bEarRight);
-        this.earTopRight = new WrappedModelPart("earTR", bEarRight);
-
-        this.crest = new WrappedModelPart("crest", bNeck);
-        this.neck = new WrappedModelPart("neck", bNeck);
-
-        for (int i = 6; i<=12; i++) {
-            this.wither[i-6] = new WrappedModelPart("wither"+i, bBody);
-            this.body[i-6] = new WrappedModelPart("body"+i, bBody);
-        }
+//        this.earLeft = new WrappedModelPart("earL", bEarLeft);
+//        this.earTopLeft = new WrappedModelPart("earTL", bEarLeft);
+//
+//        this.earRight = new WrappedModelPart("earR", bEarRight);
+//        this.earTopRight = new WrappedModelPart("earTR", bEarRight);
+//
+//        this.crest = new WrappedModelPart("crest", bNeck);
+//        this.neck = new WrappedModelPart("neck", bNeck);
 
 //        this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
 //        this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
-//        this.legBackLeft = new WrappedModelPart("legBL", bLegBL);
-//        this.legBackRight = new WrappedModelPart("legBR", bLegBR);
-//
-//        this.tail = new WrappedModelPart("tail", bTail);
+
+
+        this.thighL = new WrappedModelPart("thighL", bLegBL);
+        this.calfL = new WrappedModelPart("calfL", bbLegBBL);
+        this.footL = new WrappedModelPart("footL", bbLegFBL);
+        this.hoofL = new WrappedModelPart("hoofL", bbLegTBL);
+
+        this.thighR = new WrappedModelPart("thighR", bLegBR);
+        this.calfR = new WrappedModelPart("calfR", bbLegBBR);
+        this.footR = new WrappedModelPart("footR", bbLegFBR);
+        this.hoofR = new WrappedModelPart("hoofR", bbLegTBR);
+
+        for (int i = 0; i < this.tail.length; i++) {
+            this.tail[i] = new WrappedModelPart("tail"+i, bTail);
+        }
 
         this.theHorse.addChild(this.theBody);
 //        this.theBody.addChild(this.theNeck);
+        this.theBody.addChild(this.theHips);
 //        this.theNeck.addChild(this.theHead);
 //        this.theHead.addChild(this.theEarLeft);
 //        this.theHead.addChild(this.theEarRight);
 //        this.theHorse.addChild(this.theLegFrontLeft);
 //        this.theHorse.addChild(this.theLegFrontRight);
-//        this.theHorse.addChild(this.theLegBackLeft);
-//        this.theHorse.addChild(this.theLegBackRight);
+        this.theHips.addChild(this.theLegBackLeft);
+        this.theHips.addChild(this.theLegBackRight);
+        this.theHips.addChild(this.theTail);
+        this.theLegBackLeft.addChild(this.theLegBottomBackLeft);
+        this.theLegBottomBackLeft.addChild(this.theFootBackLeft);
+        this.theFootBackLeft.addChild(this.theToeBackLeft);
 
-//        this.theHead.addChild(this.forehead);
-//        this.theHead.addChild(this.cheek);
-//        this.theHead.addChild(this.eyes);
-//        this.theHead.addChild(this.jaw);
+        this.theLegBackRight.addChild(this.theLegBottomBackRight);
+        this.theLegBottomBackRight.addChild(this.theFootBackRight);
+        this.theFootBackRight.addChild(this.theToeBackRight);
 
-        this.theBody.addChild(this.wither);
+        this.theHead.addChild(this.eyes);
+        this.theHead.addChild(this.cheek);
+        this.theHead.addChild(this.forehead);
+        this.theHead.addChild(this.muzzle);
+        this.theHead.addChild(this.nose);
+        this.theHead.addChild(this.jaw);
+        this.theHead.addChild(this.lip);
+
         this.theBody.addChild(this.body);
 
 //        this.theLegFrontLeft.addChild(this.legFrontLeft);
 //
 //        this.theLegFrontRight.addChild(this.legFrontRight);
 //
-//        this.theLegBackLeft.addChild(this.legBackLeft);
-//
-//        this.theLegBackRight.addChild(this.legBackRight);
+        this.theLegBackLeft.addChild(this.thighL);
+        this.theLegBottomBackLeft.addChild(this.calfL);
+        this.theFootBackLeft.addChild(this.footL);
+        this.theToeBackLeft.addChild(this.hoofL);
 
-//        this.forehead.addChild(this.nose);
+        this.theLegBackRight.addChild(this.thighR);
+        this.theLegBottomBackRight.addChild(this.calfR);
+        this.theFootBackRight.addChild(this.footR);
+        this.theToeBackRight.addChild(this.hoofR);
+
+        this.theTail.addChild(this.tail[0]);
+        this.tail[0].addChild(this.tail[1]);
+        this.tail[1].addChild(this.tail[2]);
     }
 
     private void resetCubes() {
-        for (WrappedModelPart part : this.theBody.children) {
-            part.hide();
-        }
+//        for (WrappedModelPart part : this.theBody.children) {
+//            part.hide();
+//        }
     }
 
     @Override
@@ -270,17 +438,22 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
             resetCubes();
 
-            this.wither[0].show();
-            this.body[6].show();
-
             poseStack.pushPose();
             poseStack.scale(1.0F, 1.0F, 1.0F);
             poseStack.translate(0.0F, 0.0F, 0.0F);
+
+//            testRotPoint(this.hoofL);
 
             gaRender(this.theHorse, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }
+    }
+
+    private void testRotPoint(WrappedModelPart part) {
+        part.setXRot(part.getXRot() + 0.015F);
+//        part.setYRot(part.getYRot() + 0.015F);
+//        part.setZRot(part.getZRot() + 0.015F);
     }
 
     protected Map<String, Vector3f> saveAnimationValues(T animal, HorsePhenotype horse) {

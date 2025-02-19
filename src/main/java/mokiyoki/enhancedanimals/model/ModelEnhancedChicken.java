@@ -1571,6 +1571,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         }
                     } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
                         switch (chicken.combSize) {
+                            case 0:
                             case 1:
                             case 2:
                                 combPeaS.show();
@@ -1588,6 +1589,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         }
                     } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
                         switch (chicken.combSize) {
+                            case 0:
                             case 1:
                             case 2:
                                 combWalnutS.show();

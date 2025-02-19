@@ -99,6 +99,30 @@ public class WrappedModelPart {
     public float getZRot() {
         return this.modelPart.zRot;
     }
+
+    public boolean lerpXRot(float xRot, float speed, float precision) {
+        if (this.modelPart.xRot != xRot) {
+            if (Mth.abs(this.modelPart.xRot - xRot) < precision) {
+                this.modelPart.xRot = xRot;
+            } else {
+                this.modelPart.xRot = Mth.lerp(speed, this.modelPart.xRot, xRot);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpXRot(float xRot, float speed) {
+        if (this.modelPart.xRot != xRot) {
+            if (Mth.abs(this.modelPart.xRot - xRot) < 0.0001F) {
+                this.modelPart.xRot = xRot;
+            } else {
+                this.modelPart.xRot = Mth.lerp(speed, this.modelPart.xRot, xRot);
+                return false;
+            }
+        }
+        return true;
+    }
     
     public boolean lerpXRot(float xRot) {
         if (this.modelPart.xRot != xRot) {
@@ -148,12 +172,36 @@ public class WrappedModelPart {
         return true;
     }
 
+    public boolean lerpY(float y, float speed) {
+        if (this.modelPart.y != y) {
+            if (Mth.abs(this.modelPart.y - y) < 0.0001F) {
+                this.modelPart.y = y;
+            } else {
+                this.modelPart.y = Mth.lerp(speed, this.modelPart.y, y);
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean lerpY(float y) {
         if (this.modelPart.y != y) {
             if (Mth.abs(this.modelPart.y - y) < 0.0001F) {
                 this.modelPart.y = y;
             } else {
                 this.modelPart.y = Mth.lerp(0.05F, this.modelPart.y, y);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean lerpZ(float z, float speed) {
+        if (this.modelPart.z != z) {
+            if (Mth.abs(this.modelPart.z - z) < 0.0001F) {
+                this.modelPart.z = z;
+            } else {
+                this.modelPart.z = Mth.lerp(speed, this.modelPart.z, z);
                 return false;
             }
         }

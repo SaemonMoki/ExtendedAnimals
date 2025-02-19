@@ -4,9 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
-import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
-import mokiyoki.enhancedanimals.model.modeldata.HorsePhenotype;
-import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.*;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -32,14 +30,8 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     protected WrappedModelPart theBody;
     protected WrappedModelPart theShoulders;
     protected WrappedModelPart theHips;
-    protected WrappedModelPart theLegFrontLeft;
-    protected WrappedModelPart theLegBottomFrontLeft;
-    protected WrappedModelPart theCannonLeft;
-    protected WrappedModelPart theToeFrontLeft;
-    protected WrappedModelPart theLegFrontRight;
-    protected WrappedModelPart theLegBottomFrontRight;
-    protected WrappedModelPart theCannonRight;
-    protected WrappedModelPart theToeFrontRight;
+    protected WrappedModelPart[] theLegFrontLeft = new WrappedModelPart[4];
+    protected WrappedModelPart[] theLegFrontRight = new WrappedModelPart[4];
 
     protected WrappedModelPart theLegBackLeft;
     protected WrappedModelPart theLegBottomBackLeft;
@@ -99,7 +91,7 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bHorse = base.addOrReplaceChild("bHorse", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bBody = bHorse.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bBody = bHorse.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, -24.0F, 0.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
@@ -338,15 +330,17 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         ModelPart bEarRight = bHead.getChild("bEarR");
 
         ModelPart bShoulders = bBody.getChild("bShoulders");
-            ModelPart bLegFL = bShoulders.getChild("bLegFL");
-            ModelPart bLegBFL = bLegFL.getChild("bLegBFL");
-            ModelPart bLegCFL = bLegBFL.getChild("bLegCFL");
-            ModelPart bLegTFL = bLegCFL.getChild("bLegTFL");
+        ModelPart[] bLegFL = new ModelPart[4];
+        bLegFL[0] = bShoulders.getChild("bLegFL");
+        bLegFL[1] = bLegFL[0].getChild("bLegBFL");
+        bLegFL[2] = bLegFL[1].getChild("bLegCFL");
+        bLegFL[3] = bLegFL[2].getChild("bLegTFL");
 
-            ModelPart bLegFR = bShoulders.getChild("bLegFR");
-            ModelPart bLegBFR = bLegFR.getChild("bLegBFR");
-            ModelPart bLegCFR = bLegBFR.getChild("bLegCFR");
-            ModelPart bLegTFR = bLegCFR.getChild("bLegTFR");
+        ModelPart[] bLegFR = new ModelPart[4];
+        bLegFR[0] = bShoulders.getChild("bLegFR");
+        bLegFR[1] = bLegFR[0].getChild("bLegBFR");
+        bLegFR[2] = bLegFR[1].getChild("bLegCFR");
+        bLegFR[3] = bLegFR[2].getChild("bLegTFR");
 
         ModelPart bHips = bBody.getChild("bHips");
 
@@ -372,15 +366,15 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 
         this.theShoulders = new WrappedModelPart(bShoulders, "bLegFL");
 
-        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
-        this.theLegBottomFrontLeft = new WrappedModelPart(bLegBFL, "bLegBFL");
-        this.theCannonLeft = new WrappedModelPart(bLegCFL, "bLegCFL");
-        this.theToeFrontLeft = new WrappedModelPart(bLegTFL, "bLegTFL");
+        this.theLegFrontLeft[0] = new WrappedModelPart(bLegFL[0], "bLegFL");
+        this.theLegFrontLeft[1] = new WrappedModelPart(bLegFL[1], "bLegBFL");
+        this.theLegFrontLeft[2] = new WrappedModelPart(bLegFL[2], "bLegCFL");
+        this.theLegFrontLeft[3] = new WrappedModelPart(bLegFL[3], "bLegTFL");
 
-        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
-        this.theLegBottomFrontRight = new WrappedModelPart(bLegBFR, "bLegBFR");
-        this.theCannonRight = new WrappedModelPart(bLegCFR, "bLegCFR");
-        this.theToeFrontRight = new WrappedModelPart(bLegTFR, "bLegTFR");
+        this.theLegFrontRight[0] = new WrappedModelPart(bLegFR[0], "bLegFR");
+        this.theLegFrontRight[1] = new WrappedModelPart(bLegFR[1], "bLegBFR");
+        this.theLegFrontRight[2] = new WrappedModelPart(bLegFR[2], "bLegCFR");
+        this.theLegFrontRight[3] = new WrappedModelPart(bLegFR[3], "bLegTFR");
 
         this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
         this.theLegBottomBackLeft = new WrappedModelPart(bLegBBL, "bLegBBL");
@@ -414,15 +408,15 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 //        this.neck = new WrappedModelPart("neck", bNeck);
 
         this.wither = new WrappedModelPart("wither", bShoulders);
-        this.shoulderL = new WrappedModelPart("shoulderL", bLegFL);
-        this.forearmL = new WrappedModelPart("forearmL", bLegBFL);
-        this.cannonL = new WrappedModelPart("cannonL", bLegCFL);
-        this.hoofFL = new WrappedModelPart("hoofFL", bLegTFL);
+        this.shoulderL = new WrappedModelPart("shoulderL", bLegFL[0]);
+        this.forearmL = new WrappedModelPart("forearmL", bLegFL[1]);
+        this.cannonL = new WrappedModelPart("cannonL", bLegFL[2]);
+        this.hoofFL = new WrappedModelPart("hoofFL", bLegFL[3]);
 
-        this.shoulderR = new WrappedModelPart("shoulderR", bLegFR);
-        this.forearmR = new WrappedModelPart("forearmR", bLegBFR);
-        this.cannonR = new WrappedModelPart("cannonR", bLegCFR);
-        this.hoofFR = new WrappedModelPart("hoofFR", bLegTFR);
+        this.shoulderR = new WrappedModelPart("shoulderR", bLegFR[0]);
+        this.forearmR = new WrappedModelPart("forearmR", bLegFR[1]);
+        this.cannonR = new WrappedModelPart("cannonR", bLegFR[2]);
+        this.hoofFR = new WrappedModelPart("hoofFR", bLegFR[3]);
 
 //        this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
 
@@ -449,16 +443,16 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 //        this.theHead.addChild(this.theEarLeft);
 //        this.theHead.addChild(this.theEarRight);
 
-        this.theShoulders.addChild(this.theLegFrontLeft);
-        this.theShoulders.addChild(this.theLegFrontRight);
+        this.theShoulders.addChild(this.theLegFrontLeft[0]);
+        this.theShoulders.addChild(this.theLegFrontRight[0]);
 
-            this.theLegFrontLeft.addChild(this.theLegBottomFrontLeft);
-            this.theLegBottomFrontLeft.addChild(this.theCannonLeft);
-            this.theCannonLeft.addChild(this.theToeFrontLeft);
+            this.theLegFrontLeft[0].addChild(this.theLegFrontLeft[1]);
+            this.theLegFrontLeft[1].addChild(this.theLegFrontLeft[2]);
+            this.theLegFrontLeft[2].addChild(this.theLegFrontLeft[3]);
 
-            this.theLegFrontRight.addChild(this.theLegBottomFrontRight);
-            this.theLegBottomFrontRight.addChild(this.theCannonRight);
-            this.theCannonRight.addChild(this.theToeFrontRight);
+            this.theLegFrontRight[0].addChild(this.theLegFrontRight[1]);
+            this.theLegFrontRight[1].addChild(this.theLegFrontRight[2]);
+            this.theLegFrontRight[2].addChild(this.theLegFrontRight[3]);
 
 //        this.theHorse.addChild(this.theLegFrontRight);
 
@@ -485,15 +479,15 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         this.theBody.addChild(this.body);
 
         this.theShoulders.addChild(this.wither);
-        this.theLegFrontLeft.addChild(this.shoulderL);
-        this.theLegBottomFrontLeft.addChild(this.forearmL);
-        this.theCannonLeft.addChild(this.cannonL);
-        this.theToeFrontLeft.addChild(this.hoofFL);
+        this.theLegFrontLeft[0].addChild(this.shoulderL);
+        this.theLegFrontLeft[1].addChild(this.forearmL);
+        this.theLegFrontLeft[2].addChild(this.cannonL);
+        this.theLegFrontLeft[3].addChild(this.hoofFL);
 
-        this.theLegFrontRight.addChild(this.shoulderR);
-        this.theLegBottomFrontRight.addChild(this.forearmR);
-        this.theCannonRight.addChild(this.cannonR);
-        this.theToeFrontRight.addChild(this.hoofFR);
+        this.theLegFrontRight[0].addChild(this.shoulderR);
+        this.theLegFrontRight[1].addChild(this.forearmR);
+        this.theLegFrontRight[2].addChild(this.cannonR);
+        this.theLegFrontRight[3].addChild(this.hoofFR);
 
         this.theLegBackLeft.addChild(this.thighL);
         this.theLegBottomBackLeft.addChild(this.calfL);
@@ -524,8 +518,8 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
             resetCubes();
 
             poseStack.pushPose();
-            poseStack.scale(1.0F, 1.0F, 1.0F);
-            poseStack.translate(0.0F, 0.0F, 0.0F);
+            poseStack.translate(0.0F, 1.5F, 0.0F);
+            poseStack.scale(0.75F, 0.75F, 0.75F);
 
             gaRender(this.theHorse, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -544,21 +538,115 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         return map;
     }
 
-    private void setupInitialAnimationValues(T entityIn, HorseModelData modelData, HorsePhenotype horse) {
+    private void readInitialAnimationValues(HorseModelData data, HorsePhenotype horse) {
+        Map<String, Vector3f> map = data.offsets;
+        if (map.isEmpty()) {
 
+        } else {
+
+        }
     }
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.horseModelData = getCreateHorseModelData(entityIn);
-        HorsePhenotype horse = this.horseModelData.getPhenotype();
-        float drive = ageInTicks + (1000 * this.horseModelData.random);
+        if (this.horseModelData != null) {
 
-        if (horse != null) {
+            HorsePhenotype horse = this.horseModelData.getPhenotype();
+            readInitialAnimationValues(this.horseModelData, horse);
+            float drive = ageInTicks + (1000 * this.horseModelData.random);
+
+            animateWalk(drive, this.horseModelData);
 
         }
 
     }
+
+    private void animateWalk(float drive, HorseModelData horseModelData) {
+        float s = 0.025F;
+
+        /**
+         *      hoof contacts ground, smoothly moves backward
+         *          FL = false
+         *          when this.theLegBottomFrontLeft.getXRot is between a and b
+         *
+         *      hoof looses contact with the ground, leg curls up
+         *          this.theLegBottomFrontLeft.getXRot is less than a
+         *          FL = false
+         *          when this.theLegBottomFrontLeft.getXRot <= (back limit) then FL = true
+         *
+         *      leg swings forward, toe flicks out
+         *          FL = true
+         *          when this.theLegBottomFrontLeft.getXRot >= (forward limit) then FL = false
+         *
+         *       hoof goes down to make contact with the ground
+         *          FL = false
+         *          when this.theLegBottomFrontLeft.getXRot <= b restart animation loop
+         *
+         */
+
+        // 2.09438986641 is vertical value
+
+        walkFrontLeg(this.theLegFrontLeft, 0, horseModelData, s);
+        walkFrontLeg(this.theLegFrontRight, 1, horseModelData, s);
+
+        if (!horseModelData.legMovingForward[0] && !horseModelData.legMovingForward[1]) {
+            horseModelData.legMovingForward[1] = true;
+        }
+    }
+
+    private void walkFrontLeg(WrappedModelPart[] frontLeg, int leg, HorseModelData horseModelData, float s) {
+        float legRot = frontLeg[1].getXRot();
+        if (horseModelData.legMovingForward[leg]) {
+            // leg swings forward
+            frontLeg[1].lerpXRot(Mth.HALF_PI * 0.7F, s);
+            frontLeg[0].lerpXRot(Mth.HALF_PI * -0.1F, s);
+            frontLeg[0].lerpZ(-1.0F);
+
+            // bend the cannon to match the motion
+            if (legRot > 1.6F) {
+                // behind
+                frontLeg[1].lerpZ(-9.5F, s);
+                frontLeg[2].lerpXRot(Mth.HALF_PI * 0.8F, s *2.0F);
+                frontLeg[1].lerpY(7.0F, s);
+            } else {
+                // forward
+                frontLeg[1].lerpZ(-12.0F, s);
+                frontLeg[2].lerpXRot(0.0F, s *1.5F, 0.05F);
+                frontLeg[1].lerpY(10.0F, s);
+            }
+
+            frontLeg[3].lerpXRot(Mth.HALF_PI, s);
+
+            // check if the leg has reached the end of the forward arc
+            if (legRot < 1.25F) horseModelData.legMovingForward[leg] = false;
+        } else {
+            // leg rotates back
+
+            frontLeg[2].lerpXRot(0.0F, s *2.5F, 0.05F);
+            frontLeg[1].lerpY(10.0F, s);
+
+            //check if hoof has contacted the ground
+            if (legRot > 1.0F) {
+                // hoof is on the ground, move at constant rate and maintain hoof angle parallel to the ground
+                frontLeg[1].lerpZ(-9.5F, s);
+                frontLeg[0].lerpXRot(Mth.HALF_PI * 0.2F, s);
+                frontLeg[0].lerpZ(2.0F);
+                frontLeg[1].setXRot(legRot + s);
+                frontLeg[3].setXRot(-((frontLeg[1].getXRot()-2.0944F) + frontLeg[0].getXRot() + frontLeg[2].getXRot())); /* <- this rotates the hoof to be parallel to the ground! */
+            } else {
+                // hoof is moving down to the ground but has not yet made contact
+                frontLeg[0].lerpXRot(Mth.HALF_PI * -0.1F, s);
+                frontLeg[0].lerpZ(-1.0F);
+                frontLeg[1].lerpXRot(2.094F, s);
+                frontLeg[3].lerpXRot(Mth.HALF_PI * 0.5F);
+            }
+
+            // check if the leg has reached the end of the backward arc
+            if (legRot > 2.25F) horseModelData.legMovingForward[leg] = true;
+        }
+    }
+
     private HorseModelData getCreateHorseModelData(T enhancedHorse) {
         return (HorseModelData) getCreateAnimalModelData(enhancedHorse);
     }

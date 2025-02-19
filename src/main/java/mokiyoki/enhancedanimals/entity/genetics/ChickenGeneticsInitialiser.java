@@ -982,7 +982,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         // Frizzle [ wildtype, frizzle ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[104] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[104] = 1;
             autosomalGenes[105] = 1;
         } else {
             autosomalGenes[104] = 1;

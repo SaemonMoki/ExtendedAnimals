@@ -598,6 +598,7 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     private void walkFrontLeg(WrappedModelPart[] frontLeg, int leg, HorseModelData horseModelData, float s) {
         float legRot = frontLeg[1].getXRot();
         if (horseModelData.legMovingForward[leg]) {
+            s *= 2.0F;
             // leg swings forward
             frontLeg[1].lerpXRot(Mth.HALF_PI * 0.7F, s);
             frontLeg[0].lerpXRot(Mth.HALF_PI * -0.1F, s);
@@ -623,15 +624,15 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
         } else {
             // leg rotates back
 
-            frontLeg[2].lerpXRot(0.0F, s *2.5F, 0.05F);
             frontLeg[1].lerpY(10.0F, s);
+            frontLeg[2].lerpXRot(0.0F, s *2.5F, 0.05F);
 
             //check if hoof has contacted the ground
             if (legRot > 1.0F) {
                 // hoof is on the ground, move at constant rate and maintain hoof angle parallel to the ground
-                frontLeg[1].lerpZ(-9.5F, s);
                 frontLeg[0].lerpXRot(Mth.HALF_PI * 0.2F, s);
                 frontLeg[0].lerpZ(2.0F);
+                frontLeg[1].lerpZ(-9.5F, s);
                 frontLeg[1].setXRot(legRot + s);
                 frontLeg[3].setXRot(-((frontLeg[1].getXRot()-2.0944F) + frontLeg[0].getXRot() + frontLeg[2].getXRot())); /* <- this rotates the hoof to be parallel to the ground! */
             } else {

@@ -178,11 +178,11 @@ public class Colouration {
     public static int getAxolotlEyes(float[] hsb1, float[] hsb2) {
         int[] rgb1 = getRGBFromHSB(hsb1[0], hsb1[1], hsb1[2]);
         int[] rgb2 = getRGBFromHSB(hsb2[0], hsb2[1], hsb2[2]);
-        int r = (rgb1[0] + rgb2[0])/2;
-        int g = (rgb1[1] + rgb2[1])/2;
         int b = (rgb1[2] + rgb2[2])/2;
+        int g = (rgb1[1] + rgb2[1])/2;
+        int r = (rgb1[0] + rgb2[0])/2;
 
-        return 128 << 24 | (Math.min(r, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(b, 255));
+        return 128 << 24 | (Math.min(b, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(r, 255));
     }
 
 

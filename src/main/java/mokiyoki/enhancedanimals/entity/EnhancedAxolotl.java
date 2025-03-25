@@ -721,86 +721,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
                 if (gene[10] != 1 || gene[11] != 1) {
                     float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255);
-                    this.colouration.setDyeColour(Colouration.HSBtoABGR(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
+                    this.colouration.setDyeColour(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
                 }
-
-                /*float eyeHue = 0.75F;
-                float eyeSaturation = 0.5F;
-                float eyeBrightness = 0.25F;
-
-                if (gene[20] == 1 && gene[21] == 1) {
-                    if (gene[0] == 2 && gene[1] == 2) {
-                        if (gene[2] == 2 && gene[3] == 2) {
-                            eyeHue = 0.95F;
-                            eyeBrightness = 0.8F;
-                        } else {
-                            eyeHue = 0.09F;
-                            eyeSaturation = 0.75F;
-                            eyeBrightness = 0.8F;
-                        }
-                    }
-                } else {
-                    if (gene[20] == 4 || gene[21] == 4) {
-                        int genenum = gene[20] == 4 ? 21 : 20;
-                        //light eyes
-                        float[] lightEyes = Colouration.getAxolotlLightEyes((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-
-                        eyeHue = lightEyes[0];
-
-                        if (gene[genenum] == 2) {
-                            //dark eyes
-                            eyeSaturation = (lightEyes[1] + 1.0F) * 0.5F;
-                            eyeBrightness = lightEyes[2] * 0.5F;
-                        } else if (gene[genenum] == 3) {
-                            //pigmented eyes
-                            eyeSaturation = (lightEyes[1] + 1.0F) * 0.5F;
-                            eyeBrightness = (lightEyes[2] + 0.75F) * 0.5F;
-                        } else if (gene[genenum] == 5) {
-                            //light-pastel eyes
-                            eyeSaturation = (lightEyes[1] + 0.5F) * 0.5F;
-                            eyeBrightness = (lightEyes[1] + 0.75F) * 0.5F;
-                        } else {
-                            //light-glow eyes
-                            //light eyes
-                            eyeSaturation = lightEyes[1];
-                            eyeBrightness = lightEyes[2];
-                        }
-                    } else {
-                        eyeHue = Colouration.mixHueComponent((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255, 0.5F);
-
-                        if (gene[20] == 2) {
-                            //dark eyes
-                            if (gene[21] == 3) {
-                                //dark-pigmented eyes
-                                eyeSaturation = 1.0F;
-                                eyeBrightness = 0.5F;
-                            } else if (gene[21] == 5) {
-                                //dark-pastel eyes
-                                eyeBrightness = 0.4F;
-                            } else {
-                                //dark-glow eyes
-                                //dark eyes
-                                eyeSaturation = 1.0F;
-                            }
-                        } else if (gene[20] == 3 || gene[20] == 6) {
-                            //glow eyes
-                            //pigmented eyes
-                            if (gene[21] == 5) {
-                                //pigmented-pastel eyes
-                                eyeSaturation = 0.75F;
-                                eyeBrightness = 0.75F;
-                            } else {
-                                //pigmented-glow eyes
-                                //pigmented eyes
-                                eyeSaturation = 1.0F;
-                                eyeBrightness = 0.75F;
-                            }
-                        } else {
-                            //pastel eyes
-                            eyeBrightness = 0.75F;
-                        }
-                    }
-                }*/
 
                 int eyeColor = Colouration.getAxolotlEyes(calculateEyeColor(gene, gene[20]), calculateEyeColor(gene, gene[21]));
 

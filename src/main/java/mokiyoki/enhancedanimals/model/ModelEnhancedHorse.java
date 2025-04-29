@@ -533,17 +533,48 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 //        part.setZRot(part.getZRot() + 0.015F);
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(T animal, HorsePhenotype horse) {
-        Map<String, Vector3f> map = animal.getModelRotationValues();
+    protected Map<String, Vector3f> saveAnimationValues(HorseModelData data, HorsePhenotype horse) {
+        Map<String, Vector3f> map = data.offsets;
+
+        map.put("shoulders", this.getRotationVector(this.theShoulders));
+        for (int i=0; i<=3; i++) {
+            map.put("legPosFL"+i, this.getPosVector(this.theLegFrontLeft[i]));
+            map.put("legFL"+i, this.getRotationVector(this.theLegFrontLeft[i]));
+            map.put("legPosFR"+i, this.getPosVector(this.theLegFrontRight[i]));
+            map.put("legFR"+i, this.getRotationVector(this.theLegFrontRight[i]));
+        }
+
         return map;
     }
 
     private void readInitialAnimationValues(HorseModelData data, HorsePhenotype horse) {
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
+            this.theShoulders.setZRot(0.0F);
+            this.theLegFrontLeft[0].setPos(-5.0F, 0.0F, 0.0F);
+            this.theLegFrontLeft[0].setXRot(0.0F);
+            this.theLegFrontLeft[1].setPos( 0.0F, 10.0F, -11.0F);
+            this.theLegFrontLeft[1].setXRot(Mth.HALF_PI * 1.333F);
+            this.theLegFrontLeft[2].setPos(0.0F, -9.0F, -1.0F);
+            this.theLegFrontLeft[2].setXRot(0.0F);
+            this.theLegFrontLeft[3].setPos(0.0F, -9.5F, 0.0F);
+            this.theLegFrontLeft[3].setXRot(0.0F);
+
+            this.theLegFrontRight[0].setPos(5.0F, 0.0F, 0.0F);
+            this.theLegFrontRight[0].setXRot(0.0F);
+            this.theLegFrontRight[1].setPos( 0.0F, 10.0F, -11.0F);
+            this.theLegFrontRight[1].setXRot(Mth.HALF_PI * 1.333F);
+            this.theLegFrontRight[2].setPos(0.0F, -9.0F, -1.0F);
+            this.theLegFrontRight[2].setXRot(0.0F);
+            this.theLegFrontRight[3].setPos(0.0F, -9.5F, 0.0F);
+            this.theLegFrontRight[3].setXRot(0.0F);
 
         } else {
-
+            this.theShoulders.setRotation(map.get("shoulders"));
+            for (int i=0; i <= 3; i++) {
+                this.theLegFrontLeft[i].setPosAndRot(map.get("legPosFL"+i), map.get("legFL"+i));
+                this.theLegFrontRight[i].setPosAndRot(map.get("legPosFR"+i), map.get("legFR"+i));
+            }
         }
     }
 
@@ -551,100 +582,180 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.horseModelData = getCreateHorseModelData(entityIn);
         if (this.horseModelData != null) {
-
             HorsePhenotype horse = this.horseModelData.getPhenotype();
             readInitialAnimationValues(this.horseModelData, horse);
             float drive = ageInTicks + (1000 * this.horseModelData.random);
 
-            animateWalk(drive, this.horseModelData);
+            if (limbSwingAmount < 0.01F) {
+                animateStanding();
+            } else {
+                animateWalk(drive, 0.05F*limbSwingAmount, this.horseModelData);
+            }
 
+            saveAnimationValues(this.horseModelData, horse);
         }
 
     }
 
-    private void animateWalk(float drive, HorseModelData horseModelData) {
-        float s = 0.025F;
+    private void animateStanding() {
+        this.theShoulders.lerpZRot(0.0F);
+        this.theLegFrontLeft[1].lerpX(0.0F);
+        this.theLegFrontRight[1].lerpX(0.0F);
+        this.theLegFrontLeft[0].lerpZRot(0.0F);
+        this.theLegFrontRight[0].lerpZRot(0.0F);
 
-        /**
-         *      hoof contacts ground, smoothly moves backward
-         *          FL = false
-         *          when this.theLegBottomFrontLeft.getXRot is between a and b
-         *
-         *      hoof looses contact with the ground, leg curls up
-         *          this.theLegBottomFrontLeft.getXRot is less than a
-         *          FL = false
-         *          when this.theLegBottomFrontLeft.getXRot <= (back limit) then FL = true
-         *
-         *      leg swings forward, toe flicks out
-         *          FL = true
-         *          when this.theLegBottomFrontLeft.getXRot >= (forward limit) then FL = false
-         *
-         *       hoof goes down to make contact with the ground
-         *          FL = false
-         *          when this.theLegBottomFrontLeft.getXRot <= b restart animation loop
-         *
-         */
+        this.theLegFrontLeft[0].lerpY(0.0F);
+        this.theLegFrontRight[0].lerpY(0.0F);
+        this.theLegFrontLeft[0].lerpZ(0.0F);
+        this.theLegFrontRight[0].lerpZ(0.0F);
+        this.theLegFrontLeft[0].lerpXRot(0.0F);
+        this.theLegFrontRight[0].lerpXRot(0.0F);
 
+        this.theLegFrontLeft[1].lerpY(10.0F);
+        this.theLegFrontRight[1].lerpY(10.0F);
+        this.theLegFrontLeft[1].lerpZ(-11.0F);
+        this.theLegFrontRight[1].lerpZ(-11.0F);
+        this.theLegFrontLeft[1].lerpXRot(Mth.HALF_PI * 1.333F);
+        this.theLegFrontRight[1].lerpXRot(Mth.HALF_PI * 1.333F);
+
+        this.theLegFrontLeft[2].lerpY(-9.0F);
+        this.theLegFrontRight[2].lerpY(-9.0F);
+        this.theLegFrontLeft[2].lerpZ(-1.0F);
+        this.theLegFrontRight[2].lerpZ(-1.0F);
+        this.theLegFrontLeft[2].lerpXRot(0.0F);
+        this.theLegFrontRight[2].lerpXRot(0.0F);
+
+        this.theLegFrontLeft[3].lerpY(-9.5F);
+        this.theLegFrontRight[3].lerpY(-9.5F);
+        this.theLegFrontLeft[3].lerpZ(0.0F);
+        this.theLegFrontRight[3].lerpZ(0.0F);
+        this.theLegFrontLeft[3].lerpXRot(0.0F);
+        this.theLegFrontRight[3].lerpXRot(0.0F);
+    }
+
+    private void animateWalk(float drive, float s, HorseModelData horseModelData) {
         // 2.09438986641 is vertical value
 
-        walkFrontLeg(this.theLegFrontLeft, 0, horseModelData, s);
-        walkFrontLeg(this.theLegFrontRight, 1, horseModelData, s);
+        float sl = s;
+        float sr = s;
 
-        if (!horseModelData.legMovingForward[0] && !horseModelData.legMovingForward[1]) {
-            horseModelData.legMovingForward[1] = true;
+        if ( horseModelData.legMovingForward[0] && ((this.theLegFrontLeft[1].getXRot() - 1.3F) > (2.25F - this.theLegFrontRight[1].getXRot())) ) {
+            sl *= 1.6F;
+        } else if ( horseModelData.legMovingForward[1] && ((this.theLegFrontRight[1].getXRot() - 1.3F) > (2.25F - this.theLegFrontLeft[1].getXRot())) ) {
+            sr *= 1.6F;
         }
+
+        walkFrontLeg(this.theLegFrontLeft, 0, horseModelData, sl);
+        walkFrontLeg(this.theLegFrontRight, 1, horseModelData, sr);
+
+        sl = horseModelData.legMovingForward[0] ? 0.0F : Mth.abs((this.theLegFrontLeft[1].getXRot() - 2.0944F)) + this.theLegFrontLeft[0].getXRot();
+        sr = horseModelData.legMovingForward[1] ? 0.0F : Mth.abs((this.theLegFrontRight[1].getXRot() - 2.0944F)) + this.theLegFrontRight[0].getXRot();
+
+        float bodyRot = Math.max(sl, sr);
+        this.theHorse.lerpXRot((bodyRot) * -0.1F);
+
+        moveBodyRotationPoint(-1.0F);
+
+        if (horseModelData.legMovingForward[0]) {
+            this.theShoulders.lerpZRot(0.05F);
+            this.theLegFrontLeft[0].lerpZRot(-0.05F);
+            this.theLegFrontRight[0].lerpZRot(0.0F);
+            this.theLegFrontLeft[1].lerpX(0.0F);
+            this.theLegFrontRight[1].lerpX(0.75F);
+        }
+        if (horseModelData.legMovingForward[1]) {
+            this.theShoulders.lerpZRot(-0.05F);
+            this.theLegFrontLeft[0].lerpZRot(0.0F);
+            this.theLegFrontRight[0].lerpZRot(0.05F);
+            this.theLegFrontLeft[1].lerpX(-0.75F);
+            this.theLegFrontRight[1].lerpX(0.0F);
+        }
+    }
+
+    private void moveBodyRotationPoint(float v) {
+        this.theBody.lerpZ(30.0F * v);
+        this.theHorse.setZ(-this.theBody.getZRot());
     }
 
     private void walkFrontLeg(WrappedModelPart[] frontLeg, int leg, HorseModelData horseModelData, float s) {
         float legRot = frontLeg[1].getXRot();
         if (horseModelData.legMovingForward[leg]) {
-            s *= 2.0F;
+            s = 0.025F + s;
             // leg swings forward
-            frontLeg[1].lerpXRot(Mth.HALF_PI * 0.7F, s);
+            frontLeg[1].stepXRot(Mth.HALF_PI * 0.8F, s);
             frontLeg[0].lerpXRot(Mth.HALF_PI * -0.1F, s);
-            frontLeg[0].lerpZ(-1.0F);
+            frontLeg[0].lerpY(0.0F, s);
+            frontLeg[0].lerpZ(-1.0F, s);
 
             // bend the cannon to match the motion
             if (legRot > 1.6F) {
                 // behind
                 frontLeg[1].lerpZ(-9.5F, s);
-                frontLeg[2].lerpXRot(Mth.HALF_PI * 0.8F, s *2.0F);
+                frontLeg[2].lerpXRot(Mth.HALF_PI * 0.8F, s * 2.0F);
                 frontLeg[1].lerpY(7.0F, s);
+                frontLeg[3].lerpXRot(Mth.HALF_PI * 0.1F, s);
             } else {
                 // forward
                 frontLeg[1].lerpZ(-12.0F, s);
-                frontLeg[2].lerpXRot(0.0F, s *1.5F, 0.05F);
+                if (frontLeg[2].getXRot() > 0.0F) {
+                    frontLeg[2].lerpXRot(-0.2F, s * 2.5F, 0.075F);
+                } else if (frontLeg[2].getXRot() < 0.0F) {
+                    frontLeg[2].setXRot(0.0F);
+                }
                 frontLeg[1].lerpY(10.0F, s);
+                frontLeg[3].lerpZ(3.0F, s);
             }
 
             frontLeg[3].lerpXRot(Mth.HALF_PI, s);
 
             // check if the leg has reached the end of the forward arc
-            if (legRot < 1.25F) horseModelData.legMovingForward[leg] = false;
+            if (legRot < 1.3F) horseModelData.legMovingForward[leg] = false;
         } else {
             // leg rotates back
 
-            frontLeg[1].lerpY(10.0F, s);
-            frontLeg[2].lerpXRot(0.0F, s *2.5F, 0.05F);
-
             //check if hoof has contacted the ground
-            if (legRot > 1.0F) {
+            if (legRot > 1.5F) {
                 // hoof is on the ground, move at constant rate and maintain hoof angle parallel to the ground
                 frontLeg[0].lerpXRot(Mth.HALF_PI * 0.2F, s);
-                frontLeg[0].lerpZ(2.0F);
+                frontLeg[0].lerpZ(2.0F, s);
+                frontLeg[0].lerpY(3.0F, s);
                 frontLeg[1].lerpZ(-9.5F, s);
                 frontLeg[1].setXRot(legRot + s);
-                frontLeg[3].setXRot(-((frontLeg[1].getXRot()-2.0944F) + frontLeg[0].getXRot() + frontLeg[2].getXRot())); /* <- this rotates the hoof to be parallel to the ground! */
+                frontLeg[3].stepXRot(-((frontLeg[1].getXRot()-2.0944F) + frontLeg[0].getXRot() + frontLeg[2].getXRot()), s);
+                frontLeg[3].lerpY(-9.0F, s);
+                frontLeg[3].lerpZ(0.0F, s);
+
+                System.out.println(legRot);
+
+                if (legRot > 2.0F && !horseModelData.legMovingForward[1 - leg]) {
+                    if (legRot > (leg == 0 ? this.theLegFrontRight[1].getXRot() : this.theLegFrontLeft[1].getXRot())) {
+                        horseModelData.legMovingForward[leg] = true;
+                    }
+                }
             } else {
                 // hoof is moving down to the ground but has not yet made contact
+                s = 0.025F + s;
+
+                frontLeg[0].lerpZ(-4.0F, s*5.0F);
+                frontLeg[0].lerpY(0.0F, s);
                 frontLeg[0].lerpXRot(Mth.HALF_PI * -0.1F, s);
-                frontLeg[0].lerpZ(-1.0F);
                 frontLeg[1].lerpXRot(2.094F, s);
-                frontLeg[3].lerpXRot(Mth.HALF_PI * 0.5F);
+                frontLeg[3].lerpXRot(0.0F, s);
+                frontLeg[3].lerpY(-10.0F, s);
+                frontLeg[3].lerpZ(1.0F, s);
+            }
+
+            frontLeg[1].lerpY(10.0F, s);
+            if (frontLeg[2].getXRot() > 0.0F) {
+                frontLeg[2].lerpXRot(-0.1F, s * 2.5F, 0.075F);
+            } else if (frontLeg[2].getXRot() < 0.0F) {
+                frontLeg[2].setXRot(0.0F);
             }
 
             // check if the leg has reached the end of the backward arc
-            if (legRot > 2.25F) horseModelData.legMovingForward[leg] = true;
+            if (legRot > 2.25F) {
+                horseModelData.legMovingForward[leg] = true;
+            }
         }
     }
 

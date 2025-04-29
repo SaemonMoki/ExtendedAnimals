@@ -136,6 +136,22 @@ public class WrappedModelPart {
         return true;
     }
 
+    public boolean stepXRot(float xRot, float speed) {
+        if (this.modelPart.xRot != xRot) {
+            if (Mth.abs(this.modelPart.xRot - xRot) <= speed) {
+                this.modelPart.xRot = xRot;
+            } else {
+                if (this.modelPart.xRot < xRot) {
+                    this.modelPart.xRot += speed;
+                } else {
+                    this.modelPart.xRot -= speed;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean lerpYRot(float yRot) {
         if (this.modelPart.yRot != yRot) {
             if (Mth.abs(this.modelPart.yRot - yRot) < 0.0001F) {
@@ -262,6 +278,19 @@ public class WrappedModelPart {
             this.modelPart.y = pos.y();
         } else {
             this.modelPart.y = 0.0F;
+        }
+        if (rot != null) {
+            this.modelPart.setRotation(rot.x(), rot.y(), rot.z());
+        } else {
+            this.modelPart.setRotation(0.0F, 0.0F, 0.0F);
+        }
+    }
+
+    public void setPosAndRot(Vector3f pos, Vector3f rot) {
+        if (pos != null) {
+            this.modelPart.setPos(pos.x(), pos.y(), pos.z());
+        } else {
+            this.modelPart.setPos(0.0F, 0.0F, 0.0F);
         }
         if (rot != null) {
             this.modelPart.setRotation(rot.x(), rot.y(), rot.z());

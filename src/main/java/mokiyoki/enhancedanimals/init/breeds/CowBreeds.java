@@ -6,10 +6,10 @@ import net.minecraft.world.level.biome.Biomes;
 
 public class CowBreeds {
     public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", Biomes.OLD_GROWTH_BIRCH_FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "1", "4").add(8, "1").add(12, "1", "2", "1", "4", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "1", "4").add(8, "1").add(12, "1", "2", "1", "_", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
 
     public static final Breed ANGUS = new Breed(new Breed.Properties().setData("Angus", Biomes.JUNGLE, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1", "1", "4").add(8, "1").add(12, "1", "2", "3", "3", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1", "1", "4").add(8, "1").add(12, "1","2","3","_","2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
 
     public static final Breed BLACK_ANGUS = new Breed(ANGUS, new Breed.Properties().setName("BlackAngus"));
 
@@ -42,14 +42,8 @@ public class CowBreeds {
                     .add(200, "2","1|2","2","1|2","2","1|2","2","2","2","2","2","2")
             ));
 
-    public static final Breed LIGHT_JERSEY = new Breed(JERSEY, new Breed.Properties().setData("Light", Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(170, "2","2","2","2","2","2","2","1","1","1","1","1","1","1","2","2","2","2","2","2","2","2","2","2","2","2","1","1","1","1","1","1","1","1","1","1","1","1")));
-
-    public static final Breed DARK_JERSEY = new Breed(JERSEY, new Breed.Properties().setData("Dark", Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(170, "1","1","1","1","1","1","1","2","2","2","2","2","2","2","1","1","1","1","1","1","1","1","1","1","1","1","2","2","2","2","2","2","2","2","2","2","2","2")));
-    
     public static final Breed TEXAS_LONGHORN = new Breed(new Breed.Properties().setData("texaslonghorn", Biomes.SAVANNA, Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","1|4","1","_","25%2","1").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","_","1","_","25%2","1").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                 .add(84, "1-4")
                 .add(86, "1-2")
                 .add(90, "1-2")
@@ -81,7 +75,7 @@ public class CowBreeds {
     );
 
     public static final Breed GLOUCESTER = new Breed(new Breed.Properties().setData("gloucester", Biomes.PLAINS, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","1","5","2","1").add(12, "2","2","2","4","2","3","1","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","1","5","2","1").add(12, "2","2","2","_","2","3","1","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
                     .add(94, "244349")/*.add(94, "1-999999")*/
@@ -102,7 +96,7 @@ public class CowBreeds {
             ));
 
     public static final Breed HUNGARIAN_GREY = new Breed(new Breed.Properties().setData("hungariangrey", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","3").add(12, "2","2","3","4","2","_","2","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","3").add(12, "2","2","3","_","2","_","2","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
                     .add(94, "244349")/*.add(94, "1-999999")*/
@@ -143,7 +137,7 @@ public class CowBreeds {
     );
 
     public static final Breed BROWN_SWISS = new Breed(new Breed.Properties().setData("brownswiss", Biomes.DARK_FOREST, Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","2","10%2","1","2","1","1").add(14, "2","3","4","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","2","10%2","1","2","1","1").add(14, "2","3","_","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
                     .add(94, "244349")/*.add(94, "1-999999")*/
@@ -265,6 +259,9 @@ public class CowBreeds {
             )
     );
 
+    /**
+     *      The following are used for testing horn shape genes, they are not breeds of any sort
+     */
 
     public static final Breed TEST = new Breed(new Breed.Properties().setData("test", Biomes.THE_VOID, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch()

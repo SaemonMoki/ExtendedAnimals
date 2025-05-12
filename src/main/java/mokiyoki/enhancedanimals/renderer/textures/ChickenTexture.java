@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,11 +23,10 @@ public class ChickenTexture {
      *
      */
 
-    public static void calculateChickenTextures(EnhancedChicken chicken) {
-        if (chicken.getGenes() != null) {
+    public static void calculateChickenTextures(EnhancedChicken chicken, Genes genetics) {
             boolean isFemale = chicken.getOrSetIsFemale();
-            int[] sGene = chicken.getGenes().getSexlinkedGenes();
-            int[] gene = chicken.getGenes().getAutosomalGenes();
+            int[] sGene = genetics.getSexlinkedGenes();
+            int[] gene = genetics.getAutosomalGenes();
 
             boolean isNakedNeck = gene[52] == 1 || gene[53] == 1;
             String pattern = "";
@@ -280,7 +280,6 @@ public class ChickenTexture {
             parentGroup.addGrouping(detailGroup);
 
             chicken.setTextureGrouping(parentGroup);
-        }
     }
 
     private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {

@@ -13,6 +13,8 @@ import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.AgeableMob;
@@ -119,7 +121,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             mushroomType = 1;
         }
 
-        addTextureToAnimal(MOOSHROOM_MUSHROOM, mushroomType, null);
+        TextureGrouping parent = this.getTextureGrouping();
+        TextureGrouping mushroom = new TextureGrouping(TexturingType.MERGE_GROUP);
+        this.addTextureToAnimalTextureGrouping(mushroom, MOOSHROOM_MUSHROOM, mushroomType, null);
+        parent.addGrouping(mushroom);
+        this.setTextureGrouping(parent);
     }
 
     @Override

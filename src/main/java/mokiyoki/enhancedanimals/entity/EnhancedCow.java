@@ -69,7 +69,16 @@ import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
-    ///avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    /** avalible UUID spaces : [ S X X X X X X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+     *  1,2 -> piebald
+     *  3 -> blaze
+     *  4 -> horns
+     *  5 -> belt
+     *  6 -> coloursided
+     *  7 -> roan
+     *  8 -> speckled
+     *  20-35 -> mushrooms/flowers
+     */
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> MOOSHROOM_UUID = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.STRING);
 
@@ -125,9 +134,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //    @Override
 //    protected void registerGoals() {
 //        //Todo add the temperamants
-////        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+//        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
 //        this.goalSelector.addGoal(0, new SwimGoal(this));
-////        this.goalSelector.addGoal(5, this.eatGrassGoal);
+//        this.goalSelector.addGoal(5, this.eatGrassGoal);
 //        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
 //        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
 //    }
@@ -611,7 +620,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        calculateCowTextures(this);
+        if (this.getGenes() != null) {
+            calculateCowTextures(this, this.getGenes().getAutosomalGenes());
+        }
     }
 
     @Override

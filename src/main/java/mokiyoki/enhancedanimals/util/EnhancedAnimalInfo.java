@@ -12,6 +12,7 @@ public class EnhancedAnimalInfo {
     public Integer age = 0;
     public String sire = "???";
     public String dam = "???";
+    public boolean hasName = false;
 
     public boolean created = false;
 
@@ -30,6 +31,7 @@ public class EnhancedAnimalInfo {
             sire = String.valueOf(splits[7]);
             dam = String.valueOf(splits[8]);
             tameness = Integer.valueOf(splits[9]);
+            hasName = Boolean.valueOf(splits[10]);
             created = true;
         }
     }
@@ -46,6 +48,7 @@ public class EnhancedAnimalInfo {
         sb.append(sire).append("|");
         sb.append(dam).append("|");
         sb.append(tameness).append("|");
+        sb.append(hasName).append("|");
         return sb.toString();
     }
 

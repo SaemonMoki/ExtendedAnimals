@@ -1594,7 +1594,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             animalInfo.hunger = (int)(this.getHunger() / 7200);
             animalInfo.isFemale = this.getOrSetIsFemale();
             animalInfo.pregnant = getPregnancyProgression();
-            animalInfo.name = this.getAnimalsName(getSpecies());
+            if (animalInfo.hasName = this.hasCustomName()) {
+                animalInfo.name = this.getAnimalsName();
+            } else {
+                animalInfo.name = getSpecies();
+            }
             animalInfo.agePrefix = this.getAnimalsAgeString();
             animalInfo.age = this.getEnhancedAnimalAge();
             animalInfo.sire = this.sireName;
@@ -1628,13 +1632,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return -1;
     }
 
-    protected String getAnimalsName(String species) {
-        String name = species;
+    protected String getAnimalsName() {
+        String name = "";
         if (this.getCustomName() != null) {
             name = this.getCustomName().getContents();
-            if (name.equals("")) {
-                name = species;
-            }
         }
 
         return name;

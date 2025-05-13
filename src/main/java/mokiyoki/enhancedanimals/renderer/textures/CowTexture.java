@@ -365,13 +365,13 @@ public class CowTexture {
             TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
             if (gene[254] == 2 || gene[255] == 2) {
                 colour.setTexturingType(TexturingType.CUTOUT_GROUP);
-                int rand = ThreadLocalRandom.current().nextInt(0, 11);
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
-                cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
-                rand = ThreadLocalRandom.current().nextInt(0, 11);
-                cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
-                rand = ThreadLocalRandom.current().nextInt(0, 11);
-                cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
+
+                int t = ThreadLocalRandom.current().nextInt(1, 5);
+                for (int i = 0; i < t; i++) {
+                    int rand = ThreadLocalRandom.current().nextInt(0, 13);
+                    cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
+                }
                 colour.addGrouping(brockling);
             }
             cow.addTextureToAnimalTextureGrouping(colour, "spots/white.png");

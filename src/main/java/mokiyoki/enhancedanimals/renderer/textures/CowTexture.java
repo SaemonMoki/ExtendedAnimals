@@ -7,6 +7,15 @@ import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 
 public class CowTexture {
+    private static final int[] headCubes = new int[] {
+            0, 0, 38, 8, 7, 6,
+            0, 28, 38, 4, 5, 4,
+            0, 16, 51, 5, 4, 3,
+            0, 25, 51, 3, 3, 7,
+            0, 44, 38, 4, 6, 2,
+            0, 51, 50, 10, 8, 8,
+            1, 0, 51, 8, 51, 3, 7, 1
+    };
 
     public static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"

@@ -189,19 +189,19 @@ public class TexturingUtils {
 
     public static NativeImage mirrorTexture(NativeImage image, int[] cubes) {
         if (cubes.length > 1) {
-            // t u v x y z
-
             int l = cubes.length;
 
             for (int i = 0; i < l; i+=6) {
                 switch (cubes[i]) {
                     default -> {
                         // mirror cube across the x axis
+                        // t u v x y z
                         mirrorCube(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5]);
                     }
                     case 1 -> {
                         // mirror cube with another cube
-
+                        // t u1 v1 u2 v2 x y z
+                        mirrorCubes(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5], cubes[i+6], cubes[i+7]);
 
                         i+=2;
                     }
@@ -211,6 +211,26 @@ public class TexturingUtils {
         }
 
         return image;
+    }
+
+    private static void mirrorCubes(NativeImage image, int u1, int v1, int u2, int v2, int x, int y, int z) {
+        mirrorSquares(image, u1, v1, u2, v2,0, z, x + (2*z), y);
+        mirrorSquares(image, u1, v1, u2, v2, z,0, x, z);
+        mirrorSquares(image, u1, v1, u2, v2,z+x, 0, x, z);
+        mirrorSquares(image, u1, v1, u2, v2,x+(2*z), z, x, y);
+    }
+
+    private static void mirrorSquares(NativeImage image, int u1, int v1, int u2, int v2, int uOffset, int vOffset, int x, int y) {
+        u1 += uOffset;
+        u2 += uOffset;
+        v1 += vOffset;
+        v2 += vOffset;
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                swapPixels(image, u1 + i, v1 + j, u2 + ((x-1)-i), v2+j);
+            }
+        }
     }
 
     private static void mirrorCube(NativeImage image, int u, int v, int x, int y, int z) {

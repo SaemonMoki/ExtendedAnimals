@@ -225,8 +225,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Legacy belted [belted, blaze, brockling, wildtype]
-        //Brockling [Brockling, wildtype]
+        //Legacy [belted, blaze, brockling, wildtype]
         autosomalGenes[18] = 4;
         autosomalGenes[19] = 4;
 
@@ -1118,6 +1117,10 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         } else {
             autosomalGenes[253] = 1;
         }
+
+        //Brockling [wildtype, brockling]
+        autosomalGenes[254] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        autosomalGenes[255] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
         return new Genes(autosomalGenes);
     }

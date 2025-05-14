@@ -3,6 +3,8 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.level.block.Blocks;
@@ -64,7 +66,11 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected void setTexturePaths() {
         super.setTexturePaths();
-        this.enhancedAnimalTextures.add(MOOBLOOM_FLOWER[0]);
+        TextureGrouping parent = this.getTextureGrouping();
+        TextureGrouping flower = new TextureGrouping(TexturingType.MERGE_GROUP);
+        this.addTextureToAnimalTextureGrouping(flower, MOOBLOOM_FLOWER[0]);
+        parent.addGrouping(flower);
+        this.setTextureGrouping(parent);
     }
 
     @Override

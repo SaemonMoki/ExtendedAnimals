@@ -182,7 +182,7 @@ public class Colouration {
         int g = (rgb1[1] + rgb2[1])/2;
         int r = (rgb1[0] + rgb2[0])/2;
 
-        return 128 << 24 | (Math.min(b, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(r, 255));
+        return 128 << 24 | (Math.min(r, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(b, 255));
     }
 
 

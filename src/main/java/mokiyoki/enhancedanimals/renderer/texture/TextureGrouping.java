@@ -150,6 +150,7 @@ public class TextureGrouping {
             case APPLY_RGB -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
             case APPLY_RGBA -> layer.setTextureImage(applyBGRABlend(layer.getTextureImage(), layer.getRGB()));
             case APPLY_SHIFT -> layer.setTextureImage(applyHueShift(layer.getTextureImage(), layer.getRGB()));
+            case APPLY_FLIP -> layer.setTextureImage(mirrorTexture(layer.getTextureImage(), layer.getCubes()));
         }
     }
 

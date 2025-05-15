@@ -1993,7 +1993,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         fixGeneLengths();
 
         if (!this.breed.isEmpty()) {
-            this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true) : createInitialBreedGenes(this.level, new BlockPos(this.blockPosition()), this.breed);
+            this.genetics = this.breed.equals("village") ? createInitialGenes(this.level, new BlockPos(this.blockPosition()), true) : createInitialBreedGenes(this.level, new BlockPos(this.blockPosition()), this.breed);
             setInitialDefaults();
             int childAge = this.getAdultAge();
             if (this.random.nextInt(20) == 0) {

@@ -131,7 +131,7 @@ public class Genes {
     }
 
     public void setSexlinkedGenes(int[] sexlinkedGenes) {
-        this.sexlinked = sexlinkedGenes;
+
     }
 
     public void setAutosomalGenes(int[] autosomalGenes) {
@@ -396,6 +396,9 @@ public class Genes {
             linkages.add(new GeneLink(0, 0, 0.0F));
         }
         return linkages;
+    }
+
+    public void setSexlinkedGene(int[] ints) {
     }
 
     public class GeneLink {

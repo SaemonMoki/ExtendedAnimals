@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.BeeGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Arrays;
 
 import static mokiyoki.enhancedanimals.renderer.textures.BeeTexture.calculateBeeTexture;
 import static mokiyoki.enhancedanimals.util.Reference.BEE_SEXLINKED_GENES_LENGTH;
@@ -79,6 +82,18 @@ public class EnhancedBee extends EnhancedAnimalAbstract {
     @Override
     protected void lethalGenes() {
 
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public BeeModelData getModelData() {
+        return this.beeModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.beeModelData = (BeeModelData) animalModelData;
     }
 
     @Override
@@ -146,7 +161,9 @@ public class EnhancedBee extends EnhancedAnimalAbstract {
 
     @Override
     protected void fixGeneLengths() {
-
+        if (this.genetics.getNumberOfSexlinkedGenes() < BEE_SEXLINKED_GENES_LENGTH) {
+            this.genetics.setSexlinkedGene(Arrays.copyOf(this.genetics.getSexlinkedGenes(), BEE_SEXLINKED_GENES_LENGTH));
+        }
     }
 
     @Override

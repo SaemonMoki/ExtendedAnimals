@@ -21,6 +21,8 @@ public class BeeGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(BeeBreeds.CHOCOLATE);
         this.breeds.add(BeeBreeds.YELLOW);
         this.breeds.add(BeeBreeds.BLUE);
+        this.breeds.add(BeeBreeds.LONG_GUY);
+        this.breeds.add(BeeBreeds.STUBBEE);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -33,44 +35,60 @@ public class BeeGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     @Override
     public Genes generateLocalWildGenetics(Holder<Biome> biome, boolean isFlat) {
-        int[] sexlinkedGenes = new int[2];
+        int[] sexlinkedGenes = new int[Reference.BEE_SEXLINKED_GENES_LENGTH];
+
+        /**
+         *      thorax size [1 = 0, 2 = 3, 3 = 5, 4 = 7]
+         */
+        sexlinkedGenes[0] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+        sexlinkedGenes[1] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+
+        /**
+         *      thorax reducer [wildtype, Smaller, Smaller+abdomenReduction]
+         */
+        sexlinkedGenes[2] = getChance() ? ThreadLocalRandom.current().nextInt(3) + 1 : 1;
+        sexlinkedGenes[3] = getChance() ? ThreadLocalRandom.current().nextInt(3) + 1 : 1;
+
+        /**
+         *      abdomen increase
+         *      1 -> +0
+         *      2 -> +1
+         *      3 -> +2
+         *      4 -> +3
+         */
+        sexlinkedGenes[4] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+        sexlinkedGenes[5] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+
+        /**
+         *      abdomen decrease 1
+         *      1 -> -0
+         *      2 -> -1
+         */
+        sexlinkedGenes[6] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[7] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      abdomen decrease 2
+         *      1 -> -0
+         *      2 -> -1
+         */
+        sexlinkedGenes[8] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[9] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      abdomen decrease 3
+         *      1 -> -0
+         *      2 -> -1
+         */
+        sexlinkedGenes[10] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[11] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
 
         /**
          *      brown
          */
-        sexlinkedGenes[0] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
-        sexlinkedGenes[1] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
-//
-//        /**
-//         *      base colour [mostly 1 = yellow, half-half = white, mostly 2 = blue]
-//         */
-//        for (int i = 0; i < 16; i++) {
-//            sexlinkedGenes[i] = getChance() ? 2 : 1;
-//        }
-//
-//        /**
-//         *      yellow enhancer
-//         */
-//        for (int i = 16; i < 24; i++) {
-//            sexlinkedGenes[i] = getChance() ? 2 : 1;
-//        }
-//
-//        /**
-//         *      blue enhancer
-//         */
-//        for (int i = 24; i < 32; i++) {
-//            sexlinkedGenes[i] = getChance() ? 2 : 1;
-//        }
-//
-//        /**
-//         *      mild non pattern dilution
-//         */
-//        for (int i = 32; i < 40; i++) {
-//            sexlinkedGenes[i] = getChance() ? 2 : 1;
-//        }
-//
-//        sexlinkedGenes[40] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
-//        sexlinkedGenes[41] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[12] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[13] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
         return new Genes(sexlinkedGenes, new int[]{1,1});
     }

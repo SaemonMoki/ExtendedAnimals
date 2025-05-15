@@ -1,23 +1,54 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.entity.genetics.BeeGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static mokiyoki.enhancedanimals.renderer.textures.BeeTexture.calculateBeeTexture;
+import static mokiyoki.enhancedanimals.util.Reference.BEE_SEXLINKED_GENES_LENGTH;
 
 public class EnhancedBee extends EnhancedAnimalAbstract {
 
-    protected EnhancedBee(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
+    @OnlyIn(Dist.CLIENT)
+    private BeeModelData beeModelData;
+
+    public EnhancedBee(EntityType<? extends EnhancedBee> entityType, Level worldIn) {
+        super(entityType, worldIn, BEE_SEXLINKED_GENES_LENGTH, 2, false);
+        this.initilizeAnimalSize();
     }
 
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 14.0D)
+                .add(Attributes.MOVEMENT_SPEED, 1.0D)
+                .add(Attributes.ATTACK_DAMAGE, 2.0D);
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(0.75F, 0.42F).scale(this.getScale());
+    }
+
+    @Override
+    public float getScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float nbSize = 0.25F;
+        return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
+    }
+    
     @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_bee";
@@ -119,13 +150,13 @@ public class EnhancedBee extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic) {
-        return null;
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
+        return new BeeGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(LevelAccessor inWorld, BlockPos pos, String breed) {
-        return null;
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
+        return new BeeGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 }
 

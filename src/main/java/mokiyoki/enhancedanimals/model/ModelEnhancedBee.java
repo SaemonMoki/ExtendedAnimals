@@ -1,213 +1,173 @@
-//package mokiyoki.enhancedanimals.model;
-//
-//import com.mojang.blaze3d.matrix.MatrixStack;
-//import com.mojang.blaze3d.vertex.IVertexBuilder;
-//import mokiyoki.enhancedanimals.entity.EnhancedBee;
-//import net.minecraft.client.renderer.entity.model.EntityModel;
-//import net.minecraft.client.renderer.entity.model.ModelUtils;
-//import net.minecraft.client.renderer.model.ModelRenderer;
-//import net.minecraft.client.world.ClientWorld;
-//import net.minecraft.util.math.MathHelper;
-//import net.minecraft.world.storage.WorldInfo;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@OnlyIn(Dist.CLIENT)
-//public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
-//
-//    private Map<Integer, BeeModelData> beeModelDataCache = new HashMap<>();
-//    private int clearCacheTimer = 0;
-//
-//    private final ModelRenderer body;
-//    private final ModelRenderer wingLeft;
-//    private final ModelRenderer wingRight;
-//    private final ModelRenderer antennaLeft;
-//    private final ModelRenderer antennaRight;
-//    private final ModelRenderer legs1;
-//    private final ModelRenderer legs2;
-//    private final ModelRenderer legs3;
-//    private final ModelRenderer stinger;
-//    private float bodyPitch;
-//
-//    private Integer currentBee = null;
-//
-//    public ModelEnhancedBee() {
-//        this.textureWidth = 64;
-//        this.textureHeight = 64;
-//
-//        this.body = new ModelRenderer(this, 0, 0);
-//        this.body.addBox(-3.5F, 0.0F, 0.0F, 7, 7, 10);
-//
-//        this.wingLeft = new ModelRenderer(this, 0, 0);
-//        this.wingLeft.addBox(-3.5F, 0.0F, 0.0F, 9, 9, 0, 0.001F);
-//
-//        this.wingRight = new ModelRenderer(this, 0, 0);
-//        this.wingRight.addBox(-3.5F, 0.0F, 0.0F, 9, 9, 0, 0.001F);
-//
-//        this.antennaLeft = new ModelRenderer(this, 0, 0);
-//        this.antennaLeft.addBox(-3.5F, 0.0F, 0.0F, 0, 5, 5);
-//
-//        this.antennaRight = new ModelRenderer(this, 0, 0);
-//        this.antennaRight.addBox(-3.5F, 0.0F, 0.0F, 0, 5, 5);
-//
-//        this.legs1 = new ModelRenderer(this, 0, 0);
-//        this.legs1.addBox(-3.5F, 0.0F, 0.0F, 5, 3, 0);
-//
-//        this.legs2 = new ModelRenderer(this, 0, 0);
-//        this.legs2.addBox(-3.5F, 0.0F, 0.0F, 5, 3, 0);
-//
-//        this.legs3 = new ModelRenderer(this, 0, 0);
-//        this.legs3.addBox(-3.5F, 0.0F, 0.0F, 5, 3, 0);
-//
-//        this.stinger = new ModelRenderer(this, 0, 0);
-//        this.stinger.addBox(-3.5F, 0.0F, 0.0F, 0, 1, 3);
-//
-//        this.body.addChild(wingLeft);
-//        this.body.addChild(wingRight);
-//        this.body.addChild(antennaLeft);
-//        this.body.addChild(antennaRight);
-//        this.body.addChild(legs1);
-//        this.body.addChild(legs2);
-//        this.body.addChild(legs3);
-//        this.body.addChild(stinger);
-//
-//    }
-//
-//
-//    @Override
-//    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-//
-//        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//
-//    }
-//
-//    @Override
-//    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
-//        BeeModelData beeModelData = getCreateBeeModelData(entityIn);
-//        this.currentBee = entityIn.getEntityId();
-//        this.bodyPitch = entityIn.getBodyPitch(partialTick);
-//        boolean isFemale = true;
-//        boolean hasStung = false;
-//
-//        if (isFemale && !hasStung) {
-//            this.stinger.showModel = true;
-//        } else {
-//            this.stinger.showModel = false;
-//        }
-//
-////        char[] uuidArry = beeModelData.uuidArray;
-//    }
-//
-//    @Override
-//    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-//        this.wingRight.rotateAngleX = 0.0F;
-//        this.antennaLeft.rotateAngleX = 0.0F;
-//        this.antennaRight.rotateAngleX = 0.0F;
-//        this.body.rotateAngleX = 0.0F;
-//        this.body.rotationPointY = 19.0F;
-//        boolean flag = entityIn.onGround && entityIn.getMotion().lengthSquared() < 1.0E-7D;
-//        if (flag) {
-//            this.wingRight.rotateAngleY = -0.2618F;
-//            this.wingRight.rotateAngleZ = 0.0F;
-//            this.wingLeft.rotateAngleX = 0.0F;
-//            this.wingLeft.rotateAngleY = 0.2618F;
-//            this.wingLeft.rotateAngleZ = 0.0F;
-//            this.legs1.rotateAngleX = 0.0F;
-//            this.legs2.rotateAngleX = 0.0F;
-//            this.legs3.rotateAngleX = 0.0F;
-//        } else {
-//            float f = ageInTicks * 2.1F;
-//            this.wingRight.rotateAngleY = 0.0F;
-//            this.wingRight.rotateAngleZ = MathHelper.cos(f) * (float)Math.PI * 0.15F;
-//            this.wingLeft.rotateAngleX = this.wingRight.rotateAngleX;
-//            this.wingLeft.rotateAngleY = this.wingRight.rotateAngleY;
-//            this.wingLeft.rotateAngleZ = -this.wingRight.rotateAngleZ;
-//            this.legs1.rotateAngleX = ((float)Math.PI / 4F);
-//            this.legs2.rotateAngleX = ((float)Math.PI / 4F);
-//            this.legs3.rotateAngleX = ((float)Math.PI / 4F);
-//            this.body.rotateAngleX = 0.0F;
-//            this.body.rotateAngleY = 0.0F;
-//            this.body.rotateAngleZ = 0.0F;
-//        }
-//
-//        if (!entityIn.isAngry()) {
-//            this.body.rotateAngleX = 0.0F;
-//            this.body.rotateAngleY = 0.0F;
-//            this.body.rotateAngleZ = 0.0F;
-//            if (!flag) {
-//                float f1 = MathHelper.cos(ageInTicks * 0.18F);
-//                this.body.rotateAngleX = 0.1F + f1 * (float)Math.PI * 0.025F;
-//                this.antennaLeft.rotateAngleX = f1 * (float)Math.PI * 0.03F;
-//                this.antennaRight.rotateAngleX = f1 * (float)Math.PI * 0.03F;
-//                this.legs1.rotateAngleX = -f1 * (float)Math.PI * 0.1F + ((float)Math.PI / 8F);
-//                this.legs3.rotateAngleX = -f1 * (float)Math.PI * 0.05F + ((float)Math.PI / 4F);
-//                this.body.rotationPointY = 19.0F - MathHelper.cos(ageInTicks * 0.18F) * 0.9F;
-//            }
-//        }
-//
-//        if (this.bodyPitch > 0.0F) {
-//            this.body.rotateAngleX = ModelUtils.rotlerpRad(this.body.rotateAngleX, 3.0915928F, this.bodyPitch);
-//        }
-//    }
-//
-//    private class BeeModelData {
-//        int[] beeGenes;
-//        char[] uuidArray;
-//        String birthTime;
-//        float size = 1.0F;
-//        boolean sleeping = false;
-//        int lastAccessed = 0;
-//        long clientGameTime = 0;
-////        int dataReset = 0;
-//    }
-//
-//    private BeeModelData getBeeModelData() {
-//        if (this.currentBee == null || !beeModelDataCache.containsKey(this.currentBee)) {
-//            return new BeeModelData();
-//        }
-//        return beeModelDataCache.get(this.currentBee);
-//    }
-//
-//    private BeeModelData getCreateBeeModelData(T enhancedBee) {
-//        clearCacheTimer++;
-//        if(clearCacheTimer > 50000) {
-//            beeModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-//            for (BeeModelData beeModelData : beeModelDataCache.values()){
-//                beeModelData.lastAccessed = 1;
-//            }
-//            clearCacheTimer = 0;
-//        }
-//
-//        if (beeModelDataCache.containsKey(enhancedBee.getEntityId())) {
-//            BeeModelData beeModelData = beeModelDataCache.get(enhancedBee.getEntityId());
-//            beeModelData.lastAccessed = 0;
-////            pigModelData.dataReset++;
-////            if (pigModelData.dataReset > 5000) {
-//
-////                pigModelData.dataReset = 0;
-////            }
-//            beeModelData.sleeping = enhancedBee.isAnimalSleeping();
-//            beeModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime());
-//
-//            return beeModelData;
-//        } else {
-//            BeeModelData beeModelData = new BeeModelData();
-//            beeModelData.beeGenes = enhancedBee.getSharedGenes();
-//            beeModelData.size = enhancedBee.getSize();
-//            beeModelData.sleeping = enhancedBee.isAnimalSleeping();
-//            beeModelData.uuidArray = enhancedBee.getCachedUniqueIdString().toCharArray();
-//            beeModelData.birthTime = enhancedBee.getBirthTime();
-//            beeModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime());
-//
-//            if(beeModelData.beeGenes != null) {
-//                beeModelDataCache.put(enhancedBee.getEntityId(), beeModelData);
-//            }
-//
-//            return beeModelData;
-//        }
-//    }
-//
-//}
+package mokiyoki.enhancedanimals.model;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import mokiyoki.enhancedanimals.entity.EnhancedBee;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
+import mokiyoki.enhancedanimals.model.modeldata.BeePhenotype;
+import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel<T> {
+    protected WrappedModelPart theBee;
+
+    protected WrappedModelPart theHead;
+    protected WrappedModelPart theBody;
+    protected WrappedModelPart theTail;
+
+    protected WrappedModelPart head;
+    protected WrappedModelPart thorax;
+    protected WrappedModelPart abdomin;
+
+    protected WrappedModelPart collar;
+
+    private BeeModelData beeModelData;
+
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition bHead = base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bBody = base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -8.0F));
+        PartDefinition bTail = base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -8.0F));
+
+        bHead.addOrReplaceChild("head", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-3.5F, 0.0F, 0.0F, 7, 7, 3, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+
+        bBody.addOrReplaceChild("thorax", CubeListBuilder.create()
+                        .texOffs(0, 10)
+                        .addBox(-3.5F, 0.0F, 0.0F, 7, 7, 7),
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
+        );
+
+        bTail.addOrReplaceChild("abdomen", CubeListBuilder.create()
+                .texOffs(21, 0)
+                .addBox(-3.5F, 0.0F, 0.0F, 7, 7, 7),
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
+        );
+
+
+
+        base.addOrReplaceChild("collar", CubeListBuilder.create()
+                        .texOffs(36, 57)
+                        .addBox(-4.5F, -1.0F, -0.5F, 9, 2, 5)
+                        .texOffs(35, 51)
+                        .addBox(0.0F, -1.5F, 3.5F, 0,  3, 3)
+                        .texOffs(12, 37)
+                        .addBox(-1.5F, -1.5F, 5.0F, 3, 3, 3, new CubeDeformation(-0.5F)),
+                PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -Mth.HALF_PI, 0.0F, 0.0F)
+        );
+
+        return LayerDefinition.create(meshdefinition, 64, 64);
+    }
+
+    public ModelEnhancedBee(ModelPart modelPart) {
+        super(modelPart);
+        ModelPart base = modelPart.getChild("base");
+        this.theBee = new WrappedModelPart(base, "base");
+        ModelPart bHead = base.getChild("bHead");
+        ModelPart bBody = base.getChild("bBody");
+        ModelPart bTail = base.getChild("bTail");
+
+        this.theHead = new WrappedModelPart(bHead, "bHead");
+        this.theBody = new WrappedModelPart(bBody, "bBody");
+        this.theTail = new WrappedModelPart(bTail, "bTail");
+
+        this.head = new WrappedModelPart("head", bHead);
+        this.thorax = new WrappedModelPart("thorax", bBody);
+        this.abdomin = new WrappedModelPart("abdomen", bTail);
+        this.collar = new WrappedModelPart(base.getChild("collar"), "collar");
+
+        this.theBee.addChild(this.theBody);
+        this.theBody.addChild(this.theHead);
+        this.theBody.addChild(this.theTail);
+
+        this.theHead.addChild(this.head);
+        this.theBody.addChild(this.thorax);
+        this.theTail.addChild(this.abdomin);
+
+        this.theBody.addChild(this.collar);
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (this.beeModelData != null && this.beeModelData.getPhenotype()!=null) {
+            BeePhenotype bee = this.beeModelData.getPhenotype();
+
+            for (WrappedModelPart part : this.theTail.children) {
+                part.show(false);
+            }
+            
+            float size = ((1.0F + (beeModelData.growthAmount * 3.0F))/4.0F) * beeModelData.size;
+
+            poseStack.pushPose();
+            poseStack.scale(size, size, size);
+            poseStack.translate(0.0F, -1.5F + 1.5F/(size), 0.0F);
+
+            gaRender(this.theBee, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            poseStack.popPose();
+        }
+    }
+
+    @Override
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.beeModelData = getCreateBeeModelData(entityIn);
+        if (this.beeModelData != null && this.beeModelData.getPhenotype() != null) {
+            BeePhenotype bee = this.beeModelData.getPhenotype();
+            this.setupInitialAnimationValues(this.beeModelData, netHeadYaw, headPitch, bee);
+
+            this.saveAnimationValues(this.beeModelData);
+        }
+
+    }
+
+    protected void saveAnimationValues(AnimalModelData data) {
+        Map<String, Vector3f> map = data.offsets;
+    }
+
+    private void setupInitialAnimationValues(AnimalModelData data, float netHeadYaw, float headPitch, BeePhenotype bee) {
+        Map<String, Vector3f> map = data.offsets;
+        if (map.isEmpty()) {
+
+        } else {
+
+        }
+    }
+
+    private BeeModelData getCreateBeeModelData(T enhancedBee) {
+        return (BeeModelData) getCreateAnimalModelData(enhancedBee);
+    }
+
+    @Override
+    protected void setInitialModelData(T enhancedBee) {
+        BeeModelData beeModelData = new BeeModelData();
+        setBaseInitialModelData(beeModelData, enhancedBee);
+    }
+
+    @Override
+    protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedBee) {
+    }
+
+    @Override
+    protected Phenotype createPhenotype(T enhancedBee) {
+        return new BeePhenotype(enhancedBee.getGenes().getAutosomalGenes(), enhancedBee.getOrSetIsFemale());
+    }
+}

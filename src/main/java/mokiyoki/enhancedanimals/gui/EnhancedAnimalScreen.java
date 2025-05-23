@@ -1020,7 +1020,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
         }
 
-        if (flag && name.startsWith("entity.eanimod")) {
+        if (flag && !enhancedAnimalInfo.hasName) {
             name = I18n.get(name);
         }
 

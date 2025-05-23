@@ -675,7 +675,25 @@ public class PigTexture {
             white = idx_lethal;
         } else if (gene[12] == 11 || gene[13] == 11) {
             //patch
-            if (whiteSplash != 0) {
+            //patch seems to override the partial extension spotting pattern when present
+            if (black == idx_brindle_berkshire) {
+                // i dont think allspots patch does anything different
+            }
+            else if (black == idx_brindle_med) {
+                //het allspots patch
+                black = 1;
+                white = idx_brindlepatch_med;
+            }
+            else if (black == idx_brindle) {
+                //plain partial extension/patch aka pietrain
+                black = 1;
+                if (whiteExtension >= 2) {
+                    white = idx_brindlepatch_ext;
+                } else {
+                    white = idx_brindlepatch;
+                }
+            }
+            else if (whiteSplash != 0) {
                 //patch + splash/hereford
                 white = idx_patch_hereford;
                 whiteSplash = 0;
@@ -689,34 +707,14 @@ public class PigTexture {
                 //het tuxedo with white points - produces solid white
                 //if white points is not present, assume patch takes priority due to higher white
                 white = 1;
-            } else {
-                //patch seems to override the brindle spotting pattern
-
-                // i dont think allspots patch does anything different
-                if (black == idx_brindle_berkshire) {
-                }
-                //het allspots patch
-                else if (black == idx_brindle_med) {
-                    black = 1;
-                    white = idx_brindlepatch_med;
-                }
-                //plain brindle patch
-                else if (black == idx_brindle) {
-                    black = 1;
-                    if (whiteExtension >= 2) {
-                        white = idx_brindlepatch_ext;
-                    } else {
-                        white = idx_brindlepatch;
-                    }
-                } else if (whitePoints) {
-                    if (whiteExtension == 2) {
-                        white = 1;
-                    } else {
-                        white = idx_spottedpatch;
-                    }
+            } else if (whitePoints) {
+                if (whiteExtension == 2) {
+                    white = 1;
                 } else {
-                    white = idx_patch;
+                    white = idx_spottedpatch;
                 }
+            } else {
+                white = idx_patch;
             }
         } else if (gene[12] == 9 || gene[13] == 9) {
             //irregular belted

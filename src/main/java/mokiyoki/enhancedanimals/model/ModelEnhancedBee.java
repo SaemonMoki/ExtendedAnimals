@@ -208,13 +208,13 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
             }
             this.abdomen[bee.abdomenSize-4].show();
 
-            if (bee.hasOvipositor) {
+            if (beeModelData.hasOvipositor) {
                 this.ovipositor.show();
             } else {
                 this.ovipositor.hide();
             }
 
-            float size = 1.0F;
+            float size = beeModelData.size;
 
             poseStack.pushPose();
             poseStack.scale(size, size, size);
@@ -238,10 +238,10 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
         }
     }
 
-    private void setupInitialAnimationValues(AnimalModelData data, float netHeadYaw, float headPitch, BeePhenotype bee) {
+    private void setupInitialAnimationValues(BeeModelData data, BeePhenotype bee) {
         Map<String, Vector3f> map = data.offsets;
 
-        if (bee.hasOvipositor) this.ovipositor.setZ(bee.abdomenSize);
+        if (data.hasOvipositor) this.ovipositor.setZ(bee.abdomenSize);
 
         if (map.isEmpty()) {
             if (bee.hasThorax) {
@@ -251,18 +251,22 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                 this.theTail.setZ(bee.thoraxSize + (dangle * 0.5F));
                 this.theTail.setY(dangle * -3.0F);
             } else {
+                this.theHead.setXRot(0.0F);
+                this.theTail.setXRot(0.0F);
                 this.theTail.setZ(0.0F);
+                this.theTail.setY(0.0F);
             }
 
             this.leg[0].setZ(0.0F);
             this.leg[1].setZ(0.0F);
-            this.leg[2].setZ(2.0F);
-            this.leg[3].setZ(2.0F);
-            this.leg[4].setZ(4.0F);
-            this.leg[5].setZ(4.0F);
 
             if ((bee.thoraxSize + bee.abdomenSize) < 7) {
-                this.theLegs.setZ(-0.6666F * (7 - (bee.thoraxSize + bee.abdomenSize)));
+                float cubeeMod = -0.3333F * (7 - (bee.thoraxSize + bee.abdomenSize));
+                this.leg[2].setZ(cubeeMod);
+                this.leg[3].setZ(this.leg[2].getZ());
+                this.leg[4].setZ(this.leg[2].getZ() + 2.0F - cubeeMod);
+                this.leg[5].setZ(this.leg[4].getZ());
+                this.theLegs.setZ(cubeeMod + 1.0F);
             } else {
                 this.theLegs.setZ(0.0F);
                 if (bee.hasThorax) {
@@ -271,6 +275,11 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                     this.leg[3].setZ(this.leg[2].getZ());
                     this.leg[4].setZ(this.leg[2].getZ() + legMod);
                     this.leg[5].setZ(this.leg[4].getZ());
+                } else {
+                    this.leg[2].setZ(2.0F);
+                    this.leg[3].setZ(2.0F);
+                    this.leg[4].setZ(4.0F);
+                    this.leg[5].setZ(4.0F);
                 }
             }
 
@@ -291,7 +300,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
         this.beeModelData = getCreateBeeModelData(entityIn);
         if (this.beeModelData != null && this.beeModelData.getPhenotype() != null) {
             BeePhenotype bee = this.beeModelData.getPhenotype();
-            this.setupInitialAnimationValues(this.beeModelData, netHeadYaw, headPitch, bee);
+            this.setupInitialAnimationValues(this.beeModelData, bee);
 
 //            this.theHead.setXRot(this.theHead.getXRot() + 0.01F);
 

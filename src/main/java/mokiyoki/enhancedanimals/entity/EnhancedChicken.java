@@ -1165,6 +1165,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return false;
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
@@ -1182,6 +1183,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
+    @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 

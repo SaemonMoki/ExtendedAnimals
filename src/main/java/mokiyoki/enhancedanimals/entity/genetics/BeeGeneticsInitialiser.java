@@ -38,10 +38,10 @@ public class BeeGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int[] sexlinkedGenes = new int[Reference.BEE_SEXLINKED_GENES_LENGTH];
 
         /**
-         *      thorax size [1 = 0, 2 = 3, 3 = 5, 4 = 7]
+         *      SDL
          */
-        sexlinkedGenes[0] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
-        sexlinkedGenes[1] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+        sexlinkedGenes[0] = ThreadLocalRandom.current().nextInt(90) + 1;
+        sexlinkedGenes[1] = ThreadLocalRandom.current().nextInt(90) + 1;
 
         /**
          *      thorax reducer [wildtype, Smaller, Smaller+abdomenReduction]
@@ -83,12 +83,55 @@ public class BeeGeneticsInitialiser extends AbstractGeneticsInitialiser {
         sexlinkedGenes[10] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
         sexlinkedGenes[11] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
-
         /**
-         *      brown
+         *      blue eyes [blue, Green/Yellow]
          */
         sexlinkedGenes[12] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
         sexlinkedGenes[13] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      yellow eyes [Green/Blue, yellow]
+         */
+        sexlinkedGenes[14] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[15] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+
+        /**
+         *      darken eyes [nondark, darken]
+         */
+        sexlinkedGenes[16] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[17] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      lighten eyes [nonlight, lighten]
+         */
+        sexlinkedGenes[18] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[19] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      long legs [medium, long]
+         */
+        sexlinkedGenes[20] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[21] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      short legs [medium, short]
+         */
+        sexlinkedGenes[22] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[23] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      chocolate [chocolate, non chocolate]
+         */
+        sexlinkedGenes[24] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        sexlinkedGenes[25] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
+        /**
+         *      thorax size [1 = 0, 2 = 3, 3 = 5, 4 = 7]
+         */
+        sexlinkedGenes[26] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+        sexlinkedGenes[27] = getChance() ? ThreadLocalRandom.current().nextInt(4) + 1 : 1;
+
 
         return new Genes(sexlinkedGenes, new int[]{1,1});
     }

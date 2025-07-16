@@ -1,15 +1,11 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
 public class BeePhenotype implements Phenotype {
-    public boolean hasOvipositor = true;
     public boolean hasThorax = false;
     public int thoraxSize = 0;
     public int abdomenSize = 7;
 
     public BeePhenotype(int[] genes, boolean female, int queenMod) {
-
-        if (!female) this.hasOvipositor = false;
-
         calculateThoraxSize(genes);
         calculateAbdomenSize(genes, queenMod);
 

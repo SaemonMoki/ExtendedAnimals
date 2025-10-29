@@ -23,8 +23,8 @@ import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
+    private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entity/chicken/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/chicken/chickenbase.png");
     public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "chicken"), "chicken_layer");
 
     public RenderEnhancedChicken(EntityRendererProvider.Context renderManager) {

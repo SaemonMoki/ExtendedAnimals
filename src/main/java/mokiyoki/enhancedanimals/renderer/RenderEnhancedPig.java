@@ -21,8 +21,8 @@ import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig<EnhancedPig>> {
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/pig/pigbase.png");
+    private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entity/pig/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/pig/pigbase.png");
     public static final ModelLayerLocation PIG_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "pig"), "pig_layer");
 
     public RenderEnhancedPig(EntityRendererProvider.Context renderManager)

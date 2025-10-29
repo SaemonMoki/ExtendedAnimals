@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 
 public class RenderEnhancedAxolotlEgg extends EntityRenderer<EnhancedAxolotlEgg> {
-    private static final ResourceLocation ENHANCED_AXOLOTL_EGGS = new ResourceLocation("eanimod:textures/entities/axolotl_egg/axolotl_eggs.png");
+    private static final ResourceLocation ENHANCED_AXOLOTL_EGGS = new ResourceLocation("eanimod:textures/entity/axolotl_egg/axolotl_eggs.png");
     private final ModelEnhancedAxolotlEgg<EnhancedAxolotlEgg> model;
     public static final ModelLayerLocation AXOLOTL_EGG_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "axolotl_egg"), "axolotl_egg_layer");
 

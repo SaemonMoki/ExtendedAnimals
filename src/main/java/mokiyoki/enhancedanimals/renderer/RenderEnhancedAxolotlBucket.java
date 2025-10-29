@@ -142,7 +142,7 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
                 try {
                     resourcelocation = new ResourceLocation(s);
-                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/items/axolotl_glow_bucket_base.png");
+                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/item/axolotl_glow_bucket_base.png");
                     Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);

@@ -8,10 +8,6 @@ import mokiyoki.enhancedanimals.util.Genes;
 
 public class CowTexture {
 
-    public static final String[] COW_TEXTURES_BASE = new String[] {
-            "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
-    };
-
     public static final String[] COW_TEXTURES_UDDER = new String[] {
             "udder_black.png", "udder_brown.png", "udder_pink.png"
     };
@@ -36,54 +32,8 @@ public class CowTexture {
             "skin_black.png", "skin_brown.png", "skin_pink.png"
     };
 
-    public static final String[] COW_TEXTURES_ROAN = new String[] {
-            "", "spot_roan0.png",
-            "solid_white.png"
-    };
-
-    public static final String[] COW_TEXTURES_SPECKLED = new String[] {
-            "", "spot_speckled0.png",
-            "spot_whitespeckled0.png"
-    };
-
-    public static final String[] COW_TEXTURES_WHITEFACE = new String[] {
-            "", "spot_whiteface0.png",
-            "spot_hetwhiteface0.png",
-            "spot_wfcoloursided0.png",
-            "spot_gloucester.png", "spot_pingauzer.png", "spot_pingauzer1.png",
-            "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald7.png", "spot_pibald8.png", "spot_pibald9.png","spot_pibalda.png", "spot_pibaldb.png", "spot_pibaldc.png", "spot_pibaldd.png", "spot_pibalde.png", "spot_pibaldf.png",
-    };
-
-    public static final String[] COW_TEXTURES_WHITEFACEHEAD = new String[] {
-            "", "",
-            "",
-            "",
-            "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head7.png", "spot_pibald_head8.png", "spot_pibald_head9.png","spot_pibald_heada.png", "spot_pibald_headb.png", "spot_pibald_headc.png", "spot_pibald_headd.png", "spot_pibald_heade.png", "spot_pibald_headf.png",
-    };
-
-//    public static final String[] COW_TEXTURES_BROCKLING = new String[] {
-//            "", "b_spot_brockling0.png", "r_spot_brockling0.png"
-//    };
-
-//    public static final String[] COW_TEXTURES_BELTED = new String[] {
-//            "", "spot_belt0.png", "spot_belt1.png", "spot_belt2.png", "spot_belt3.png", "spot_belt4.png", "spot_belt5.png", "spot_belt6.png", "spot_belt7.png", "spot_belt8.png", "spot_belt9.png", "spot_belta.png", "spot_beltb.png", "spot_beltc.png", "spot_beltd.png", "spot_belte.png", "spot_beltf.png"
-//    };
-
-//    public static final String[] COW_TEXTURES_BLAZE = new String[] {
-//            "", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze2.png",
-//            "spot_blaze0.png", "spot_blaze1.png", "spot_blaze2.png", "spot_blaze3.png", "spot_blaze4.png", "spot_blaze5.png", "spot_blaze6.png", "spot_blaze0.png", "spot_blaze1.png", "spot_blaze2.png", "spot_blaze3.png", "spot_blaze4.png", "spot_blaze5.png", "spot_blaze6.png", "spot_blaze5.png", "spot_blaze6.png"
-//    };
-
-//    public static final String[] COW_TEXTURES_COLOURSIDED = new String[] {
-//            "", "spot_coloursided0.png"
-//    };
-
     public static final String[] COW_TEXTURES_HOOVES = new String[] {
             "hooves_black.png", "hooves_black_dwarf.png"
-    };
-
-    public static final String[] COW_TEXTURES_EYES = new String[] {
-            "eyes_black.png"
     };
 
     public static final String[] COW_TEXTURES_HORNS = new String[] {

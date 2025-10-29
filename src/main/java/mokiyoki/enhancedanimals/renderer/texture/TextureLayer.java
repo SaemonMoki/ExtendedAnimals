@@ -8,6 +8,8 @@ public class TextureLayer {
 
     private int RGB = -1;
 
+    private int[] cubes = {-1};
+
     private String texture;
 
     private NativeImage textureImage;
@@ -15,6 +17,7 @@ public class TextureLayer {
     public TextureLayer(String texture) {
         this.texture = texture;
     }
+
     public TextureLayer(TexturingType texturingType, String texture) {
         this.texturingType = texturingType;
         this.texture = texture;
@@ -30,6 +33,14 @@ public class TextureLayer {
 
     public void setRGB(Integer RGB) {
         this.RGB = RGB;
+    }
+
+    public int[] getCubes() {
+        return cubes;
+    }
+
+    public void setCubes(int ... cube) {
+        this.cubes = cube;
     }
 
     public String getTexture() {

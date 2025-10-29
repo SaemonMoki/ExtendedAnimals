@@ -28,6 +28,7 @@ public enum TexturingType {
     APPLY_RGBA, //a layer specific type, used to apply an RGB value to an individual texture
     APPLY_SHIFT, //a layer specific type, used to apply a hue shift and/or changed alpha to individual texture
     APPLY_SHADING, //a special case layer used for shading
+    APPLY_FLIP,
     SHADE_FEATHERS,
 
     /*******/

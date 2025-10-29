@@ -477,7 +477,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
-        if (item == ModItems.ENHANCED_SHEEP_EGG.get()) {
+        if (item == ModItems.ENHANCED_RABBIT_EGG.get()) {
             return InteractionResult.SUCCESS;
         }
 

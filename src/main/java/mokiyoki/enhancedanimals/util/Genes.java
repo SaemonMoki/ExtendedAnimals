@@ -358,6 +358,14 @@ public class Genes {
         }
     }
 
+    public boolean isSexlinkedHeterozygous(int gene) {
+        if (this.sexlinked.length >= gene+1) {
+            return this.sexlinked[gene] != this.sexlinked[gene+1];
+        } else {
+            return false;
+        }
+    }
+
     public boolean isHomozygous(int gene) {
         if (this.autosomal.length >= gene+1) {
             return this.autosomal[gene] == this.autosomal[gene+1];

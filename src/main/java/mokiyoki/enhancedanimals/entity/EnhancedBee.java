@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.BeeGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -16,6 +17,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -23,8 +27,12 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
@@ -32,6 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_BEE;
 import static mokiyoki.enhancedanimals.renderer.textures.BeeTexture.calculateBeeTexture;
 import static mokiyoki.enhancedanimals.util.Reference.BEE_SEXLINKED_GENES_LENGTH;
 
@@ -48,6 +57,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
     private int stingerCountdown;
     private Gender gender;
+    private boolean wantsSons = false;
 
     public EnhancedBee(EntityType<? extends EnhancedBee> entityType, Level worldIn) {
         super(entityType, worldIn, BEE_SEXLINKED_GENES_LENGTH, 2, false);
@@ -145,14 +155,19 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
     @Override
     public boolean getOrSetIsFemale() {
         if (this.isFemale == null) {
-            return this.isFemale = getStringUUID().toCharArray()[0] - 48 < 8;
+            return this.isFemale = this.getGenes().isSexlinkedHeterozygous(0);
         }
         return this.isFemale;
     }
 
     @Override
     protected void setIsFemale(CompoundTag compound) {
-        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getStringUUID().toCharArray()[0] - 48 < 8;
+        if (compound.contains("IsFemale")) {
+            this.isFemale = compound.getBoolean("IsFemale");
+        } else {
+            int[] sGenes = compound.getCompound("Genetics").getIntArray("SGenes");
+            this.isFemale = sGenes[0] != sGenes[1];
+        }
     }
     
     @Override
@@ -193,6 +208,18 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                 this.hurt(DamageSource.GENERIC, this.getHealth());
             }
         }
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_BEE_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.mobInteract(entityPlayer, hand);
     }
 
     @Override
@@ -299,12 +326,40 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level world, EnhancedAnimalAbstract otherParent) {
-        return null;
+        EnhancedBee enhancedBee = ENHANCED_BEE.get().create(this.level);
+
+        this.wantsSons = this.random.nextBoolean(); //TODO we are probably going to want something different here
+
+        if (enhancedBee != null) {
+            Genes genes;
+            if (this.wantsSons) {
+                genes = new Genes(this.genetics.getGamite(true)).getGamite(false);
+                enhancedBee.gender = Gender.DRONE;
+                enhancedBee.setSireName("");
+            } else {
+                genes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, otherParent.getGenes());
+                if (!genes.isSexlinkedHeterozygous(0)) {
+                    enhancedBee.unbreedable = true;
+                    enhancedBee.gender = Gender.DRONE;
+                }
+                enhancedBee.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+            }
+
+            enhancedBee.setGenes(genes);
+            enhancedBee.setSharedGenes(genes);
+            enhancedBee.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+            enhancedBee.setGrowingAge();
+            enhancedBee.setBirthTime();
+            enhancedBee.initilizeAnimalSize();
+            enhancedBee.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+            enhancedBee.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        }
+
+        return enhancedBee;
     }
 
     @Override
     protected void createAndSpawnEnhancedChild(Level world) {
-
     }
 
     @Override
@@ -343,6 +398,16 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         this.setStingerData(compound.getInt("StingerTimer"));
     }
 
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 80000, spawnReason);
+
+
+
+        return livingdata;
+    }
+
     @Override
     protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new BeeGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
@@ -373,6 +438,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         SOCIAL_FEMALE,
         WORKER,
         SACRIFICIAL_WORKER,
-        DRONE
+        DRONE,
+        DIPLOID_DRONE
     }
 }

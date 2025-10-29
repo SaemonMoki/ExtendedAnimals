@@ -21,5 +21,5 @@ public class Reference {
     public static final int HORSE_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 30;
     public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 46;
-    public static final int BEE_SEXLINKED_GENES_LENGTH = 26;
+    public static final int BEE_SEXLINKED_GENES_LENGTH = 28;
 }

@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,11 +23,10 @@ public class ChickenTexture {
      *
      */
 
-    public static void calculateChickenTextures(EnhancedChicken chicken) {
-        if (chicken.getGenes() != null) {
+    public static void calculateChickenTextures(EnhancedChicken chicken, Genes genetics) {
             boolean isFemale = chicken.getOrSetIsFemale();
-            int[] sGene = chicken.getGenes().getSexlinkedGenes();
-            int[] gene = chicken.getGenes().getAutosomalGenes();
+            int[] sGene = genetics.getSexlinkedGenes();
+            int[] gene = genetics.getAutosomalGenes();
 
             boolean isNakedNeck = gene[52] == 1 || gene[53] == 1;
             String pattern = "";
@@ -280,7 +280,6 @@ public class ChickenTexture {
             parentGroup.addGrouping(detailGroup);
 
             chicken.setTextureGrouping(parentGroup);
-        }
     }
 
     private static void setSkinColour(EnhancedChicken chicken, boolean isFemale, int[] sGene, int[] gene, TextureGrouping detailGroup, float age) {
@@ -302,7 +301,7 @@ public class ChickenTexture {
             String ear = "ear";
             if (earColour < 7) ear += "_mottled" + earColour;
             earColour = calculateEarRGB(sGene, gene, isFemale);
-            chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + ear + ".png", earColour);
+            chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/" + ear + ".png", ear, earColour);
 
             int face = 6 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
 
@@ -320,7 +319,7 @@ public class ChickenTexture {
                 if (face >= 7) { //TODO increment when more faces are added
                     face = 6;
                 }
-                chicken.addIndividualTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/face" + face + ".png", earColour);
+                chicken.addTextureToAnimalTextureGrouping(detailGroup, TexturingType.APPLY_RGB, "skin/face" + face + ".png", String.valueOf(face), earColour);
             }
         }
     }
@@ -331,7 +330,7 @@ public class ChickenTexture {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
-                if (pattern.contains("het") && !Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entities/chicken/pattern/" + pattern + ".png")).isEmpty()) {
+                if (pattern.contains("het") && Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entities/chicken/pattern/" + pattern + ".png")).isEmpty()) {
 
                     TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
                     String[] patterns = pattern.split("/");
@@ -345,52 +344,18 @@ public class ChickenTexture {
                         pattern_locations.add("pattern/"+patterns[0]);
                     }
 
-                    //Co
-                    if (patterns[1].contains("het")) {
-                        int size = pattern_locations.size();
-                        for (int i = 0; i < size; i++) {
-                            String p = patterns[1].split("het")[1];
-                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
-                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                    for (int pn = 1; pn < 5; pn++) {
+                        if (patterns[pn].contains("het")) {
+                            int size = pattern_locations.size();
+                            for (int i = 0; i < size; i++) {
+                                String p = patterns[pn].split("het")[1];
+                                pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                                pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                            }
+                        } else {
+                            int finalPn = pn;
+                            pattern_locations.replaceAll(s -> s + "/" + patterns[finalPn]);
                         }
-                    } else {
-                        pattern_locations.replaceAll(s -> s + "/" + patterns[1]);
-                    }
-
-                    //Db
-                    if (patterns[2].contains("het")) {
-                        int size = pattern_locations.size();
-                        for (int i = 0; i < size; i++) {
-                            String p = patterns[2].split("het")[1];
-                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
-                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
-                        }
-                    } else {
-                        pattern_locations.replaceAll(s -> s + "/" + patterns[2]);
-                    }
-
-                    //Ml
-                    if (patterns[3].contains("het")) {
-                        int size = pattern_locations.size();
-                        for (int i = 0; i < size; i++) {
-                            String p = patterns[3].split("het")[1];
-                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
-                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
-                        }
-                    } else {
-                        pattern_locations.replaceAll(s -> s + "/" + patterns[3]);
-                    }
-
-                    //Pg
-                    if (patterns[4].contains("het")) {
-                        int size = pattern_locations.size();
-                        for (int i = 0; i < size; i++) {
-                            String p = patterns[4].split("het")[1];
-                            pattern_locations.add(pattern_locations.get(i) + "/non" + p);
-                            pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
-                        }
-                    } else {
-                        pattern_locations.replaceAll(s -> s + "/" + patterns[4]);
                     }
 
                     for (String loc : pattern_locations) {

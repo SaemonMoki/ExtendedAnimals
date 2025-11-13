@@ -1,55 +1,23 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.blocks.PostBlock;
-import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.MobBucketItem;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import static mokiyoki.enhancedanimals.init.ModBlocks.CHICKEN_NEST;
-import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_ALLIUM;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_AZURE_BLUET;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_BLUE_ORCHID;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_CORNFLOWER;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_DANDELION;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_FERN;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_GRASS;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_LARGE_FERN;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_OXEYE_DAISY;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_ROSE_BUSH;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_SUNFLOWER;
-import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_TALL_GRASS;
-import static mokiyoki.enhancedanimals.init.ModBlocks.PATCHYMYCELIUM_BLOCK;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_ACACIA;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_BIRCH;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_DARK_OAK;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_JUNGLE;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_OAK;
-import static mokiyoki.enhancedanimals.init.ModBlocks.POST_SPRUCE;
-import static mokiyoki.enhancedanimals.init.ModBlocks.SPARSEGRASS_BLOCK;
-import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
-import static mokiyoki.enhancedanimals.init.ModBlocks.UNBOUNDHAY_BLOCK;
+import static mokiyoki.enhancedanimals.init.ModBlocks.*;
 
 /**
  * Created by moki on 24/08/2018.
@@ -432,6 +400,8 @@ public class ModItems {
     public static final RegistryObject<Item> POST_SPRUCE_ITEM = ITEMS_DEFERRED_REGISTRY.register("post_spruce", () -> new BlockItem(POST_SPRUCE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
 
     public static final RegistryObject<Item> CHICKEN_NEST_ITEM = ITEMS_DEFERRED_REGISTRY.register("chicken_nest_item", () -> new BlockItem(CHICKEN_NEST.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> BEE_NEST_ITEM = ITEMS_DEFERRED_REGISTRY.register("bee_nest_item", () -> new BlockItem(BEE_NEST.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> BEEHIVE_ITEM = ITEMS_DEFERRED_REGISTRY.register("beehive_item", () -> new BlockItem(BEEHIVE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> EGG_CARTON_ITEM = ITEMS_DEFERRED_REGISTRY.register("egg_carton", () -> new BlockItem(EGG_CARTON.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> TURTLE_EGG_ITEM = ITEMS_DEFERRED_REGISTRY.register("turtle_egg", () -> new BlockItem(TURTLE_EGG.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> UNBOUNDHAY_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new BlockItem(UNBOUNDHAY_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));

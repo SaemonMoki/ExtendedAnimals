@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": {"model": "eanimod:block/bee_nest/hole"},
+    "facing=down": {"model": "eanimod:block/bee_nest/hole", "x":  180},
+    "facing=north": {"model": "eanimod:block/bee_nest/hole", "x": 90},
+    "facing=west": {"model": "eanimod:block/bee_nest/hole", "x": 90, "y": 270},
+    "facing=south": {"model": "eanimod:block/bee_nest/hole", "x": 270},
+    "facing=east": {"model": "eanimod:block/bee_nest/hole", "x": 90, "y": 90}
+  }
+}

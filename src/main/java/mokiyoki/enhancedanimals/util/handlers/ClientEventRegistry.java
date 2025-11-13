@@ -79,6 +79,7 @@ public class ClientEventRegistry {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_OAK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_SPRUCE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHICKEN_NEST.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.BEE_NEST.get(), RenderType.translucent());
     }
 
     @SubscribeEvent

@@ -1,17 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
-import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
-import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
-import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
-import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
-import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
-import mokiyoki.enhancedanimals.blocks.GrowablePlant;
-import mokiyoki.enhancedanimals.blocks.PatchyMyceliumBlock;
-import mokiyoki.enhancedanimals.blocks.PostBlock;
-import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
-import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
+import mokiyoki.enhancedanimals.blocks.*;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -41,6 +31,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> TURTLE_EGG = BLOCKS_DEFERRED_REGISTRY.register("turtle_egg", () -> new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.SAND).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()));
     public static final RegistryObject<Block> AXOLOTL_EGG = BLOCKS_DEFERRED_REGISTRY.register("axolotl_egg", () -> new EnhancedAxolotlEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.CLAY).strength(0.5F).sound(SoundType.SLIME_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryObject<Block> CHICKEN_NEST = BLOCKS_DEFERRED_REGISTRY.register("chicken_nest", () -> new EnhancedChickenEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.CLAY).strength(0.5F).sound(SoundType.BONE_BLOCK).randomTicks().noOcclusion().noCollission()));
+    public static final RegistryObject<Block> BEE_NEST = BLOCKS_DEFERRED_REGISTRY.register("bee_nest", () -> new EnhancedBeeNestBlock(1, BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_YELLOW).strength(0.3F).sound(SoundType.WOOD).noOcclusion().noCollission()));
+    public static final RegistryObject<Block> BEEHIVE = BLOCKS_DEFERRED_REGISTRY.register("beehive", () -> new EnhancedBeeNestBlock(-1, BlockBehaviour.Properties.of(Material.WOOD).strength(0.6F).sound(SoundType.WOOD)));
     public static final RegistryObject<Block> UNBOUNDHAY_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new UnboundHayBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_YELLOW).strength(0.5F).sound(SoundType.GRASS).noOcclusion().isSuffocating((a,b,c)->false)));
 
     public static final RegistryObject<Block> SPARSEGRASS_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("sparsegrass_block", () -> new SparseGrassBlock(Block.Properties.of(Material.GRASS, MaterialColor.DIRT).randomTicks().strength(0.5F).sound(SoundType.GRASS)));

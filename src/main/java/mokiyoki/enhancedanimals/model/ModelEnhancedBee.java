@@ -293,6 +293,11 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                 this.leg[i].setRotation(map.get("leg"+i));
             }
         }
+
+        this.wingR.setXRot(-Mth.HALF_PI);
+        this.antennaL.setXRot(0.0F);
+        this.antennaR.setXRot(0.0F);
+        this.theBee.setXRot(0.0F);
     }
 
     @Override
@@ -302,10 +307,38 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
             BeePhenotype bee = this.beeModelData.getPhenotype();
             this.setupInitialAnimationValues(this.beeModelData, bee);
 
-//            this.theHead.setXRot(this.theHead.getXRot() + 0.01F);
+            boolean flap = entityIn.isOnGround() && entityIn.getDeltaMovement().lengthSqr() < 1.0E-7;
+
+            if (flap) {
+                this.wingR.setYRot(-0.2618F);
+                this.wingR.setZRot(0.0F);
+                this.wingL.setXRot(-Mth.HALF_PI);
+                this.wingL.setYRot(0.2618F);
+                this.wingL.setZRot(0.0F);
+                this.leg[0].setXRot(0.0F);
+                this.leg[1].setXRot(0.0F);
+                this.leg[2].setXRot(0.0F);
+            } else {
+                float $$7 = ageInTicks * 120.32113F * ((float)Math.PI / 180F);
+                this.wingR.setYRot(0.0F);
+                this.wingR.setZRot(Mth.cos($$7) * (float)Math.PI * 0.15F);
+                this.wingL.setXRot(this.wingR.getXRot());
+                this.wingL.setYRot(this.wingR.getYRot());
+                this.wingL.setZRot(-this.wingR.getZRot());
+                this.leg[0].setXRot((float)Math.PI / 4F);
+                this.leg[1].setXRot((float)Math.PI / 4F);
+                this.leg[2].setXRot((float)Math.PI / 4F);
+                this.theBee.setXRot(0.0F);
+                this.theBee.setYRot(0.0F);
+                this.theBee.setZRot(0.0F);
+            }
 
             this.saveAnimationValues(this.beeModelData);
         }
+
+    }
+
+    private void clingAnimation() {
 
     }
 

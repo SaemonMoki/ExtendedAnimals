@@ -84,20 +84,20 @@ public class BeeGeneticsInitialiser extends AbstractGeneticsInitialiser {
         sexlinkedGenes[11] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
         /**
-         *      blue eyes [blue, Green/Yellow]
+         *      blue eyes [blue, nonblue]
          */
         sexlinkedGenes[12] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
         sexlinkedGenes[13] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
         /**
-         *      yellow eyes [Green/Blue, yellow]
+         *      yellow eyes [nonyellow, yellow]
          */
         sexlinkedGenes[14] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
         sexlinkedGenes[15] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
 
 
         /**
-         *      darken eyes [nondark, darken]
+         *      darken eyes [darken, nondark]
          */
         sexlinkedGenes[16] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
         sexlinkedGenes[17] = getChance() ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;

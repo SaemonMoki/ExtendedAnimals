@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BeeTexture {
 
-    public static void calculateBeeTexture(EnhancedBee bee, int[] gene, boolean isAngry) {
+    public static void calculateBeeTexture(EnhancedBee bee, int[] gene, boolean isAngry, boolean hasPollen) {
         boolean isFemale = bee.getOrSetIsFemale();
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
@@ -23,6 +23,20 @@ public class BeeTexture {
 
         TextureGrouping details = new TextureGrouping(TexturingType.MERGE_GROUP);
 
+        calculateEyes(bee, gene, isAngry, details, isFemale);
+
+        parentGroup.addGrouping(details);
+
+        if (hasPollen) {
+            TextureGrouping pollen = new TextureGrouping(TexturingType.MERGE_GROUP);
+            bee.addTextureToAnimalTextureGrouping(pollen, "pollen.png", "p");
+            parentGroup.addGrouping(pollen);
+        }
+
+        bee.setTextureGrouping(parentGroup);
+    }
+
+    private static void calculateEyes(EnhancedBee bee, int[] gene, boolean isAngry, TextureGrouping details, boolean isFemale) {
         TextureGrouping eyes = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (isAngry) {
             bee.addTextureToAnimalTextureGrouping(eyes, TexturingType.APPLY_RGB, "eyes/angry.png");
@@ -34,24 +48,71 @@ public class BeeTexture {
             eyes.addGrouping(eyeShape);
             TextureGrouping eyeColor = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            String eyeColour = "blue";
-            if (gene[12] == 2 || gene[13] == 2) {
-                if (gene[14] == 2 && gene[15] == 2) {
-                    eyeColour = "yellow";
-                } else {
-                    eyeColour = "green";
-                }
+            String eyeColour = "";
+            int eye_var = 0;
+
+            int eye_blue = 0;
+            if (gene[12] == 1 || gene[13] == 1) {
+                eye_blue = gene[12] == gene[13] ? 2 : 1;
+            }
+            int eye_yellow = 0;
+            if (gene[14] == 2 || gene[15] == 2) {
+                eye_yellow = gene[14] == gene[15] ? 2 : 1;
+            }
+            int eye_shade = 0;
+            if (gene[16] == 1 || gene[17] == 1) {
+                eye_shade = gene[16] == gene[17] ? 2 : 1;
+            }
+            if (gene[18] == 2 || gene[19] == 2) {
+                eye_shade -= gene[18] == gene[19] ? 2 : 1;
             }
 
-            bee.addTextureToAnimalTextureGrouping(eyeColor, "eyes/colour/" + eyeColour + "/0.png", eyeColour);
+            if (eye_blue == 0 && eye_yellow == 0) {
+                switch(eye_shade) {
+                    case 2 -> eyeColour = "blue";
+                    case 1, 0 -> {
+                        eyeColour = "blue"; eye_var = 3;
+                    }
+                    case -1, -2 -> {
+                        eyeColour = "yellow"; eye_var = 3;
+                    }
+                    default -> throw new IllegalStateException("Unexpected green value: " + eye_shade);
+                }
+            } else {
+                if (eye_blue > 0) {
+                    if (eye_yellow == eye_blue) {
+                        eyeColour = "green";
+                        if (eye_blue == 2) {
+                            eye_var = eye_shade < 0 ? 3 : 0;
+                        } else {
+                            eye_var = eye_shade > 0 ? 2 : 1;
+                        }
+                    } else {
+                        eyeColour = "blue";
+                        if (eye_shade <= 0) {
+                            eye_var = 1 - eye_shade;
+                        }
+                    }
+                } else {
+                    eyeColour = "yellow";
+                    if (eye_yellow == 2) {
+                        if (eye_shade <= 1) {
+                            eye_var = eye_shade < 0 ? 2 : 1;
+                        }
+                    } else {
+                        eye_var = eye_shade == -2 ? 3 : 0;
+                    }
+                }
+
+
+            }
+
+            bee.addTextureToAnimalTextureGrouping(eyeColor, "eyes/colour/" + eyeColour + "/" + eye_var +".png", String.valueOf(eyeColour) + eye_var);
 
             eyes.addGrouping(eyeColor);
         }
 
         details.addGrouping(eyes);
-
-        parentGroup.addGrouping(details);
-        bee.setTextureGrouping(parentGroup);
     }
 
     private static void calculateBeeColour(EnhancedBee bee, TextureGrouping base, int[] gene) {

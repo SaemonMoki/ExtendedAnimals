@@ -1898,12 +1898,12 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    public void  addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName) {
-        if (textureName.isEmpty()) {
+    public void  addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureTag) {
+        if (textureTag.isEmpty()) {
             this.texturesIndexes.add(String.valueOf(0));
         } else {
             textureGroup.addTextureLayers(new TextureLayer(TexturingType.MERGE_GROUP, texture));
-            this.texturesIndexes.add(String.valueOf(textureName));
+            this.texturesIndexes.add(String.valueOf(textureTag));
         }
         this.texturesIndexes.add(CACHE_DELIMITER);
     }

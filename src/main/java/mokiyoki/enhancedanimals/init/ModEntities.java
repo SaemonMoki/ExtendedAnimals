@@ -30,7 +30,6 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EnhancedBee>> ENHANCED_BEE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_bee", () -> EntityType.Builder.of(EnhancedBee::new, MobCategory.CREATURE).sized(0.75F, 0.42F).build(Reference.MODID + ":enhanced_bee"));
     public static final RegistryObject<EntityType<EnhancedAxolotlEgg>> ENHANCED_AXOLOTL_EGG = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl_egg", () -> EntityType.Builder.of(EnhancedAxolotlEgg::new, MobCategory.MISC).sized(0.375F, 0.375F).build(Reference.MODID + ":axolotl_egg"));
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
-//    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
     public static void register(IEventBus modEventBus) {
         ENTITIES_DEFERRED_REGISTRY.register(modEventBus);

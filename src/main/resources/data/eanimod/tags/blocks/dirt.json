@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:sparse_grass",
+    "minecraft:patchy_mycelium"
+  ]
+}

@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
 import mokiyoki.enhancedanimals.model.modeldata.BeePhenotype;
 import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import net.minecraft.client.model.ModelUtils;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -47,6 +48,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
     protected WrappedModelPart ovipositor;
 
     private BeeModelData beeModelData;
+    private float rollAmount;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -301,6 +303,12 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
     }
 
     @Override
+    public void prepareMobModel(T bee, float p_102615_, float p_102616_, float p_102617_) {
+        super.prepareMobModel(bee, p_102615_, p_102616_, p_102617_);
+        this.rollAmount = bee.getRollAmount(p_102617_);
+    }
+
+    @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.beeModelData = getCreateBeeModelData(entityIn);
         if (this.beeModelData != null && this.beeModelData.getPhenotype() != null) {
@@ -319,9 +327,9 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                 this.leg[1].setXRot(0.0F);
                 this.leg[2].setXRot(0.0F);
             } else {
-                float $$7 = ageInTicks * 120.32113F * ((float)Math.PI / 180F);
+                float drive = ageInTicks * 120.32113F * ((float)Math.PI / 180F);
                 this.wingR.setYRot(0.0F);
-                this.wingR.setZRot(Mth.cos($$7) * (float)Math.PI * 0.15F);
+                this.wingR.setZRot(Mth.cos(drive) * (float)Math.PI * 0.15F);
                 this.wingL.setXRot(this.wingR.getXRot());
                 this.wingL.setYRot(this.wingR.getYRot());
                 this.wingL.setZRot(-this.wingR.getZRot());
@@ -331,6 +339,25 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                 this.theBee.setXRot(0.0F);
                 this.theBee.setYRot(0.0F);
                 this.theBee.setZRot(0.0F);
+            }
+
+            if (!entityIn.isAngry()) {
+                this.theBee.setXRot(0.0F);
+                this.theBee.setYRot(0.0F);
+                this.theBee.setZRot(0.0F);
+                if (!flap) {
+                    float drive = Mth.cos(ageInTicks * 0.18F);
+                    this.theBee.setXRot(0.1F + drive * (float)Math.PI * 0.025F);
+                    this.antennaL.setXRot(drive * (float)Math.PI * 0.03F);
+                    this.antennaR.setXRot(drive * (float)Math.PI * 0.03F);
+                    this.leg[0].setXRot(-drive * (float)Math.PI * 0.1F + ((float)Math.PI / 8F));
+                    this.leg[2].setXRot(-drive * (float)Math.PI * 0.05F + ((float)Math.PI / 4F));
+                    this.theBee.setY(19.0F - Mth.cos(ageInTicks * 0.18F) * 0.9F);
+                }
+            }
+
+            if (this.rollAmount > 0.0F) {
+                this.theBee.setXRot(ModelUtils.rotlerpRad(this.theBee.getXRot(), 3.0915928F, this.rollAmount));
             }
 
             this.saveAnimationValues(this.beeModelData);

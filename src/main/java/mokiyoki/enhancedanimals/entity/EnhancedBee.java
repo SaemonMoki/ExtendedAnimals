@@ -193,10 +193,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, (double)10.0F).add(Attributes.FLYING_SPEED, (double)0.6F).add(Attributes.MOVEMENT_SPEED, (double)0.3F).add(Attributes.ATTACK_DAMAGE, (double)2.0F).add(Attributes.FOLLOW_RANGE, (double)48.0F);
-    }
-
     public int getStingerData() {
         return this.entityData.get(STINGER);
     }
@@ -244,12 +240,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
     }
 
     @Override
-    public void stopBeingAngry() {
-        reloadTextures();
-        NeutralMob.super.stopBeingAngry();
-    }
-
-    @Override
     public int getRemainingPersistentAngerTime() {
         return this.entityData.get(DATA_REMAINING_ANGER_TIME);
     }
@@ -271,7 +261,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
     @Override
     public void startPersistentAngerTimer() {
-        reloadTextures();
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 

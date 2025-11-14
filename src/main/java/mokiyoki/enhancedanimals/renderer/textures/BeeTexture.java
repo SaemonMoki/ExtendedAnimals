@@ -39,7 +39,7 @@ public class BeeTexture {
     private static void calculateEyes(EnhancedBee bee, int[] gene, boolean isAngry, TextureGrouping details, boolean isFemale) {
         TextureGrouping eyes = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (isAngry) {
-            bee.addTextureToAnimalTextureGrouping(eyes, TexturingType.APPLY_RGB, "eyes/angry.png");
+            bee.addTextureToAnimalTextureGrouping(eyes, "eyes/angry.png", "a");
             details.addGrouping(eyes);
         } else {
             eyes.setTexturingType(TexturingType.MASK_GROUP);

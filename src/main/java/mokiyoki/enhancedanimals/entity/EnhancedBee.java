@@ -1,10 +1,15 @@
 package mokiyoki.enhancedanimals.entity;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import mokiyoki.enhancedanimals.capability.nestegg.INestEggCapability;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.BeeGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -16,10 +21,12 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -671,7 +678,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                 this.nestPos = null;
             }
         }
-
     }
 
     protected PathNavigation createNavigation(Level p_27815_) {
@@ -1168,8 +1174,9 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
         public void start() {
             EnhancedBee.this.remainingCooldownBeforeLocatingNewNest = 200;
-            List<BlockPos> list = this.findNearbyHivesWithSpace();
+            List<BlockPos> list = this.findNearbyNestableLocations(ModTags.Blocks.BURROW_NEST);
             if (!list.isEmpty()) {
+                Collections.shuffle(list);
                 for(BlockPos blockpos : list) {
                     if (!EnhancedBee.this.goToNestGoal.isTargetBlacklisted(blockpos)) {
                         EnhancedBee.this.nestPos = blockpos;
@@ -1188,6 +1195,51 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             PoiManager poimanager = ((ServerLevel)EnhancedBee.this.level).getPoiManager();
             Stream<PoiRecord> stream = poimanager.getInRange((p_28045_) -> p_28045_ == PoiType.BEEHIVE || p_28045_ == PoiType.BEE_NEST, blockpos, 20, PoiManager.Occupancy.ANY);
             return (List)stream.map(PoiRecord::getPos).filter(EnhancedBee.this::doesHiveHaveSpace).sorted(Comparator.comparingDouble((p_148811_) -> p_148811_.distSqr(blockpos))).collect(Collectors.toList());
+        }
+
+        private List<BlockPos> findNearbyNestableLocations(TagKey<Block> nestMaterial) {
+            List<BlockPos> nestSites = new ArrayList<>();
+            List<BlockPos> flyable = new ArrayList<>();
+            List<BlockPos> blocked = new ArrayList<>();
+            BlockPos blockpos = EnhancedBee.this.blockPosition();
+            INestEggCapability nestCapability = EnhancedBee.this.level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()); //TODO move this up the chain more?
+
+            int steps = 20;
+            float distance = 11F;
+            float lookdirection = EnhancedBee.this.yBodyRot % 360;
+
+            /**
+             *      North   : -Z    LD : 180
+             *      South   : +Z    LD : 0/360
+             *      West    : -Z    LD : 90
+             *      East    : +X    LD : 270
+             *
+             */
+
+            if (lookdirection > 45 && lookdirection < 135) {
+                System.out.println("I'm looking WEST!");
+            } else if (lookdirection > 135 && lookdirection < 225) {
+                System.out.println("I'm looking NORTH!");
+            } else if (lookdirection > 225 && lookdirection < 315) {
+                System.out.println("I'm looking EAST!");
+            } else {
+                System.out.println("I'm looking SOUTH!");
+            }
+
+            int[] d = {0, 0, 0};
+            int radius = 6;
+
+
+            for (int i = 0; i < steps; i++) {
+                BlockPos testPos = blockpos.offset(d[0], d[1], d[2]);
+                if (checkGround(EnhancedBee.this.level, testPos, nestCapability, nestSites, nestMaterial)) {
+                    flyable.add(testPos);
+                } else {
+                    blocked.add(testPos);
+                }
+            }
+
+            return nestSites;
         }
     }
 
@@ -1418,5 +1470,88 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             Vec3 vec32 = HoverRandomPos.getPos(EnhancedBee.this, 8, 7, vec3.x, vec3.z, ((float)Math.PI / 2F), 3, 1);
             return vec32 != null ? vec32 : AirAndWaterRandomPos.getPos(EnhancedBee.this, 8, 4, -2, vec3.x, vec3.z, (double)((float)Math.PI / 2F));
         }
+    }
+
+    /**
+     *  Nest
+     */
+
+    private static boolean isNestBlock(BlockState state, TagKey<Block> tagKey) {
+        boolean test = state.is(tagKey);
+//        System.out.println(state.getBlock() + (test ? " can dig it!!!" : " can't XXXX"));
+        return test;
+    }
+
+
+    private static final ImmutableList<Block> BURROW_NEST = ImmutableList.of(Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.GRASS_BLOCK, ModBlocks.SPARSEGRASS_BLOCK.get(), Blocks.MYCELIUM, ModBlocks.PATCHYMYCELIUM_BLOCK.get());
+    private static final ImmutableList<Block> TOUGH_NEST = ImmutableList.of(Blocks.COARSE_DIRT, Blocks.GRAVEL);
+    private static final ImmutableList<Block> MUD_NEST = ImmutableList.of(Blocks.CLAY);
+    private static final ImmutableList<Block> SOFT_NEST = ImmutableList.of(Blocks.HAY_BLOCK, Blocks.BLACK_WOOL, Blocks.BLUE_WOOL, Blocks.BROWN_WOOL, Blocks.CYAN_WOOL, Blocks.GRAY_WOOL, Blocks.GREEN_WOOL, Blocks.LIGHT_BLUE_WOOL, Blocks.LIGHT_GRAY_WOOL, Blocks.LIME_WOOL, Blocks.MAGENTA_WOOL, Blocks.ORANGE_WOOL, Blocks.PINK_WOOL, Blocks.PURPLE_WOOL, Blocks.RED_WOOL, Blocks.YELLOW_WOOL);
+    private static final ImmutableList<Block> SAND_NEST = ImmutableList.of(Blocks.SAND, Blocks.RED_SAND, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.PINK_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER);
+    private static final ImmutableList<Block> CARVED_NEST = ImmutableList.of(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG, Blocks.ACACIA_PLANKS, Blocks.ACACIA_WOOD, Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_WOOD, Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG, Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_WOOD, Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG, Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_WOOD, Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_WOOD, Blocks.SPRUCE_LOG, Blocks.STRIPPED_OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_WOOD);
+
+    private static boolean checkWalls(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+        if (level.getBlockState(pos).isAir()) {
+            int matchingWalls = 0;
+
+            if (nestable(level, nestCapability, pos.north(), nestSites, nestMaterial)) matchingWalls++;
+            if (nestable(level, nestCapability, pos.south(), nestSites, nestMaterial)) matchingWalls++;
+            if (nestable(level, nestCapability, pos.east(), nestSites, nestMaterial)) matchingWalls++;
+            if (nestable(level, nestCapability, pos.west(), nestSites, nestMaterial)) matchingWalls++;
+
+            return matchingWalls > 0;
+        }
+
+        return false;
+    }
+
+    private static boolean checkUnderside(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+        if (level.getBlockState(pos).isAir()) {
+
+            return (nestable(level, nestCapability, pos.above(), nestSites, nestMaterial));
+        }
+
+        return false;
+    }
+
+    private static boolean checkGround(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+        if (level.getBlockState(pos).isAir()) {
+            nestable(level, nestCapability, pos.below(), nestSites, nestMaterial);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean checkSouthEast(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+        if (level.getBlockState(pos).isAir()) {
+            int matchingWalls = 0;
+
+            /**
+             *  the block north and west of the air block are checked because the bee wants the hive to face south or east
+             */
+
+            if (nestable(level, nestCapability, pos.north(), nestSites, nestMaterial)) matchingWalls++;
+            if (nestable(level, nestCapability, pos.west(), nestSites, nestMaterial)) matchingWalls++;
+
+            return matchingWalls > 0;
+        }
+
+        return false;
+    }
+
+    private static boolean nestable(Level level, INestEggCapability nestCapability, BlockPos pos, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+        if (nestCapability.getAllNestEggPos().containsKey(pos)) return false;
+
+        BlockState state = level.getBlockState(pos);
+
+        if (state.isAir()) return false;
+
+        if (isNestBlock(state, nestMaterial)) {
+            nestSites.add(pos);
+            return true;
+        }
+
+        return false;
     }
 }

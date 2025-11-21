@@ -21,7 +21,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -74,6 +73,9 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nullable;
 
 import java.util.*;
@@ -1198,23 +1200,19 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         }
 
         private List<BlockPos> findNearbyNestableLocations(TagKey<Block> nestMaterial) {
-            List<BlockPos> nestSites = new ArrayList<>();
-            List<BlockPos> flyable = new ArrayList<>();
-            List<BlockPos> blocked = new ArrayList<>();
+            HashMap<BlockPos, Integer> nestSites = new HashMap<>();
             BlockPos blockpos = EnhancedBee.this.blockPosition();
             INestEggCapability nestCapability = EnhancedBee.this.level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()); //TODO move this up the chain more?
-
-            int steps = 20;
-            float distance = 11F;
-            float lookdirection = EnhancedBee.this.yBodyRot % 360;
 
             /**
              *      North   : -Z    LD : 180
              *      South   : +Z    LD : 0/360
-             *      West    : -Z    LD : 90
+             *      West    : -X    LD : 90
              *      East    : +X    LD : 270
              *
              */
+
+            float lookdirection = EnhancedBee.this.yBodyRot % 360;
 
             if (lookdirection > 45 && lookdirection < 135) {
                 System.out.println("I'm looking WEST!");
@@ -1226,21 +1224,188 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                 System.out.println("I'm looking SOUTH!");
             }
 
-            int[] d = {0, 0, 0};
-            int radius = 6;
+            List<BlockPos> nestList = new ArrayList<>();
 
+            lookFor(blockpos, (int) EnhancedBee.this.yBodyRot, 10, EnhancedBee.this.level, nestMaterial, nestList);
 
-            for (int i = 0; i < steps; i++) {
-                BlockPos testPos = blockpos.offset(d[0], d[1], d[2]);
-                if (checkGround(EnhancedBee.this.level, testPos, nestCapability, nestSites, nestMaterial)) {
-                    flyable.add(testPos);
+            return nestList;
+        }
+    }
+
+    private final static int[][] riserun = new int[][]{
+            {10    },
+            {11,   5},
+            {12,   2,7},
+            {13,   2,5,8},
+            {13,   1,3,6,8},
+            {14,   1,3,4,6,8},
+            {14,   1,2,3,5,6,8},
+            {15,   1,2,3,4,5,6,7,8}
+    };
+
+    private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
+        boolean[] rays = new boolean[31];
+        sayToChat("I am at " + center + " looking at " + looking);
+        int sectionX = ((looking - 45) % 360) / 90; // which diagonally drawn quadrant to start looking
+        looking = (looking + 90) % 360; // where the scan starts
+        int sectionT = looking / 90;  // which quadrant to start looking
+        looking /= 6; // cut to 6 degrees
+        int r = looking % 15;
+        if (r > 7) r = 15 - r;
+
+        int zD = sectionT == 0 || sectionT == 3 ? 1 : -1; // sets the direction increment
+        int xD = sectionT == 2 || sectionT == 3 ? 1 : -1;
+        boolean xFirst = sectionX == 1 || sectionX == 3;
+
+        int xB = 0; // blockpos X we are on rn
+        int zB = 0; // blockpos Z we are on rn
+
+        int n = riserun[r].length > 1 ? riserun[r][1] : 0;
+
+        for (int dist = 1; dist <= range; dist++) {
+            int scanSize = (dist*2);
+            int rayScale = 30/scanSize;
+
+            for (int a = 0; a <= scanSize; a++) {
+                if (xFirst) {
+                    xB += xD;
                 } else {
-                    blocked.add(testPos);
+                    zB += zD;
                 }
+
+                int rayInx = a * rayScale;
+
+                if (rays[rayInx]) continue; // I need this to check if the rays that would contain blocks that would block this ray is blocked and if it is then block it also
+
+                BlockPos blockPos = center.offset(xB, 0, zB);
+                BlockState blockState = level.getBlockState(blockPos);
+
+                if (!blockState.isAir()) {
+                    rays[rayInx] = true;
+
+                    // solid was found
+                    if (isNestableBlock(blockState, nestMaterial)) {
+                        // the solid looks like a nest!
+                        sayToChat("I saw a nestable " + blockState.getBlock() + " block at " + blockPos);
+                        found.add(blockPos);
+                    } else sayToChat("I saw a solid " + blockState.getBlock() + " block at " + blockPos); //TODO remove this
+                }
+
+                // this swaps the direction of the diagonal scan when it goes over an axis
+                if (xB == 0 || zB == 0) {
+                    switch (sectionT) {
+                        case 0 -> {
+                            xD = 1;
+                            zD = 1;
+                        }
+                        case 1 -> {
+                            xD = -1;
+                            zD = 1;
+                        }
+                        case 2 -> {
+                            xD = -1;
+                            zD = -1;
+                        }
+                        case 3 -> {
+                            xD = 1;
+                            zD = -1;
+                        }
+                    }
+                }
+
             }
 
-            return nestSites;
+            // use riserun to reset the diamond scan
+
         }
+
+//
+//        for (int a = 0; a <= 30; a++) {
+//            // ray level
+//            sayToChat("scanning ray " + looking + "  ( " + a + " out of 30 ) ...");
+//
+//            int rayLength = rays[r][0];
+//
+//            for (int i = 1; i <= rayLength ; i++) {
+//                // block on the ray level
+//                if (xFirst) {
+//                    xB += xD;
+//                } else {
+//                    zB += zD;
+//                }
+//
+//                BlockPos blockPos = center.offset(xB, 0, zB);
+//                BlockState blockState = level.getBlockState(blockPos);
+//                if (!blockState.isAir()) {
+//                    // solid was found
+//                    if (isNestableBlock(blockState, nestMaterial)) {
+//                        // the solid looks like a nest!
+//                        sayToChat("I saw a nestable " + blockState.getBlock() + " block at " + blockPos);
+//                        found.add(blockPos);
+//                    }
+//                    sayToChat("I saw a solid " + blockState.getBlock() + " block at " + blockPos);
+//
+//                    if (i != rayLength) {
+//                        resetBlock = false;
+//                    }
+//
+//                    break;
+//
+//                } else {
+//                    sayToChat(i + " block is air at " + blockPos);
+//                    if (n > 0) {
+//                        if (n == Mth.abs(xFirst ? xD : zD)) {
+//                            n++;
+//                            if (xFirst) {
+//                                xB--;
+//                                zB += zD;
+//                            } else {
+//                                xB += zB;
+//                                zB--;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            looking--; // next ray
+//            if (looking < 0) {
+//                looking += 60;
+//            }
+//
+//            r = looking % 15;
+//            if (r > 7) r = 15 - r;
+//
+//            if (looking % 15 == 0) {
+//                sectionT--;
+//                zD = sectionT == 0 || sectionT == 3 ? 1 : -1;
+//                xD = sectionT == 2 || sectionT == 3 ? 1 : -1;
+//            } else if (looking % 15 == 7) {
+//                sectionX--;
+//                xFirst = !xFirst;
+//            }
+//
+//            n = rays[r].length > 1 ? rays[r][1] : 0;
+//
+//            if (resetBlock) {
+//                xB = 0;
+//                zB = 0;
+//            } else {
+//
+//                resetBlock = true;
+//            }
+//
+//        }
+
+    }
+
+    private static void sayToChat(String txt) {
+        System.out.println(txt);
+    }
+
+    @Contract(value = "_, _, _ -> new", pure = true)
+    private int @NotNull [] offsets(int x, int y, int z) {
+        return new int[] {x, y, z};
     }
 
     class BeeLookControl extends LookControl {
@@ -1476,10 +1641,8 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
      *  Nest
      */
 
-    private static boolean isNestBlock(BlockState state, TagKey<Block> tagKey) {
-        boolean test = state.is(tagKey);
-//        System.out.println(state.getBlock() + (test ? " can dig it!!!" : " can't XXXX"));
-        return test;
+    private static boolean isNestableBlock(BlockState state, TagKey<Block> tagKey) {
+        return state.is(tagKey);
     }
 
 
@@ -1490,7 +1653,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
     private static final ImmutableList<Block> SAND_NEST = ImmutableList.of(Blocks.SAND, Blocks.RED_SAND, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.PINK_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER);
     private static final ImmutableList<Block> CARVED_NEST = ImmutableList.of(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG, Blocks.ACACIA_PLANKS, Blocks.ACACIA_WOOD, Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_WOOD, Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG, Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_WOOD, Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG, Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_WOOD, Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_WOOD, Blocks.SPRUCE_LOG, Blocks.STRIPPED_OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_WOOD);
 
-    private static boolean checkWalls(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+    private static boolean checkWalls(Level level, BlockPos pos, INestEggCapability nestCapability, HashMap<BlockPos, Integer> nestSites, TagKey<Block> nestMaterial) {
         if (level.getBlockState(pos).isAir()) {
             int matchingWalls = 0;
 
@@ -1505,7 +1668,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         return false;
     }
 
-    private static boolean checkUnderside(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+    private static boolean checkUnderside(Level level, BlockPos pos, INestEggCapability nestCapability, HashMap<BlockPos, Integer> nestSites, TagKey<Block> nestMaterial) {
         if (level.getBlockState(pos).isAir()) {
 
             return (nestable(level, nestCapability, pos.above(), nestSites, nestMaterial));
@@ -1514,7 +1677,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         return false;
     }
 
-    private static boolean checkGround(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+    private static boolean checkGround(Level level, BlockPos pos, INestEggCapability nestCapability, HashMap<BlockPos, Integer> nestSites, TagKey<Block> nestMaterial) {
         if (level.getBlockState(pos).isAir()) {
             nestable(level, nestCapability, pos.below(), nestSites, nestMaterial);
             return true;
@@ -1523,7 +1686,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         return false;
     }
 
-    private static boolean checkSouthEast(Level level, BlockPos pos, INestEggCapability nestCapability, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+    private static boolean checkSouthEast(Level level, BlockPos pos, INestEggCapability nestCapability, HashMap<BlockPos, Integer> nestSites, TagKey<Block> nestMaterial) {
         if (level.getBlockState(pos).isAir()) {
             int matchingWalls = 0;
 
@@ -1540,16 +1703,22 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         return false;
     }
 
-    private static boolean nestable(Level level, INestEggCapability nestCapability, BlockPos pos, List<BlockPos> nestSites, TagKey<Block> nestMaterial) {
+    private static boolean nestable(Level level, INestEggCapability nestCapability, BlockPos pos, HashMap<BlockPos, Integer> nestSites, TagKey<Block> nestMaterial) {
         if (nestCapability.getAllNestEggPos().containsKey(pos)) return false;
 
         BlockState state = level.getBlockState(pos);
 
-        if (state.isAir()) return false;
+        if (state.isAir()) {
+            nestSites.put(pos, 0);
+            return false;
+        }
 
-        if (isNestBlock(state, nestMaterial)) {
-            nestSites.add(pos);
+        if (isNestableBlock(state, nestMaterial)) {
+            nestSites.put(pos, 2);
+            System.out.println(nestSites.size() + " nestable locations detected");
             return true;
+        } else {
+            nestSites.put(pos, 1);
         }
 
         return false;

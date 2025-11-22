@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.capability.nestegg.INestEggCapability;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
@@ -12,6 +13,10 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.BeeModelData;
+import mokiyoki.enhancedanimals.network.EAPPHappy;
+import mokiyoki.enhancedanimals.network.EAPPSolid;
+import mokiyoki.enhancedanimals.network.EAPPAir;
+import mokiyoki.enhancedanimals.network.EAParticlePacket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -73,6 +78,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -654,6 +660,17 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             this.rollAmount = Math.max(0.0F, this.rollAmount - 0.24F);
         }
 
+    }
+
+    @Override
+    protected void runLivingTickClient() {
+        super.runLivingTickClient();
+
+        if (this.hasPollen() && this.getCropsGrownSincePollination() < 10 && this.random.nextFloat() < 0.05F) {
+            for(int i = 0; i < this.random.nextInt(2) + 1; ++i) {
+                this.spawnFluidParticle(this.level, this.getX() - (double)0.3F, this.getX() + (double)0.3F, this.getZ() - (double)0.3F, this.getZ() + (double)0.3F, this.getY((double)0.5F), ParticleTypes.FALLING_NECTAR);
+            }
+        }
     }
 
     /**
@@ -1244,8 +1261,122 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
     };
 
     private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
+        List<BlockPos> air = new ArrayList<>();
+        List<BlockPos> solid = new ArrayList<>();
+
         boolean[] rays = new boolean[31];
-        sayToChat("I am at " + center + " looking at " + looking);
+
+        int sectionX = ((looking + 495) % 360) / 90; // which diagonally drawn quadrant to start looking
+        looking = (looking+450) % 360;
+        int sectionT = looking / 90;
+        looking /= 6;
+
+        int r = looking % 15;
+        if (r > 7) r = 15 - r;
+
+        boolean xFirst = sectionX == 1 || sectionX == 3;
+
+        int xD = sectionX-2;
+        int zD = 1-sectionX;
+
+        int xB = xFirst ? xD : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
+        int zB = xFirst ? 0 : zD; // blockpos Z we are on rn
+
+
+        int riserunInx = 1;
+
+        sayToChat("starting scan at " + (looking) + " with angle value of " + r + ", riserun size is " + riserun[r][0]);
+        sayToChat("    < quad = " + sectionT + " & " + sectionX + " || (" + xB + "," + zB + ")>");
+
+        for (int i = 1; i < riserun[r][0]; i++) {
+
+            int xPos = xB;
+            int zPos = zB;
+
+            sayToChat("i="+i+"  ("+xPos+","+zPos+")");
+
+            for (int c = 0; c <= i*2; c++) {
+
+//                if (rays[c*((15/i))]) {
+//                    if ((c == 0 || rays[(c+1)*(15/(i-1))]) || (rays[(c-1)*(15/(i-1))] || c == i*2)) {
+                        BlockPos blockPos = center.offset(xPos, 0, zPos);
+                        BlockState blockState = level.getBlockState(blockPos);
+                        if (!blockState.isAir()) {
+                            if (isNestableBlock(blockState, nestMaterial)) {
+                                found.add(blockPos);
+                            } else {
+                            }
+
+                            rays[c*(15/i)] = false;
+                        } else {
+                        }
+//                    }
+//                }
+                if (c!=0) solid.add(blockPos);
+                sayToChat("c = " +c+ "   ("+xPos+","+zPos+")");
+
+                if (zPos >= 0 && xPos < 0) {
+                    xPos++;
+                    zPos++;
+                } else if (zPos > 0) {
+                    xPos++;
+                    zPos--;
+                } else if (xPos > 0) {
+                    xPos--;
+                    zPos--;
+                } else {
+                    xPos--;
+                    zPos++;
+                }
+            }
+
+            if (xFirst) {
+                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == xB)) {
+                    sayToChat(zB+" + "+zD + " = " + (zB+zD));
+                    zB += zD;
+                    riserunInx++;
+                } else {
+                    sayToChat(xB+" + "+xD+" = " + (xB+xD));
+                    xB += xD;
+                }
+            } else {
+                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == zB)) {
+                    sayToChat(xB+" + "+xD+" = " + (xB+xD));
+                    xB += xD;
+                    riserunInx++;
+                } else {
+                    sayToChat(zB+" + "+zD + " = " + (zB+zD));
+                    zB += zD;
+                }
+            }
+        }
+
+
+
+        EAParticlePacket airParticlePacket = new EAPPAir(getPacketPos(air));
+        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), airParticlePacket);
+        EAParticlePacket solidParticlePacket = new EAPPSolid(getPacketPos(solid));
+        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), solidParticlePacket);
+        EAParticlePacket nestParticlePacket = new EAPPHappy(getPacketPos(found));
+        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), nestParticlePacket);
+
+    }
+
+    private static int[] getPacketPos(List<BlockPos> blockPos) {
+        int[] packedPos = new int[blockPos.size()*3];
+        int i = 0;
+        for (BlockPos pos : blockPos) {
+            packedPos[i] = pos.getX();
+            packedPos[i+1] = pos.getY()+2;
+            packedPos[i+2] = pos.getZ();
+            i += 3;
+        }
+
+        return packedPos;
+    }
+
+    private void lookForOld(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
+        boolean[] rays = new boolean[31];
         int sectionX = ((looking - 45) % 360) / 90; // which diagonally drawn quadrant to start looking
         looking = (looking + 90) % 360; // where the scan starts
         int sectionT = looking / 90;  // which quadrant to start looking

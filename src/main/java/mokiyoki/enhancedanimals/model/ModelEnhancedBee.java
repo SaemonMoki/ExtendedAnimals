@@ -52,7 +52,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -4.0F));
         PartDefinition bHead = base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition bBody = base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition bLegs = base.addOrReplaceChild("bLegs", CubeListBuilder.create(), PartPose.ZERO);
@@ -352,7 +352,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EnhancedAnimalModel
                     this.antennaR.setXRot(drive * (float)Math.PI * 0.03F);
                     this.leg[0].setXRot(-drive * (float)Math.PI * 0.1F + ((float)Math.PI / 8F));
                     this.leg[2].setXRot(-drive * (float)Math.PI * 0.05F + ((float)Math.PI / 4F));
-                    this.theBee.setY(19.0F - Mth.cos(ageInTicks * 0.18F) * 0.9F);
+                    this.theBee.setY(35.0F - Mth.cos(ageInTicks * 0.18F) * 0.9F);
                 }
             }
 

@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
-import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.*;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
@@ -142,6 +142,9 @@ public class EnhancedAnimals {
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
         channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
+        channel.messageBuilder(EAPPHappy.class, messageNumber++).encoder(EAPPHappy::writePacketData).decoder(EAPPHappy::new).consumer(EAPPHappy::processPacket).add();
+        channel.messageBuilder(EAPPSolid.class, messageNumber++).encoder(EAPPSolid::writePacketData).decoder(EAPPSolid::new).consumer(EAPPSolid::processPacket).add();
+        channel.messageBuilder(EAPPAir.class, messageNumber++).encoder(EAPPAir::writePacketData).decoder(EAPPAir::new).consumer(EAPPAir::processPacket).add();
 
         try {
             StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));

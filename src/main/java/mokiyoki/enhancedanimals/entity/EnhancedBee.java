@@ -1277,17 +1277,18 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         boolean xFirst = sectionX == 1 || sectionX == 3;
 
         int xB = xFirst ? 2 - sectionX : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
-        int zB = xFirst ? 0 : 1 - sectionX; // blockpos Z we are on rn
+        int zB = xFirst ? 0 : -(1 - sectionX); // blockpos Z we are on rn
 
         int xStartDirection = looking > 0 && looking <= 30 ? 1 : -1;
-        int zStartDirection = looking <= 15 || looking > 30 ? 1 : -1;
+        int zStartDirection = -(looking <= 15 || looking > 30 ? 1 : -1);
 
         int riserunInx = 1;
 
         sayToChat("starting scan at " + (looking) + " with angle value of " + r + ", riserun size is " + riserun[r][0]);
         sayToChat("    < quad = " + sectionT + " & " + sectionX + " || (" + xB + "," + zB + ")>");
 
-        for (int i = 1; i < riserun[r][0]; i++) {
+        int circleEdge = riserun[r][0];
+        for (int i = 1; i < 16; i++) {
 
             int xPos = xB;
             int zPos = zB;
@@ -1296,26 +1297,36 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
             for (int c = 0; c <= i*2; c++) {
 
-//                if (rays[c*((15/i))]) {
-//                    if ((c == 0 || rays[(c+1)*(15/(i-1))]) || (rays[(c-1)*(15/(i-1))] || c == i*2)) {
+                int x = Mth.abs(xPos);
+                int z = Mth.abs(zPos);
+
+                boolean inRange = isInRange(x, z);
+
+                if (inRange) {
+                    boolean unBlocked = i == 1;
+
+                    if (unBlocked) {
                         BlockPos blockPos = center.offset(xPos, 0, zPos);
                         BlockState blockState = level.getBlockState(blockPos);
                         if (!blockState.isAir()) {
                             if (isNestableBlock(blockState, nestMaterial)) {
                                 found.add(blockPos);
                             } else {
-                                solid.add(blockPos);
+                                solid.add(blockPos); //TODO remove debug spam
                             }
 
-                            rays[c*(15/i)] = false;
-                        } else {
-                            solid.add(blockPos);
-                        }
-//                    }
-//                }
-                if (c==0 || c == i*2) air.add(blockPos);
+                            for (int b = 0; b <= 2;b++) {
 
-                sayToChat("c = " +c+ "   ("+xPos+","+zPos+")");
+                            }
+                        } else {
+                            solid.add(blockPos); //TODO remove debug spam
+                        }
+
+                        if (c == 0 || c == i * 2) air.add(blockPos); //TODO remove debug spam
+
+                        sayToChat("c = " + c + "   (" + xPos + "," + zPos + ")"); //TODO remove debug spam
+                    }
+                }
 
                 /**
                  *      North   : -Z    LD : 180
@@ -1370,6 +1381,39 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         EAParticlePacket nestParticlePacket = new EAPPHappy(getPacketPos(found));
         EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), nestParticlePacket);
 
+    }
+
+    private static boolean isInRange(int x, int z) {
+        boolean inRange = true;
+
+        /**
+         *      X and Z MUST BE ABSOLUTE VALUES
+         */
+
+        if (x > z) {
+            if (x > 7) {
+                if (x > 10) {
+                    inRange = false;
+                } else if (x == 10) {
+                    inRange = z < 4;
+                } else if (x == 9) {
+                    inRange = z < 5;
+                }
+            }
+        } else {
+            if (z > 7) {
+                if (z > 10) {
+                    inRange = false;
+                } else if (z == 10) {
+                    inRange = x < 4;
+                } else if (z == 9) {
+                    inRange = x < 5;
+                } else {
+                    inRange = x < 8;
+                }
+            }
+        }
+        return inRange;
     }
 
     private static int[] getPacketPos(List<BlockPos> blockPos) {

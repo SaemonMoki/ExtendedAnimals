@@ -1229,7 +1229,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
              *
              */
 
-            float lookdirection = EnhancedBee.this.yBodyRot % 360;
+            float lookdirection = EnhancedBee.this.getYRot() % 360;
 
             if (lookdirection > 45 && lookdirection < 135) {
                 System.out.println("I'm looking WEST!");
@@ -1243,7 +1243,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
             List<BlockPos> nestList = new ArrayList<>();
 
-            lookFor(blockpos, (int) EnhancedBee.this.yBodyRot, 10, EnhancedBee.this.level, nestMaterial, nestList);
+            lookFor(blockpos, (int) EnhancedBee.this.getYRot(), 10, EnhancedBee.this.level, nestMaterial, nestList);
 
             return nestList;
         }
@@ -1266,8 +1266,8 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
         boolean[] rays = new boolean[31];
 
-        int sectionX = ((looking + 495) % 360) / 90; // which diagonally drawn quadrant to start looking
-        looking = (looking+450) % 360;
+        int sectionX = ((looking + 675) % 360) / 90; // which diagonally drawn quadrant to start looking
+        looking = (looking+630) % 360;
         int sectionT = looking / 90;
         looking /= 6;
 
@@ -1276,12 +1276,11 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
         boolean xFirst = sectionX == 1 || sectionX == 3;
 
-        int xD = sectionX-2;
-        int zD = 1-sectionX;
+        int xB = xFirst ? 2 - sectionX : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
+        int zB = xFirst ? 0 : 1 - sectionX; // blockpos Z we are on rn
 
-        int xB = xFirst ? xD : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
-        int zB = xFirst ? 0 : zD; // blockpos Z we are on rn
-
+        int xStartDirection = looking > 0 && looking <= 30 ? 1 : -1;
+        int zStartDirection = looking <= 15 || looking > 30 ? 1 : -1;
 
         int riserunInx = 1;
 
@@ -1293,7 +1292,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             int xPos = xB;
             int zPos = zB;
 
-            sayToChat("i="+i+"  ("+xPos+","+zPos+")");
+            sayToChat("start loop   -->   i="+i+"  ("+xPos+","+zPos+")");
 
             for (int c = 0; c <= i*2; c++) {
 
@@ -1305,15 +1304,26 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                             if (isNestableBlock(blockState, nestMaterial)) {
                                 found.add(blockPos);
                             } else {
+                                solid.add(blockPos);
                             }
 
                             rays[c*(15/i)] = false;
                         } else {
+                            solid.add(blockPos);
                         }
 //                    }
 //                }
-                if (c!=0) solid.add(blockPos);
+                if (c==0 || c == i*2) air.add(blockPos);
+
                 sayToChat("c = " +c+ "   ("+xPos+","+zPos+")");
+
+                /**
+                 *      North   : -Z    LD : 180
+                 *      South   : +Z    LD : 0/360
+                 *      West    : -X    LD : 90
+                 *      East    : +X    LD : 270
+                 *
+                 */
 
                 if (zPos >= 0 && xPos < 0) {
                     xPos++;
@@ -1331,22 +1341,22 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             }
 
             if (xFirst) {
-                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == xB)) {
-                    sayToChat(zB+" + "+zD + " = " + (zB+zD));
-                    zB += zD;
+                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(xB))) {
+                    sayToChat("z instead at index " + riserunInx +"  : " + zB+" + "+zStartDirection + " = " + (zB+zStartDirection));
+                    zB += zStartDirection;
                     riserunInx++;
                 } else {
-                    sayToChat(xB+" + "+xD+" = " + (xB+xD));
-                    xB += xD;
+                    sayToChat("added to x first : " + xB+" + "+xStartDirection+" = " + (xB+xStartDirection));
+                    xB += xStartDirection;
                 }
             } else {
-                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == zB)) {
-                    sayToChat(xB+" + "+xD+" = " + (xB+xD));
-                    xB += xD;
+                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(zB))) {
+                    sayToChat("x instead at index " + riserunInx +"  : " + xB+" + "+xStartDirection+" = " + (xB+xStartDirection));
+                    xB += xStartDirection;
                     riserunInx++;
                 } else {
-                    sayToChat(zB+" + "+zD + " = " + (zB+zD));
-                    zB += zD;
+                    sayToChat("added to z first : " + zB+" + "+zStartDirection + " = " + (zB+zStartDirection));
+                    zB += zStartDirection;
                 }
             }
         }
@@ -1367,7 +1377,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         int i = 0;
         for (BlockPos pos : blockPos) {
             packedPos[i] = pos.getX();
-            packedPos[i+1] = pos.getY()+2;
+            packedPos[i+1] = pos.getY()+1;
             packedPos[i+2] = pos.getZ();
             i += 3;
         }

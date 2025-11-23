@@ -24,7 +24,7 @@ public class EAPacketHandler {
             int[] pos = message.getPos();
             ParticleOptions particle = message.getParticle();
             for (int i = 0; i < pos.length; i+= 3) {
-                minecraft.level.addParticle(particle, pos[i], pos[i+1], pos[i+2], 0.0F, 0.0F, 10.0F);
+                minecraft.level.addParticle(particle, pos[i] + 0.5F, pos[i+1], pos[i+2] + 0.5F, 0.0F, 0.0F, 10.0F);
             }
         });
     }

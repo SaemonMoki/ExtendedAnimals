@@ -16,6 +16,6 @@ public class EAPPAir extends EAParticlePacket {
 
     @Override
     ParticleOptions getParticle() {
-        return ParticleTypes.DRAGON_BREATH;
+        return ParticleTypes.ANGRY_VILLAGER;
     }
 }

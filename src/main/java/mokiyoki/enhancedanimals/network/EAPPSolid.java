@@ -16,6 +16,6 @@ public class EAPPSolid extends EAParticlePacket {
 
     @Override
     ParticleOptions getParticle() {
-        return ParticleTypes.ANGRY_VILLAGER;
+        return ParticleTypes.COMPOSTER;
     }
 }

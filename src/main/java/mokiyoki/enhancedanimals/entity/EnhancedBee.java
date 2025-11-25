@@ -1260,11 +1260,49 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             {15,   1,2,3,4,5,6,7,8}
     };
 
-    private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
-        List<BlockPos> air = new ArrayList<>();
-        List<BlockPos> solid = new ArrayList<>();
+    private final static int[][] occlusionMap = new int[][] {
+            {0,30},
+            {0, 7,   8,22,  23,30},
+            {0, 3,   4,11,  12,18,  19,26,  27,30},
+            {0, 1,   2, 7,   8,13,  14,16,  17,22,  23,28,  29,30},
+            {0, 1,   2, 5,   6, 9,  10,13,  14,16,  17,20,  21,24,  25,28,  29,30},
+            {0, 1,   2, 3,   4, 7,   8,11,  12,13,  14,16,  17,18,  19,22,  23,26,  27,28,  29,30},
+            {0, 0,   1, 3,   4, 5,   6, 9,  10,11,  12,14,  15,15,  16,18,  19,20,  21,24,  25,27,  28,29,  30,30},
+            {0, 0,   1, 2,   3, 4,   5, 7,   8,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,22,  23,25,  26,27,  28,29,  30,30},
+            {0, 0,   1, 2,   3, 4,   5, 6,   7, 8,   9,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,21,  22,23,  24,25,  26,27,  28,29,  30,30},
+            {0, 0,   1, 1,   2, 3,   4, 5,   6, 7,   8, 9,  10,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,20,  21,22,  23,24,  25,26,  27,28, 29,29, 30,30},
+            {0, 0,   1, 1,   2, 3,   4, 4,   5, 6,   7, 8,   9,10,  11,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,19,  20,21,  22,23,  24,25,  26,26,  27,28,  29,29,  30,30},
+            {0, 0,   1, 1,   2, 2,   3, 4,   5, 5,   6, 7,   8, 9,  10,10,  11,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,19,  20,20,  21,22,  23,24,  25,25,  26,27,  28,28,  29,29,  30,30},
+            {0, 0,   1, 1,   2, 2,   3, 3,   4, 5,   6, 6,   7, 8,   9, 9,  10,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,20,  21,21,  22,23,  24,24,  25,26,  27,27,  28,28,  29,29,  30,30},
+            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 6,   7, 7,   8, 8,   9,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,21,  22,22,  23,23,  24,25,  26,26,  27,27,  28,28,  29,29,  30,30},
+            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30},
+            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 7,   8, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,22,  23,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30}
+    };
 
-        boolean[] rays = new boolean[31];
+    private final static int[][] occlusionMapNew = new int[][] {
+            {0,  31},
+            {0,  8,  23,  31},
+            {0,  4,  12,  19,  27,  31},
+            {0,  2,   8,  14,  17,  23,  29,  31},
+            {0,  2,   6,  10,  14,  17,  21,  25,  29,  31},
+            {0,  2,   4,   8,  12,  14,  17,  19,  23,  27,  29,  31},
+            {0,  1,   4,   6,  10,  12,  15,  16,  19,  21,  25,  28,  30,31},
+            {0,  1,   3,   5,   8,  11,  13,  15,  16,  18,  20,  23,  26,  28,  30,31},
+            {0,  1,   3,   5,   7,   9,  11,  13,  15,  16,  18,  20,  22,  24,  26,  28,  30,31},
+            {0,  1,   2,   4,   6,   8,  10,  12,  14,  15,  16,  17,  19,  21,  23,  25,  27,  29,  30,31},
+            {0,  1,   2,   4,   5,   7,   9,  11,  12,  14,  15,  16,  17,  19,  20,  22,  24,  26,  27,  29,  30,31},
+            {0,  1,   2,   3,   5,   6,   8,  10,  11,  13,  14,  15,  16,  17,  18,  20,  21,  23,  25,  26,  28,  29,  30,31},
+            {0,  1,   2,   3,   4,   6,   7,   9,  10,  12,  13,  14,  15,  16,  17,  18,  19,  21,  22,  24,  25,  27,  28,  29,  30,31},
+            {0,  1,   2,   3,   4,   5,   7,   8,   9,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  22,  23,  24,  26,  27,  28,  29,  30,31},
+            {0,  1,   2,   3,   4,   5,   6,   7,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  24,  25,  26,  27,  28,  29,  30,31},
+            {0,  1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,31}
+    };
+
+    private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
+        List<BlockPos> blocked = new ArrayList<>();
+        List<BlockPos> air = new ArrayList<>();
+
+        boolean[] prunedRays = new boolean[31];
 
         int sectionX = ((looking + 675) % 360) / 90; // which diagonally drawn quadrant to start looking
         looking = (looking+630) % 360;
@@ -1287,7 +1325,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         sayToChat("starting scan at " + (looking) + " with angle value of " + r + ", riserun size is " + riserun[r][0]);
         sayToChat("    < quad = " + sectionT + " & " + sectionX + " || (" + xB + "," + zB + ")>");
 
-        int circleEdge = riserun[r][0];
+
         for (int i = 1; i < 16; i++) {
 
             int xPos = xB;
@@ -1303,7 +1341,24 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                 boolean inRange = isInRange(x, z);
 
                 if (inRange) {
-                    boolean unBlocked = i == 1;
+                    boolean unBlocked = true;
+
+                    int s = occlusionMapNew[i][c];
+                    int f = occlusionMapNew[i][c+1];
+
+                    if (i != 1) {
+                        int s2 = s;
+
+                        while (s2 < f) {
+                            if (prunedRays[s2]) {
+                                sayToChat(s2 + " is blocked");
+                                unBlocked = false;
+                                break;
+                            }
+                            s2++;
+                        }
+
+                    }
 
                     if (unBlocked) {
                         BlockPos blockPos = center.offset(xPos, 0, zPos);
@@ -1312,18 +1367,18 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                             if (isNestableBlock(blockState, nestMaterial)) {
                                 found.add(blockPos);
                             } else {
-                                solid.add(blockPos); //TODO remove debug spam
+                                blocked.add(blockPos); //TODO remove debug spam
                             }
 
-                            for (int b = 0; b <= 2;b++) {
+                            sayToChat("prunned " + s + " to " + f + " exclusive");
 
+                            while (s < f) {
+                                prunedRays[s] = true;
+                                s++;
                             }
                         } else {
-                            solid.add(blockPos); //TODO remove debug spam
+                            air.add(blockPos); //TODO remove debug spam
                         }
-
-                        if (c == 0 || c == i * 2) air.add(blockPos); //TODO remove debug spam
-
                         sayToChat("c = " + c + "   (" + xPos + "," + zPos + ")"); //TODO remove debug spam
                     }
                 }
@@ -1374,9 +1429,9 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
 
 
-        EAParticlePacket airParticlePacket = new EAPPAir(getPacketPos(air));
+        EAParticlePacket airParticlePacket = new EAPPAir(getPacketPos(blocked));
         EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), airParticlePacket);
-        EAParticlePacket solidParticlePacket = new EAPPSolid(getPacketPos(solid));
+        EAParticlePacket solidParticlePacket = new EAPPSolid(getPacketPos(air));
         EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), solidParticlePacket);
         EAParticlePacket nestParticlePacket = new EAPPHappy(getPacketPos(found));
         EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), nestParticlePacket);

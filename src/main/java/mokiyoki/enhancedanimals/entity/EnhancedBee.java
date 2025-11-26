@@ -1286,16 +1286,16 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             {0,  2,   8,  14,  17,  23,  29,  31},
             {0,  2,   6,  10,  14,  17,  21,  25,  29,  31},
             {0,  2,   4,   8,  12,  14,  17,  19,  23,  27,  29,  31},
-            {0,  1,   4,   6,  10,  12,  15,  16,  19,  21,  25,  28,  30,31},
-            {0,  1,   3,   5,   8,  11,  13,  15,  16,  18,  20,  23,  26,  28,  30,31},
-            {0,  1,   3,   5,   7,   9,  11,  13,  15,  16,  18,  20,  22,  24,  26,  28,  30,31},
-            {0,  1,   2,   4,   6,   8,  10,  12,  14,  15,  16,  17,  19,  21,  23,  25,  27,  29,  30,31},
-            {0,  1,   2,   4,   5,   7,   9,  11,  12,  14,  15,  16,  17,  19,  20,  22,  24,  26,  27,  29,  30,31},
-            {0,  1,   2,   3,   5,   6,   8,  10,  11,  13,  14,  15,  16,  17,  18,  20,  21,  23,  25,  26,  28,  29,  30,31},
-            {0,  1,   2,   3,   4,   6,   7,   9,  10,  12,  13,  14,  15,  16,  17,  18,  19,  21,  22,  24,  25,  27,  28,  29,  30,31},
-            {0,  1,   2,   3,   4,   5,   7,   8,   9,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  22,  23,  24,  26,  27,  28,  29,  30,31},
-            {0,  1,   2,   3,   4,   5,   6,   7,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  24,  25,  26,  27,  28,  29,  30,31},
-            {0,  1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,31}
+            {0,  1,   4,   6,  10,  12,  15,  16,  19,  21,  25,  28,  30,  31},
+            {0,  1,   3,   5,   8,  11,  13,  15,  16,  18,  20,  23,  26,  28,  30,  31},
+            {0,  1,   3,   5,   7,   9,  11,  13,  15,  16,  18,  20,  22,  24,  26,  28,  30,  31},
+            {0,  1,   2,   4,   6,   8,  10,  12,  14,  15,  16,  17,  19,  21,  23,  25,  27,  29,  30, 31},
+            {0,  1,   2,   4,   5,   7,   9,  11,  12,  14,  15,  16,  17,  19,  20,  22,  24,  26,  27,  29,  30,  31},
+            {0,  1,   2,   3,   5,   6,   8,  10,  11,  13,  14,  15,  16,  17,  18,  20,  21,  23,  25,  26,  28,  29,  30,  31},
+            {0,  1,   2,   3,   4,   6,   7,   9,  10,  12,  13,  14,  15,  16,  17,  18,  19,  21,  22,  24,  25,  27,  28,  29,  30,  31},
+            {0,  1,   2,   3,   4,   5,   7,   8,   9,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  22,  23,  24,  26,  27,  28,  29,  30,  31},
+            {0,  1,   2,   3,   4,   5,   6,   7,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  24,  25,  26,  27,  28,  29,  30,  31},
+            {0,  1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31}
     };
 
     private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
@@ -1322,16 +1322,14 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
         int riserunInx = 1;
 
-        sayToChat("starting scan at " + (looking) + " with angle value of " + r + ", riserun size is " + riserun[r][0]);
-        sayToChat("    < quad = " + sectionT + " & " + sectionX + " || (" + xB + "," + zB + ")>");
+        range *= 1.5;
 
+        if (range > 15) range = 15;
 
-        for (int i = 1; i < 16; i++) {
+        for (int i = 1; i <= range; i++) {
 
             int xPos = xB;
             int zPos = zB;
-
-            sayToChat("start loop   -->   i="+i+"  ("+xPos+","+zPos+")");
 
             for (int c = 0; c <= i*2; c++) {
 
@@ -1341,7 +1339,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                 boolean inRange = isInRange(x, z);
 
                 if (inRange) {
-                    boolean unBlocked = true;
+                    boolean unBlocked = i==1;
 
                     int s = occlusionMapNew[i][c];
                     int f = occlusionMapNew[i][c+1];
@@ -1350,9 +1348,8 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                         int s2 = s;
 
                         while (s2 < f) {
-                            if (prunedRays[s2]) {
-                                sayToChat(s2 + " is blocked");
-                                unBlocked = false;
+                            if (!prunedRays[s2]) {
+                                unBlocked = true;
                                 break;
                             }
                             s2++;
@@ -1370,8 +1367,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                                 blocked.add(blockPos); //TODO remove debug spam
                             }
 
-                            sayToChat("prunned " + s + " to " + f + " exclusive");
-
                             while (s < f) {
                                 prunedRays[s] = true;
                                 s++;
@@ -1379,7 +1374,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
                         } else {
                             air.add(blockPos); //TODO remove debug spam
                         }
-                        sayToChat("c = " + c + "   (" + xPos + "," + zPos + ")"); //TODO remove debug spam
                     }
                 }
 
@@ -1408,20 +1402,16 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
             if (xFirst) {
                 if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(xB))) {
-                    sayToChat("z instead at index " + riserunInx +"  : " + zB+" + "+zStartDirection + " = " + (zB+zStartDirection));
                     zB += zStartDirection;
                     riserunInx++;
                 } else {
-                    sayToChat("added to x first : " + xB+" + "+xStartDirection+" = " + (xB+xStartDirection));
                     xB += xStartDirection;
                 }
             } else {
                 if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(zB))) {
-                    sayToChat("x instead at index " + riserunInx +"  : " + xB+" + "+xStartDirection+" = " + (xB+xStartDirection));
                     xB += xStartDirection;
                     riserunInx++;
                 } else {
-                    sayToChat("added to z first : " + zB+" + "+zStartDirection + " = " + (zB+zStartDirection));
                     zB += zStartDirection;
                 }
             }

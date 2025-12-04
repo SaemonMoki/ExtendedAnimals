@@ -81,6 +81,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Debug;
 
 import javax.annotation.Nullable;
 
@@ -1259,27 +1260,27 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             {14,   1,2,3,5,6,8},
             {15,   1,2,3,4,5,6,7,8}
     };
+//
+//    private final static int[][] occlusionMapOld = new int[][] {
+//            {0,30},
+//            {0, 7,   8,22,  23,30},
+//            {0, 3,   4,11,  12,18,  19,26,  27,30},
+//            {0, 1,   2, 7,   8,13,  14,16,  17,22,  23,28,  29,30},
+//            {0, 1,   2, 5,   6, 9,  10,13,  14,16,  17,20,  21,24,  25,28,  29,30},
+//            {0, 1,   2, 3,   4, 7,   8,11,  12,13,  14,16,  17,18,  19,22,  23,26,  27,28,  29,30},
+//            {0, 0,   1, 3,   4, 5,   6, 9,  10,11,  12,14,  15,15,  16,18,  19,20,  21,24,  25,27,  28,29,  30,30},
+//            {0, 0,   1, 2,   3, 4,   5, 7,   8,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,22,  23,25,  26,27,  28,29,  30,30},
+//            {0, 0,   1, 2,   3, 4,   5, 6,   7, 8,   9,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,21,  22,23,  24,25,  26,27,  28,29,  30,30},
+//            {0, 0,   1, 1,   2, 3,   4, 5,   6, 7,   8, 9,  10,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,20,  21,22,  23,24,  25,26,  27,28, 29,29, 30,30},
+//            {0, 0,   1, 1,   2, 3,   4, 4,   5, 6,   7, 8,   9,10,  11,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,19,  20,21,  22,23,  24,25,  26,26,  27,28,  29,29,  30,30},
+//            {0, 0,   1, 1,   2, 2,   3, 4,   5, 5,   6, 7,   8, 9,  10,10,  11,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,19,  20,20,  21,22,  23,24,  25,25,  26,27,  28,28,  29,29,  30,30},
+//            {0, 0,   1, 1,   2, 2,   3, 3,   4, 5,   6, 6,   7, 8,   9, 9,  10,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,20,  21,21,  22,23,  24,24,  25,26,  27,27,  28,28,  29,29,  30,30},
+//            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 6,   7, 7,   8, 8,   9,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,21,  22,22,  23,23,  24,25,  26,26,  27,27,  28,28,  29,29,  30,30},
+//            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30},
+//            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 7,   8, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,22,  23,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30}
+//    };
 
     private final static int[][] occlusionMap = new int[][] {
-            {0,30},
-            {0, 7,   8,22,  23,30},
-            {0, 3,   4,11,  12,18,  19,26,  27,30},
-            {0, 1,   2, 7,   8,13,  14,16,  17,22,  23,28,  29,30},
-            {0, 1,   2, 5,   6, 9,  10,13,  14,16,  17,20,  21,24,  25,28,  29,30},
-            {0, 1,   2, 3,   4, 7,   8,11,  12,13,  14,16,  17,18,  19,22,  23,26,  27,28,  29,30},
-            {0, 0,   1, 3,   4, 5,   6, 9,  10,11,  12,14,  15,15,  16,18,  19,20,  21,24,  25,27,  28,29,  30,30},
-            {0, 0,   1, 2,   3, 4,   5, 7,   8,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,22,  23,25,  26,27,  28,29,  30,30},
-            {0, 0,   1, 2,   3, 4,   5, 6,   7, 8,   9,10,  11,12,  13,14,  15,15,  16,17,  18,19,  20,21,  22,23,  24,25,  26,27,  28,29,  30,30},
-            {0, 0,   1, 1,   2, 3,   4, 5,   6, 7,   8, 9,  10,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,20,  21,22,  23,24,  25,26,  27,28, 29,29, 30,30},
-            {0, 0,   1, 1,   2, 3,   4, 4,   5, 6,   7, 8,   9,10,  11,11,  12,13,  14,14,  15,15,  16,16,  17,18,  19,19,  20,21,  22,23,  24,25,  26,26,  27,28,  29,29,  30,30},
-            {0, 0,   1, 1,   2, 2,   3, 4,   5, 5,   6, 7,   8, 9,  10,10,  11,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,19,  20,20,  21,22,  23,24,  25,25,  26,27,  28,28,  29,29,  30,30},
-            {0, 0,   1, 1,   2, 2,   3, 3,   4, 5,   6, 6,   7, 8,   9, 9,  10,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,20,  21,21,  22,23,  24,24,  25,26,  27,27,  28,28,  29,29,  30,30},
-            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 6,   7, 7,   8, 8,   9,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,21,  22,22,  23,23,  24,25,  26,26,  27,27,  28,28,  29,29,  30,30},
-            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30},
-            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 7,   8, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,22,  23,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30}
-    };
-
-    private final static int[][] occlusionMapNew = new int[][] {
             {0,  31},
             {0,  8,  23,  31},
             {0,  4,  12,  19,  27,  31},
@@ -1298,133 +1299,140 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
             {0,  1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31}
     };
 
+
+
     private void lookFor(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
-        List<BlockPos> blocked = new ArrayList<>();
-        List<BlockPos> air = new ArrayList<>();
+        if (level.isLoaded(center)) {
 
-        boolean[] prunedRays = new boolean[31];
+            List<BlockPos> blocked = new ArrayList<>();  //TODO remove these
+            List<BlockPos> air = new ArrayList<>();      //TODO remove these
 
-        int sectionX = ((looking + 675) % 360) / 90; // which diagonally drawn quadrant to start looking
-        looking = (looking+630) % 360;
-        int sectionT = looking / 90;
-        looking /= 6;
+            int loadedXMin, loadedZMin = -range;
+            int loadedXMax, loadedZMax = range;
 
-        int r = looking % 15;
-        if (r > 7) r = 15 - r;
 
-        boolean xFirst = sectionX == 1 || sectionX == 3;
+            boolean[] prunedRays = new boolean[31];
 
-        int xB = xFirst ? 2 - sectionX : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
-        int zB = xFirst ? 0 : -(1 - sectionX); // blockpos Z we are on rn
+            int sectionX = ((looking + 675) % 360) / 90; // which diagonally drawn quadrant to start looking
+            looking = (looking + 630) % 360;
+            looking /= 6;
 
-        int xStartDirection = looking > 0 && looking <= 30 ? 1 : -1;
-        int zStartDirection = -(looking <= 15 || looking > 30 ? 1 : -1);
+            int r = looking % 15;
+            if (r > 7) r = 15 - r;
 
-        int riserunInx = 1;
+            boolean xFirst = sectionX == 1 || sectionX == 3;
 
-        range *= 1.5;
+            int xB = xFirst ? 2 - sectionX : 0; // blockpos X we are on rn //these are not intuitive since the quad doesn't exactly start on the axis
+            int zB = xFirst ? 0 : -(1 - sectionX); // blockpos Z we are on rn
 
-        if (range > 15) range = 15;
+            int xStartDirection = looking > 0 && looking <= 30 ? 1 : -1;
+            int zStartDirection = -(looking <= 15 || looking > 30 ? 1 : -1);
 
-        for (int i = 1; i <= range; i++) {
+            int riserunInx = 1;
 
-            int xPos = xB;
-            int zPos = zB;
+            range *= 1.5F;
 
-            for (int c = 0; c <= i*2; c++) {
+            if (range > 15) range = 15;
 
-                int x = Mth.abs(xPos);
-                int z = Mth.abs(zPos);
+            for (int i = 1; i <= range; i++) {
 
-                boolean inRange = isInRange(x, z);
+                int xPos = xB;
+                int zPos = zB;
 
-                if (inRange) {
-                    boolean unBlocked = i==1;
+                for (int c = 0; c <= i * 2; c++) {
 
-                    int s = occlusionMapNew[i][c];
-                    int f = occlusionMapNew[i][c+1];
+                    int x = Mth.abs(xPos);
+                    int z = Mth.abs(zPos);
 
-                    if (i != 1) {
-                        int s2 = s;
+                    boolean inRange = isInRange(x, z);
 
-                        while (s2 < f) {
-                            if (!prunedRays[s2]) {
-                                unBlocked = true;
-                                break;
+                    if (inRange) {
+                        boolean unBlocked = i == 1;
+
+                        int s = occlusionMap[i][c];
+                        int f = occlusionMap[i][c + 1];
+
+                        if (i != 1) {
+                            int s2 = s;
+
+                            while (s2 < f) {
+                                if (!prunedRays[s2]) {
+                                    unBlocked = true;
+                                    break;
+                                }
+                                s2++;
                             }
-                            s2++;
+
                         }
 
-                    }
+                        if (unBlocked) {
+                            BlockPos blockPos = center.offset(xPos, 0, zPos);
+                            BlockState blockState = level.getBlockState(blockPos);
+                            if (!blockState.isAir()) {
+                                if (isNestableBlock(blockState, nestMaterial)) {
+                                    found.add(blockPos);
+                                } else {
+                                    blocked.add(blockPos); //TODO remove debug spam
+                                }
 
-                    if (unBlocked) {
-                        BlockPos blockPos = center.offset(xPos, 0, zPos);
-                        BlockState blockState = level.getBlockState(blockPos);
-                        if (!blockState.isAir()) {
-                            if (isNestableBlock(blockState, nestMaterial)) {
-                                found.add(blockPos);
+                                while (s < f) {
+                                    prunedRays[s] = true;
+                                    s++;
+                                }
                             } else {
-                                blocked.add(blockPos); //TODO remove debug spam
+                                air.add(blockPos); //TODO remove debug spam
                             }
-
-                            while (s < f) {
-                                prunedRays[s] = true;
-                                s++;
-                            }
-                        } else {
-                            air.add(blockPos); //TODO remove debug spam
                         }
+                    }
+
+                    /**
+                     *      North   : -Z    LD : 180
+                     *      South   : +Z    LD : 0/360
+                     *      West    : -X    LD : 90
+                     *      East    : +X    LD : 270
+                     *
+                     */
+
+                    if (zPos >= 0 && xPos < 0) {
+                        xPos++;
+                        zPos++;
+                    } else if (zPos > 0) {
+                        xPos++;
+                        zPos--;
+                    } else if (xPos > 0) {
+                        xPos--;
+                        zPos--;
+                    } else {
+                        xPos--;
+                        zPos++;
                     }
                 }
 
-                /**
-                 *      North   : -Z    LD : 180
-                 *      South   : +Z    LD : 0/360
-                 *      West    : -X    LD : 90
-                 *      East    : +X    LD : 270
-                 *
-                 */
-
-                if (zPos >= 0 && xPos < 0) {
-                    xPos++;
-                    zPos++;
-                } else if (zPos > 0) {
-                    xPos++;
-                    zPos--;
-                } else if (xPos > 0) {
-                    xPos--;
-                    zPos--;
+                if (xFirst) {
+                    if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(xB))) {
+                        zB += zStartDirection;
+                        riserunInx++;
+                    } else {
+                        xB += xStartDirection;
+                    }
                 } else {
-                    xPos--;
-                    zPos++;
+                    if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(zB))) {
+                        xB += xStartDirection;
+                        riserunInx++;
+                    } else {
+                        zB += zStartDirection;
+                    }
                 }
             }
 
-            if (xFirst) {
-                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(xB))) {
-                    zB += zStartDirection;
-                    riserunInx++;
-                } else {
-                    xB += xStartDirection;
-                }
-            } else {
-                if ((riserunInx < riserun[r].length) && (riserun[r][riserunInx] == Mth.abs(zB))) {
-                    xB += xStartDirection;
-                    riserunInx++;
-                } else {
-                    zB += zStartDirection;
-                }
-            }
+
+            EAParticlePacket airParticlePacket = new EAPPAir(getPacketPos(blocked));
+            EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), airParticlePacket);
+            EAParticlePacket solidParticlePacket = new EAPPSolid(getPacketPos(air));
+            EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), solidParticlePacket);
+            EAParticlePacket nestParticlePacket = new EAPPHappy(getPacketPos(found));
+            EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), nestParticlePacket);
         }
-
-
-
-        EAParticlePacket airParticlePacket = new EAPPAir(getPacketPos(blocked));
-        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), airParticlePacket);
-        EAParticlePacket solidParticlePacket = new EAPPSolid(getPacketPos(air));
-        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), solidParticlePacket);
-        EAParticlePacket nestParticlePacket = new EAPPHappy(getPacketPos(found));
-        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), nestParticlePacket);
 
     }
 
@@ -1474,161 +1482,7 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         return packedPos;
     }
 
-    private void lookForOld(BlockPos center, int looking, int range, Level level, TagKey<Block> nestMaterial, List<BlockPos> found) {
-        boolean[] rays = new boolean[31];
-        int sectionX = ((looking - 45) % 360) / 90; // which diagonally drawn quadrant to start looking
-        looking = (looking + 90) % 360; // where the scan starts
-        int sectionT = looking / 90;  // which quadrant to start looking
-        looking /= 6; // cut to 6 degrees
-        int r = looking % 15;
-        if (r > 7) r = 15 - r;
-
-        int zD = sectionT == 0 || sectionT == 3 ? 1 : -1; // sets the direction increment
-        int xD = sectionT == 2 || sectionT == 3 ? 1 : -1;
-        boolean xFirst = sectionX == 1 || sectionX == 3;
-
-        int xB = 0; // blockpos X we are on rn
-        int zB = 0; // blockpos Z we are on rn
-
-        int n = riserun[r].length > 1 ? riserun[r][1] : 0;
-
-        for (int dist = 1; dist <= range; dist++) {
-            int scanSize = (dist*2);
-            int rayScale = 30/scanSize;
-
-            for (int a = 0; a <= scanSize; a++) {
-                if (xFirst) {
-                    xB += xD;
-                } else {
-                    zB += zD;
-                }
-
-                int rayInx = a * rayScale;
-
-                if (rays[rayInx]) continue; // I need this to check if the rays that would contain blocks that would block this ray is blocked and if it is then block it also
-
-                BlockPos blockPos = center.offset(xB, 0, zB);
-                BlockState blockState = level.getBlockState(blockPos);
-
-                if (!blockState.isAir()) {
-                    rays[rayInx] = true;
-
-                    // solid was found
-                    if (isNestableBlock(blockState, nestMaterial)) {
-                        // the solid looks like a nest!
-                        sayToChat("I saw a nestable " + blockState.getBlock() + " block at " + blockPos);
-                        found.add(blockPos);
-                    } else sayToChat("I saw a solid " + blockState.getBlock() + " block at " + blockPos); //TODO remove this
-                }
-
-                // this swaps the direction of the diagonal scan when it goes over an axis
-                if (xB == 0 || zB == 0) {
-                    switch (sectionT) {
-                        case 0 -> {
-                            xD = 1;
-                            zD = 1;
-                        }
-                        case 1 -> {
-                            xD = -1;
-                            zD = 1;
-                        }
-                        case 2 -> {
-                            xD = -1;
-                            zD = -1;
-                        }
-                        case 3 -> {
-                            xD = 1;
-                            zD = -1;
-                        }
-                    }
-                }
-
-            }
-
-            // use riserun to reset the diamond scan
-
-        }
-
-//
-//        for (int a = 0; a <= 30; a++) {
-//            // ray level
-//            sayToChat("scanning ray " + looking + "  ( " + a + " out of 30 ) ...");
-//
-//            int rayLength = rays[r][0];
-//
-//            for (int i = 1; i <= rayLength ; i++) {
-//                // block on the ray level
-//                if (xFirst) {
-//                    xB += xD;
-//                } else {
-//                    zB += zD;
-//                }
-//
-//                BlockPos blockPos = center.offset(xB, 0, zB);
-//                BlockState blockState = level.getBlockState(blockPos);
-//                if (!blockState.isAir()) {
-//                    // solid was found
-//                    if (isNestableBlock(blockState, nestMaterial)) {
-//                        // the solid looks like a nest!
-//                        sayToChat("I saw a nestable " + blockState.getBlock() + " block at " + blockPos);
-//                        found.add(blockPos);
-//                    }
-//                    sayToChat("I saw a solid " + blockState.getBlock() + " block at " + blockPos);
-//
-//                    if (i != rayLength) {
-//                        resetBlock = false;
-//                    }
-//
-//                    break;
-//
-//                } else {
-//                    sayToChat(i + " block is air at " + blockPos);
-//                    if (n > 0) {
-//                        if (n == Mth.abs(xFirst ? xD : zD)) {
-//                            n++;
-//                            if (xFirst) {
-//                                xB--;
-//                                zB += zD;
-//                            } else {
-//                                xB += zB;
-//                                zB--;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            looking--; // next ray
-//            if (looking < 0) {
-//                looking += 60;
-//            }
-//
-//            r = looking % 15;
-//            if (r > 7) r = 15 - r;
-//
-//            if (looking % 15 == 0) {
-//                sectionT--;
-//                zD = sectionT == 0 || sectionT == 3 ? 1 : -1;
-//                xD = sectionT == 2 || sectionT == 3 ? 1 : -1;
-//            } else if (looking % 15 == 7) {
-//                sectionX--;
-//                xFirst = !xFirst;
-//            }
-//
-//            n = rays[r].length > 1 ? rays[r][1] : 0;
-//
-//            if (resetBlock) {
-//                xB = 0;
-//                zB = 0;
-//            } else {
-//
-//                resetBlock = true;
-//            }
-//
-//        }
-
-    }
-
+    @Debug
     private static void sayToChat(String txt) {
         System.out.println(txt);
     }

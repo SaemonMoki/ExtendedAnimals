@@ -1250,16 +1250,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
         }
     }
 
-    private final static int[][] riserun = new int[][]{
-            {10    },
-            {11,   5},
-            {12,   2,7},
-            {13,   2,5,8},
-            {13,   1,3,6,8},
-            {14,   1,3,4,6,8},
-            {14,   1,2,3,5,6,8},
-            {15,   1,2,3,4,5,6,7,8}
-    };
 //
 //    private final static int[][] occlusionMapOld = new int[][] {
 //            {0,30},
@@ -1280,6 +1270,30 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 //            {0, 0,   1, 1,   2, 2,   3, 3,   4, 4,   5, 5,   6, 6,   7, 7,   8, 8,   9, 9,  10,10,  11,11,  12,12,  13,13,  14,14,  15,15,  16,16,  17,17,  18,18,  19,19,  20,20,  21,21,  22,22,  23,23,  24,24,  25,25,  26,26,  27,27,  28,28,  29,29,  30,30}
 //    };
 
+    /**
+     *      i:      angle index
+     *      [i=0]:    number of blocks within the "array"
+     *      [i>0]:  block index(run) at which the rise increases by one
+     */
+    private final static int[][] riserun = new int[][]{
+
+
+            {10    },
+            {11,   5},
+            {12,   2,7},
+            {13,   2,5,8},
+            {13,   1,3,6,8},
+            {14,   1,3,4,6,8},
+            {14,   1,2,3,5,6,8},
+            {15,   1,2,3,4,5,6,7,8}
+    };
+
+    /**
+     *      i:      block offset along ray
+     *      [i]:    block offset along "diamond" path in view
+     *      [v]:  minimum ray index to occlude if block (i,[i]) is solid
+     *      [v]:    maximum ray index to occlude if block (i,[i-1]) is solid
+     */
     private final static int[][] occlusionMap = new int[][] {
             {0,  31},
             {0,  8,  23,  31},
@@ -1309,7 +1323,6 @@ public class EnhancedBee extends EnhancedAnimalAbstract implements NeutralMob, F
 
             int loadedXMin, loadedZMin = -range;
             int loadedXMax, loadedZMax = range;
-
 
             boolean[] prunedRays = new boolean[31];
 

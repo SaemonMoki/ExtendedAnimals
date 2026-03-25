@@ -219,53 +219,53 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         );
 
         bEarLeft.addOrReplaceChild("earXSL", CubeListBuilder.create()
-                        .texOffs(8, 51)
+                        .texOffs(0, 51)
                         .addBox(0.0F, -3.0F, -0.5F, 3, 3, 1),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earSL", CubeListBuilder.create()
-                        .texOffs(8, 51)
+                        .texOffs(0, 51)
                         .addBox(0.0F, -4.0F, -0.5F, 3, 4, 1),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earML", CubeListBuilder.create()
-                        .texOffs(8, 51)
+                        .texOffs(0, 51)
                         .addBox(0.0F, -5.0F, -0.5F, 3, 5, 1),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earLL", CubeListBuilder.create()
-                        .texOffs(8, 51)
+                        .texOffs(0, 51)
                         .addBox(-0.5F, -7.0F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earXLL", CubeListBuilder.create()
-                        .texOffs(8, 51)
+                        .texOffs(0, 51)
                         .addBox(-1.0F, -9.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
                 PartPose.ZERO
         );
 
         bEarRight.addOrReplaceChild("earXSR", CubeListBuilder.create()
-                        .texOffs(0, 51)
+                        .texOffs(8, 51)
                         .addBox(-3.0F, -3.0F, -0.5F, 3, 3, 1),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earSR", CubeListBuilder.create()
-                        .texOffs(0, 51)
+                        .texOffs(8, 51)
                         .addBox(-3.0F, -4.0F, -0.5F, 3, 4, 1),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earMR", CubeListBuilder.create()
-                        .texOffs(0, 51)
+                        .texOffs(8, 51)
                         .addBox(-3.0F, -5.0F, -0.5F, 3, 5, 1),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earLR", CubeListBuilder.create()
-                        .texOffs(0, 51)
+                        .texOffs(8, 51)
                         .addBox(-2.5F, -7.0F, -0.5F, 3, 6, 1, new CubeDeformation(0.5F, 0.5F, 0.0F)),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earXLR", CubeListBuilder.create()
-                        .texOffs(0, 51)
+                        .texOffs(8, 51)
                         .addBox(-2.0F, -9.0F, -0.5F, 3, 7, 1, new CubeDeformation(1.0F, 1.0F, 0.0F)),
                 PartPose.ZERO
         );

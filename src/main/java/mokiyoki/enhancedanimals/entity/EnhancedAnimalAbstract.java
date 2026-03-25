@@ -1908,6 +1908,30 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType type, String texture, String textureName) {
+        if (textureName.isEmpty()) {
+            this.texturesIndexes.add(String.valueOf(0));
+        } else {
+            textureGroup.addTextureLayers(new TextureLayer(type, texture));
+            this.texturesIndexes.add(textureName);
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addFlippedTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName, boolean flip, int ... cubes) {
+        if (textureName.isEmpty()) {
+            this.texturesIndexes.add(String.valueOf(0));
+        } else {
+            TextureLayer layer = new TextureLayer(flip ? TexturingType.APPLY_FLIP : TexturingType.MERGE_GROUP, texture);
+            if (flip && cubes != null) {
+                layer.setCubes(cubes);
+            }
+            textureGroup.addTextureLayers(layer);
+            this.texturesIndexes.add(textureName);
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
         textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
         this.texturesIndexes.add(String.valueOf(0));

@@ -6,7 +6,18 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class CowTexture {
+    private static final int[] headCubes = new int[] {
+            0, 0, 38, 8, 7, 6,
+            0, 28, 38, 4, 5, 4,
+            0, 16, 51, 5, 4, 3,
+            0, 25, 51, 3, 3, 7,
+            0, 44, 38, 4, 6, 2,
+            0, 51, 50, 10, 8, 8,
+            1, 0, 51, 8, 51, 3, 7, 1
+    };
 
     public static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -363,7 +374,14 @@ public class CowTexture {
             TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
             if (gene[254] == 2 || gene[255] == 2) {
                 colour.setTexturingType(TexturingType.CUTOUT_GROUP);
-                cow.addTextureToAnimalTextureGrouping(colour, "spots/brockling/0.png", "0");
+                TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+                int t = ThreadLocalRandom.current().nextInt(1, 5);
+                for (int i = 0; i < t; i++) {
+                    int rand = ThreadLocalRandom.current().nextInt(0, 13);
+                    cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
+                }
+                colour.addGrouping(brockling);
             }
             cow.addTextureToAnimalTextureGrouping(colour, "spots/white.png");
             grouping.addGrouping(colour);

@@ -187,6 +187,79 @@ public class TexturingUtils {
         return colColours;
     }
 
+    public static NativeImage mirrorTexture(NativeImage image, int[] cubes) {
+        if (cubes.length > 1) {
+            int l = cubes.length;
+
+            for (int i = 0; i < l; i+=6) {
+                switch (cubes[i]) {
+                    default -> {
+                        // mirror cube across the x axis
+                        // t u v x y z
+                        mirrorCube(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5]);
+                    }
+                    case 1 -> {
+                        // mirror cube with another cube
+                        // t u1 v1 u2 v2 x y z
+                        mirrorCubes(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5], cubes[i+6], cubes[i+7]);
+
+                        i+=2;
+                    }
+                }
+            }
+
+        }
+
+        return image;
+    }
+
+    private static void mirrorCubes(NativeImage image, int u1, int v1, int u2, int v2, int x, int y, int z) {
+        mirrorSquares(image, u1, v1, u2, v2,0, z, x + (2*z), y);
+        mirrorSquares(image, u1, v1, u2, v2, z,0, x, z);
+        mirrorSquares(image, u1, v1, u2, v2,z+x, 0, x, z);
+        mirrorSquares(image, u1, v1, u2, v2,x+(2*z), z, x, y);
+    }
+
+    private static void mirrorSquares(NativeImage image, int u1, int v1, int u2, int v2, int uOffset, int vOffset, int x, int y) {
+        u1 += uOffset;
+        u2 += uOffset;
+        v1 += vOffset;
+        v2 += vOffset;
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                swapPixels(image, u1 + i, v1 + j, u2 + ((x-1)-i), v2+j);
+            }
+        }
+    }
+
+    private static void mirrorCube(NativeImage image, int u, int v, int x, int y, int z) {
+        mirrorSquare(image, u, v + z, x + (2*z), y);
+        mirrorSquare(image, u+z, v, x, z);
+        mirrorSquare(image, u+z+x, v, x, z);
+        mirrorSquare(image, u+x+(2*z), v + z, x, y);
+    }
+
+    private static void mirrorSquare(NativeImage image, int x1, int y1, int x2, int y2) {
+        x2 += x1 - 1;
+        y2 += y1;
+
+        while (x1 < x2) {
+            for (int j = y1; j < y2; j++) {
+                swapPixels(image, x1, j, x2, j);
+            }
+            x1 += 1;
+            x2 -= 1;
+        }
+    }
+
+    private static void swapPixels(NativeImage image, int x1, int y1, int x2, int y2) {
+        int colour1 = image.getPixelRGBA(x1, y1);
+        int colour2 = image.getPixelRGBA(x2, y2);
+        image.setPixelRGBA(x1, y1, colour2);
+        image.setPixelRGBA(x2, y2, colour1);
+    }
+
     //Layers the base image's and supplied image's pixels together
     private static void layerPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);

@@ -83,6 +83,24 @@ public class TexturingUtils {
         return textureImage;
     }
 
+    public static NativeImage applySetRGB(NativeImage textureImage, int rgb) {
+        for(int i = 0; i < textureImage.getHeight(); ++i) {
+            for (int j = 0; j < textureImage.getWidth(); ++j) {
+                setRGB(j, i, rgb, textureImage);
+            }
+        }
+        return textureImage;
+    }
+
+    public static NativeImage applyShadeMelanin(NativeImage textureImage, int rgb) {
+        for(int i = 0; i < textureImage.getHeight(); ++i) {
+            for (int j = 0; j < textureImage.getWidth(); ++j) {
+                shadeMelanin(j, i, rgb, textureImage);
+            }
+        }
+        return textureImage;
+    }
+
     public static NativeImage applyBGRBlend(NativeImage textureImage, int rgb) {
         for(int i = 0; i < textureImage.getHeight(); ++i) {
             for (int j = 0; j < textureImage.getWidth(); ++j) {
@@ -321,6 +339,24 @@ public class TexturingUtils {
         }
     }
 
+    //Blends the supplied image with a specified rbg
+    private static void setRGB(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        int originalAlpha = i >> 24 & 255;
+
+        if(originalAlpha != 0) {
+//            float oa = originalAlpha * COLOUR_DEGREE;
+//            float da = (float)(rgbDye >> 24 & 255) * COLOUR_DEGREE;
+//            originalAlpha = (int)(oa * da * 255F);
+            int r = (rgbDye >> 16 & 255);
+            int g = (rgbDye >> 8 & 255);
+            int b = (rgbDye >> 0 & 255);
+
+            nativeimage.setPixelRGBA(xIn, yIn, originalAlpha << 24 | r << 16 | g << 8 | b);
+        }
+    }
+
     private static void blendAH(int x, int y, int ah, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(x, y);
 
@@ -528,6 +564,37 @@ public class TexturingUtils {
                     }
                 }
             }
+        }
+    }
+
+    public static void shadeMelanin(int xIn, int yIn, int rgbaDye, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        float layerAlpha = 1.0F - ((float)(rgbaDye >> 24 & 255) / 255.0F);
+        float layerBlue = (float)(rgbaDye >> 16 & 255) / 255.0F;
+        float layerGreen = (float)(rgbaDye >> 8 & 255) / 255.0F;
+        float layerRed = (float)(rgbaDye >> 0 & 255) / 255.0F;
+        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
+
+        if (originalAlpha != 0.0F) {
+
+            if (layerAlpha == originalAlpha) {
+                originalAlpha = 0.5F;
+            } else if (layerAlpha > originalAlpha) {
+                originalAlpha = (originalAlpha*0.5F)/layerAlpha;
+            } else {
+                originalAlpha = 1.0F - (((1.0F-originalAlpha)*0.5F)/(1.0F-layerAlpha));
+            }
+
+            originalAlpha = originalAlpha > 1.0F ? 1.0F : originalAlpha;
+            originalAlpha = originalAlpha < 0.0F ? 0.0F : originalAlpha;
+
+            int j = (int) (originalAlpha * 255.0F);
+            int k = (int)(layerBlue * 255.0F);
+            int l = (int)(layerGreen * 255.0F);
+            int i1 = (int)(layerRed * 255.0F);
+
+            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
     }
 

@@ -1119,6 +1119,10 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[253] = 1;
         }
 
+        //Brockling [wildtype, brockling]
+        autosomalGenes[254] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+        autosomalGenes[255] = ThreadLocalRandom.current().nextInt(100) > WTC ? ThreadLocalRandom.current().nextInt(2) + 1 : 1;
+
         return new Genes(autosomalGenes);
     }
 }

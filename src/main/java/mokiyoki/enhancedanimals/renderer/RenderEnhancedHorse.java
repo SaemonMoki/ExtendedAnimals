@@ -16,8 +16,8 @@
 //@OnlyIn(Dist.CLIENT)
 //public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhancedHorse<EnhancedHorse>> {
 //    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-//    private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entities/horse/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/horse/horsebase.png");
+//    private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entity/horse/";
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/horse/horsebase.png");
 //
 //    public RenderEnhancedHorse(EntityRendererProvider.Context renderManager) {
 //        super(renderManager, new ModelEnhancedHorse<>(), 0.8F);

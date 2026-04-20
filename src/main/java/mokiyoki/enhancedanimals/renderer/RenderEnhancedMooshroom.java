@@ -19,8 +19,8 @@ import static mokiyoki.enhancedanimals.GeneticAnimals.MODID;
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, ModelEnhancedCow<EnhancedMooshroom>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
+    private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entity/cow/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/cow/cowbase.png");
     public static final ModelLayerLocation MOOSHROOM_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "mooshroom"), "mooshroom_layer");
 
     public RenderEnhancedMooshroom(EntityRendererProvider.Context renderManager) {

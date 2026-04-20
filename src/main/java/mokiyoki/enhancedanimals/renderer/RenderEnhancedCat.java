@@ -17,8 +17,8 @@
 //public class RenderEnhancedCat extends MobRenderer<EnhancedCat, ModelEnhancedCat<EnhancedCat>>
 //{
 //    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
-//    private static final String ENHANCED_CAT_TEXTURE_LOCATION = "eanimod:textures/entities/cat/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cat/catbase.png");
+//    private static final String ENHANCED_CAT_TEXTURE_LOCATION = "eanimod:textures/entity/cat/";
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/cat/catbase.png");
 //
 //    public RenderEnhancedCat(EntityRendererManager render)
 //    {

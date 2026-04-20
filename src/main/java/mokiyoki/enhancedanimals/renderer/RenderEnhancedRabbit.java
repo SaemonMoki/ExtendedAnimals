@@ -22,8 +22,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhancedRabbit<EnhancedRabbit>> {
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_RABBIT_TEXTURE_LOCATION = "eanimod:textures/entities/rabbit/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/rabbit/rabbitbase.png");
+    private static final String ENHANCED_RABBIT_TEXTURE_LOCATION = "eanimod:textures/entity/rabbit/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/rabbit/rabbitbase.png");
     public static final ModelLayerLocation RABBIT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "rabbit"), "rabbit_layer");
 
     public RenderEnhancedRabbit(EntityRendererProvider.Context renderManager)

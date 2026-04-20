@@ -16,8 +16,8 @@
 //@OnlyIn(Dist.CLIENT)
 //public class RenderEnhancedBee extends MobRenderer<EnhancedBee, ModelEnhancedBee<EnhancedBee>> {
 //    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
-//    private static final String ENHANCED_BEE_TEXTURE_LOCATION = "eanimod:textures/entities/bee/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/bee/beebase.png");
+//    private static final String ENHANCED_BEE_TEXTURE_LOCATION = "eanimod:textures/entity/bee/";
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/bee/beebase.png");
 //
 //
 //

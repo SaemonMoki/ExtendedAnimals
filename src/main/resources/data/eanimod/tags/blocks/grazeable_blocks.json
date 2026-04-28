@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:grass_block",
+    "eanimod:sparsegrass_block",
+    "#minecraft:crops",
+    "#minecraft:small_flowers",
+    "#minecraft:tall_flowers"
+  ]
+}

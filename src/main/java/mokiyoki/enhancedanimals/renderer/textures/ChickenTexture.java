@@ -695,9 +695,18 @@ public class ChickenTexture {
             s *= 0.7F;
         }
 
-        if (gene[284]!=3||gene[285]!=3) {
-            s *= 0.65F;
-            b *= 0.95F;
+        s *= 0.65F;
+        b *= 0.95F;
+
+        //cream
+        if (gene[284]==1||gene[285]==1) {
+
+        } else {
+            h += (0.141F-h)*0.5F;
+            s *= 0.5F;
+            b += (1.0F - b) *0.5F;
+            b = 0.0F;
+            h = 0.8F;
         }
 
         //dominant white

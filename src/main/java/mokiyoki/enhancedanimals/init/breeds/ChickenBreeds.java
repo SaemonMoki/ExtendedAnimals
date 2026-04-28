@@ -149,14 +149,14 @@ public final class ChickenBreeds {
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.FLUFFYLEGS,GeneSet.SINGLE,GeneSet.CRESTLESS,GeneSet.BEARDED).get()));
 
-    public static final Breed MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("MillefleurBelgiumDUccle")
+    public static final Breed MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("BuffMillefleurBelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.MOTTLED).get()));
 
     public static final Breed GOLDNECK_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("GoldneckBelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.DOMWHITE).get()));
 
     public static final Breed LEMON_MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("LemonMillefleurBelgiumDUccle")
-            .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.MOTTLED).get(), new GeneSketch(), new GeneSketch(32, "1").add(34, "2")));
+            .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.MOTTLED).get(), new GeneSketch(), new GeneSketch(32, "1").add(34, "2").add(170, "2").add(284, "2")));
 
     public static final Breed SILVER_MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("SilverMillefleurBelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.SPANGLED,GeneSet.MOTTLED).get()));

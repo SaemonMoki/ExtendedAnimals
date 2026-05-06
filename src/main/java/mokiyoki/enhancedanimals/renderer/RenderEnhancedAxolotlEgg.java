@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class RenderEnhancedAxolotlEgg extends EntityRenderer<EnhancedAxolotlEgg> {
-    private static final ResourceLocation ENHANCED_AXOLOTL_EGGS = new ResourceLocation("eanimod:textures/entities/axolotl_egg/axolotl_eggs.png");
+    private static final ResourceLocation ENHANCED_AXOLOTL_EGGS = new ResourceLocation("eanimod:textures/entity/axolotl_egg/axolotl_eggs.png");
     private final ModelEnhancedAxolotlEgg<EnhancedAxolotlEgg> model;
     public static final ModelLayerLocation AXOLOTL_EGG_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl_egg"), "axolotl_egg_layer");
 

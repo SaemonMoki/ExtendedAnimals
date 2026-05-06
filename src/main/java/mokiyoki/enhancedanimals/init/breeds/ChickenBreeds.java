@@ -36,7 +36,7 @@ public final class ChickenBreeds {
 
     public static final Breed CRESTED_CREAM_LEGBAR = new Breed(GOLD_LEGBAR, new Breed.Properties().setData("CrestedCreamLegbar", Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(),
-                    new GeneSketch().add(32, "2").add(54, "1").add(62, "1|3|4")));
+                    new GeneSketch().add(54, "1").add(62, "1|3|4").add(284, "2")));
 
     public static final Breed WYANDOTTE = new Breed(new Breed.Properties().setData("Wyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.FLATROSE,GeneSet.YELLOWLEGS).get(),
@@ -156,7 +156,7 @@ public final class ChickenBreeds {
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.DOMWHITE).get()));
 
     public static final Breed LEMON_MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("LemonMillefleurBelgiumDUccle")
-            .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.MOTTLED).get(), new GeneSketch(), new GeneSketch(32, "1").add(34, "2").add(170, "2").add(284, "2")));
+            .setGeneSketch(new NewGeneSet(GeneSet.GOLD,GeneSet.SPANGLED,GeneSet.MOTTLED).get(), new GeneSketch(), new GeneSketch(32, "1").add(34, "2").add(170, "2")));
 
     public static final Breed SILVER_MILLEFLEUR_D_UCCLE = new Breed(BELGIUM_D_UCCLE, new Breed.Properties().setName("SilverMillefleurBelgiumDUccle")
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.SPANGLED,GeneSet.MOTTLED).get()));

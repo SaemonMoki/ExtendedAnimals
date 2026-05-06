@@ -441,7 +441,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[31] = 2;
         }
 
-        //Dilute [ dilute, retired-cream, wildtype ] // more common in swamps
+        //Champagne Blond [ cream, retired-cream, wildtype ] // more common in swamps, gold dilution not red (dominant)
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[32] = ThreadLocalRandom.current().nextBoolean() ? 1 : 3;
 
@@ -1670,7 +1670,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[282] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[283] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
-        //cream dilution
+        // Inhibitor of Gold [COMTD1] (recessive)
         autosomalGenes[284] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[285] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
@@ -1686,6 +1686,10 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //pearl eye
         autosomalGenes[296] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[297] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        // Dilute <- effects gold and autosomal red, and shanks (dominant)
+        autosomalGenes[298] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        autosomalGenes[299] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

@@ -689,7 +689,7 @@ public class ChickenTexture {
             s *= 0.5F;
         }
 
-        //dilute / retired-cream
+        //dilute/lemon + retired-cream
         if (gene[32]!=3||gene[33]!=3) {
             h += (0.141F-h)*0.5F;
             s *= 0.7F;
@@ -699,14 +699,10 @@ public class ChickenTexture {
         b *= 0.95F;
 
         //cream
-        if (gene[284]==1||gene[285]==1) {
-
-        } else {
+        if (gene[284]+gene[285]==4) {
             h += (0.141F-h)*0.5F;
             s *= 0.5F;
             b += (1.0F - b) *0.5F;
-            b = 0.0F;
-            h = 0.8F;
         }
 
         //dominant white
@@ -808,6 +804,19 @@ public class ChickenTexture {
 
         if (gene[36]==2&&gene[37]==2) {
             a*=0.5F;
+        }
+
+        //dilute/lemon + retired-cream
+        if (gene[32]!=3||gene[33]!=3) {
+            h += (0.141F-h)*0.35F;
+            s *= 0.7F;
+        }
+
+        //cream
+        if (gene[284]+gene[285]==4) {
+            h += (0.141F-h)*0.35F;
+            s *= 0.5F;
+            b += (1.0F - b) *0.5F;
         }
 
         return Colouration.HSBAtoARGB(h, s, b, a);

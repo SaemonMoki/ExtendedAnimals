@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:small_dripleaf",
+    "minecraft:big_dripleaf",
+    "minecraft:big_dripleaf_stem"
+  ]
+}

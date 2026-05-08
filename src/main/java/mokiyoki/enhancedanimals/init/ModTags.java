@@ -10,8 +10,9 @@ import net.minecraft.world.level.block.Block;
 
 public class ModTags {
     public static class Blocks {
-        public static final TagKey<Block> GRAZEABLE_BLOCKS = tag("grazeable_blocks");
-        public static final TagKey<Block> CONSUMABLE_BLOCKS = tag("consumable_blocks");
+        public static final TagKey<Block> AXOLOTL_NESTABLE = tag("axolotl_nestable");
+        public static final TagKey<Block> AXOLOTL_NESTABLE_OVER = tag("axolotl_nestable_over");
+        public static final TagKey<Block> TURTLE_NESTABLE = tag("turtle_nestable");
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(new ResourceLocation(Reference.MODID, name));

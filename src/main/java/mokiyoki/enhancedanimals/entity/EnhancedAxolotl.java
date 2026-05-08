@@ -7,20 +7,16 @@ import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
-import mokiyoki.enhancedanimals.init.ModSensorTypes;
+import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -74,8 +70,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -975,9 +969,9 @@ NBT read/write
                 return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
             } else {
                 if (worldIn.isWaterAt(pos)) {
-                    Block block = worldIn.getBlockState(pos).getBlock();
-                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) ||
-                            Blocks.SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock()) || Blocks.TALL_SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock());
+                    boolean isNestable = Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(worldIn.getBlockState(pos).getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE);
+                    boolean isNestableOver = Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(worldIn.getBlockState(pos.below()).getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE_OVER);
+                    return isNestable || isNestableOver;
                 }
             }
             return false;

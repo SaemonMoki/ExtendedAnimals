@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -142,10 +143,7 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     }
 
     public static boolean isProperHabitat(BlockGetter reader, BlockPos pos) {
-        Block block = reader.getBlockState(pos).getBlock();
-        if (Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block)) {
-            return true;
-        } else if (Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.BIG_DRIPLEAF_STEM.equals(block)) {
+        if (reader.getBlockState(pos).is(ModTags.Blocks.AXOLOTL_NESTABLE)) {
             return reader.getFluidState(pos).isSourceOfType(Fluids.WATER);
         } else {
             return false;

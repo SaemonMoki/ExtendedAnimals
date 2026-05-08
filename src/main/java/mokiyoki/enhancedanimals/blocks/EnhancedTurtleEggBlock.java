@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.sounds.SoundEvent;
@@ -207,7 +208,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     public static boolean isProperHabitat(BlockGetter reader, BlockPos pos) {
-        return reader.getBlockState(pos).is(BlockTags.SAND);
+        return reader.getBlockState(pos).is(ModTags.Blocks.TURTLE_NESTABLE);
     }
 
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {

@@ -2,9 +2,11 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -188,8 +190,7 @@ public class EnhancedAxolotlEgg extends Entity {
 
     public static boolean isEggAttachableBlock(Boolean inWater, BlockState blockState) {
         if (inWater) {
-            Block block = blockState.getBlock();
-            return Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.BIG_DRIPLEAF_STEM.equals(block);
+            return blockState.is(ModTags.Blocks.AXOLOTL_NESTABLE);
         }
         return false;
     }

@@ -19,8 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhancedTurtle<EnhancedTurtle>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entities/turtle/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/turtle/turtlebase.png");
+    private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entity/turtle/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/turtle/turtlebase.png");
     public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "turtle"), "turtle_layer");
 
     public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {

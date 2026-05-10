@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +43,8 @@ import java.util.List;
 
 import static mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh.HALF;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
+import static mokiyoki.enhancedanimals.renderer.textures.AxolotlEggTexture.calculateAxolotlEggTextures;
+import static mokiyoki.enhancedanimals.renderer.textures.AxolotlTexture.calculateAxolotlTextures;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.TILT;
 
 public class EnhancedAxolotlEgg extends Entity {

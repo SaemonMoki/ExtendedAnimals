@@ -5,21 +5,21 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class AxolotlEggTexture {
+    private String delimiter = "";
 
-    public static void calculateAxolotlEggTextures(EnhancedAxolotlEgg egg, String genes) {
-        String[] splitGenes = genes.split("\\+");
-        String[] g = splitGenes[1].split(",");
+    public static void calculateAxolotlEggTextures(EnhancedAxolotlEgg egg, String[] g) {
+        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        baseColourMutation(g);
+        egg.addTexturetoTextureGroup(parentGroup, baseColourMutation(g)+".png", g[0]+g[1]+g[2]+g[3]+g[6]+g[7]);
 
         if (gene(g, 12)>1 && gene(g, 13)>1) {
             //pied
             int piedStrength = (int) ((gene(g, 14) + gene(g, 15) - 2) * 0.3F);
         }
 
-        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        egg.addTextureToAnimal("shell.png", String.valueOf(0));
 
-//        egg.setTextureGrouping(parentGroup);
+        egg.setTextureGrouping(parentGroup);
     }
 
     private static int gene(String[] g, int locus) {

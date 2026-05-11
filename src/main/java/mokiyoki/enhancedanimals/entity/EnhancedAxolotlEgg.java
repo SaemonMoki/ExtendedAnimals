@@ -52,7 +52,7 @@ public class EnhancedAxolotlEgg extends Entity {
     private static final EntityDataAccessor<String> SIRE = SynchedEntityData.<String>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DAM = SynchedEntityData.<String>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> HATCH_TIME = SynchedEntityData.<Integer>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.BOOLEAN);
 
 
     private boolean hasParents = false;
@@ -300,6 +300,7 @@ public class EnhancedAxolotlEgg extends Entity {
         this.getEntityData().define(SIRE, new String());
         this.getEntityData().define(DAM, new String());
         this.getEntityData().define(HATCH_TIME, -1);
+        this.getEntityData().define(RESET_TEXTURE, false);
     }
 
     @Override

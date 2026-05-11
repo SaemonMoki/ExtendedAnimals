@@ -31,8 +31,7 @@ public class RenderEnhancedAxolotlEgg extends EntityRenderer<EnhancedAxolotlEgg>
 
     @Override
     public void render(EnhancedAxolotlEgg enhancedAxolotlEgg, float p_114486_, float p_114487_, PoseStack pose, MultiBufferSource buffer, int packedLight) {
-        this.model.renderToBuffer(pose, buffer.getBuffer(RenderType.entityTranslucent(ERROR_TEXTURE_LOCATION)), packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-//        this.model.renderToBuffer(pose, buffer.getBuffer(RenderType.entityTranslucent(getTextureLocation(enhancedAxolotlEgg))), packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(pose, buffer.getBuffer(RenderType.entityTranslucent(getTextureLocation(enhancedAxolotlEgg))), packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         this.model.setupAnim(enhancedAxolotlEgg, 0, 0, 0, 0, 0);
     }
 

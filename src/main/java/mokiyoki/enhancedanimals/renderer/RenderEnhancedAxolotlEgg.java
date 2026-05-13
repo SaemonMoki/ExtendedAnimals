@@ -19,8 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RenderEnhancedAxolotlEgg extends EntityRenderer<EnhancedAxolotlEgg> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_AXOLOTL_EGG_TEXTURE_LOCATION = "eanimod:textures/entity/axolotl_egg/";
-    private static final ResourceLocation ENHANCED_AXOLOTL_EGGS = new ResourceLocation("eanimod:textures/entity/axolotl_egg/shell.png");
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/axolotl_egg/error.png");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/axolotl_egg/shell.png");
     private final ModelEnhancedAxolotlEgg<EnhancedAxolotlEgg> model;
     public static final ModelLayerLocation AXOLOTL_EGG_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl_egg"), "axolotl_egg_layer");
 
@@ -32,7 +31,7 @@ public class RenderEnhancedAxolotlEgg extends EntityRenderer<EnhancedAxolotlEgg>
     @Override
     public void render(EnhancedAxolotlEgg enhancedAxolotlEgg, float p_114486_, float p_114487_, PoseStack pose, MultiBufferSource buffer, int packedLight) {
         this.model.renderToBuffer(pose, buffer.getBuffer(RenderType.entityTranslucent(getTextureLocation(enhancedAxolotlEgg))), packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        this.model.setupAnim(enhancedAxolotlEgg, 0, 0, 0, 0, 0);
+        this.model.setupAnim(enhancedAxolotlEgg, 0, 0, enhancedAxolotlEgg.tickCount, 0, 0);
     }
 
     @Override

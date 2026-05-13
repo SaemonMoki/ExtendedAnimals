@@ -41,6 +41,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh.HALF;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
@@ -54,7 +55,6 @@ public class EnhancedAxolotlEgg extends Entity {
     private static final EntityDataAccessor<Integer> HATCH_TIME = SynchedEntityData.<Integer>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.BOOLEAN);
 
-
     private boolean hasParents = false;
     public int time;
     private boolean clockwise = this.random.nextBoolean();
@@ -66,6 +66,7 @@ public class EnhancedAxolotlEgg extends Entity {
     protected Boolean reload = true;
     private String compiledTexture;
     protected final List<String> texturesIndexes = new ArrayList<>();
+    private int wiggleTime = 0;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
@@ -328,6 +329,26 @@ public class EnhancedAxolotlEgg extends Entity {
     @OnlyIn(Dist.CLIENT)
     public int getAddAnimationTick() {
         return this.animationTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public int getWiggleAnimationTick() {
+        if (this.getHatchTime() <= 6000) {
+            if (this.wiggleTime == 0) {
+                if (this.getHatchTime() > 5600) {
+                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
+                } else {
+                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
+                }
+            }
+        }
+
+        if (this.wiggleTime > 1) this.wiggleTime--;
+        return this.wiggleTime;
+    }
+
+    public void setWiggleTime(int i) {
+        this.wiggleTime = i;
     }
 
     @Override

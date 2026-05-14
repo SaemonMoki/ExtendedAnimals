@@ -43,7 +43,7 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
         partdefinition.addOrReplaceChild("egg",
             CubeListBuilder.create()
                     .texOffs(0, 0).addBox(-3.0F, -3.0F, -3.0F, 6, 6, 6)
-            , PartPose.offset(0.0F, 3.0F, 0.0F)
+            , PartPose.ZERO
         );
         partdefinition.addOrReplaceChild("embryo",
                 CubeListBuilder.create()
@@ -85,8 +85,8 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
             readInitialAnimationValues(this.eggModelData);
 
             float driftTimer = ageInTicks + eggModelData.random;
-            this.egg.y = 0.5F * ((float) Math.sin(0.03F * driftTimer));
             this.egg.x = 0.5F * ((float) Math.sin((0.05F * driftTimer + 1)));
+            this.egg.y = 3.0F + ( 0.5F * ((float) Math.sin(0.03F * driftTimer)));
             this.egg.z = 0.5F * ((float) Math.sin((0.05F * driftTimer + 2)));
 
             int timeTillHatch = (int)(eggModelData.hatchTime-ageInTicks);

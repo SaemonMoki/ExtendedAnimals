@@ -2,6 +2,8 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.HerdGoal;
+import mokiyoki.enhancedanimals.util.HerdManager;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
@@ -900,7 +902,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
+        SpawnGroupData data = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
+        if (this.getHerdId() == null) {
+            HerdManager.initialiseHerd(this);
+        }
+        return data;
     }
 
     @Override
@@ -1026,10 +1032,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.grazingGoal = new GrazingGoal(this, speed);
             this.goalSelector.addGoal(8, grazingGoal);
             this.goalSelector.addGoal(9, this.wanderEatingGoal);
-            this.goalSelector.addGoal(10, new EnhancedWanderingGoal(this, speed));
-            this.goalSelector.addGoal(11, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-            this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
-            this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
+            this.goalSelector.addGoal(10, new HerdGoal(this, speed));
+            this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+            this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
+            this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
         }
         aiConfigured = true;
     }

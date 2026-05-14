@@ -69,6 +69,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelAccessor;
@@ -203,6 +204,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     private CompoundTag leashNBTTag;
 
     public Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
+
+    @Nullable
+    protected UUID herdId = null;
 
     /*
     Entity Construction
@@ -527,6 +531,24 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public void setAIStatus(AIStatus aiStatus) {
         this.currentAIStatus = aiStatus;
+    }
+
+    @Nullable
+    public UUID getHerdId() {
+        return this.herdId;
+    }
+
+    public void setHerdId(@Nullable UUID herdId) {
+        this.herdId = herdId;
+        if (!level.isClientSide) {
+            if (herdId != null) {
+                this.setCustomName(new TextComponent(herdId.toString().substring(0, 8)));
+                this.setCustomNameVisible(true);
+            } else {
+                this.setCustomName(null);
+                this.setCustomNameVisible(false);
+            }
+        }
     }
 
     public void createNewHungerLimit() {
@@ -1129,6 +1151,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             compound.putLong("UnloadTime", this.unloadTime);
         }
 
+        if (this.herdId != null) {
+            compound.putUUID("HerdId", this.herdId);
+        }
+
         writeInventory(compound);
 
         writeScheduling(compound);
@@ -1237,6 +1263,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.toggleReloadTexture();
 
         this.unloadTime = compound.getLong("UnloadTime");
+
+        this.setHerdId(compound.hasUUID("HerdId") ? compound.getUUID("HerdId") : null);
 
         readInventory(compound);
 

@@ -115,7 +115,7 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
                     this.embryo.xRot = eggModelData.wiggleRate * 0.3F * Mth.sin(ageInTicks * 0.3F);
                     this.embryo.yRot = eggModelData.wiggleRate * 0.2F * Mth.sin(ageInTicks * 0.25F);
                     this.embryo.zRot = eggModelData.wiggleRate * 0.3F * Mth.sin(ageInTicks * 0.2F);
-                    eggModelData.wiggleRate = Mth.lerp(0.02F, eggModelData.wiggleRate, 0.0F);
+                    eggModelData.wiggleRate = Mth.lerp(0.03F, eggModelData.wiggleRate, 0.0F);
                     if (Mth.abs(this.embryo.xRot) < 0.0001F && Mth.abs(this.embryo.yRot) < 0.0001F && Mth.abs(this.embryo.zRot) < 0.0001F) {
                         this.embryo.setRotation(0.0F, 0.0F, 0.0F);
                         eggModelData.wiggleTimer = 0;

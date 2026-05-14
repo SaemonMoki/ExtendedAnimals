@@ -85,9 +85,9 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
             readInitialAnimationValues(this.eggModelData);
 
             float driftTimer = ageInTicks + eggModelData.random;
-            this.egg.x = 0.5F * ((float) Math.sin((0.05F * driftTimer + 1)));
-            this.egg.y = 3.0F + ( 0.5F * ((float) Math.sin(0.03F * driftTimer)));
-            this.egg.z = 0.5F * ((float) Math.sin((0.05F * driftTimer + 2)));
+            this.egg.x = 0.5F * ((float) Math.sin((0.05F * driftTimer + 1.0F)));
+            this.egg.y =(0.5F * ((float) Math.sin(0.03F * driftTimer))) + 3.0F;
+            this.egg.z = 0.5F * ((float) Math.sin((0.05F * driftTimer + 2.0F)));
 
             int timeTillHatch = (int)(eggModelData.hatchTime-ageInTicks);
 
@@ -149,7 +149,7 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
 
     private void setInitialModelData(T egg) {
         AxolotlEggModelData eggModelData = new AxolotlEggModelData();
-        eggModelData.random = ThreadLocalRandom.current().nextFloat() * 4.0F;
+        eggModelData.random = ThreadLocalRandom.current().nextFloat() * 2.0F;
         eggModelData.hatchTime = egg.getHatchTime();
         eggModelData.rotationY = ThreadLocalRandom.current().nextInt(4) * Mth.HALF_PI;
         eggModelData.rotationZ = ThreadLocalRandom.current().nextInt(4) * Mth.HALF_PI;

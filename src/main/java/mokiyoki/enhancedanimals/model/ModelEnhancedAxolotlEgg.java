@@ -149,7 +149,7 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
 
     private void setInitialModelData(T egg) {
         AxolotlEggModelData eggModelData = new AxolotlEggModelData();
-        eggModelData.random = ThreadLocalRandom.current().nextFloat() * 2.0F;
+        eggModelData.random = ThreadLocalRandom.current().nextFloat() * 209.5F;
         eggModelData.hatchTime = egg.getHatchTime();
         eggModelData.rotationY = ThreadLocalRandom.current().nextInt(4) * Mth.HALF_PI;
         eggModelData.rotationZ = ThreadLocalRandom.current().nextInt(4) * Mth.HALF_PI;

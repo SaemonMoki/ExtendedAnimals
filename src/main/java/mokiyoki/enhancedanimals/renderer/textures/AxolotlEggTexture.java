@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 import java.util.ArrayList;
@@ -21,7 +23,16 @@ public class AxolotlEggTexture {
         int[] gene = new int[g.length];
         for (int i=0; i<g.length; i++) gene[i] = Integer.parseInt(g[i]);
 
-        egg.addTexturetoTextureGroup(parentGroup, baseColourMutation(gene, d)+".png", d[0]);
+//        egg.addTexturetoTextureGroup(parentGroup, baseColourMutation(gene, d)+".png", d[0]);
+        TextureLayer baseLayer = new TextureLayer(TexturingType.MERGE_GROUP, baseColourMutation(gene, d)+".png");
+        if (gene[10] != 1 || gene[11] != 1) {
+            float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24] - 1) / 255, (float) (gene[25] - 1) / 255);
+            baseLayer.setRGB(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
+            egg.addDelimiter(d[0] + Math.max(gene[24], gene[25]) + "." + Math.min(gene[24], gene[25]));
+        } else {
+            egg.addDelimiter(d[0]);
+        }
+        parentGroup.addTextureLayers(baseLayer);
 
         if (gene[12]>1 && gene[13]>1) {
             //pied

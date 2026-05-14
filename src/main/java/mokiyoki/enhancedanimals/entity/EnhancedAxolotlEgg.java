@@ -417,4 +417,9 @@ public class EnhancedAxolotlEgg extends Entity {
     public void addDelimiter() {
         this.texturesIndexes.add("-");
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addDelimiter(String d) {
+        this.texturesIndexes.add(d+"-");
+    }
 }

@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
-import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlEggModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
@@ -43,7 +42,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh.HALF;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
@@ -60,7 +58,6 @@ public class EnhancedAxolotlEgg extends Entity {
     private boolean hasParents = false;
     public int time;
     private boolean clockwise = this.random.nextBoolean();
-    private int animationTicks = this.level.isClientSide ? this.random.nextInt(500) : 0;
 
     //Texture
     protected TextureGrouping enhancedAnimalTextureGrouping;
@@ -68,7 +65,7 @@ public class EnhancedAxolotlEgg extends Entity {
     protected Boolean reload = true;
     private String compiledTexture;
     protected final List<String> texturesIndexes = new ArrayList<>();
-    private int wiggleTime = 0;
+
     private AxolotlEggModelData axolotlEggModelData;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
@@ -328,32 +325,6 @@ public class EnhancedAxolotlEgg extends Entity {
         compound.putBoolean("hasParents", this.hasParents);
         compound.putInt("HatchTime", this.getHatchTime());
     }
-
-//    @OnlyIn(Dist.CLIENT)
-//    public int getAddAnimationTick() {
-//        return this.animationTicks;
-//    }
-
-//    @OnlyIn(Dist.CLIENT)
-//    public int getWiggleAnimationTick() {
-//        if (this.getHatchTime() <= 6000) {
-//            if (this.wiggleTime == 0) {
-//                if (this.getHatchTime() > 5600) {
-//                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
-//                } else {
-//                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
-//                }
-//            }
-//        }
-//
-//        if (this.wiggleTime > 1) this.wiggleTime--;
-//        return this.wiggleTime;
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public void setWiggleTime(int i) {
-//        this.wiggleTime = i;
-//    }
 
     @OnlyIn(Dist.CLIENT)
     public AxolotlEggModelData getModelData() {

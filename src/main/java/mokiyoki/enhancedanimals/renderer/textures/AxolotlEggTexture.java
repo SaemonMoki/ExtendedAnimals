@@ -4,6 +4,8 @@ import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AxolotlEggTexture {
@@ -14,6 +16,7 @@ public class AxolotlEggTexture {
     public static void calculateAxolotlEggTextures(EnhancedAxolotlEgg egg, String[] g) {
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         String[] d = {""};
+        char[] uuid = egg.getStringUUID().toCharArray();
 
         int[] gene = new int[g.length];
         for (int i=0; i<g.length; i++) gene[i] = Integer.parseInt(g[i]);
@@ -23,8 +26,7 @@ public class AxolotlEggTexture {
         if (gene[12]>1 && gene[13]>1) {
             //pied
             int piedStrength = (int) ((gene[14] + gene[15] - 2) * 0.3F);
-            int r = ThreadLocalRandom.current().nextInt(4);
-            egg.addTexturetoTextureGroup(parentGroup, "piebald/"+r+".png", String.valueOf(r));
+            egg.addTexturetoTextureGroup(parentGroup, "piebald/"+uuid[1]%4+".png", String.valueOf(uuid[1]%4));
         } else {
             egg.addDelimiter();
         }
@@ -32,6 +34,8 @@ public class AxolotlEggTexture {
         egg.addTexturetoTextureGroup(parentGroup, "shell.png", String.valueOf(0));
 
         egg.setTextureGrouping(parentGroup);
+
+
     }
 
     private static String baseColourMutation(int[] g, String[] d) {

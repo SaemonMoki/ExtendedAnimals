@@ -177,11 +177,20 @@ public class EnhancedAxolotlEgg extends Entity {
         super.tick();
 
         //TODO put axolotlEggAttachableToo here
-        if (!onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level)) {
+        boolean settled = onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level);
+        if (!settled) {
             fall();
         }
 
         pushEntities();
+
+        if (settled) {
+            Vec3 dm = this.getDeltaMovement();
+            if (dm.x != 0.0 || dm.z != 0.0) {
+                this.move(MoverType.SELF, new Vec3(dm.x, 0.0, dm.z));
+                this.setDeltaMovement(dm.multiply(0.5, 0.0, 0.5));
+            }
+        }
 
         if (this.getHatchTime() == 0) {
             if (!this.level.isClientSide) {

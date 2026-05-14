@@ -3,6 +3,8 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlEggModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
@@ -67,6 +69,7 @@ public class EnhancedAxolotlEgg extends Entity {
     private String compiledTexture;
     protected final List<String> texturesIndexes = new ArrayList<>();
     private int wiggleTime = 0;
+    private AxolotlEggModelData axolotlEggModelData;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
@@ -116,7 +119,7 @@ public class EnhancedAxolotlEgg extends Entity {
         }
     }
 
-    private int getHatchTime() {
+    public int getHatchTime() {
         return this.entityData.get(HATCH_TIME);
     }
 
@@ -192,7 +195,7 @@ public class EnhancedAxolotlEgg extends Entity {
         }
 
         if (this.level.isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
-            this.animationTicks++;
+//            this.animationTicks++;
         }
     }
 
@@ -326,29 +329,40 @@ public class EnhancedAxolotlEgg extends Entity {
         compound.putInt("HatchTime", this.getHatchTime());
     }
 
+//    @OnlyIn(Dist.CLIENT)
+//    public int getAddAnimationTick() {
+//        return this.animationTicks;
+//    }
+
+//    @OnlyIn(Dist.CLIENT)
+//    public int getWiggleAnimationTick() {
+//        if (this.getHatchTime() <= 6000) {
+//            if (this.wiggleTime == 0) {
+//                if (this.getHatchTime() > 5600) {
+//                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
+//                } else {
+//                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
+//                }
+//            }
+//        }
+//
+//        if (this.wiggleTime > 1) this.wiggleTime--;
+//        return this.wiggleTime;
+//    }
+//
+//    @OnlyIn(Dist.CLIENT)
+//    public void setWiggleTime(int i) {
+//        this.wiggleTime = i;
+//    }
+
     @OnlyIn(Dist.CLIENT)
-    public int getAddAnimationTick() {
-        return this.animationTicks;
+    public AxolotlEggModelData getModelData() {
+        return this.axolotlEggModelData;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getWiggleAnimationTick() {
-        if (this.getHatchTime() <= 6000) {
-            if (this.wiggleTime == 0) {
-                if (this.getHatchTime() > 5600) {
-                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
-                } else {
-                    this.wiggleTime = ThreadLocalRandom.current().nextInt(100) + 300;
-                }
-            }
-        }
-
-        if (this.wiggleTime > 1) this.wiggleTime--;
-        return this.wiggleTime;
-    }
-
-    public void setWiggleTime(int i) {
-        this.wiggleTime = i;
+    public void setModelData(AxolotlEggModelData animalModelData) {
+        this.axolotlEggModelData = animalModelData;
     }
 
     @Override

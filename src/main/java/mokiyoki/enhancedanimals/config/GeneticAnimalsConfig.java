@@ -281,7 +281,6 @@ public class GeneticAnimalsConfig {
             mushroomStewMultiplier = builder
                     .defineInRange("This number multiplies how fast a mooshroom regains mushroom stew, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             builder.comment("Mooshrooms spawn only on Mycylium blocks by default, If you wish to change that you can do so by using a datapack to modify the mooshrooms_spawnable_on block tag");
-            builder.comment("");
             builder.pop();
 
             builder.push("moobloom");

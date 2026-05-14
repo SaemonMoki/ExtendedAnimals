@@ -763,7 +763,7 @@ public class EventSubscriber {
                         } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
                             ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
                             CompoundTag tag = stack.getOrCreateTag();
-                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200) == 0 ? 4 : ThreadLocalRandom.current().nextInt(4));
+                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(5));
                             //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
 //                        CompoundTag entityTags = new CompoundTag();
 //                        ListTag listtag = new ListTag();

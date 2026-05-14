@@ -79,7 +79,7 @@ public class ChickenTexture {
                         patternFeatherGroup.addGrouping(patternCutOutGroup);
                         calculatePatternWithRGB(chicken, featherGroup, patternFeatherGroup, patternCutOutGroup, false, sGene, gene, isFemale, isNakedNeck);
                     } else {
-                        chicken.addDelimiter();
+                        chicken.addDelimiter("np");
                     }
                     chicken.addTextureToAnimalTextureGrouping(featherGroup, "chick/mottles.png", mottled);
                     if (isFemale ? sGene[6] == 2 : sGene[6] == 2 || sGene[7] == 2) {
@@ -330,41 +330,45 @@ public class ChickenTexture {
                 TextureGrouping patternFeatherGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping patternCutOutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/mottles/mottles.png", mottled && (gene[22]==2 || gene[23]==2));
-                if (pattern.contains("het") && Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entity/chicken/pattern/" + pattern + ".png")).isEmpty()) {
+                if (!pattern.isEmpty()) {
+                    if (pattern.contains("het") && Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation("eanimod:textures/entity/chicken/pattern/" + pattern + ".png")).isEmpty()) {
 
-                    TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-                    String[] patterns = pattern.split("/");
-                    List<String> pattern_locations = new ArrayList<>();
+                        TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+                        String[] patterns = pattern.split("/");
+                        List<String> pattern_locations = new ArrayList<>();
 
-                    if (patterns[0].contains("het")) {
-                        String[] p = patterns[0].split("het");
-                        pattern_locations.add("pattern/"+p[0]);
-                        pattern_locations.add("pattern/"+p[1]);
-                    } else {
-                        pattern_locations.add("pattern/"+patterns[0]);
-                    }
-
-                    for (int pn = 1; pn < 5; pn++) {
-                        if (patterns[pn].contains("het")) {
-                            int size = pattern_locations.size();
-                            for (int i = 0; i < size; i++) {
-                                String p = patterns[pn].split("het")[1];
-                                pattern_locations.add(pattern_locations.get(i) + "/non" + p);
-                                pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
-                            }
+                        if (patterns[0].contains("het")) {
+                            String[] p = patterns[0].split("het");
+                            pattern_locations.add("pattern/"+p[0]);
+                            pattern_locations.add("pattern/"+p[1]);
                         } else {
-                            int finalPn = pn;
-                            pattern_locations.replaceAll(s -> s + "/" + patterns[finalPn]);
+                            pattern_locations.add("pattern/"+patterns[0]);
                         }
-                    }
 
-                    for (String loc : pattern_locations) {
-                        chicken.addTextureToAnimalTextureGrouping(patternAverageGroup, loc + "/" +patterns[5] + ".png", loc);
-                    }
+                        for (int pn = 1; pn < 5; pn++) {
+                            if (patterns[pn].contains("het")) {
+                                int size = pattern_locations.size();
+                                for (int i = 0; i < size; i++) {
+                                    String p = patterns[pn].split("het")[1];
+                                    pattern_locations.add(pattern_locations.get(i) + "/non" + p);
+                                    pattern_locations.set(i, pattern_locations.get(i) + "/" + p);
+                                }
+                            } else {
+                                int finalPn = pn;
+                                pattern_locations.replaceAll(s -> s + "/" + patterns[finalPn]);
+                            }
+                        }
 
-                    patternCutOutGroup.addGrouping(patternAverageGroup);
+                        for (String loc : pattern_locations) {
+                            chicken.addTextureToAnimalTextureGrouping(patternAverageGroup, loc + "/" +patterns[5] + ".png", loc);
+                        }
+
+                        patternCutOutGroup.addGrouping(patternAverageGroup);
+                    } else {
+                        chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                    }
                 } else {
-                    chicken.addTextureToAnimalTextureGrouping(patternCutOutGroup, "pattern/" + pattern + ".png", pattern);
+                    chicken.addDelimiter("np");
                 }
 
                 if (charcoal) {

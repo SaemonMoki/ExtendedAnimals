@@ -70,7 +70,7 @@ public class TexturingUtils {
             }
             return image;
         } catch (Exception e) {
-            throw new IllegalStateException("Couldn't load layered image", e);
+            throw new IllegalStateException("Couldn't load layered image for texture: " + texture, e);
         }
     }
 

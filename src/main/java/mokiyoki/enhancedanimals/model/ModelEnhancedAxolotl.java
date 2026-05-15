@@ -4,10 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
-import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
-import mokiyoki.enhancedanimals.model.modeldata.AxolotlPhenotype;
-import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
+import mokiyoki.enhancedanimals.model.modeldata.*;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -51,8 +48,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     protected WrappedModelPart gillsRight;
     protected WrappedModelPart body;
     protected WrappedModelPart bodyLong;
+    protected WrappedModelPart bodyLongest;
     protected WrappedModelPart bodyFin;
     protected WrappedModelPart bodyFinLong;
+    protected WrappedModelPart bodyFinLongest;
     protected WrappedModelPart tail12;
     protected WrappedModelPart tail13;
     protected WrappedModelPart tail14;
@@ -91,7 +90,14 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 .texOffs(0, 12)
                 .addBox(-4.0F, -6.0F, -2.0F, 8.0F, 6.0F, 4.0F)
                 .texOffs(0, 22)
-                .addBox(-4.0F, -14.0F, -2.0F, 8.0F, 8.0F, 4.0F),
+                .addBox(-4.0F, -12.0F, -2.0F, 8.0F, 6.0F, 4.0F),
+                PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
+        );
+        bBody.addOrReplaceChild("bodyLongest", CubeListBuilder.create()
+                        .texOffs(0, 12)
+                        .addBox(-4.0F, -6.0F, -2.0F, 8.0F, 6.0F, 4.0F)
+                        .texOffs(0, 22)
+                        .addBox(-4.0F, -14.0F, -2.0F, 8.0F, 8.0F, 4.0F),
                 PartPose.rotation(-Mth.HALF_PI, 0.0F, 0.0F)
         );
 
@@ -156,11 +162,23 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         bBody.addOrReplaceChild("bodyFinLong", CubeListBuilder.create()
                         .mirror(true)
                         .texOffs(26, 9)
-                        .addBox(0.01F, -2.0F, -5.0F, 0.0F, 11.0F, 5.0F)
+                        .addBox(0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F)
                         .mirror(false)
                         .texOffs(26, 36)
-                        .addBox(-0.01F, -2.0F, -5.0F, 0.0F, 11.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, 2.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F)
+                        .addBox(-0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 2.0F, 12.0F, -Mth.HALF_PI, 0.0F, 0.0F)
+        );
+
+        bBody.addOrReplaceChild("bodyFinLongest", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(26, 9)
+                        .addBox(0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F)
+                        .addBox(0.01F, -2.0F, -5.0F, 0.0F, 2.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 36)
+                        .addBox(-0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F)
+                        .addBox(-0.01F, -2.0F, -5.0F, 0.0F, 2.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 2.0F, 12.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
 
         bTail.addOrReplaceChild("tail12", CubeListBuilder.create()
@@ -256,8 +274,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.gillsRight = new WrappedModelPart("gillsR", base);
         this.body = new WrappedModelPart("body", bBody);
         this.bodyLong = new WrappedModelPart("bodyLong", bBody);
+        this.bodyLongest = new WrappedModelPart("bodyLongest", bBody);
         this.bodyFin = new WrappedModelPart("bodyFin", bBody);
         this.bodyFinLong = new WrappedModelPart("bodyFinLong", bBody);
+        this.bodyFinLongest = new WrappedModelPart("bodyFinLongest", bBody);
         this.tail12 = new WrappedModelPart("tail12", bTail);
         this.tail13 = new WrappedModelPart("tail13", bTail);
         this.tail14 = new WrappedModelPart("tail14", bTail);
@@ -289,8 +309,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
         this.theBody.addChild(this.body);
         this.theBody.addChild(this.bodyLong);
+        this.theBody.addChild(this.bodyLongest);
         this.theBody.addChild(this.bodyFin);
         this.theBody.addChild(this.bodyFinLong);
+        this.theBody.addChild(this.bodyFinLongest);
 
         this.theLegFrontLeft.addChild(this.legFrontLeft);
         this.theLegFrontRight.addChild(this.legFrontRight);
@@ -326,12 +348,28 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 this.body.modelPart.visible = false;
                 this.bodyFin.modelPart.visible = false;
                 this.headLong.modelPart.visible = true;
-                this.bodyLong.modelPart.visible = true;
-                this.bodyFinLong.modelPart.visible = true;
                 switch (axolotl.tailLength) {
-                    case EXTRALONG -> this.tail16.modelPart.visible = true;
-                    case LONG -> this.tail15.modelPart.visible = true;
-                    default -> this.tail14.modelPart.visible = true;
+                    case EXTRALONG -> {
+                        this.bodyFinLongest.modelPart.visible = true;
+                        this.bodyLongest.modelPart.visible = true;
+                        this.bodyFinLong.modelPart.visible = false;
+                        this.bodyLong.modelPart.visible = false;
+                        this.tail16.modelPart.visible = true;
+                    }
+                    case LONG -> {
+                        this.bodyFinLong.modelPart.visible = true;
+                        this.bodyLong.modelPart.visible = true;
+                        this.bodyFinLongest.modelPart.visible = false;
+                        this.bodyLongest.modelPart.visible = false;
+                        this.tail15.modelPart.visible = true;
+                    }
+                    default -> {
+                        this.bodyFinLong.modelPart.visible = true;
+                        this.bodyLong.modelPart.visible = true;
+                        this.bodyFinLongest.modelPart.visible = false;
+                        this.bodyLongest.modelPart.visible = false;
+                        this.tail14.modelPart.visible = true;
+                    }
                 }
             } else {
                 this.head.modelPart.visible = true;
@@ -339,7 +377,9 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 this.bodyFin.modelPart.visible = true;
                 this.headLong.modelPart.visible = false;
                 this.bodyLong.modelPart.visible = false;
+                this.bodyLongest.modelPart.visible = false;
                 this.bodyFinLong.modelPart.visible = false;
+                this.bodyFinLongest.modelPart.visible = false;
                 switch (axolotl.tailLength) {
                     case EXTRALONG -> this.tail14.modelPart.visible = true;
                     case LONG -> this.tail13.modelPart.visible = true;
@@ -443,10 +483,22 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             this.theAxolotl.setRotation(headPitch * -Mth.DEG_TO_RAD, netHeadYaw * Mth.DEG_TO_RAD, 0.0F);
             this.theAxolotl.setPos(0.0F, 20.0F, 4.0F);
             this.theHead.setPos(0.0F, 0.0F, 0.0F);
-            this.theTail.setZ(axolotl.isLong ? 12.0F : 10.0F);
             this.theTail.setRotation(0.0F, 0.0F, 0.0F);
-            this.theLegBackLeft.setZ(axolotl.isLong ? 3.0F : -1.0F);
-            this.theLegBackRight.setZ(axolotl.isLong ? 3.0F : -1.0F);
+            if (axolotl.isLong) {
+                if (axolotl.tailLength == AxolotlTailLength.EXTRALONG) {
+                    this.theTail.setZ(14.0F);
+                    this.theLegBackLeft.setZ(3.0F);
+                    this.theLegBackRight.setZ(3.0F);
+                } else {
+                    this.theTail.setZ(12.0F);
+                    this.theLegBackLeft.setZ(1.0F);
+                    this.theLegBackRight.setZ(1.0F);
+                }
+            } else {
+                this.theTail.setZ(10.0F);
+                this.theLegBackLeft.setZ(-1.0F);
+                this.theLegBackRight.setZ(-1.0F);
+            }
         } else {
             this.setRotationFromVector(this.theAxolotl, map.get("bAxolotl"));
             this.setOffsetFromVector(this.theAxolotl, map.get("bAxolotlPos"));

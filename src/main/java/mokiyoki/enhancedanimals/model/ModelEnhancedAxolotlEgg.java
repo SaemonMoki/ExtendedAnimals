@@ -84,10 +84,12 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
         if (this.eggModelData != null) {
             readInitialAnimationValues(this.eggModelData);
 
-            float driftTimer = ageInTicks + eggModelData.random;
-            this.egg.x = 0.5F * ((float) Math.sin((0.05F * driftTimer + 1.0F)));
-            this.egg.y =(0.5F * ((float) Math.sin(0.03F * driftTimer))) + 3.0F;
-            this.egg.z = 0.5F * ((float) Math.sin((0.05F * driftTimer + 2.0F)));
+            if (!entityIn.isOnGround()) {
+                float driftTimer = ageInTicks + eggModelData.random;
+                this.egg.x = 0.5F * ((float) Math.sin((0.05F * driftTimer + 1.0F)));
+                this.egg.y = (0.5F * ((float) Math.sin(0.03F * driftTimer))) + 3.0F;
+                this.egg.z = 0.5F * ((float) Math.sin((0.05F * driftTimer + 2.0F)));
+            }
 
             int timeTillHatch = (int)(eggModelData.hatchTime-ageInTicks);
 

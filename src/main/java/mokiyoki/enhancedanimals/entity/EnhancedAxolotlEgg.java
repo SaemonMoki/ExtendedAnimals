@@ -176,7 +176,6 @@ public class EnhancedAxolotlEgg extends Entity {
     public void tick() {
         super.tick();
 
-        //TODO put axolotlEggAttachableToo here
         boolean settled = onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level);
         if (!settled) {
             fall();
@@ -188,7 +187,7 @@ public class EnhancedAxolotlEgg extends Entity {
             Vec3 dm = this.getDeltaMovement();
             if (dm.x != 0.0 || dm.z != 0.0) {
                 this.move(MoverType.SELF, new Vec3(dm.x, 0.0, dm.z));
-                this.setDeltaMovement(dm.multiply(0.5, 0.0, 0.5));
+                this.setDeltaMovement(dm.multiply(0.1, 0.0, 0.1));
             }
         }
 
@@ -198,10 +197,6 @@ public class EnhancedAxolotlEgg extends Entity {
             }
         } else if (this.getHatchTime() > 0){
             this.setHatchTime(this.getHatchTime() - 1);
-        }
-
-        if (this.level.isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
-//            this.animationTicks++;
         }
     }
 
@@ -272,7 +267,7 @@ public class EnhancedAxolotlEgg extends Entity {
             }
 
             for(int l = 0; l < list.size(); ++l) {
-                Entity entity = list.get(l);
+                EnhancedAxolotlEgg entity = list.get(l);
                 entity.push(this);
             }
         }

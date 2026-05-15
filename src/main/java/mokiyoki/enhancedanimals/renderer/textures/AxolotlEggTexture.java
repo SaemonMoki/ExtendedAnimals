@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AxolotlEggTexture {
-    private static final String[] base = {
-        "white", "gold", ""
-    };
-
     public static void calculateAxolotlEggTextures(EnhancedAxolotlEgg egg, String[] g) {
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         String[] d = {""};
@@ -35,12 +31,10 @@ public class AxolotlEggTexture {
             parentGroup.addTextureLayers(baseLayer);
         }
 
-        if (gene[12]>1 && gene[13]>1) {
+        if (dominantRecessive(d, 12, gene)) {
             //pied
             int piedStrength = (int) ((gene[14] + gene[15] - 2) * 0.3F);
             egg.addTexturetoTextureGroup(parentGroup, "piebald/"+uuid[1]%4+".png", String.valueOf(uuid[1]%4));
-        } else {
-            egg.addDelimiter();
         }
 
         egg.addTexturetoTextureGroup(parentGroup, "shell.png", String.valueOf(0));
@@ -85,12 +79,12 @@ public class AxolotlEggTexture {
     // when allele 1 is dominant and allele 2 is recessive
     protected static boolean dominantRecessive(String[] d, int locus, int[] genes) {
         d[0] += locus*0.5;
-        if (genes[locus]+genes[locus+1]==4) {
-            d[0] += locus*0.5 + ".r-";
-            return true;
-        } else {
+        if (genes[locus]==1 || genes[locus+1]==1) {
             d[0] += locus*0.5 + ".d-";
             return false;
+        } else {
+            d[0] += locus*0.5 + ".r-";
+            return true;
         }
     }
 

@@ -603,25 +603,27 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             meatDrop = 1;
         }
 
-        if (age < 108000) {
-            if (age >= 90000) {
+        int adultAge = this.getAdultAge();
+        int tier = adultAge * 3 / 10;
+        if (age < tier * 6) {
+            if (age >= tier * 5) {
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-90000)/180;
-            } else if (age >= 72000) {
+                meatChanceMod = (age - tier * 5) * 100 / tier;
+            } else if (age >= tier * 4) {
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-72000)/180;
-            } else if (age >= 54000) {
+                meatChanceMod = (age - tier * 4) * 100 / tier;
+            } else if (age >= tier * 3) {
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-54000)/180;
-            } else if (age >= 36000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age >= tier * 2) {
                 meatDrop = meatDrop - 4;
-                meatChanceMod = (age-36000)/180;
-            } else if (age >= 18000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age >= tier) {
                 meatDrop = meatDrop - 5;
-                meatChanceMod = (age-18000)/180;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 meatDrop = meatDrop - 6;
-                meatChanceMod = age/180;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);

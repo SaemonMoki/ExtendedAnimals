@@ -523,31 +523,33 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             leatherDrop++;
         }
 
-        if (age < 84000) {
-            if (age > 70000) {
+        int adultAge = this.getAdultAge();
+        int tier = adultAge / 6;
+        if (age < adultAge) {
+            if (age > tier * 5) {
                 leatherDrop = leatherDrop - 1;
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-70000)/140;
-            } else if (age > 56000) {
+                meatChanceMod = (age - tier * 5) * 100 / tier;
+            } else if (age > tier * 4) {
                 leatherDrop = leatherDrop - 2;
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-56000)/140;
-            } else if (age > 42000) {
+                meatChanceMod = (age - tier * 4) * 100 / tier;
+            } else if (age > tier * 3) {
                 leatherDrop = leatherDrop - 3;
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-42000)/140;
-            } else if (age > 28000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age > tier * 2) {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 4;
-                meatChanceMod = (age-28000)/140;
-            } else if (age > 14000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age > tier) {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 5;
-                meatChanceMod = (age-14000)/140;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 6;
-                meatChanceMod = age/140;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);

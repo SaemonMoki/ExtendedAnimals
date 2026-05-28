@@ -820,19 +820,21 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        if (age < 72000) {
-            if (age >= 54000) {
+        int adultAge = this.getAdultAge();
+        int tier = adultAge / 4;
+        if (age < adultAge) {
+            if (age >= tier * 3) {
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-54000)/180;
-            } else if (age >= 36000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age >= tier * 2) {
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-36000)/180;
-            } else if (age >= 18000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age >= tier) {
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-18000)/180;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 meatDrop = meatDrop - 4;
-                meatChanceMod = age/180;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);
@@ -842,7 +844,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             if (woolDrop || leatherDrop) {
                 i = this.random.nextInt(100);
-                if (age/720 > i) {
+                if (age * 100 / adultAge > i) {
                     woolDrop = false;
                     leatherDrop = false;
                 }

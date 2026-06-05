@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals;
 
 import com.mojang.datafixers.util.Pair;
+import mokiyoki.enhancedanimals.command.GeneticCommand;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;

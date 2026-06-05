@@ -1,0 +1,7 @@
+{
+  "name" : "albino",
+  "breed_base" : "",
+  "trader" : false,
+  "default_biome" : "the_end",
+  "genes" : "albino"
+}

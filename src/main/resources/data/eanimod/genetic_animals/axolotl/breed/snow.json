@@ -1,4 +1,6 @@
 {
+  "name" : "snow",
+  "trader" : true,
   "genes" : [
     "albino", "axanthic"
   ]

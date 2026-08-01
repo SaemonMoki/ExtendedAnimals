@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -174,6 +175,11 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         if (changed) {
             this.nestChanged();
         }
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return stack.getItem() instanceof EnhancedEgg;
     }
 
     @Override

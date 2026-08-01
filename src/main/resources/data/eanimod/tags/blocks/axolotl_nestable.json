@@ -1,10 +1,9 @@
 {
   "replace": false,
   "values": [
-    "minecraft:seagrass",
-    "minecraft:tall_seagrass",
+    "#eanimod:axolotl_nestable_over",
+    "#eanimod:axolotl_nestable_under",
     "minecraft:small_dripleaf",
-    "minecraft:big_dripleaf",
     "minecraft:big_dripleaf_stem"
   ]
 }

@@ -184,7 +184,7 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     public static boolean isEggLayableBlock(Boolean inWater, BlockState blockState) {
-        return !blockState.getBlock().equals(Blocks.BIG_DRIPLEAF_STEM) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER);
+        return !(Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(blockState.getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE_UNDER)) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER); //TODO why is the big drip leaf like this
     }
 
     public static boolean isEggAttachableBlock(Boolean inWater, BlockState blockState) {

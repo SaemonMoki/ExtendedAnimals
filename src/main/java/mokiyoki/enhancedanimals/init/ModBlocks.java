@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.blocks.*;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -32,7 +31,6 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> EGG_CARTON = BLOCKS_DEFERRED_REGISTRY.register("egg_carton", () -> new EggCartonBlock(Block.Properties.of().ignitedByLava().mapColor(MapColor.WOOL).strength(0.0F).sound(SoundType.WOOL).noOcclusion()));
     public static final RegistryObject<Block> TURTLE_EGG = BLOCKS_DEFERRED_REGISTRY.register("turtle_egg", () -> new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).mapColor(MapColor.PLANT).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()));
-    public static final RegistryObject<Block> AXOLOTL_EGG = BLOCKS_DEFERRED_REGISTRY.register("axolotl_egg", () -> new EnhancedAxolotlEggBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).mapColor(MapColor.PLANT).strength(0.5F).sound(SoundType.SLIME_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryObject<Block> CHICKEN_NEST = BLOCKS_DEFERRED_REGISTRY.register("chicken_nest", () -> new EnhancedChickenEggBlock(BlockBehaviour.Properties.of().mapColor(MapColor.CLAY).strength(0.5F).sound(SoundType.BONE_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryObject<Block> UNBOUNDHAY_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new UnboundHayBlock(Block.Properties.of().mapColor(MapColor.GRASS).strength(0.5F).sound(SoundType.GRASS).noOcclusion().isSuffocating((a,b,c)->false)));
 

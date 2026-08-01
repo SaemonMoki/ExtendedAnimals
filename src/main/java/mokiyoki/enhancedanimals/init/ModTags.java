@@ -13,6 +13,7 @@ public class ModTags {
     public static class Blocks {
         public static final TagKey<Block> AXOLOTL_NESTABLE = tag("axolotl_nestable");
         public static final TagKey<Block> AXOLOTL_NESTABLE_OVER = tag("axolotl_nestable_over");
+        public static final TagKey<Block> AXOLOTL_NESTABLE_UNDER = tag("axolotl_nestable_under");
         public static final TagKey<Block> TURTLE_NESTABLE = tag("turtle_nestable");
 
         private static TagKey<Block> tag(String name) {

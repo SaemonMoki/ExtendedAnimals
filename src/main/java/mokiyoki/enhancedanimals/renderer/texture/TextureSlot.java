@@ -121,7 +121,12 @@ public final class TextureSlot {
 
     /** Tests the index passed to {@link #variant(String[], int)}. */
     public TextureSlot onlyIf(IntPredicate test) {
-        this.included = variantIndex == null || test.test(variantIndex);
+        if (this.variantIndex == null) {
+            //a multi index variant has no single index to test, and a literal texture has none
+            //at all; silently including the layer would hide the mistake
+            throw new IllegalStateException("onlyIf(IntPredicate) needs variant(String[], int); use onlyIf(boolean)");
+        }
+        this.included = test.test(this.variantIndex);
         return this;
     }
 

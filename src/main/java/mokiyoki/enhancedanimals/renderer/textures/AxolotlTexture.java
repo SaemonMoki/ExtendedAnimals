@@ -5,6 +5,18 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class AxolotlTexture {
+
+    /*
+     * Slot counts per section of the cache key.
+     *
+     * Every axolotl writes the same number of fields regardless of its genes: the key is a flat
+     * string whose only structure is the delimiter positions, so a section that writes fewer
+     * fields shifts every later section left and lets two different genetics compile to the same
+     * key. A branch that skips a section reserves its slots instead.
+     */
+    /** one per gill colour, averaged together. */
+    private static final int CHEEK_SLOTS = 2;
+
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
             "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };
@@ -190,28 +202,30 @@ public class AxolotlTexture {
         if (gillsColour < 0) gillsColour = 0;
         if (gillsColour2 < 0) gillsColour2 = 0;
         TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
-        axolotl.addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour2, gills, true);
+        axolotl.layer(gillsGroup).variant(AXOLOTL_TEXTURES_GILLS, gillsColour, gills).add();
+        axolotl.layer(gillsGroup).variant(AXOLOTL_TEXTURES_GILLS, gillsColour2, gills).add();
         parentGroup.addGrouping(gillsGroup);
 
         TextureGrouping bodyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+        axolotl.layer(bodyGroup).texture("alpha_mask.png").add();
+        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_BASE, base).as(TexturingType.APPLY_DYE).add();
+        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
         if (pied < 0) pied = 0;
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {
             TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            axolotl.addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
-            axolotl.addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
+            axolotl.layer(cheekGroup).variant(CHEEK_SPOTS, gillsColour).add();
+            axolotl.layer(cheekGroup).variant(CHEEK_SPOTS, gillsColour2).add();
             parentGroup.addGrouping(cheekGroup);
+        } else {
+            axolotl.addSkippedSlots(CHEEK_SLOTS);
         }
 
         TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
-        axolotl.addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eye_right.png");
+        axolotl.layer(detailsGroup).texture("eye_left.png").as(TexturingType.APPLY_EYE_LEFT_COLOUR).add();
+        axolotl.layer(detailsGroup).texture("eye_right.png").as(TexturingType.APPLY_EYE_RIGHT_COLOUR).add();
         parentGroup.addGrouping(detailsGroup);
 
         axolotl.setTextureGrouping(parentGroup);

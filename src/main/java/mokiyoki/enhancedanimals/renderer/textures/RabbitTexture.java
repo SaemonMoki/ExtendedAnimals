@@ -482,9 +482,7 @@ public class RabbitTexture {
     }
 
     private static void addSkinDetails(EnhancedRabbit rabbit, TextureGrouping parentGroup, int skin) {
-        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.addTextureToAnimalTextureGrouping(detailGroup, RABBIT_TEXTURES_SKIN[skin], String.valueOf(skin));
-        parentGroup.addGrouping(detailGroup);
+        rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_SKIN[skin], String.valueOf(skin));
     }
 
     private static void addEyeTexture(EnhancedRabbit rabbit, TextureGrouping parentGroup, int eyes, int vieye) {
@@ -535,9 +533,7 @@ public class RabbitTexture {
         }
 
         if (fur != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_FUR[fur], String.valueOf(fur));
-            parentGroup.addGrouping(coat);
+            rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_FUR[fur], String.valueOf(fur));
         } else {
             rabbit.addDelimiter("rex");
         }
@@ -545,9 +541,7 @@ public class RabbitTexture {
 
     private static void addVienna(EnhancedRabbit rabbit, TextureGrouping parentGroup, int vienna) {
         if (vienna != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_DUTCH[vienna], String.valueOf(vienna));
-            parentGroup.addGrouping(coat);
+            rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_DUTCH[vienna], String.valueOf(vienna));
         } else {
             rabbit.addDelimiter();
         }
@@ -557,18 +551,14 @@ public class RabbitTexture {
         //TODO Hotot Spotting if dutch and homozygous broken
 
         if (dutch != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_DUTCH[dutch], String.valueOf(dutch));
-            parentGroup.addGrouping(coat);
+            rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_DUTCH[dutch], String.valueOf(dutch));
         } else {
             rabbit.addDelimiter();
         }
         if (broken != 0) {
             //TODO split out broken spots from charlie spots
             //TODO make broken/charlie genetics
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_BROKEN[broken], String.valueOf(broken));
-            parentGroup.addGrouping(coat);
+            rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_BROKEN[broken], String.valueOf(broken));
         } else {
             rabbit.addDelimiter();
         }
@@ -576,9 +566,7 @@ public class RabbitTexture {
 
     private static void createTopCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int top) {
         if (top != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_TOP[top], String.valueOf(top));
-            parentGroup.addGrouping(coat);
+            rabbit.addTextureToAnimalTextureGrouping(parentGroup, RABBIT_TEXTURES_TOP[top], String.valueOf(top));
         } else {
             rabbit.addDelimiter();
         }

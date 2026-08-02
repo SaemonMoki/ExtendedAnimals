@@ -67,9 +67,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     protected void setTexturePaths() {
         super.setTexturePaths();
         TextureGrouping parent = this.getTextureGrouping();
-        TextureGrouping flower = new TextureGrouping(TexturingType.MERGE_GROUP);
-        this.addTextureToAnimalTextureGrouping(flower, MOOBLOOM_FLOWER[0]);
-        parent.addGrouping(flower);
+        this.addTextureToAnimalTextureGrouping(parent, MOOBLOOM_FLOWER[0]);
         this.setTextureGrouping(parent);
     }
 

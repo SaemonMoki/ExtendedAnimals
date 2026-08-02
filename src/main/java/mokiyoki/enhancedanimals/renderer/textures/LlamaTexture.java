@@ -245,9 +245,7 @@ public class LlamaTexture {
 
         if (spots.isPopulated()) {
             TextureGrouping grouping = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping color = new TextureGrouping(TexturingType.MERGE_GROUP);
-            llama.addTextureToAnimalTextureGrouping(color, "domwhite_solid.png");
-            grouping.addGrouping(color);
+            llama.addTextureToAnimalTextureGrouping(grouping, "domwhite_solid.png");
             grouping.addGrouping(spots);
             parentGroup.addGrouping(grouping);
         }
@@ -264,60 +262,46 @@ public class LlamaTexture {
     private static boolean addFurTexture(EnhancedLlama llama, TextureGrouping parentGroup, int fur) {
         if (fur==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_FUR[fur], String.valueOf(fur));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_FUR[fur], String.valueOf(fur));
         return false;
     }
 
     private static boolean addDomWhiteTexture(EnhancedLlama llama, TextureGrouping parentGroup, int domwhite) {
         if (domwhite==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_DOMWHITE[domwhite], String.valueOf(domwhite));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_DOMWHITE[domwhite], String.valueOf(domwhite));
         return false;
     }
 
     private static boolean addPiebaldTexture(EnhancedLlama llama, TextureGrouping parentGroup, int piebald) {
         if (piebald==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_PIEBALD[piebald], String.valueOf(piebald));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_PIEBALD[piebald], String.valueOf(piebald));
         return false;
     }
 
     private static boolean addTuxTexture(EnhancedLlama llama, TextureGrouping parentGroup, int tux) {
         if (tux==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_TUXEDO[tux], String.valueOf(tux));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_TUXEDO[tux], String.valueOf(tux));
         return false;
     }
 
     private static boolean addRoanTexture(EnhancedLlama llama, TextureGrouping parentGroup, int roan) {
         if (roan==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_ROAN[roan], String.valueOf(roan));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_ROAN[roan], String.valueOf(roan));
         return false;
     }
 
     private static boolean addPatternTexture(EnhancedLlama llama, TextureGrouping parentGroup, int pattern) {
         if (pattern==0) return true;
 
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_PATTERN[pattern], String.valueOf(pattern));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_PATTERN[pattern], String.valueOf(pattern));
         return false;
     }
 
     private static void addGroundTexture(EnhancedLlama llama, TextureGrouping parentGroup, int ground) {
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_GROUND[ground], String.valueOf(ground));
-        parentGroup.addGrouping(grouping);
+        llama.addTextureToAnimalTextureGrouping(parentGroup, LLAMA_TEXTURES_GROUND[ground], String.valueOf(ground));
     }
 }

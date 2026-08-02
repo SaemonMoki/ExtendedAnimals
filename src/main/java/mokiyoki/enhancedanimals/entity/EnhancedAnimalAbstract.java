@@ -19,7 +19,9 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.renderer.texture.TextureCacheKeyWriter;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureSlot;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -90,7 +92,7 @@ import java.util.stream.Collectors;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RESIZE_AND_REFRESH_TEXTURE_SCHEDULE;
 
-public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel {
+public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel, TextureCacheKeyWriter {
 
     protected static final EntityDataAccessor<String> SHARED_GENES = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
     protected static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
@@ -1936,6 +1938,32 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
         this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    /**
+     * Starts a texture slot: one layer added to {@code textureGroup}, plus the cache key
+     * field recording what it resolved to. Finish with {@link TextureSlot#add()}.
+     */
+    public TextureSlot layer(TextureGrouping textureGroup) {
+        return new TextureSlot(this, textureGroup);
+    }
+
+    @Override
+    public void writeKeyField(String... fragments) {
+        Collections.addAll(this.texturesIndexes, fragments);
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    @Override
+    public void addSkippedSlot() {
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    @Override
+    public void addSkippedSlots(int count) {
+        for (int i = 0; i < count; i++) {
+            this.texturesIndexes.add(CACHE_DELIMITER);
+        }
     }
 
     public void addDelimiter() {

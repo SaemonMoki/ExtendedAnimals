@@ -4,33 +4,34 @@ import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class AxolotlTexture {
+
+    //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
             "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };
 
     private static final String[][] AXOLOTL_TEXTURES_GILLS = new String[][] {
-            {"gills_base.png", "gillslong_base.png", "gillsgreater_base.png"},
-            {"gills_base_white.png", "gillslong_base_white.png", "gillsgreater_base_white.png"},
-            {"gills_base_lightgrey.png", "gillslong_base_lightgrey.png", "gillsgreater_base_lightgrey.png"},
-            {"gills_base_grey.png", "gillslong_base_grey.png", "gillsgreater_base_grey.png"},
-            {"gills_base_black.png", "gillslong_base_black.png", "gillsgreater_base_black.png"},
-            {"gills_base_brown.png", "gillslong_base_brown.png", "gillsgreater_base_brown.png"},
-            {"gills_base_pink.png", "gillslong_base_pink.png", "gillsgreater_base_pink.png"},
-            {"gills_base_red.png", "gillslong_base_red.png", "gillsgreater_base_red.png"},
-            {"gills_base_orange.png", "gillslong_base_orange.png", "gillsgreater_base_orange.png"},
-            {"gills_base_yellow.png", "gillslong_base_yellow.png", "gillsgreater_base_yellow.png"},
-            {"gills_base_lime.png", "gillslong_base_lime.png", "gillsgreater_base_lime.png"},
-            {"gills_base_green.png", "gillslong_base_green.png", "gillsgreater_base_green.png"},
-            {"gills_base_cyan.png", "gillslong_base_cyan.png", "gillsgreater_base_cyan.png"},
-            {"gills_base_lightblue.png", "gillslong_base_lightblue.png", "gillsgreater_base_lightblue.png"},
-            {"gills_base_blue.png", "gillslong_base_blue.png", "gillsgreater_base_blue.png"},
-            {"gills_base_purple.png", "gillslong_base_purple.png", "gillsgreater_base_purple.png"},
-            {"gills_base_magenta.png", "gillslong_base_magenta.png", "gillsgreater_base_magenta.png"}
-    };
-
-    private static final String[] AXOLOTL_TEXTURES_XANTHIN = new String[] {
-            "", "low_xanthophores.png", "natural_xanthophores.png", "high_xanthophores.png"
+            {"gills/base/natural.png",      "gills/long/natural.png",   "gills/greater/natural.png"},
+            {"gills/base/white.png",        "gills/long/white.png",     "gills/greater/white.png"},
+            {"gills/base/lightgrey.png",    "gills/long/lightgrey.png", "gills/greater/lightgrey.png"},
+            {"gills/base/grey.png",         "gills/long/grey.png",      "gills/greater/grey.png"},
+            {"gills/base/black.png",        "gills/long/black.png",     "gills/greater/black.png"},
+            {"gills/base/brown.png",        "gills/long/brown.png",     "gills/greater/brown.png"},
+            {"gills/base/pink.png",         "gills/long/pink.png",      "gills/greater/pink.png"},
+            {"gills/base/red.png",          "gills/long/red.png",       "gills/greater/red.png"},
+            {"gills/base/orange.png",       "gills/long/orange.png",    "gills/greater/orange.png"},
+            {"gills/base/yellow.png",       "gills/long/yellow.png",    "gills/greater/yellow.png"},
+            {"gills/base/lime.png",         "gills/long/lime.png",      "gills/greater/lime.png"},
+            {"gills/base/green.png",        "gills/long/green.png",     "gills/greater/green.png"},
+            {"gills/base/cyan.png",         "gills/long/cyan.png",      "gills/greater/cyan.png"},
+            {"gills/base/lightblue.png",    "gills/long/lightblue.png", "gills/greater/lightblue.png"},
+            {"gills/base/blue.png",         "gills/long/blue.png",      "gills/greater/blue.png"},
+            {"gills/base/purple.png",       "gills/long/purple.png",    "gills/greater/purple.png"},
+            {"gills/base/magenta.png",      "gills/long/magenta.png",   "gills/greater/magenta.png"}
     };
 
     private static final String[][][] AXOLOTL_TEXTURES_MELANIN = new String[][][] {
@@ -105,43 +106,28 @@ public class AxolotlTexture {
     }
     };
 
-    private static final String[][][] AXOLOTL_TEXTURES_BERKSHIRE = new String[][][] {
-            {
-                    {"star.png", "snip.png"},
-                    {"blaze1.png"},
-                    {"blaze2.png"},
-                    {"blaze3.png"},
-                    {"blaze4.png"},
-                    {"blaze5.png"},
-                    {"blaze6.png"},
-                    {"blaze7.png"},
-                    {"blaze8.png"},
-                    {"baldface9.png"},
-            }, {
-                    {"berkshire0.png"},
-                    {"berkshire1.png"},
-                    {"berkshire2.png"},
-                    {"berkshire3.png"},
-                    {"berkshire4.png"},
-                    {"berkshire5.png"},
-                    {"berkshire6.png"},
-                    {"berkshire7.png"},
-                    {"berkshire8.png"},
-                    {"berkshire9.png"},
-            }
+    private static final String[] AXOLOTL_TEXTURES_BLAZE = new String[] {
+            "spot/blaze/0.png", "spot/blaze/1.png", "spot/blaze/2.png", "spot/blaze/3.png", "spot/blaze/4.png", "spot/blaze/5.png", "spot/blaze/6.png", "spot/blaze/7.png", "spot/blaze/8.png"
     };
 
     private static final String[] CHEEK_SPOTS = new String[] {
-            "cheeks.png", "cheeks_white.png", "cheeks_lightgrey.png", "cheeks_grey.png", "cheeks_black.png", "cheeks_brown.png", "cheeks_pink.png", "cheeks_red.png", "cheeks_orange.png", "cheeks_yellow.png", "cheeks_lime.png", "cheeks_green.png", "cheeks_cyan.png", "cheeks_lightblue.png", "cheeks_blue.png", "cheeks_purple.png", "cheeks_magenta.png",
+            "cheek_spots/natural.png", "cheek_spots/white.png", "cheek_spots/lightgrey.png", "cheek_spots/grey.png", "cheek_spots/black.png", "cheek_spots/brown.png", "cheek_spots/pink.png", "cheek_spots/red.png", "cheek_spots/orange.png", "cheek_spots/yellow.png", "cheek_spots/lime.png", "cheek_spots/green.png", "cheek_spots/cyan.png", "cheek_spots/lightblue.png", "cheek_spots/blue.png", "cheek_spots/purple.png", "cheek_spots/magenta.png"
+    };
+
+    private static final String[] AXOLOTL_TEXTURES_BRINDLE = new String[] {
+            "brindle/0.png", "brindle/1.png", "brindle/2.png",  "brindle/3.png"
     };
 
     public static void calculateAxolotlTextures(EnhancedAxolotl axolotl, int[] gene) {
+        char[] uuidArry = axolotl.getStringUUID().toCharArray();
         int gills = 0;
         int gillsColour = 0;
         int gillsColour2 = 0;
         int base = 0;
         int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
         int pattern = 0;
+        int blaze = -1;
+        int brindle = -1;
 
         if (gene[34] == 2 && gene[35] == 2) {
             gills += 1;
@@ -185,6 +171,29 @@ public class AxolotlTexture {
             gillsColour2 = gene[41] - 1;
         }
 
+        if (gene[18] + gene[19] != 2) {
+            switch (uuidArry[1]) {
+                case 0,8 -> blaze = 0;
+                case 1,9 -> blaze = 1;
+                case 2,'a' -> blaze = 2;
+                case 3,'b' -> blaze = 3;
+                case 4,'c' -> blaze = 4;
+                case 5,'d' -> blaze = 5;
+                case 6,'e' -> blaze = 6;
+                case 7 -> blaze = 7;
+                case 'f' -> blaze = 8;
+            }
+        }
+
+        if (gene[42] + gene[43] != 2) {
+            switch (uuidArry[2]) {
+                case 0,4,8,'c' -> brindle = 0;
+                case 1,5,9,'d' -> brindle = 1;
+                case 2,6,'a','e' -> brindle = 2;
+                case 3,7,'b','f' -> brindle = 3;
+            }
+        }
+
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
         if (gillsColour < 0) gillsColour = 0;
@@ -195,11 +204,32 @@ public class AxolotlTexture {
         parentGroup.addGrouping(gillsGroup);
 
         TextureGrouping bodyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+        TextureGrouping baseAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        axolotl.addTextureToAnimalTextureGrouping(baseAlphaGroup, "alpha_mask.png");
+        bodyGroup.addGrouping(baseAlphaGroup);
+
+        TextureGrouping baseDyeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        axolotl.addTextureToAnimalTextureGrouping(baseDyeGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
+        bodyGroup.addGrouping(baseDyeGroup);
+
+        if (gene[0] == 1 || gene[1] == 1) {
+            TextureGrouping brindleGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+                TextureGrouping brindleCutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                axolotl.addTextureToAnimalTextureGrouping(brindleCutoutGroup, AXOLOTL_TEXTURES_BRINDLE, brindle, brindle!=-1);
+            brindleGroup.addGrouping(brindleCutoutGroup);
+            TextureGrouping melaninGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                axolotl.addTextureToAnimalTextureGrouping(melaninGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+            brindleGroup.addGrouping(melaninGroup);
+
+            bodyGroup.addGrouping(brindleGroup);
+        }
+
+        TextureGrouping piedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (pied < 0) pied = 0;
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+        axolotl.addTextureToAnimalTextureGrouping(piedGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+        axolotl.addTextureToAnimalTextureGrouping(piedGroup, AXOLOTL_TEXTURES_BLAZE, blaze-1, blaze>0);
+        bodyGroup.addGrouping(piedGroup);
+
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {

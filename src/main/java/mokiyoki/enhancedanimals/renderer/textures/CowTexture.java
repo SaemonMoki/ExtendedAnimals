@@ -249,14 +249,12 @@ public class CowTexture {
             if (!whiteface && (gene[16]!=3 || gene[17]!=3)) whiteface = true;
 
             if (whiteface || (gene[20] == 1 || gene[21] == 1) || (gene[252] == 2 || gene[253] == 2) || (gene[18]<=2 || gene[19]<=2)) {
-                TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
                 cow.addDelimiter("legacy");
                 if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12) {
-                    cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_SHADE_MELANIN, "spots/brockling/0.png");
+                    cow.addTextureToAnimalTextureGrouping(parentGroup, TexturingType.APPLY_SHADE_MELANIN, "spots/brockling/0.png");
                 } else {
-                    cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_RED, "spots/brockling/0.png");
+                    cow.addTextureToAnimalTextureGrouping(parentGroup, TexturingType.APPLY_RED, "spots/brockling/0.png");
                 }
-                parentGroup.addGrouping(grouping);
             }
         }
     }
@@ -402,9 +400,7 @@ public class CowTexture {
     }
 
     private static void addBaseSkinDetails(EnhancedCow cow, TextureGrouping parentGroup, int skin) {
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_SKIN, skin, null);
-        parentGroup.addGrouping(grouping);
+        cow.addTextureToAnimalTextureGrouping(parentGroup, COW_TEXTURES_SKIN, skin, null);
     }
 
     private static boolean addCounterShading(EnhancedCow cow, TextureGrouping parentGroup, int mealy, int eelstripe) {
@@ -430,9 +426,7 @@ public class CowTexture {
 
     private static void addBlackPattern(EnhancedCow cow, TextureGrouping parentGroup, int black) {
         if (black != 0) {
-            TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-            cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_SHADE_MELANIN, COW_TEXTURES_BLACK, black, null);
-            parentGroup.addGrouping(grouping);
+            cow.addTextureToAnimalTextureGrouping(parentGroup, TexturingType.APPLY_SHADE_MELANIN, COW_TEXTURES_BLACK, black, null);
         } else {
             cow.addDelimiter("nb");
         }
@@ -440,9 +434,7 @@ public class CowTexture {
 
     private static void addRedPattern(EnhancedCow cow, TextureGrouping parentGroup, int red) {
         if (red != 0) {
-            TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-            cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_RED, COW_TEXTURES_RED, red, null);
-            parentGroup.addGrouping(grouping);
+            cow.addTextureToAnimalTextureGrouping(parentGroup, TexturingType.APPLY_RED, COW_TEXTURES_RED, red, null);
         } else {
             cow.addDelimiter("nr");
         }

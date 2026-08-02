@@ -1006,9 +1006,7 @@ public class PigTexture {
             pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, whiteSplash, whiteSplash != 0);
             pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, berk != 0);
             whiteSkinAlpha.addGrouping(whiteSkinMask);
-            TextureGrouping whSkinTex = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(whSkinTex, PIG_TEXTURES_SKINBASE, 1, true);
-            whiteSkinAlpha.addGrouping(whSkinTex);
+            pig.addTextureToAnimalTextureGrouping(whiteSkinAlpha, PIG_TEXTURES_SKINBASE, 1, true);
             whiteSkinGroup.addGrouping(whiteSkinAlpha);
             parentGroup.addGrouping(whiteSkinGroup);
         }
@@ -1037,8 +1035,6 @@ public class PigTexture {
             boolean baby = pig.isBaby();
             int darkAgouti = baby ? 2 : 1;
 
-            TextureGrouping hairAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(hairAlphaGroup, PIG_TEXTURES_ALPHA, coat_alpha, coat_alpha != 0);
             TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping redGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             pig.addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RED, PIG_TEXTURES_AGOUTI, red, l -> true);
@@ -1049,10 +1045,7 @@ public class PigTexture {
             hairTexGroup.addGrouping(redGroup);
 
             TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            if (whitebelly != 0) {
-                pig.addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
-            } else if (swallowbelly != 0) {
+            if (whitebelly == 0 && swallowbelly != 0) {
                 pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
                 pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
                 pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan, roan != 0);
@@ -1061,7 +1054,7 @@ public class PigTexture {
             int agoutiTex = 0;
             if (!agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, whitebelly != 0);
                 if (brindle && agouti) {
                     agoutiTex = wideband ? 2 : 1;
                 }
@@ -1071,8 +1064,6 @@ public class PigTexture {
 
             if (black != 0) {
                 TextureGrouping blackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                TextureGrouping blackAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                 TextureGrouping blackTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI, agoutiTex, l -> true);
                 if (agoutiBlack && (swallowbelly == 0 || baby)) {
@@ -1085,14 +1076,14 @@ public class PigTexture {
                     }
                 }
                 pig.addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? roan + 1 : roan, roan != 0 && !brindle);
-                blackGroup.addGrouping(blackAlphaGroup);
+                pig.addTextureToAnimalTextureGrouping(blackGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                 blackGroup.addGrouping(blackTexGroup);
                 hairTexGroup.addGrouping(blackGroup);
             }
 
             if (agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, whitebelly != 0);
             }
 
             if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
@@ -1104,19 +1095,14 @@ public class PigTexture {
                 pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_TAIL, whiteTail, p -> p != 0);
                 pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, whiteSplash, p -> p != 0);
                 pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_SPOT_BERKSHIRE, berk, p -> p != 0);
-                TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(whiteTextureGroup, PIG_TEXTURES_COATWHITE, 1, p -> p != 0);
                 whiteGroup.addGrouping(whiteAlphaGroup);
-                whiteGroup.addGrouping(whiteTextureGroup);
+                pig.addTextureToAnimalTextureGrouping(whiteGroup, PIG_TEXTURES_COATWHITE, 1, p -> p != 0);
                 hairTexGroup.addGrouping(whiteGroup);
             }
-            TextureGrouping overlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(overlayGroup, PIG_TEXTURES_COAT, coat_texture, true);
-
-            hairTexGroup.addGrouping(overlayGroup);
+            pig.addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_COAT, coat_texture, true);
 
             //addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_SPOT_SPOTS, spot, (spot != 0));
-            hairGroup.addGrouping(hairAlphaGroup);
+            pig.addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_ALPHA, coat_alpha, coat_alpha != 0);
             hairGroup.addGrouping(hairTexGroup);
 
                 /*if (belt != 0) {

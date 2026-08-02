@@ -444,7 +444,7 @@ public class ChickenTexture {
                     for (String loc : pattern_locations) {
                         chicken.layer(patternAverageGroup).texture(loc + "/" + patterns[5] + ".png").noKey().add();
                     }
-                    chicken.addDelimiter(String.join("+", pattern_locations));
+                    chicken.addDelimiter(String.join("_", pattern_locations));
 
                     patternCutOutGroup.addGrouping(patternAverageGroup);
                 } else {

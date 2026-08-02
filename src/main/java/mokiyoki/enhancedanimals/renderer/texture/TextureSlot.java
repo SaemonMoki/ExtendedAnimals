@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer.texture;
 
 import java.util.function.IntPredicate;
+import java.util.function.Supplier;
 
 /**
  * Builds one texture slot: a layer added to a {@link TextureGrouping}, plus the cache key
@@ -23,6 +24,7 @@ public final class TextureSlot {
     private final TextureGrouping group;
 
     private String path = "";
+    private Supplier<String> deferredPath;
     private TexturingType texturingType = TexturingType.NONE;
     private Integer rgb;
     private int[] cubes;
@@ -46,9 +48,15 @@ public final class TextureSlot {
         return this;
     }
 
+    /*
+     * The table is indexed in add(), not here. Callers routinely derive an index that is only
+     * valid when the slot is included -- "pied - 1" is -1 for an unpied axolotl -- so resolving
+     * eagerly would throw on exactly the animals that skip the texture.
+     */
+
     /** {@code table[index]}. The key records the index. */
     public TextureSlot variant(String[] table, int index) {
-        this.path = table[index];
+        this.deferredPath = () -> table[index];
         this.variantIndex = index;
         this.keyFragment = String.valueOf(index);
         return this;
@@ -56,14 +64,14 @@ public final class TextureSlot {
 
     /** {@code table[first][second]}. The key records both indexes. */
     public TextureSlot variant(String[][] table, int first, int second) {
-        this.path = table[first][second];
+        this.deferredPath = () -> table[first][second];
         this.keyFragment = String.valueOf(first) + second;
         return this;
     }
 
     /** {@code table[first][second][third]}. The key records all three indexes. */
     public TextureSlot variant(String[][][] table, int first, int second, int third) {
-        this.path = table[first][second][third];
+        this.deferredPath = () -> table[first][second][third];
         this.keyFragment = String.valueOf(first) + second + third;
         return this;
     }
@@ -136,11 +144,14 @@ public final class TextureSlot {
     /* ---- terminal ---- */
 
     public void add() {
-        if (this.included && !this.path.isEmpty()) {
-            TextureLayer layer = new TextureLayer(this.texturingType, this.path);
-            if (this.rgb != null) layer.setRGB(this.rgb);
-            if (this.cubes != null) layer.setCubes(this.cubes);
-            this.group.addTextureLayers(layer);
+        if (this.included) {
+            String resolved = this.deferredPath != null ? this.deferredPath.get() : this.path;
+            if (!resolved.isEmpty()) {
+                TextureLayer layer = new TextureLayer(this.texturingType, resolved);
+                if (this.rgb != null) layer.setRGB(this.rgb);
+                if (this.cubes != null) layer.setCubes(this.cubes);
+                this.group.addTextureLayers(layer);
+            }
         }
 
         if (!this.writesKeyField) return;

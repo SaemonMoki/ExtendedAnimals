@@ -372,7 +372,7 @@ public class CowTexture {
                 cow.addDelimiter("nos"+key);
             }
             TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
-            if (true/*gene[254] == 2 || gene[255] == 2*/) {
+            if (gene[254] == 2 || gene[255] == 2) {
                 colour.setTexturingType(TexturingType.CUTOUT_GROUP);
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
 

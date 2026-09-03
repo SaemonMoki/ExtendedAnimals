@@ -1927,7 +1927,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 layer.setCubes(cubes);
             }
             textureGroup.addTextureLayers(layer);
-            this.texturesIndexes.add(textureName);
+            this.texturesIndexes.add(textureName+(flip?"t":"f"));
         }
         this.texturesIndexes.add(CACHE_DELIMITER);
     }

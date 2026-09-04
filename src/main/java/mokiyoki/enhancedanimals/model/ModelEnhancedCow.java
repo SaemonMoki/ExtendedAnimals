@@ -1224,10 +1224,12 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.jaw.setXRot(-Mth.HALF_PI*0.2F);
             this.theEarLeft.setZRot( cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness);
             this.theEarRight.setZRot(-(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
+
             this.theLegBottomFrontLeft.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomFrontRight.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomBackLeft.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomBackRight.setY(cow.dwarf ? 4.0F : 5.0F);
+
             this.tailBase.setXRot(0.4F);
             this.tailMiddle.setXRot(-0.2F);
             this.tailEnd.setXRot(-0.2F);
@@ -1255,8 +1257,13 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.theEarRight.setRotation(map.get("bEarR"));
             this.theLegFrontLeft.setPosYAndRot(map.get("bLegFLPos"), map.get("bLegFL"));
             this.theLegFrontRight.setPosYAndRot(map.get("bLegFRPos"), map.get("bLegFR"));
-            this.theLegBackLeft.setPosYAndRot(map.get("bLegBLPos"), map.get("bLegBL"));
-            this.theLegBackRight.setPosYAndRot(map.get("bLegBRPos"), map.get("bLegBR"));
+
+            this.theLegBackLeft.setPos(map.get("bLegBLPos"));
+            this.theLegBackLeft.setRotation(map.get("bLegBL"));
+
+            this.theLegBackRight.setPos(map.get("bLegBRPos"));
+            this.theLegBackRight.setRotation(map.get("bLegBR"));
+
             this.theLegBottomFrontLeft.setY(map.get("bLegBFLPos").y());
             this.theLegBottomFrontRight.setY(map.get("bLegBFRPos").y());
             this.theLegBottomBackLeft.setY(map.get("bLegBBLPos").y());

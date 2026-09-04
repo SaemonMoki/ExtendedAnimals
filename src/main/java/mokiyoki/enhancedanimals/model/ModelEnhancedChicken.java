@@ -133,9 +133,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private static WrappedModelPart bloomersLeft;
     private static WrappedModelPart bloomersRight;
 
+    private static WrappedModelPart legLeftStubby;
     private static WrappedModelPart legLeftShort;
     private static WrappedModelPart legLeftMedium;
     private static WrappedModelPart legLeftLong;
+    private static WrappedModelPart legRightStubby;
     private static WrappedModelPart legRightShort;
     private static WrappedModelPart legRightMedium;
     private static WrappedModelPart legRightLong;
@@ -238,9 +240,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         map.put("thighR",  thighRight);
         map.put("bloomersL",  bloomersLeft);
         map.put("bloomersR",  bloomersRight);
-        map.put("legLS",  legLeftShort);
+        map.put("legLSt", legLeftStubby);
+        map.put("legLS", legLeftShort);
         map.put("legLM",  legLeftMedium);
         map.put("legLL",  legLeftLong);
+        map.put("legRSt",  legRightStubby);
         map.put("legRS",  legRightShort);
         map.put("legRM",  legRightMedium);
         map.put("legRL",  legRightLong);
@@ -862,9 +866,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 PartPose.offset(1.5F, -1.0F, 0.0F)
         );
 
-        base.addOrReplaceChild("legLS", CubeListBuilder.create()
+        base.addOrReplaceChild("legLSt", CubeListBuilder.create()
                         .texOffs(8, 21)
                         .addBox(-0.5F, 0.5F, 1.0F, 1, 3, 1),
+                PartPose.offset(-1.5F, 0.0F, 0.0F)
+        );
+        base.addOrReplaceChild("legLS", CubeListBuilder.create()
+                        .texOffs(8, 21)
+                        .addBox(-0.5F, 0.5F, 1.0F, 1, 4, 1),
                 PartPose.offset(-1.5F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("legLM", CubeListBuilder.create()
@@ -878,9 +887,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, 2.5F, 1.0F, 1, 5, 1),
                 PartPose.offset(-1.5F, 0.0F, 0.0F)
         );
-        base.addOrReplaceChild("legRS", CubeListBuilder.create()
+        base.addOrReplaceChild("legRSt", CubeListBuilder.create()
                         .texOffs(8, 21)
                         .addBox(-0.5F, 0.5F, 1.0F, 1, 3, 1),
+                PartPose.offset(1.5F, 0.0F, 0.0F)
+        );
+        base.addOrReplaceChild("legRS", CubeListBuilder.create()
+                        .texOffs(8, 21)
+                        .addBox(-0.5F, 0.5F, 1.0F, 1, 4, 1),
                 PartPose.offset(1.5F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("legRM", CubeListBuilder.create()
@@ -1150,9 +1164,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         wingRightMedium = new WrappedModelPart("wingRM", base);
         thighLeft = new WrappedModelPart("thighL", base);
         thighRight = new WrappedModelPart("thighR", base);
+        legLeftStubby = new WrappedModelPart("legLSt", base);
         legLeftShort = new WrappedModelPart("legLS", base);
         legLeftMedium = new WrappedModelPart("legLM", base);
         legLeftLong = new WrappedModelPart("legLL", base);
+        legRightStubby = new WrappedModelPart("legRSt", base);
         legRightShort = new WrappedModelPart("legRS", base);
         legRightMedium = new WrappedModelPart("legRM", base);
         legRightLong = new WrappedModelPart("legRL", base);
@@ -1279,20 +1295,24 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         theWingRight.addChild(wingRightMedium);
         theWingRight.addChild(wingRightNaked);
 
+        theLegLeft.addChild(legLeftStubby);
         theLegLeft.addChild(legLeftShort);
         theLegLeft.addChild(legLeftMedium);
         theLegLeft.addChild(legLeftLong);
         theLegLeft.addChild(bootsLeft);
         theLegLeft.addChild(vultureHockLeft);
+        theLegRight.addChild(legRightStubby);
         theLegRight.addChild(legRightShort);
         theLegRight.addChild(legRightMedium);
         theLegRight.addChild(legRightLong);
         theLegRight.addChild(bootsRight);
         theLegRight.addChild(vultureHockRight);
 
+        legLeftStubby.addChild(pantsLeft[0]);
         legLeftShort.addChild(pantsLeft[0]);
         legLeftMedium.addChild(pantsLeft[1]);
         legLeftLong.addChild(pantsLeft[2]);
+        legRightStubby.addChild(pantsRight[0]);
         legRightShort.addChild(pantsRight[0]);
         legRightMedium.addChild(pantsRight[1]);
         legRightLong.addChild(pantsRight[2]);
@@ -1619,13 +1639,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 if (this.chickenModelData.offsets.get("bBodyPos").y() < 8.0F + (15.5F - chicken.height)) {
                     if (chicken.creeper) {
                         if (chicken.hasLongLegs()) {
-                            legLeftMedium.show();
-                            legRightMedium.show();
-                            leglength = 1;
-                        } else {
                             legLeftShort.show();
                             legRightShort.show();
+                            leglength = 1;
+                        } else {
+                            legLeftStubby.show();
+                            legRightStubby.show();
                         }
+
                     } else {
                         if (chicken.hasLongLegs()) {
                             legLeftLong.show();
@@ -1859,9 +1880,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
                 scale = 0.65F + (chicken.meatiness*0.35F);
                 scalings = ModelHelper.createScalings(scale, 1.0F + (1.0F-scale)*0.01F, scale, /*(1.0F-scale)*-0.16F*/0.0F, 0.0F, 0.0F);
+                mapOfScale.put("legLSt", scalings);
                 mapOfScale.put("legLS", scalings);
                 mapOfScale.put("legLM", scalings);
                 mapOfScale.put("legLL", scalings);
+                mapOfScale.put("legRSt", scalings);
                 mapOfScale.put("legRS", scalings);
                 mapOfScale.put("legRM", scalings);
                 mapOfScale.put("legRL", scalings);

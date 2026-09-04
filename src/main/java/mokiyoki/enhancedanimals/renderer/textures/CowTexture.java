@@ -216,21 +216,30 @@ public class CowTexture {
                 }
             }
 
-            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        TextureGrouping parentGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
 
-            addBase(cow, parentGroup, skin);
-            addRedPattern(cow, parentGroup, red);
-            addBlackPattern(cow, parentGroup, black);
-            if (addCounterShading(cow, parentGroup, mealy, eelstripe)) cow.addDelimiter("nc");
-            addBaseSkinDetails(cow, parentGroup, skin);
+        TextureGrouping cowGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            addWhiteSpots(cow, parentGroup, gene, uuidArry);
+        addBase(cow, cowGroup, skin);
+        addRedPattern(cow, cowGroup, red);
+        addBlackPattern(cow, cowGroup, black);
+        if (addCounterShading(cow, cowGroup, mealy, eelstripe)) cow.addDelimiter("nc");
+        addBaseSkinDetails(cow, cowGroup, skin);
 
-            addLegacyBrockling(cow, parentGroup, gene, black);
+        addWhiteSpots(cow, cowGroup, gene, uuidArry);
 
-            addDetails(cow, parentGroup, hooves, horn, coat);
+        addLegacyBrockling(cow, cowGroup, gene, black);
 
-            cow.setTextureGrouping(parentGroup);
+        addDetails(cow, cowGroup, hooves, horn, coat);
+
+
+        TextureGrouping cutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        cow.addTextureToAnimalTextureGrouping(cutoutGroup, "base.png");
+
+        parentGroup.addGrouping(cutoutGroup);
+        parentGroup.addGrouping(cowGroup);
+
+        cow.setTextureGrouping(parentGroup);
     }
 
     private static void addLegacyBrockling(EnhancedCow cow, TextureGrouping parentGroup, int[] gene, int black) {

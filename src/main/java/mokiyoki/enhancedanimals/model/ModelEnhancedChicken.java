@@ -1981,6 +1981,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theWingLeft.setY(chicken.wingPlacement);
             theWingRight.setY(chicken.wingPlacement);
 
+            theWingLeft.setZ(-3.0F - (0.95F*(chicken.bodyAngle+(chicken.wingAngle*chicken.wingAngle))));
+            theWingRight.setZ(theWingLeft.getZ());
+
             theWingLeft.setXRot(chicken.wingAngle);
             theWingRight.setXRot(chicken.wingAngle);
 

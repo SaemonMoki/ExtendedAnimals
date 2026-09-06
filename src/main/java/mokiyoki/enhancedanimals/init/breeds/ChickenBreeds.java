@@ -324,6 +324,52 @@ public final class ChickenBreeds {
                             .add(4, "1").add(26, "1").add(98, "1","1")
                     ));
 
+    public static final Breed SERAMA = new Breed(new Breed.Properties().setData("serama", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS ,GeneSet.YELLOWLEGS, GeneSet.CLEANLEGS).get(),
+                    new GeneSketch()
+                            //size
+                            .add(14,"2","2"),
+                    new GeneSketch()
+                            //neckAngle
+                            .add(10, "2","2","2","2","2")
+
+                            //creeper
+                            .add(70,"1")
+
+                            //size
+                            .add(74,"1","3","1")
+
+                            //wingPlacement
+                            .add(86,"1")
+
+                            //legLength
+                            .add(168,"1")
+
+                            //wingAngle
+                            .add(88,"3")
+                            .add(94,"2","2")
+
+                            //fluffiness
+                            .add(228, "2","2","2","2","2","1","1","1","1","1")
+
+                            //tailAngle
+                            .add(258, "2","2","2","2","2")
+                            .add(268, "1","1","1","1","1")
+
+                            //bodyAngle
+                            .add(186, "2","1","1|2","1","2")
+                            .add(248, "2","1","2","1","1|2")
+
+            ));
+
+    public static final Breed CHABO = new Breed(new Breed.Properties().setData("chabo", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.SINGLE, GeneSet.BIG_COMB, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.YELLOWLEGS, GeneSet.CLEANLEGS, GeneSet.SILVER, GeneSet.BLACKTAIL, GeneSet.CREEPER).get(),
+                    new GeneSketch(),
+                    new GeneSketch()
+                            .add(258, "2","2","2","2","2")
+                            .add(268, "1","1","1","1","1")
+            ));
+
     public static final Breed BUTTERCUP_COMB = new Breed(new Breed.Properties().setData("buttercup", Biomes.THE_VOID, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.CRESTLESS, GeneSet.BUTTERCUPCOMB).get(),
                     new GeneSketch(),

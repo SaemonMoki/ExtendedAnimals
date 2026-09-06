@@ -1,27 +1,23 @@
 package mokiyoki.enhancedanimals.util;
 
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
-/**
- * Herd membership is stored as a UUID on each entity (herdId).
- * There is no central registry — membership is resolved at runtime by
- * querying nearby entities, keeping this stateless and chunk-safe.
- *
- * Movement uses cohesion toward a shared wander target + separation:
- *   - A direction is derived by seeding RNG with (herdId ^ timeSlot) so all
- *     members independently compute the same direction each time window.
- *   - Each entity's nav target is: herdCentre + wanderDir*WANDER_DISTANCE + entityJitter.
- *   - ~35% of windows are idle — HerdGoal.canUse() returns false, releasing Flag.MOVE
- *     so vanilla stroll/graze goals can run. Separation still applies via those goals.
- *   - Direction blends over the last TRANSITION_TICKS of each window to avoid snapping.
- */
 public final class HerdManager {
 
     /** Radius used when searching for herd-mates on spawn / join checks. */
@@ -45,20 +41,117 @@ public final class HerdManager {
     /** Per-entity random spread around the shared wander target. */
     public static final double JITTER_RADIUS = 6.0;
 
-    /** Game ticks per wander direction window (~25 seconds). */
-    public static final long WANDER_INTERVAL = 500L;
+    /** Length of the pause between moving bursts, in ticks. */
+    private static final long IDLE_DURATION_TICKS = 100L;
 
-    /** Ticks at the end of each window over which direction blends into the next. */
-    private static final long TRANSITION_TICKS = 100L;
-
-    /** Fraction of time windows where the herd actively moves. */
-    private static final double MOVE_PROBABILITY = 0.65;
-
-    // Separate salts so the move-check RNG and direction RNG don't share state.
+    // Separate salts so the phase-offset RNG and direction RNG don't share state.
     private static final long MOVE_SEED_PRIME = 0x9e3779b97f4a7c15L;
     private static final long DIR_SEED_SALT   = 0xDEADBEEFCAFEL;
 
+    /** How long a derived herd snapshot stays valid, in ticks. */
+    private static final long HERD_SNAPSHOT_TTL_TICKS = 10L;
+
+    /** Once the snapshot cache grows past this many distinct herds, expired entries are swept. */
+    private static final int HERD_SNAPSHOT_SWEEP_THRESHOLD = 200;
+
+    /** Once the roster map grows past this many herds, dead ids and empty herds are swept. */
+    private static final int HERD_ROSTER_SWEEP_THRESHOLD = 500;
+
+    /** Sentinel for "no member of this herd is currently being led". */
+    private static final int NO_MEMBER = -1;
+
+    /**
+     * Authoritative membership, by herd id. Holds entity ids rather than entity references, so
+     * nothing here pins an entity in memory or goes stale into a dangling reference. Maintained
+     * from EnhancedAnimalAbstract.setHerdId, which every join, leave, defect, spawn and load
+     * already passes through.
+     */
+    private static final Map<UUID, Set<Integer>> herdRosters = new HashMap<>();
+
+    /** Positions and leashed-member lookup derived from the rosters, cached for a few ticks. */
+    private static final Map<UUID, HerdSnapshot> herdSnapshotCache = new HashMap<>();
+
     private HerdManager() {}
+
+    // ---------------------------------------------------------------
+    // Roster upkeep
+    // ---------------------------------------------------------------
+
+    /**
+     * Moves an animal between herd rosters. Called from setHerdId, so it covers spawning,
+     * straying, defecting and loading from disk (entity ids aren't persisted, but a chunk
+     * reloading re-registers its animals through the same setter).
+     */
+    public static void updateHerdMembership(EnhancedAnimalAbstract entity,
+                                            @Nullable UUID previousHerdId,
+                                            @Nullable UUID newHerdId) {
+        if (entity.level.isClientSide || Objects.equals(previousHerdId, newHerdId)) return;
+
+        if (previousHerdId != null) {
+            Set<Integer> previous = herdRosters.get(previousHerdId);
+            if (previous != null) {
+                previous.remove(entity.getId());
+                if (previous.isEmpty()) herdRosters.remove(previousHerdId);
+            }
+            herdSnapshotCache.remove(previousHerdId);
+        }
+
+        if (newHerdId != null) {
+            herdRosters.computeIfAbsent(newHerdId, id -> new HashSet<>()).add(entity.getId());
+            herdSnapshotCache.remove(newHerdId);
+        }
+
+        if (herdRosters.size() > HERD_ROSTER_SWEEP_THRESHOLD) {
+            sweepRosters(entity);
+        }
+    }
+
+    /**
+     * Re-registers an animal that has fallen out of its own herd's roster. Rosters drop ids
+     * that don't resolve, which can catch an animal mid-load before it has been added to the
+     * level, so members re-assert themselves rather than silently going missing from their
+     * own herd. Costs a map lookup and a set lookup when everything is already correct.
+     */
+    public static void ensureRegistered(EnhancedAnimalAbstract entity) {
+        if (entity.level.isClientSide) return;
+        UUID herdId = entity.getHerdId();
+        if (herdId == null) return;
+
+        Set<Integer> roster = herdRosters.get(herdId);
+        if (roster != null && roster.contains(entity.getId())) return;
+
+        herdRosters.computeIfAbsent(herdId, id -> new HashSet<>()).add(entity.getId());
+        herdSnapshotCache.remove(herdId);
+    }
+
+    /**
+     * Drops ids that no longer resolve to a living member, and herds left empty by that. Only
+     * needed for herds nothing is querying any more - a herd with a loaded member prunes itself
+     * on read - so this runs off the back of membership changes once the map gets large.
+     */
+    private static void sweepRosters(EnhancedAnimalAbstract context) {
+        Iterator<Map.Entry<UUID, Set<Integer>>> herds = herdRosters.entrySet().iterator();
+        while (herds.hasNext()) {
+            Map.Entry<UUID, Set<Integer>> entry = herds.next();
+            UUID herdId = entry.getKey();
+            Set<Integer> roster = entry.getValue();
+
+            roster.removeIf(memberId -> resolveMember(context, herdId, memberId) == null);
+            if (roster.isEmpty()) {
+                herds.remove();
+                herdSnapshotCache.remove(herdId);
+            }
+        }
+    }
+
+    /** The live animal behind a roster id, or null if it is gone, unloaded, or has moved herds. */
+    @Nullable
+    private static EnhancedAnimalAbstract resolveMember(EnhancedAnimalAbstract context, UUID herdId, int memberId) {
+        return context.level.getEntity(memberId) instanceof EnhancedAnimalAbstract member
+                && member.isAlive()
+                && herdId.equals(member.getHerdId())
+                ? member : null;
+    }
 
     // ---------------------------------------------------------------
     // Spawn-time initialisation
@@ -76,17 +169,21 @@ public final class HerdManager {
     public static <T extends EnhancedAnimalAbstract> void initialiseHerd(T entity) {
         if (entity.level.isClientSide) return;
 
+        // Discovery is genuinely spatial - at this point we don't know which herds are nearby,
+        // so there's no roster to consult yet.
         AABB searchBox = entity.getBoundingBox().inflate(JOIN_RADIUS);
         List<T> nearby = (List<T>) entity.level.getEntitiesOfClass(
                 entity.getClass(), searchBox, m -> m != entity && m.isAlive());
 
-        // First pass: find the largest existing herd within range
+        // Dedup by herd id - the size of a herd depends on the id, not on which member of it
+        // we happened to see first.
+        Set<UUID> seenHerds = new HashSet<>();
         UUID bestHerd = null;
         int bestSize = 0;
         for (T other : nearby) {
             UUID otherId = other.getHerdId();
-            if (otherId == null) continue;
-            int size = countHerdSize(entity, entity.getClass(), otherId, JOIN_RADIUS * 4);
+            if (otherId == null || !seenHerds.add(otherId)) continue;
+            int size = countHerdSize(entity, otherId, JOIN_RADIUS * 4);
             if (size > bestSize) {
                 bestSize = size;
                 bestHerd = otherId;
@@ -108,7 +205,7 @@ public final class HerdManager {
     }
 
     // ---------------------------------------------------------------
-    // Periodic membership checks (run every 500 ticks in HerdGoal)
+    // Periodic membership checks (run on their own schedule in HerdGoal)
     // ---------------------------------------------------------------
 
     /**
@@ -122,7 +219,7 @@ public final class HerdManager {
         UUID herdId = entity.getHerdId();
         if (herdId == null) return false;
 
-        Vec3 centre = computeHerdCentre(entity, entity.getClass(), herdId);
+        Vec3 centre = computeHerdCentre(entity, herdId);
         if (centre == null) {
             entity.setHerdId(UUID.randomUUID());
             return true;
@@ -148,24 +245,27 @@ public final class HerdManager {
         UUID currentHerdId = entity.getHerdId();
         if (currentHerdId == null) return false;
 
+        // Which herds are near me is a discovery question, so this one stays a spatial scan.
         List<T> nearby = getNearbyAnimals(entity, entity.getClass(), JOIN_RADIUS * 3);
 
-        int currentSize = countHerdSize(entity, entity.getClass(), currentHerdId, JOIN_RADIUS * 4);
-        Vec3 ownCentre = computeHerdCentre(entity, entity.getClass(), currentHerdId);
+        int currentSize = countHerdSize(entity, currentHerdId, JOIN_RADIUS * 4);
+        Vec3 ownCentre = computeHerdCentre(entity, currentHerdId);
         double distToOwn = ownCentre != null ? entity.position().distanceTo(ownCentre) : Double.MAX_VALUE;
 
+        Set<UUID> seenForeignHerds = new HashSet<>();
         UUID bestForeignId = null;
         double bestForeignDist = Double.MAX_VALUE;
 
         for (T other : nearby) {
             UUID otherId = other.getHerdId();
             if (otherId == null || otherId.equals(currentHerdId)) continue;
+            if (!seenForeignHerds.add(otherId)) continue;
 
-            Vec3 foreignCentre = computeHerdCentre(entity, entity.getClass(), otherId);
+            Vec3 foreignCentre = computeHerdCentre(entity, otherId);
             if (foreignCentre == null) continue;
             double distToForeign = entity.position().distanceTo(foreignCentre);
 
-            int foreignSize = countHerdSize(entity, entity.getClass(), otherId, JOIN_RADIUS * 4);
+            int foreignSize = countHerdSize(entity, otherId, JOIN_RADIUS * 4);
             boolean largerHerd = foreignSize > currentSize;
             boolean strayedAndClose = distToOwn > STRAY_DISTANCE && distToForeign < DEFECT_APPROACH_DISTANCE;
 
@@ -187,14 +287,34 @@ public final class HerdManager {
     // ---------------------------------------------------------------
 
     /**
-     * Returns true if this herd is in a moving window at the given game time.
+     * Returns true if this herd is in a moving burst at the given game time.
      * All members of the same herd return the same value for the same game time,
      * regardless of when they individually started the goal.
      */
     public static boolean isHerdMoving(UUID herdId, long gameTime) {
-        long timeSlot = gameTime / WANDER_INTERVAL;
-        long seed = (long) herdId.hashCode() ^ (timeSlot * MOVE_SEED_PRIME);
-        return new Random(seed).nextDouble() < MOVE_PROBABILITY;
+        long moveDuration = moveDurationTicks();
+        long cycleLen = moveDuration + IDLE_DURATION_TICKS;
+        return cyclePosition(herdId, gameTime, cycleLen) < moveDuration;
+    }
+
+    /** Length of a moving burst, in ticks — configurable via herdMoveDurationTicks. */
+    private static long moveDurationTicks() {
+        return GeneticAnimalsConfig.COMMON.herdMoveDurationTicks.get();
+    }
+
+    /** Fixed per-herd offset so different herds' move/idle bursts don't sync up. */
+    private static long herdPhaseOffset(UUID herdId, long cycleLen) {
+        return Math.floorMod((long) herdId.hashCode(), cycleLen);
+    }
+
+    /** Position within the current move+idle cycle, in [0, cycleLen). */
+    private static long cyclePosition(UUID herdId, long gameTime, long cycleLen) {
+        return Math.floorMod(gameTime + herdPhaseOffset(herdId, cycleLen), cycleLen);
+    }
+
+    /** Which cycle (i.e. which moving burst) the given game time falls in. */
+    private static long cycleIndex(UUID herdId, long gameTime, long cycleLen) {
+        return Math.floorDiv(gameTime + herdPhaseOffset(herdId, cycleLen), cycleLen);
     }
 
     // ---------------------------------------------------------------
@@ -204,10 +324,6 @@ public final class HerdManager {
     /**
      * Computes a normalised steering vector for this entity.
      * Returns null when the entity is already within the dead zone of its personal target.
-     *
-     * Only called during moving windows (HerdGoal.canUse() gates idle phases).
-     * Direction blends smoothly into the next window over the final TRANSITION_TICKS
-     * to avoid abrupt pivots at slot boundaries.
      */
     @Nullable
     public static <T extends EnhancedAnimalAbstract> Vec3 computeHerdSteering(T entity) {
@@ -216,36 +332,26 @@ public final class HerdManager {
         UUID herdId = entity.getHerdId();
         if (herdId == null) return null;
 
-        List<T> mates = getSameHerdMembers(entity, entity.getClass(), JOIN_RADIUS * 3);
-
         Vec3 selfPos = entity.position();
+        List<Vec3> mates = nearbyHerdMatePositions(entity, herdId, JOIN_RADIUS * 3);
 
         // Herd centre including self
         Vec3 centre = selfPos;
         int count = 1;
-        for (T m : mates) {
-            centre = centre.add(m.position());
+        for (Vec3 p : mates) {
+            centre = centre.add(p);
             count++;
         }
         centre = centre.scale(1.0 / count);
 
-        // Shared wander direction — blended near slot boundaries for smooth turns
+        // Shared wander direction — one per moving burst
         long gameTime = entity.level.getGameTime();
-        long timeSlot  = gameTime / WANDER_INTERVAL;
-        long tickInSlot = gameTime % WANDER_INTERVAL;
+        long cycleLen = moveDurationTicks() + IDLE_DURATION_TICKS;
+        long cycleIndex = cycleIndex(herdId, gameTime, cycleLen);
+        Vec3 wanderDir = dirForCycle(herdId, cycleIndex);
 
-        Vec3 wanderDir;
-        if (tickInSlot >= WANDER_INTERVAL - TRANSITION_TICKS) {
-            double t = (tickInSlot - (WANDER_INTERVAL - TRANSITION_TICKS)) / (double) TRANSITION_TICKS;
-            Vec3 current = dirForSlot(herdId, timeSlot);
-            Vec3 next    = dirForSlot(herdId, timeSlot + 1);
-            wanderDir = current.scale(1.0 - t).add(next.scale(t)).normalize();
-        } else {
-            wanderDir = dirForSlot(herdId, timeSlot);
-        }
-
-        // Per-entity jitter — stable within a window, spreads members naturally
-        Random jitterRng = new Random(entity.getId() ^ timeSlot);
+        // Per-entity jitter — stable within a burst, spreads members naturally
+        Random jitterRng = new Random(entity.getId() ^ cycleIndex);
         Vec3 jitter = new Vec3(
                 (jitterRng.nextDouble() - 0.5) * JITTER_RADIUS * 2.0,
                 0.0,
@@ -260,19 +366,161 @@ public final class HerdManager {
             cohesion = personalTarget.subtract(selfPos).normalize();
         }
 
-        // Separation: push away from too-close herd-mates
+        Vec3 separation = computeSeparation(selfPos, mates);
+
+        Vec3 steering = cohesion.scale(0.6).add(separation.scale(1.5));
+        double len = steering.length();
+        return len > 1e-6 ? steering.normalize() : null;
+    }
+
+    // ---------------------------------------------------------------
+    // Leash following
+    // ---------------------------------------------------------------
+
+    /**
+     * The same-herd member currently being led on a lead, or null if there isn't one.
+     * Answered from the herd's roster, so it costs an O(1) snapshot lookup on the hot path
+     * rather than an area search.
+     */
+    @Nullable
+    public static EnhancedAnimalAbstract findLeashedHerdMate(EnhancedAnimalAbstract entity) {
+        if (entity.level.isClientSide) return null;
+        UUID herdId = entity.getHerdId();
+        if (herdId == null) return null;
+
+        int leashedId = herdSnapshot(entity, herdId, entity.level.getGameTime()).leashedMemberId;
+        if (leashedId == NO_MEMBER || leashedId == entity.getId()) return null;
+
+        // Re-check the resolved mate instead of trusting the snapshot, so followers stop on the
+        // same tick the lead comes off rather than waiting for the snapshot to expire.
+        if (!(entity.level.getEntity(leashedId) instanceof EnhancedAnimalAbstract mate)) return null;
+        if (!mate.isAlive() || !mate.isLedByEntity() || !herdId.equals(mate.getHerdId())) return null;
+        return mate;
+    }
+
+    /**
+     * Steers toward a herd-mate that's being led, using the same cohesion/separation
+     * blend as computeHerdSteering but targeting the leader directly instead of the
+     * shared wander target. Returns null once within the cohesion dead zone of the leader.
+     */
+    @Nullable
+    public static <T extends EnhancedAnimalAbstract> Vec3 computeLeaderSteering(T entity, T leader) {
+        if (entity.level.isClientSide) return null;
+
+        UUID herdId = entity.getHerdId();
+        Vec3 selfPos = entity.position();
+        Vec3 leaderPos = leader.position();
+
+        Vec3 cohesion = Vec3.ZERO;
+        if (selfPos.distanceTo(leaderPos) > COHESION_DEAD_ZONE) {
+            cohesion = leaderPos.subtract(selfPos).normalize();
+        }
+
+        List<Vec3> mates = herdId != null
+                ? nearbyHerdMatePositions(entity, herdId, JOIN_RADIUS * 3)
+                : List.of();
+        Vec3 separation = computeSeparation(selfPos, mates);
+
+        Vec3 steering = cohesion.scale(0.6).add(separation.scale(1.5));
+        double len = steering.length();
+        return len > 1e-6 ? steering.normalize() : null;
+    }
+
+    /** Push away from too-close herd-mates; shared by wander and leash-follow steering. */
+    private static Vec3 computeSeparation(Vec3 selfPos, List<Vec3> matePositions) {
         Vec3 separation = Vec3.ZERO;
-        for (T m : mates) {
-            Vec3 diff = selfPos.subtract(m.position());
+        for (Vec3 p : matePositions) {
+            Vec3 diff = selfPos.subtract(p);
             double dist = diff.length();
             if (dist > 0.0 && dist < SEPARATION_RADIUS) {
                 separation = separation.add(diff.normalize().scale(1.0 - (dist / SEPARATION_RADIUS)));
             }
         }
+        return separation;
+    }
 
-        Vec3 steering = cohesion.scale(0.6).add(separation.scale(1.5));
-        double len = steering.length();
-        return len > 1e-6 ? steering.normalize() : null;
+    // ---------------------------------------------------------------
+    // Snapshots derived from the rosters
+    //
+    // The first member of a herd to ask resolves the roster; everyone else reuses the result
+    // for the next few ticks. Resolution is an O(1) id lookup per member rather than a spatial
+    // scan, and an id that no longer resolves to a living member of this herd is dropped from
+    // the roster there and then - so death, unloading and defection all clean up on read
+    // without needing hooks of their own.
+    // ---------------------------------------------------------------
+
+    private static final class HerdSnapshot {
+        final long tick;
+        final Map<Integer, Vec3> positionsById;
+        final int leashedMemberId;
+
+        HerdSnapshot(long tick, Map<Integer, Vec3> positionsById, int leashedMemberId) {
+            this.tick = tick;
+            this.positionsById = positionsById;
+            this.leashedMemberId = leashedMemberId;
+        }
+    }
+
+    private static HerdSnapshot herdSnapshot(EnhancedAnimalAbstract entity, UUID herdId, long gameTime) {
+        HerdSnapshot cached = herdSnapshotCache.get(herdId);
+        if (cached != null && isFresh(cached, gameTime)) {
+            return cached;
+        }
+
+        Map<Integer, Vec3> positions = new HashMap<>();
+        int leashedMemberId = NO_MEMBER;
+
+        Set<Integer> roster = herdRosters.get(herdId);
+        if (roster != null) {
+            Iterator<Integer> members = roster.iterator();
+            while (members.hasNext()) {
+                int memberId = members.next();
+                EnhancedAnimalAbstract member = resolveMember(entity, herdId, memberId);
+                if (member == null) {
+                    members.remove();
+                    continue;
+                }
+                positions.put(memberId, member.position());
+                if (leashedMemberId == NO_MEMBER && member.isLedByEntity()) {
+                    leashedMemberId = memberId;
+                }
+            }
+            if (roster.isEmpty()) herdRosters.remove(herdId);
+        }
+
+        if (herdSnapshotCache.size() > HERD_SNAPSHOT_SWEEP_THRESHOLD) {
+            sweepExpiredSnapshots(gameTime);
+        }
+        HerdSnapshot snapshot = new HerdSnapshot(gameTime, positions, leashedMemberId);
+        herdSnapshotCache.put(herdId, snapshot);
+        return snapshot;
+    }
+
+    /**
+     * Bounded at both ends: an entry dated in the future means the game time went backwards
+     * (a different world loaded in the same session), so it belongs to a world we're no longer
+     * in and must not be trusted rather than being treated as indefinitely fresh.
+     */
+    private static boolean isFresh(HerdSnapshot snapshot, long gameTime) {
+        long age = gameTime - snapshot.tick;
+        return age >= 0 && age < HERD_SNAPSHOT_TTL_TICKS;
+    }
+
+    private static void sweepExpiredSnapshots(long gameTime) {
+        herdSnapshotCache.values().removeIf(s -> !isFresh(s, gameTime));
+    }
+
+    /** Herd-mate positions, excluding the querying entity, within radius of its current box. */
+    private static List<Vec3> nearbyHerdMatePositions(EnhancedAnimalAbstract entity, UUID herdId, double radius) {
+        Map<Integer, Vec3> positions = herdSnapshot(entity, herdId, entity.level.getGameTime()).positionsById;
+        AABB box = entity.getBoundingBox().inflate(radius);
+        List<Vec3> result = new ArrayList<>();
+        for (Map.Entry<Integer, Vec3> e : positions.entrySet()) {
+            if (e.getKey() == entity.getId()) continue;
+            Vec3 p = e.getValue();
+            if (box.contains(p.x, p.y, p.z)) result.add(p);
+        }
+        return result;
     }
 
     // ---------------------------------------------------------------
@@ -281,30 +529,23 @@ public final class HerdManager {
 
     /**
      * Geometric centre of all living same-herd members excluding the querying entity,
-     * or null if none found within STRAY_DISTANCE.
+     * or null if none are within STRAY_DISTANCE.
      */
     @Nullable
-    @SuppressWarnings("unchecked")
-    public static <T extends EnhancedAnimalAbstract> Vec3 computeHerdCentre(
-            T entity, Class<? extends T> clazz, UUID herdId) {
-
-        AABB box = entity.getBoundingBox().inflate(STRAY_DISTANCE);
-        List<? extends T> members = (List<? extends T>) entity.level.getEntitiesOfClass(
-                clazz, box, m -> m != entity && herdId.equals(m.getHerdId()) && m.isAlive());
-
-        if (members.isEmpty()) return null;
+    private static Vec3 computeHerdCentre(EnhancedAnimalAbstract entity, UUID herdId) {
+        List<Vec3> positions = nearbyHerdMatePositions(entity, herdId, STRAY_DISTANCE);
+        if (positions.isEmpty()) return null;
 
         double sx = 0, sy = 0, sz = 0;
-        for (T m : members) {
-            Vec3 p = m.position();
+        for (Vec3 p : positions) {
             sx += p.x; sy += p.y; sz += p.z;
         }
-        int n = members.size();
+        int n = positions.size();
         return new Vec3(sx / n, sy / n, sz / n);
     }
 
-    private static Vec3 dirForSlot(UUID herdId, long timeSlot) {
-        long seed = ((long) herdId.hashCode() ^ (timeSlot * MOVE_SEED_PRIME)) ^ DIR_SEED_SALT;
+    private static Vec3 dirForCycle(UUID herdId, long cycleIndex) {
+        long seed = ((long) herdId.hashCode() ^ (cycleIndex * MOVE_SEED_PRIME)) ^ DIR_SEED_SALT;
         double angle = new Random(seed).nextDouble() * 2.0 * Math.PI;
         return new Vec3(Math.cos(angle), 0.0, Math.sin(angle));
     }
@@ -318,21 +559,14 @@ public final class HerdManager {
                 clazz, box, m -> m != entity && m.isAlive() && m.getHerdId() != null);
     }
 
-    /** All nearby living animals sharing the same herd ID (for steering). */
-    @SuppressWarnings("unchecked")
-    private static <T extends EnhancedAnimalAbstract> List<T> getSameHerdMembers(
-            T entity, Class<? extends EnhancedAnimalAbstract> clazz, double radius) {
-        UUID herdId = entity.getHerdId();
-        if (herdId == null) return List.of();
+    /** How many members of the given herd are within radius of this entity. */
+    private static int countHerdSize(EnhancedAnimalAbstract entity, UUID herdId, double radius) {
+        Map<Integer, Vec3> positions = herdSnapshot(entity, herdId, entity.level.getGameTime()).positionsById;
         AABB box = entity.getBoundingBox().inflate(radius);
-        return (List<T>) entity.level.getEntitiesOfClass(
-                clazz, box, m -> m != entity && m.isAlive() && herdId.equals(m.getHerdId()));
-    }
-
-    private static <T extends EnhancedAnimalAbstract> int countHerdSize(
-            T entity, Class<? extends EnhancedAnimalAbstract> clazz, UUID herdId, double radius) {
-        AABB box = entity.getBoundingBox().inflate(radius);
-        return entity.level.getEntitiesOfClass(
-                clazz, box, m -> m.isAlive() && herdId.equals(m.getHerdId())).size();
+        int count = 0;
+        for (Vec3 p : positions.values()) {
+            if (box.contains(p.x, p.y, p.z)) count++;
+        }
+        return count;
     }
 }

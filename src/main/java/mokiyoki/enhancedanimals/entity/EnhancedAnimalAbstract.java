@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
+import mokiyoki.enhancedanimals.ai.general.HerdGoal;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.util.HerdManager;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
@@ -205,8 +207,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
 
+    /** Goal priorities the herd feature registers at - see registerHerdGoals. */
+    private static final int HERD_FOLLOW_LEASHED_PRIORITY = 2;
+    private static final int HERD_WANDER_PRIORITY = 10;
+
     @Nullable
     protected UUID herdId = null;
+
 
     /*
     Entity Construction
@@ -483,7 +490,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         if (this.level.dimensionType().bedWorks()) {
             if (this.isInWaterRainOrBubble()) {
                 return false;
-            } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
+            } else if (this.isLedByEntity()) {
                 return false;
             } else {
                 return this.entityData.get(SLEEPING);
@@ -539,8 +546,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void setHerdId(@Nullable UUID herdId) {
+        UUID previousHerdId = this.herdId;
         this.herdId = herdId;
         if (!level.isClientSide) {
+            HerdManager.updateHerdMembership(this, previousHerdId, herdId);
             if (herdId != null) {
                 this.setCustomName(new TextComponent(herdId.toString().substring(0, 8)));
                 this.setCustomNameVisible(true);
@@ -549,6 +558,32 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 this.setCustomNameVisible(false);
             }
         }
+    }
+
+    /**
+     * True when something is actively leading this animal - a player or another entity holding
+     * a lead - as opposed to being tied to a fence post, which doesn't count as being led.
+     */
+    public boolean isLedByEntity() {
+        Entity holder = this.getLeashHolder();
+        return holder != null && !(holder instanceof LeashFenceKnotEntity);
+    }
+
+    /** Assigns this animal to a nearby herd, or starts its own. Safe to call on every spawn. */
+    protected void initialiseHerdIfNeeded() {
+        if (this.getHerdId() == null) {
+            HerdManager.initialiseHerd(this);
+        }
+    }
+
+    /**
+     * Registers both herd goals at the priorities the feature expects: leash-following above
+     * grazing/eating/wandering so a led herd doesn't scatter, and herd wandering below them so
+     * it yields to those instead.
+     */
+    protected void registerHerdGoals(double speed) {
+        this.goalSelector.addGoal(HERD_FOLLOW_LEASHED_PRIORITY, new HerdGoal(this, speed * 1.25D, true));
+        this.goalSelector.addGoal(HERD_WANDER_PRIORITY, new HerdGoal(this, speed, false));
     }
 
     public void createNewHungerLimit() {

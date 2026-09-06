@@ -1840,8 +1840,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 scale = 0.05F - FeatherFluff*0.05F;
                 mapOfScale.put("bWingL", ModelHelper.createScalings(1.0F, -scale, 0.0F, 0.0F));
                 mapOfScale.put("bWingR", ModelHelper.createScalings(1.0F, scale, 0.0F, 0.0F));
-                scale = 0.4F + (FeatherFluff*0.6F);
-                mapOfScale.put("bSaddle", ModelHelper.createScalings(scale, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F));
+                float tailHelp = 0.5F * (chicken.tailPinch + 1.0F);
+                scale = 0.4F + (FeatherFluff*tailHelp*0.6F);
+                mapOfScale.put("bSaddle", ModelHelper.createScalings(scale, 1.0F, chicken.tailPinch, 0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bCoverts", ModelHelper.createScalings(1.0F, 1.0F, 1.0F,0.0F,0.0F,0.0F));
+                mapOfScale.put("bTail", ModelHelper.createScalings(1.0F, tailHelp, 1.0F,0.0F,0.0F,0.0F));
             }
 
             /**
@@ -1973,7 +1976,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theTailCoverts.setY(2.0F - (chicken.tailAngle*2.5F));
             theTailCoverts.setZ(data.isFemale||data.growthAmount!=1.0F?2.0F:1.5F);
 
-            theTail.setXRot(0.6F - (chicken.tailAngle*0.8F));
+            theTail.setXRot((0.6F - (chicken.tailAngle*0.8F))+(1.0F-chicken.tailPinch));
             theTail.setY(-(4.0F + chicken.tailAngle));
             theTail.setZ(/*chicken.tailAngle*1.5F*/1.5F);
 

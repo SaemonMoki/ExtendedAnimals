@@ -37,6 +37,7 @@ public class ChickenPhenotype implements Phenotype {
     public float bodyY;
     public float bodyZ;
     public float tailAngle;
+    public float tailPinch;
     public float height;
     private boolean silkie;
     public float fluffiness;
@@ -297,6 +298,18 @@ public class ChickenPhenotype implements Phenotype {
         this.tailAngle = getTailAngle(gene, this.bodyAngle);
 
         this.tailless = sGene[20] == 2 || (!isFemale && sGene[21] == 2);
+
+        this.tailPinch = getTailPinch(gene);
+    }
+
+    private float getTailPinch(int[] gene) {
+        float tp = 1.0F;
+        for (int i = 298; i < 308; i+= 2) {
+            if (gene[i] == 2 && gene[i+1] == 2) {
+                tp -= 0.1F;
+            }
+        }
+        return tp;
     }
 
     private static float getBodyAngle(int[] gene) {

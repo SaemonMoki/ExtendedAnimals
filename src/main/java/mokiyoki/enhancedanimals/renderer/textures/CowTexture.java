@@ -379,7 +379,7 @@ public class CowTexture {
                 int t = ThreadLocalRandom.current().nextInt(1, 5);
                 for (int i = 0; i < t; i++) {
                     int rand = ThreadLocalRandom.current().nextInt(0, 13);
-                    cow.addTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand));
+                    cow.addFlippedTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand), ThreadLocalRandom.current().nextBoolean(), headCubes);
                 }
                 colour.addGrouping(brockling);
             }

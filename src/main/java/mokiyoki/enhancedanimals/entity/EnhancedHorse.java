@@ -533,15 +533,15 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
                     sclera = 1;
                 }
 
-                addTextureToAnimal(HORSE_TEXTURES_SKIN, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_BASE, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_DUN, dun, d -> d != 0);
-                addTextureToAnimal(HORSE_TEXTURES_BLACKPATTERN, pattern, p -> p != 0);
-                addTextureToAnimal(HORSE_TEXTURES_SILVER, silver? 1 : 0, s -> s != 0);
-                addTextureToAnimal(HORSE_TEXTURES_EYES, 1, null);
-                addTextureToAnimal(HORSE_TEXTURES_SCLERA, sclera, null);
-                addTextureToAnimal(HORSE_TEXTURES_HOOVES, 0, null);
-                addTextureToAnimal(HORSE_TEXTURES_MOUTH, 0, null);
+//                addTextureToAnimal(HORSE_TEXTURES_SKIN, 0, null);
+//                addTextureToAnimal(HORSE_TEXTURES_BASE, 0, null);
+//                addTextureToAnimal(HORSE_TEXTURES_DUN, dun, d -> d != 0);
+//                addTextureToAnimal(HORSE_TEXTURES_BLACKPATTERN, pattern, p -> p != 0);
+//                addTextureToAnimal(HORSE_TEXTURES_SILVER, silver? 1 : 0, s -> s != 0);
+//                addTextureToAnimal(HORSE_TEXTURES_EYES, 1, null);
+//                addTextureToAnimal(HORSE_TEXTURES_SCLERA, sclera, null);
+//                addTextureToAnimal(HORSE_TEXTURES_HOOVES, 0, null);
+//                addTextureToAnimal(HORSE_TEXTURES_MOUTH, 0, null);
 
 //                this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
 //                this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);

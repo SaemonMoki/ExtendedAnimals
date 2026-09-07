@@ -122,7 +122,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
 
         TextureGrouping parent = this.getTextureGrouping();
-        this.addTextureToAnimalTextureGrouping(parent, MOOSHROOM_MUSHROOM, mushroomType, null);
+        this.layer(parent).texture(MOOSHROOM_MUSHROOM[mushroomType]).add();
         this.setTextureGrouping(parent);
     }
 

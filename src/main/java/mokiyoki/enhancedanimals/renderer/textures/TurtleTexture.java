@@ -95,7 +95,7 @@ public class TurtleTexture {
             if (tortishell) {
                 TextureGrouping brindleGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping brindleColourGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                turtle.layer(brindleGroup).texture("tortishell/tortishell.png").as(TexturingType.MERGE_GROUP).add();
+                turtle.layer(brindleGroup).texture("tortishell/tortishell.png").asType(TexturingType.MERGE_GROUP).add();
 
                 if (pigmentHueMod-5 < 0) {
                     createBaseColour(turtle, gene, nonaxanthic, pigmentHueMod+2, brindleColourGroup);

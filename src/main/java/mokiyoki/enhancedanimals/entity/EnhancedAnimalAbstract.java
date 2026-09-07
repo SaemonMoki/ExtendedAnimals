@@ -21,7 +21,7 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.renderer.texture.TextureCacheKeyWriter;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TextureSlot;
+import mokiyoki.enhancedanimals.renderer.texture.TextureSlotBuilder;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -1942,10 +1942,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     /**
      * Starts a texture slot: one layer added to {@code textureGroup}, plus the cache key
-     * field recording what it resolved to. Finish with {@link TextureSlot#add()}.
+     * field recording what it resolved to. Finish with {@link TextureSlotBuilder#add()}.
      */
-    public TextureSlot layer(TextureGrouping textureGroup) {
-        return new TextureSlot(this, textureGroup);
+    public TextureSlotBuilder layer(TextureGrouping textureGroup) {
+        return new TextureSlotBuilder(this, textureGroup);
     }
 
     @Override

@@ -482,14 +482,14 @@ public class RabbitTexture {
     }
 
     private static void addSkinDetails(EnhancedRabbit rabbit, TextureGrouping parentGroup, int skin) {
-        rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_SKIN, skin).add();
+        rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_SKIN, skin).add();
     }
 
     private static void addEyeTexture(EnhancedRabbit rabbit, TextureGrouping parentGroup, int eyes, int vieye) {
         TextureGrouping eyeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.layer(eyeGroup).variant(RABBIT_TEXTURES_EYES, eyes).add();
+        rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_EYES, eyes).add();
         if (vieye > 7 && (vieye <= 17 || vieye >= 25)) {
-            rabbit.layer(eyeGroup).variant(RABBIT_TEXTURES_VIENNAEYES, vieye).add();
+            rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_VIENNAEYES, vieye).add();
         } else {
             rabbit.addDelimiter("nv");
         }
@@ -533,7 +533,7 @@ public class RabbitTexture {
         }
 
         if (fur != 0) {
-            rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_FUR, fur).add();
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_FUR, fur).add();
         } else {
             rabbit.addDelimiter("rex");
         }
@@ -541,7 +541,7 @@ public class RabbitTexture {
 
     private static void addVienna(EnhancedRabbit rabbit, TextureGrouping parentGroup, int vienna) {
         if (vienna != 0) {
-            rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_DUTCH, vienna).add();
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, vienna).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -551,14 +551,14 @@ public class RabbitTexture {
         //TODO Hotot Spotting if dutch and homozygous broken
 
         if (dutch != 0) {
-            rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_DUTCH, dutch).add();
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, dutch).add();
         } else {
             rabbit.addDelimiter();
         }
         if (broken != 0) {
             //TODO split out broken spots from charlie spots
             //TODO make broken/charlie genetics
-            rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_BROKEN, broken).add();
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_BROKEN, broken).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -566,7 +566,7 @@ public class RabbitTexture {
 
     private static void createTopCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int top) {
         if (top != 0) {
-            rabbit.layer(parentGroup).variant(RABBIT_TEXTURES_TOP, top).add();
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_TOP, top).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -576,13 +576,13 @@ public class RabbitTexture {
         TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
 
         if (middle != 0) {
-            rabbit.layer(coat).variant(RABBIT_TEXTURES_MIDDLE, middle).add();
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_MIDDLE, middle).add();
         } else {
             rabbit.addDelimiter();
         }
 
         if (higher != 0) {
-            rabbit.layer(coat).variant(RABBIT_TEXTURES_HIGHER, higher).add();
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_HIGHER, higher).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -592,9 +592,9 @@ public class RabbitTexture {
 
     private static void createUnderCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int under, int lower) {
         TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.layer(coat).variant(RABBIT_TEXTURES_UNDER, under).add();
+        rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_UNDER, under).add();
         if (lower != 0) {
-            rabbit.layer(coat).variant(RABBIT_TEXTURES_LOWER, lower).add();
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_LOWER, lower).add();
         } else {
             rabbit.addDelimiter();
         }

@@ -258,7 +258,7 @@ public class CowTexture {
                 //carry the tint -- it used to record "0" for both and rely on the black slot
                 boolean shaded = black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12;
                 cow.layer(parentGroup).texture("spots/brockling/0.png")
-                        .as(shaded ? TexturingType.APPLY_SHADE_MELANIN : TexturingType.APPLY_RED)
+                        .asType(shaded ? TexturingType.APPLY_SHADE_MELANIN : TexturingType.APPLY_RED)
                         .keyedAs(shaded ? "bm" : "br").add();
             } else {
                 cow.addSkippedSlots(LEGACY_BROCKLING_SLOTS);
@@ -270,10 +270,10 @@ public class CowTexture {
 
     private static void addDetails(EnhancedCow cow, TextureGrouping parentGroup, int hooves, int horn, int coat) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        cow.layer(grouping).variant(COW_TEXTURES_HOOVES, hooves).add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_HOOVES, hooves).add();
         cow.layer(grouping).texture("eyes_black.png").add();
-        cow.layer(grouping).variant(COW_TEXTURES_HORNS, horn).add();
-        cow.layer(grouping).variant(COW_TEXTURES_COAT, coat).add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_HORNS, horn).add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_COAT, coat).add();
         parentGroup.addGrouping(grouping);
     }
 
@@ -422,15 +422,15 @@ public class CowTexture {
     }
 
     private static void addBaseSkinDetails(EnhancedCow cow, TextureGrouping parentGroup, int skin) {
-        cow.layer(parentGroup).variant(COW_TEXTURES_SKIN, skin).add();
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_SKIN, skin).add();
     }
 
     private static void addCounterShading(EnhancedCow cow, TextureGrouping parentGroup, int mealy, int eelstripe) {
         if (mealy != 0 || eelstripe != 0) {
             TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            cow.layer(grouping).variant(COW_TEXTURES_MEALY, mealy).onlyIf(mealy != 0).add();
-            cow.layer(grouping).variant(COW_TEXTURES_EELSTRIPE, eelstripe).as(TexturingType.APPLY_RED).onlyIf(eelstripe != 0).add();
+            cow.layer(grouping).textureTableSelector(COW_TEXTURES_MEALY, mealy).onlyIf(mealy != 0).add();
+            cow.layer(grouping).textureTableSelector(COW_TEXTURES_EELSTRIPE, eelstripe).asType(TexturingType.APPLY_RED).onlyIf(eelstripe != 0).add();
 
             parentGroup.addGrouping(grouping);
         } else {
@@ -439,17 +439,17 @@ public class CowTexture {
     }
 
     private static void addBlackPattern(EnhancedCow cow, TextureGrouping parentGroup, int black) {
-        cow.layer(parentGroup).variant(COW_TEXTURES_BLACK, black).as(TexturingType.APPLY_SHADE_MELANIN).onlyIf(black != 0).add();
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_BLACK, black).asType(TexturingType.APPLY_SHADE_MELANIN).onlyIf(black != 0).add();
     }
 
     private static void addRedPattern(EnhancedCow cow, TextureGrouping parentGroup, int red) {
-        cow.layer(parentGroup).variant(COW_TEXTURES_RED, red).as(TexturingType.APPLY_RED).onlyIf(red != 0).add();
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_RED, red).asType(TexturingType.APPLY_RED).onlyIf(red != 0).add();
     }
 
     private static void addBase(EnhancedCow cow, TextureGrouping parentGroup, int skin) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
         cow.layer(grouping).texture("solid.png").add();
-        cow.layer(grouping).variant(COW_TEXTURES_UDDER, skin).add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_UDDER, skin).add();
         parentGroup.addGrouping(grouping);
     }
 

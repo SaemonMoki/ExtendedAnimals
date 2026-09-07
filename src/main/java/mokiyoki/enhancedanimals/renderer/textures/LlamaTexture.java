@@ -255,37 +255,37 @@ public class LlamaTexture {
 
     private static void addDetails(EnhancedLlama llama, TextureGrouping parentGroup, int eyes, int skin) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.layer(grouping).variant(LLAMA_TEXTURES_EYES, eyes).add();
-        llama.layer(grouping).variant(LLAMA_TEXTURES_SKIN, skin).add();
+        llama.layer(grouping).textureTableSelector(LLAMA_TEXTURES_EYES, eyes).add();
+        llama.layer(grouping).textureTableSelector(LLAMA_TEXTURES_SKIN, skin).add();
         parentGroup.addGrouping(grouping);
     }
 
 
     private static void addFurTexture(EnhancedLlama llama, TextureGrouping parentGroup, int fur) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_FUR, fur).onlyIf(f -> f != 0).orKey("sf").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_FUR, fur).onlyIf(f -> f != 0).orKey("sf").add();
     }
 
     private static void addDomWhiteTexture(EnhancedLlama llama, TextureGrouping parentGroup, int domwhite) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_DOMWHITE, domwhite).onlyIf(d -> d != 0).orKey("nw").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_DOMWHITE, domwhite).onlyIf(d -> d != 0).orKey("nw").add();
     }
 
     private static void addPiebaldTexture(EnhancedLlama llama, TextureGrouping parentGroup, int piebald) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_PIEBALD, piebald).onlyIf(p -> p != 0).orKey("np").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_PIEBALD, piebald).onlyIf(p -> p != 0).orKey("np").add();
     }
 
     private static void addTuxTexture(EnhancedLlama llama, TextureGrouping parentGroup, int tux) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_TUXEDO, tux).onlyIf(t -> t != 0).orKey("nt").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_TUXEDO, tux).onlyIf(t -> t != 0).orKey("nt").add();
     }
 
     private static void addRoanTexture(EnhancedLlama llama, TextureGrouping parentGroup, int roan) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_ROAN, roan).onlyIf(r -> r != 0).orKey("nr").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_ROAN, roan).onlyIf(r -> r != 0).orKey("nr").add();
     }
 
     private static void addPatternTexture(EnhancedLlama llama, TextureGrouping parentGroup, int pattern) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_PATTERN, pattern).onlyIf(p -> p != 0).orKey("np").add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_PATTERN, pattern).onlyIf(p -> p != 0).orKey("np").add();
     }
 
     private static void addGroundTexture(EnhancedLlama llama, TextureGrouping parentGroup, int ground) {
-        llama.layer(parentGroup).variant(LLAMA_TEXTURES_GROUND, ground).add();
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_GROUND, ground).add();
     }
 }

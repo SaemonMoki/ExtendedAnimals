@@ -252,14 +252,14 @@ public class SheepTexture {
 
         TextureGrouping hairGroup = new TextureGrouping(TexturingType.DYE_GROUP);
         TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        sheep.layer(foundationGroup).texture("r_solid_white.png").as(TexturingType.APPLY_RED).add();
-        sheep.layer(foundationGroup).variant(SHEEP_TEXTURES_MEALY, mealy ? 1 : 0).onlyIf(l -> l != 0).add();
+        sheep.layer(foundationGroup).texture("r_solid_white.png").asType(TexturingType.APPLY_RED).add();
+        sheep.layer(foundationGroup).textureTableSelector(SHEEP_TEXTURES_MEALY, mealy ? 1 : 0).onlyIf(l -> l != 0).add();
         hairGroup.addGrouping(foundationGroup);
 
         if (pattern1 == 14 || (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) ) {
             TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            sheep.layer(patternAverageGroup).variant(SHEEP_TEXTURES_PATTERN, pattern1).as(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
-            sheep.layer(patternAverageGroup).variant(SHEEP_TEXTURES_PATTERN, pattern2).as(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
+            sheep.layer(patternAverageGroup).textureTableSelector(SHEEP_TEXTURES_PATTERN, pattern1).asType(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
+            sheep.layer(patternAverageGroup).textureTableSelector(SHEEP_TEXTURES_PATTERN, pattern2).asType(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
             hairGroup.addGrouping(patternAverageGroup);
         } else {
             sheep.addSkippedSlots(PATTERN_SLOTS);
@@ -268,22 +268,22 @@ public class SheepTexture {
         if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0 || spots!=0) {
             boolean ticked = !sheep.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
             TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.MASK_GROUP : TexturingType.MERGE_GROUP);
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_TICKED, ticked ? 1 : 0).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_MEALY, mealy ? (sheep.getOrSetIsFemale() ? 3 : 2) : 0).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_ROAN, roan).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_BLAZE, blaze).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_SPOTS, spots).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).variant(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead).onlyIf(pigmentedHeadCategory != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_TICKED, ticked ? 1 : 0).onlyIf(l -> l != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_MEALY, mealy ? (sheep.getOrSetIsFemale() ? 3 : 2) : 0).onlyIf(l -> l != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_ROAN, roan).onlyIf(l -> l != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_BLAZE, blaze).onlyIf(l -> l != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_SPOTS, spots).onlyIf(l -> l != 0).add();
+            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead).onlyIf(pigmentedHeadCategory != 0).add();
             hairGroup.addGrouping(whiteSpotGroup);
         } else {
             sheep.addSkippedSlots(WHITE_SPOT_SLOTS);
         }
-        sheep.layer(hairGroup).variant(SHEEP_TEXTURES_GREY, grey).onlyIf(l -> l != 0).add();
+        sheep.layer(hairGroup).textureTableSelector(SHEEP_TEXTURES_GREY, grey).onlyIf(l -> l != 0).add();
         parentGroup.addGrouping(hairGroup);
 
         TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        sheep.layer(detailGroup).variant(SHEEP_TEXTURES_FUR, fur).add();
-        sheep.layer(detailGroup).variant(SHEEP_TEXTURES_SKIN, skin).add();
+        sheep.layer(detailGroup).textureTableSelector(SHEEP_TEXTURES_FUR, fur).add();
+        sheep.layer(detailGroup).textureTableSelector(SHEEP_TEXTURES_SKIN, skin).add();
         sheep.layer(detailGroup).texture("hooves_black.png").add();
         sheep.layer(detailGroup).texture("eyes_black.png").add();
         sheep.layer(detailGroup).texture("chests.png").add();

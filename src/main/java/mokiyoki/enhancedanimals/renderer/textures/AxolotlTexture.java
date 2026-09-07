@@ -202,30 +202,30 @@ public class AxolotlTexture {
         if (gillsColour < 0) gillsColour = 0;
         if (gillsColour2 < 0) gillsColour2 = 0;
         TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-        axolotl.layer(gillsGroup).variant(AXOLOTL_TEXTURES_GILLS, gillsColour, gills).add();
-        axolotl.layer(gillsGroup).variant(AXOLOTL_TEXTURES_GILLS, gillsColour2, gills).add();
+        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour, gills).add();
+        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour2, gills).add();
         parentGroup.addGrouping(gillsGroup);
 
         TextureGrouping bodyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
         axolotl.layer(bodyGroup).texture("alpha_mask.png").add();
-        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_BASE, base).as(TexturingType.APPLY_DYE).add();
-        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_BASE, base).asType(TexturingType.APPLY_DYE).add();
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
         if (pied < 0) pied = 0;
-        axolotl.layer(bodyGroup).variant(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {
             TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            axolotl.layer(cheekGroup).variant(CHEEK_SPOTS, gillsColour).add();
-            axolotl.layer(cheekGroup).variant(CHEEK_SPOTS, gillsColour2).add();
+            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour).add();
+            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour2).add();
             parentGroup.addGrouping(cheekGroup);
         } else {
             axolotl.addSkippedSlots(CHEEK_SLOTS);
         }
 
         TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.layer(detailsGroup).texture("eye_left.png").as(TexturingType.APPLY_EYE_LEFT_COLOUR).add();
-        axolotl.layer(detailsGroup).texture("eye_right.png").as(TexturingType.APPLY_EYE_RIGHT_COLOUR).add();
+        axolotl.layer(detailsGroup).texture("eye_left.png").asType(TexturingType.APPLY_EYE_LEFT_COLOUR).add();
+        axolotl.layer(detailsGroup).texture("eye_right.png").asType(TexturingType.APPLY_EYE_RIGHT_COLOUR).add();
         parentGroup.addGrouping(detailsGroup);
 
         axolotl.setTextureGrouping(parentGroup);

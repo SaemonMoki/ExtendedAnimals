@@ -4,21 +4,18 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
 /**
- * Builds one texture slot: a layer added to a {@link TextureGrouping}, plus the cache key
+ * Builds one texture slot: a layer added to a TextureGrouping, plus the cache key
  * field that records what the slot resolved to.
- *
- * Three independent choices, each named rather than encoded in the argument list:
- *
- *   where the path comes from -- {@link #texture} / {@link #variant}
- *   how it renders            -- {@link #as} / {@link #tinted}
- *   what the key records      -- {@link #keyedAs} / {@link #onlyIf} / {@link #orKey}
- *
- * {@link #add()} is the terminal operation and always closes the slot with exactly one
- * delimiter, so a slot that is built can never shift the fields after it. It cannot help
- * with a slot that is never built at all -- a branch that skips the builder entirely must
- * call {@link TextureCacheKeyWriter#addSkippedSlot()} to hold the position.
+ * Three independent choices:
+ *   where the path comes from -- texture / variant
+ *   how it renders            -- as / tinted / flipped
+ *   what the key records      -- keyedAs / onlyIf / orKey
+ * add() creatures the slot and key with one delimiter is the terminal operation and
+ * always closes the slot with exactly one delimiter
+ * a branch that skips the builder entirely must
+ * call TextureCacheKeyWriter#addSkippedSlot() to hold the position.
  */
-public final class TextureSlot {
+public final class TextureSlotBuilder {
 
     private final TextureCacheKeyWriter key;
     private final TextureGrouping group;
@@ -35,75 +32,61 @@ public final class TextureSlot {
     private boolean included = true;
     private boolean writesKeyField = true;
 
-    public TextureSlot(TextureCacheKeyWriter key, TextureGrouping group) {
+    public TextureSlotBuilder(TextureCacheKeyWriter key, TextureGrouping group) {
         this.key = key;
         this.group = group;
     }
 
-    /* ---- where the path comes from ---- */
-
-    /** A literal path. The key records "0" unless {@link #keyedAs} overrides it. */
-    public TextureSlot texture(String path) {
+    // The texture path. The key records "0" unless #keyedAs overrides it.
+    public TextureSlotBuilder texture(String path) {
         this.path = path;
         return this;
     }
 
-    /*
-     * The table is indexed in add(), not here. Callers routinely derive an index that is only
-     * valid when the slot is included -- "pied - 1" is -1 for an unpied axolotl -- so resolving
-     * eagerly would throw on exactly the animals that skip the texture.
-     */
-
-    /** {@code table[index]}. The key records the index. */
-    public TextureSlot variant(String[] table, int index) {
+    // Pulls a texture from a table index, the key records the index.
+    public TextureSlotBuilder textureTableSelector(String[] table, int index) {
         this.deferredPath = () -> table[index];
         this.variantIndex = index;
         this.keyFragment = String.valueOf(index);
         return this;
     }
 
-    /** {@code table[first][second]}. The key records both indexes. */
-    public TextureSlot variant(String[][] table, int first, int second) {
+    // Pulls a texture from a table [] [] index, the key records the indexes.
+    public TextureSlotBuilder textureTableSelector(String[][] table, int first, int second) {
         this.deferredPath = () -> table[first][second];
         this.keyFragment = String.valueOf(first) + second;
         return this;
     }
 
-    /** {@code table[first][second][third]}. The key records all three indexes. */
-    public TextureSlot variant(String[][][] table, int first, int second, int third) {
+    // Pulls a texture from a table [] [] [] index, the key records the index.
+    public TextureSlotBuilder textureTableSelector(String[][][] table, int first, int second, int third) {
         this.deferredPath = () -> table[first][second][third];
         this.keyFragment = String.valueOf(first) + second + third;
         return this;
     }
 
-    /* ---- how it renders ---- */
-
-    public TextureSlot as(TexturingType texturingType) {
+    // The texture render type used
+    public TextureSlotBuilder asType(TexturingType texturingType) {
         this.texturingType = texturingType;
         return this;
     }
 
-    /** Applies a colour to the layer. The colour joins the key, since it varies per animal. */
-    public TextureSlot tinted(TexturingType texturingType, int argb) {
+    // Applies an rgb value tint to the texture
+    public TextureSlotBuilder tinted(TexturingType texturingType, int argb) {
         this.texturingType = texturingType;
         this.rgb = argb;
         return this;
     }
 
-    public TextureSlot flipped(int... cubes) {
+    public TextureSlotBuilder flipped(int... cubes) {
         this.texturingType = TexturingType.APPLY_FLIP;
         this.cubes = cubes;
         return this;
     }
 
-    /* ---- what the key records ---- */
 
-    /**
-     * Overrides the key fragment. An empty fragment means the texture does not exist for
-     * this animal: no layer is added and the key records "0", matching the long-standing
-     * behaviour of the textureName overloads this replaces.
-     */
-    public TextureSlot keyedAs(String fragment) {
+    // What the texture is keyed as in the cache key
+    public TextureSlotBuilder keyedAs(String fragment) {
         if (fragment == null || fragment.isEmpty()) {
             this.included = false;
             this.skipFragment = "0";
@@ -113,14 +96,13 @@ public final class TextureSlot {
         return this;
     }
 
-    /** Adds the layer only if the condition holds. When skipped the key field is empty. */
-    public TextureSlot onlyIf(boolean condition) {
+    // Adds the layer only if the condition is true.
+    public TextureSlotBuilder onlyIf(boolean condition) {
         this.included = condition;
         return this;
     }
 
-    /** Tests the index passed to {@link #variant(String[], int)}. */
-    public TextureSlot onlyIf(IntPredicate test) {
+    public TextureSlotBuilder onlyIf(IntPredicate test) {
         if (this.variantIndex == null) {
             //a multi index variant has no single index to test, and a literal texture has none
             //at all; silently including the layer would hide the mistake
@@ -130,24 +112,23 @@ public final class TextureSlot {
         return this;
     }
 
-    /** What the key records when the slot is skipped. Without this the field is empty. */
-    public TextureSlot orKey(String fragmentWhenSkipped) {
+    // What the key records when the slot is skipped. Without this the field is empty.
+    public TextureSlotBuilder orKey(String fragmentWhenSkipped) {
         this.skipFragment = fragmentWhenSkipped;
         return this;
     }
 
     /**
      * Adds the layer without writing a key field. For loops whose layers are covered by a
-     * single field written by the caller -- the slot count must stay constant, so a loop
+     * single field written by the caller, the texture slot count must stay constant, so a loop
      * with a gene-dependent iteration count cannot write one field per iteration.
      */
-    public TextureSlot noKey() {
+    public TextureSlotBuilder noKey() {
         this.writesKeyField = false;
         return this;
     }
 
-    /* ---- terminal ---- */
-
+    // Build the key and texture slot
     public void add() {
         if (this.included) {
             String resolved = this.deferredPath != null ? this.deferredPath.get() : this.path;

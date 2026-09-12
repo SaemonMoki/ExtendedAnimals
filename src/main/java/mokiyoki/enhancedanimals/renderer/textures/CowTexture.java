@@ -399,15 +399,11 @@ public class CowTexture {
                 //the patch count is generated, so the patches share one slot rather than
                 //writing one field each
                 int t = ThreadLocalRandom.current().nextInt(1, 5);
-                StringBuilder brocklingKey = new StringBuilder();
                 for (int i = 0; i < t; i++) {
                     int rand = ThreadLocalRandom.current().nextInt(0, 13);
-                    cow.layer(brockling).texture("spots/brockling/"+rand+".png").noKey().add();
-                    brocklingKey.append(rand).append("_");
-
-                    //TODO COMBINE THIS IN cow.addFlippedTextureToAnimalTextureGrouping(brockling, "spots/brockling/"+rand+".png", String.valueOf(rand), ThreadLocalRandom.current().nextBoolean(), headCubes);
+                    boolean flip = ThreadLocalRandom.current().nextBoolean();
+                    cow.layer(brockling).texture("spots/brockling/"+rand+".png").flipped(flip, headCubes).keyedAs(String.valueOf(rand)).add();
                 }
-                cow.addDelimiter(brocklingKey.toString());
                 colour.addGrouping(brockling);
             } else {
                 cow.addSkippedSlot();

@@ -25,6 +25,7 @@ public final class TextureSlotBuilder {
     private TexturingType texturingType = TexturingType.NONE;
     private Integer rgb;
     private int[] cubes;
+    private boolean flip = false;
 
     private String keyFragment = "0";
     private String skipFragment;
@@ -78,8 +79,13 @@ public final class TextureSlotBuilder {
         return this;
     }
 
-    public TextureSlotBuilder flipped(int... cubes) {
-        this.texturingType = TexturingType.APPLY_FLIP;
+    public TextureSlotBuilder flipped(boolean flip, int... cubes) {
+        if (flip) {
+            this.texturingType = TexturingType.APPLY_FLIP;
+            this.flip = true;
+        } else {
+            this.texturingType = TexturingType.MERGE_GROUP;
+        }
         this.cubes = cubes;
         return this;
     }
@@ -150,6 +156,8 @@ public final class TextureSlotBuilder {
             }
         } else if (this.rgb != null) {
             this.key.writeKeyField(this.keyFragment, String.valueOf(this.rgb));
+        } else if (this.cubes != null) {
+            this.key.writeKeyField(this.keyFragment, String.valueOf(this.flip));
         } else {
             this.key.writeKeyField(this.keyFragment);
         }

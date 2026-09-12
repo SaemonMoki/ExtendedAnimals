@@ -625,10 +625,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    @Override
-    protected void setAlphaTexturePaths() {
-    }
-
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();

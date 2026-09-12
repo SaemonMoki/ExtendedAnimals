@@ -86,8 +86,6 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RESIZE_AND_REFRESH_TEXTURE_SCHEDULE;
@@ -173,8 +171,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
     protected String compiledTexture;
-    protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
-    protected String compiledAlphaTexture;
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
@@ -334,10 +330,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //for setting the textures
     @OnlyIn(Dist.CLIENT)
     protected abstract void setTexturePaths();
-
-    //for setting the alpha textures
-    @OnlyIn(Dist.CLIENT)
-    protected abstract void setAlphaTexturePaths();
 
     //called during construction to set up the animal size
     public abstract void initilizeAnimalSize();
@@ -1815,32 +1807,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
-            this.setTexturePaths();
-        }
-        List<String> compiledTextures = new ArrayList<>();
-        compiledTextures.addAll(this.enhancedAnimalTextures);
-        compiledTextures.addAll(this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
-
-        return compiledTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public String[] getVariantAlphaTexturePaths() {
-        if (this.enhancedAnimalAlphaTextures.isEmpty()) {
-            this.setAlphaTexturePaths();
-        }
-
-        //todo this is only temporary until we have alpha textures
-        if (this.enhancedAnimalAlphaTextures.isEmpty()) {
-            return null;
-        }
-
-        return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
     public TextureGrouping getTextureGrouping() {
         TextureGrouping compiledGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (this.enhancedAnimalTextureGrouping != null) {
@@ -1863,10 +1829,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.compiledTexture = String.join("", texturesIndexes) + eanimal + "/";
         }
 
-        if (this.compiledAlphaTexture == null) {
-            this.compiledAlphaTexture = String.join("/", enhancedAnimalAlphaTextures) + "/";
-        }
-
         if (this.compiledEquipmentTexture == null) {
             StringBuilder sb = new StringBuilder();
             for (List<String> textures : this.equipmentTextures.values()) {
@@ -1877,7 +1839,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.compiledEquipmentTexture = sb.toString();
         }
 
-        return this.compiledTexture + this.compiledAlphaTexture + this.compiledEquipmentTexture;
+        return this.compiledTexture + this.compiledEquipmentTexture;
     }
 
     protected void geneFixer() {

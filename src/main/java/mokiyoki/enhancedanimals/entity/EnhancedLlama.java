@@ -645,10 +645,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-    }
-
-    @Override
     public void initilizeAnimalSize() {
         int[] genes = this.genetics.getAutosomalGenes();
         float size = 1.0F;

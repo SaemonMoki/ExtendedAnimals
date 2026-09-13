@@ -19,7 +19,9 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.renderer.texture.TextureCacheKeyWriter;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureSlotBuilder;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -84,13 +86,11 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.DESPAWN_SCHEDULE;
 import static mokiyoki.enhancedanimals.util.scheduling.Schedules.RESIZE_AND_REFRESH_TEXTURE_SCHEDULE;
 
-public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel {
+public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel, TextureCacheKeyWriter {
 
     protected static final EntityDataAccessor<String> SHARED_GENES = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
     protected static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
@@ -171,8 +171,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
     protected String compiledTexture;
-    protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
-    protected String compiledAlphaTexture;
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
@@ -332,10 +330,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //for setting the textures
     @OnlyIn(Dist.CLIENT)
     protected abstract void setTexturePaths();
-
-    //for setting the alpha textures
-    @OnlyIn(Dist.CLIENT)
-    protected abstract void setAlphaTexturePaths();
 
     //called during construction to set up the animal size
     public abstract void initilizeAnimalSize();
@@ -1777,165 +1771,30 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.genesSplitForClient;
     }
 
-    protected void addTextureToAnimal(String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
-        if(check) {
-            this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1][geneValue2]);
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
+    /**
+     * Starts a texture slot: one layer added to {@code textureGroup}, plus the cache key
+     * field recording what it resolved to. Finish with {@link TextureSlotBuilder#add()}.
+     */
+    public TextureSlotBuilder layer(TextureGrouping textureGroup) {
+        return new TextureSlotBuilder(this, textureGroup);
+    }
+
+    @Override
+    public void writeKeyField(String... fragments) {
+        Collections.addAll(this.texturesIndexes, fragments);
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    @Override
+    public void addSkippedSlot() {
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    @Override
+    public void addSkippedSlots(int count) {
+        for (int i = 0; i < count; i++) {
+            this.texturesIndexes.add(CACHE_DELIMITER);
         }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    protected void addTextureToAnimal(String[][] texture, int geneValue0, int geneValue1, boolean check) {
-        if(check) {
-            this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1]);
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
-        if(check == null || check.test(geneValue)) {
-            this.enhancedAnimalTextures.add(texture[geneValue]);
-            this.texturesIndexes.add(String.valueOf(geneValue));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    protected void addTextureToAnimal(String texture) {
-        this.enhancedAnimalTextures.add(texture);
-        this.texturesIndexes.add(String.valueOf(0));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
-        if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue0][geneValue1][geneValue2]));
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[][] texture, int geneValue0, int geneValue1, boolean check) {
-        if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue0][geneValue1]));
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[] texture, int geneValue, boolean check) {
-        if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue]));
-            this.texturesIndexes.add(String.valueOf(geneValue));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[] texture, int geneValue, Predicate<Integer> check) {
-        if(check == null || check.test(geneValue)) {
-            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue]));
-            this.texturesIndexes.add(String.valueOf(geneValue));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, boolean hasTexture) {
-        if (hasTexture) textureGroup.addTextureLayers(new TextureLayer(texture));
-        this.texturesIndexes.add(String.valueOf(hasTexture?0:1));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
-        textureGroup.addTextureLayers(new TextureLayer(texture));
-        this.texturesIndexes.add(String.valueOf(0));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addIndividualTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, Integer RGB) {
-        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
-        textureLayer.setRGB(RGB);
-        textureGroup.addTextureLayers(textureLayer);
-        this.texturesIndexes.add(String.valueOf(0));
-        this.texturesIndexes.add(String.valueOf(RGB));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addIndividualTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
-        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
-        textureGroup.addTextureLayers(textureLayer);
-        this.texturesIndexes.add(String.valueOf(0));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture, String textureID, Integer RGB) {
-        TextureLayer textureLayer = new TextureLayer(texturingType, texture);
-        textureLayer.setRGB(RGB);
-        textureGroup.addTextureLayers(textureLayer);
-        this.texturesIndexes.add(textureID);
-        this.texturesIndexes.add(String.valueOf(RGB));
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[][] texture, int geneValue0, int geneValue1, boolean check) {
-        if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue0][geneValue1]));
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
-        if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue0][geneValue1][geneValue2]));
-            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[] texture, int geneValue, Predicate<Integer> check) {
-        if(check == null || check.test(geneValue)) {
-            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue]));
-            this.texturesIndexes.add(String.valueOf(geneValue));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName) {
-        if (textureName.isEmpty()) {
-            this.texturesIndexes.add(String.valueOf(0));
-        } else {
-            textureGroup.addTextureLayers(new TextureLayer(TexturingType.MERGE_GROUP, texture));
-            this.texturesIndexes.add(String.valueOf(textureName));
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType type, String texture, String textureName) {
-        if (textureName.isEmpty()) {
-            this.texturesIndexes.add(String.valueOf(0));
-        } else {
-            textureGroup.addTextureLayers(new TextureLayer(type, texture));
-            this.texturesIndexes.add(textureName);
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addFlippedTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture, String textureName, boolean flip, int ... cubes) {
-        if (textureName.isEmpty()) {
-            this.texturesIndexes.add(String.valueOf(0));
-        } else {
-            TextureLayer layer = new TextureLayer(flip ? TexturingType.APPLY_FLIP : TexturingType.MERGE_GROUP, texture);
-            if (flip && cubes != null) {
-                layer.setCubes(cubes);
-            }
-            textureGroup.addTextureLayers(layer);
-            this.texturesIndexes.add(textureName);
-        }
-        this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
-        textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
-        this.texturesIndexes.add(String.valueOf(0));
-        this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
     public void addDelimiter() {
@@ -1945,32 +1804,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     public void addDelimiter(String delimiter) {
         this.texturesIndexes.add(delimiter);
         this.texturesIndexes.add(CACHE_DELIMITER);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
-            this.setTexturePaths();
-        }
-        List<String> compiledTextures = new ArrayList<>();
-        compiledTextures.addAll(this.enhancedAnimalTextures);
-        compiledTextures.addAll(this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
-
-        return compiledTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public String[] getVariantAlphaTexturePaths() {
-        if (this.enhancedAnimalAlphaTextures.isEmpty()) {
-            this.setAlphaTexturePaths();
-        }
-
-        //todo this is only temporary until we have alpha textures
-        if (this.enhancedAnimalAlphaTextures.isEmpty()) {
-            return null;
-        }
-
-        return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1996,10 +1829,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.compiledTexture = String.join("", texturesIndexes) + eanimal + "/";
         }
 
-        if (this.compiledAlphaTexture == null) {
-            this.compiledAlphaTexture = String.join("/", enhancedAnimalAlphaTextures) + "/";
-        }
-
         if (this.compiledEquipmentTexture == null) {
             StringBuilder sb = new StringBuilder();
             for (List<String> textures : this.equipmentTextures.values()) {
@@ -2010,7 +1839,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.compiledEquipmentTexture = sb.toString();
         }
 
-        return this.compiledTexture + this.compiledAlphaTexture + this.compiledEquipmentTexture;
+        return this.compiledTexture + this.compiledEquipmentTexture;
     }
 
     protected void geneFixer() {

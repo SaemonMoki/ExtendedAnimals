@@ -869,10 +869,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-    }
-
-    @Override
     public void initilizeAnimalSize() {
         int[] genes = this.genetics.getAutosomalGenes();
         float size = 1F; // [minimum size = 0.3 maximum size = 1]

@@ -4,9 +4,26 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
-import mokiyoki.enhancedanimals.util.Genes;
 
 public class PigTexture {
+    /*
+     * Slot counts per section of the cache key.
+     *
+     * Every pig writes the same number of fields regardless of its genes: the key is a flat
+     * string whose only structure is the delimiter positions, so a section that writes fewer
+     * fields shifts every later section left and lets two different genetics compile to the same
+     * key. A branch that skips a section reserves its slots instead.
+     */
+    private static final int BLACK_SKIN_SLOTS    = 2;
+    private static final int WHITE_SKIN_SLOTS    = 7;
+    private static final int SWALLOWBELLY_SLOTS  = 3;
+    /** the dark and light agouti detail layers. */
+    private static final int AGOUTI_DETAIL_SLOTS = 2;
+    private static final int BLACK_HAIR_SLOTS    = 3 + AGOUTI_DETAIL_SLOTS;
+    private static final int WHITE_HAIR_SLOTS    = 7;
+    /** red group, swallowbelly, whitebelly, black, white, coat texture, coat alpha. */
+    private static final int HAIR_SLOTS          = 3 + SWALLOWBELLY_SLOTS + 1 + BLACK_HAIR_SLOTS + WHITE_HAIR_SLOTS + 2;
+
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
             "", "skin_pink.png", "skin_grey.png", "skin_black.png", "skin_brown.png", "skin_chocolate.png"
     };
@@ -973,8 +990,8 @@ public class PigTexture {
         TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
 
-        pig.addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINBASE, skin, true);
-        pig.addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_SPOTS, spot, (spot == 1));
+        pig.layer(skinGroup).textureTableSelector(PIG_TEXTURES_SKINBASE, skin).add();
+        pig.layer(skinGroup).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_SPOTS, spot).onlyIf(spot == 1).add();
 
         //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKIN_BRINDLEPATCH, white, p -> p > 1);
 
@@ -989,28 +1006,30 @@ public class PigTexture {
         if (black != 0) {
             TextureGrouping blackSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping blackSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP);
-            pig.addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBRINDLE_SPOTS, black, black != 0);
-            pig.addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, skinBlack, black != 0);
+            pig.layer(blackSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBRINDLE_SPOTS, black).add();
+            pig.layer(blackSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBASE, skinBlack).add();
             blackSkinGroup.addGrouping(blackSkinAlpha);
             parentGroup.addGrouping(blackSkinGroup);
+        } else {
+            pig.addSkippedSlots(BLACK_SKIN_SLOTS);
         }
 
         if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
             TextureGrouping whiteSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping whiteSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
             TextureGrouping whiteSkinMask = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_FACE, whiteFace, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_LEG, whiteLeg, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_TAIL, whiteTail, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, whiteSplash, whiteSplash != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, berk != 0);
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_FACE, whiteFace).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_LEG, whiteLeg).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_TAIL, whiteTail).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_WHITE, white).onlyIf(white != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_WHITE, whiteSplash).onlyIf(whiteSplash != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk).onlyIf(berk != 0).add();
             whiteSkinAlpha.addGrouping(whiteSkinMask);
-            TextureGrouping whSkinTex = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(whSkinTex, PIG_TEXTURES_SKINBASE, 1, true);
-            whiteSkinAlpha.addGrouping(whSkinTex);
+            pig.layer(whiteSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBASE, 1).add();
             whiteSkinGroup.addGrouping(whiteSkinAlpha);
             parentGroup.addGrouping(whiteSkinGroup);
+        } else {
+            pig.addSkippedSlots(WHITE_SKIN_SLOTS);
         }
 
         if (gene[36] != 1 || gene[37] != 1) {
@@ -1037,86 +1056,91 @@ public class PigTexture {
             boolean baby = pig.isBaby();
             int darkAgouti = baby ? 2 : 1;
 
-            TextureGrouping hairAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(hairAlphaGroup, PIG_TEXTURES_ALPHA, coat_alpha, coat_alpha != 0);
             TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping redGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RED, PIG_TEXTURES_AGOUTI, red, l -> true);
+            pig.layer(redGroup).textureTableSelector(PIG_TEXTURES_AGOUTI, red).asType(TexturingType.APPLY_RED).add();
             if ((baby && agouti && black == 0)) {
-                pig.addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-rd", darkAgoutiRedRGB);
+                pig.layer(redGroup).texture(PIG_TEXTURES_AGOUTI_DARK[darkAgouti]).tinted(TexturingType.APPLY_RGB, darkAgoutiRedRGB).keyedAs("agrd").add();
+            } else {
+                pig.addSkippedSlot();
             }
-            pig.addTextureToAnimalTextureGrouping(redGroup, PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan, roan != 0);
+            pig.layer(redGroup).textureTableSelector(PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan).onlyIf(roan != 0).add();
             hairTexGroup.addGrouping(redGroup);
 
             TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            if (whitebelly != 0) {
-                pig.addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
-            } else if (swallowbelly != 0) {
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan, roan != 0);
+            if (whitebelly == 0 && swallowbelly != 0) {
+                pig.layer(swallowbellyGroup).textureTableSelector(PIG_TEXTURES_SWALLOWBELLY, swallowbelly).add();
+                pig.layer(swallowbellyGroup).texture(PIG_TEXTURES_AGOUTI[0]).tinted(TexturingType.APPLY_RGB, swallowbellyRGB).keyedAs("sb").add();
+                pig.layer(swallowbellyGroup).textureTableSelector(PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan).onlyIf(roan != 0).add();
+            } else {
+                pig.addSkippedSlots(SWALLOWBELLY_SLOTS);
             }
 
             int agoutiTex = 0;
             if (!agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_WHITEBELLY, whitebelly).onlyIf(whitebelly != 0).noKey().add();
                 if (brindle && agouti) {
                     agoutiTex = wideband ? 2 : 1;
                 }
             } else {
                 agoutiTex = wideband ? 2 : 1;
             }
+            //the whitebelly layer attaches either before or after the black section depending on
+            //agoutiBlack, so its key slot is written here in both cases to pin the position
+            pig.addDelimiter(whitebelly != 0 ? String.valueOf(whitebelly) : "");
 
             if (black != 0) {
                 TextureGrouping blackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                TextureGrouping blackAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                 TextureGrouping blackTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI, agoutiTex, l -> true);
+                pig.layer(blackTexGroup).textureTableSelector(PIG_TEXTURES_AGOUTI, agoutiTex).asType(TexturingType.APPLY_BLACK).add();
                 if (agoutiBlack && (swallowbelly == 0 || baby)) {
                     if (!wideband || baby) { // Dark agouti
                         int camoColor = (wideband && swallowbelly == 0) ? darkAgoutiRedRGB : darkAgoutiRGB;
-                        pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-d", camoColor);
+                        pig.layer(blackTexGroup).texture(PIG_TEXTURES_AGOUTI_DARK[darkAgouti]).tinted(TexturingType.APPLY_RGB, camoColor).keyedAs("agd").add();
+                    } else {
+                        pig.addSkippedSlot();
                     }
                     if (!baby) { // Light agouti layer
-                        pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
+                        pig.layer(blackTexGroup).texture(PIG_TEXTURES_AGOUTI_LIGHT[1]).tinted(TexturingType.APPLY_RGB, lightAgoutiRGB).keyedAs("agl").add();
+                    } else {
+                        pig.addSkippedSlot();
                     }
+                } else {
+                    pig.addSkippedSlots(AGOUTI_DETAIL_SLOTS);
                 }
-                pig.addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? roan + 1 : roan, roan != 0 && !brindle);
-                blackGroup.addGrouping(blackAlphaGroup);
+                pig.layer(blackTexGroup).textureTableSelector(PIG_TEXTURES_ROAN_BLACK, baby ? roan + 1 : roan).onlyIf(roan != 0 && !brindle).add();
+                pig.layer(blackGroup).textureTableSelector(PIG_TEXTURES_COATBLACK, black).onlyIf(l -> l != 0).add();
                 blackGroup.addGrouping(blackTexGroup);
                 hairTexGroup.addGrouping(blackGroup);
+            } else {
+                pig.addSkippedSlots(BLACK_HAIR_SLOTS);
             }
 
             if (agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_WHITEBELLY, whitebelly).onlyIf(whitebelly != 0).noKey().add();
             }
 
             if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
                 TextureGrouping whiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whiteAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, white, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_FACE, whiteFace, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_LEG, whiteLeg, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_TAIL, whiteTail, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, whiteSplash, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_SPOT_BERKSHIRE, berk, p -> p != 0);
-                TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(whiteTextureGroup, PIG_TEXTURES_COATWHITE, 1, p -> p != 0);
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, white).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_FACE, whiteFace).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_LEG, whiteLeg).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_TAIL, whiteTail).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, whiteSplash).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_SPOT_BERKSHIRE, berk).onlyIf(p -> p != 0).add();
                 whiteGroup.addGrouping(whiteAlphaGroup);
-                whiteGroup.addGrouping(whiteTextureGroup);
+                pig.layer(whiteGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, 1).onlyIf(p -> p != 0).add();
                 hairTexGroup.addGrouping(whiteGroup);
+            } else {
+                pig.addSkippedSlots(WHITE_HAIR_SLOTS);
             }
-            TextureGrouping overlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(overlayGroup, PIG_TEXTURES_COAT, coat_texture, true);
-
-            hairTexGroup.addGrouping(overlayGroup);
+            pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_COAT, coat_texture).add();
 
             //addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_SPOT_SPOTS, spot, (spot != 0));
-            hairGroup.addGrouping(hairAlphaGroup);
+            pig.layer(hairGroup).textureTableSelector(PIG_TEXTURES_ALPHA, coat_alpha).onlyIf(coat_alpha != 0).add();
             hairGroup.addGrouping(hairTexGroup);
 
                 /*if (belt != 0) {
@@ -1129,13 +1153,13 @@ public class PigTexture {
             //addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
 
             parentGroup.addGrouping(hairGroup);
+        } else {
+            pig.addSkippedSlots(HAIR_SLOTS);
         }
 
-        pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_EYES, eyes, true);
-        pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_HOOVES, hooves, true);
-        if (tusks) {
-            pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_TUSKS, tusks ? 1 : 0, tusks);
-        }
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_EYES, eyes).add();
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_HOOVES, hooves).add();
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_TUSKS, tusks ? 1 : 0).onlyIf(tusks).add();
 //            addTextureToAnimal("pigbase.png");
         pig.setTextureGrouping(parentGroup);
     }

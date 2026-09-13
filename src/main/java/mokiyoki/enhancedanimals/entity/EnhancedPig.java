@@ -9,7 +9,6 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.genetics.PigGeneticsInitialiser;
-import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
@@ -22,8 +21,6 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.PigModelData;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -688,11 +685,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         if (this.getGenes() != null) {
             calculatePigTexture(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
         }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    protected void setAlphaTexturePaths() {
     }
 
     //TODO put item interactable stuff here like saddling pigs

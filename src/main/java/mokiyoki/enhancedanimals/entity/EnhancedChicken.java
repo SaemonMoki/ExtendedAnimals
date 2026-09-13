@@ -997,10 +997,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-    }
-
-    @Override
     protected boolean shouldDropExperience() {
         if (this.getEnhancedAnimalAge() > 10000) {
             return true;

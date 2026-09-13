@@ -482,16 +482,14 @@ public class RabbitTexture {
     }
 
     private static void addSkinDetails(EnhancedRabbit rabbit, TextureGrouping parentGroup, int skin) {
-        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.addTextureToAnimalTextureGrouping(detailGroup, RABBIT_TEXTURES_SKIN[skin], String.valueOf(skin));
-        parentGroup.addGrouping(detailGroup);
+        rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_SKIN, skin).add();
     }
 
     private static void addEyeTexture(EnhancedRabbit rabbit, TextureGrouping parentGroup, int eyes, int vieye) {
         TextureGrouping eyeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.addTextureToAnimalTextureGrouping(eyeGroup, RABBIT_TEXTURES_EYES[eyes], String.valueOf(eyes));
+        rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_EYES, eyes).add();
         if (vieye > 7 && (vieye <= 17 || vieye >= 25)) {
-            rabbit.addTextureToAnimalTextureGrouping(eyeGroup, RABBIT_TEXTURES_VIENNAEYES[vieye], String.valueOf(vieye));
+            rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_VIENNAEYES, vieye).add();
         } else {
             rabbit.addDelimiter("nv");
         }
@@ -535,9 +533,7 @@ public class RabbitTexture {
         }
 
         if (fur != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_FUR[fur], String.valueOf(fur));
-            parentGroup.addGrouping(coat);
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_FUR, fur).add();
         } else {
             rabbit.addDelimiter("rex");
         }
@@ -545,9 +541,7 @@ public class RabbitTexture {
 
     private static void addVienna(EnhancedRabbit rabbit, TextureGrouping parentGroup, int vienna) {
         if (vienna != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_DUTCH[vienna], String.valueOf(vienna));
-            parentGroup.addGrouping(coat);
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, vienna).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -557,18 +551,14 @@ public class RabbitTexture {
         //TODO Hotot Spotting if dutch and homozygous broken
 
         if (dutch != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_DUTCH[dutch], String.valueOf(dutch));
-            parentGroup.addGrouping(coat);
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, dutch).add();
         } else {
             rabbit.addDelimiter();
         }
         if (broken != 0) {
             //TODO split out broken spots from charlie spots
             //TODO make broken/charlie genetics
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_BROKEN[broken], String.valueOf(broken));
-            parentGroup.addGrouping(coat);
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_BROKEN, broken).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -576,9 +566,7 @@ public class RabbitTexture {
 
     private static void createTopCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int top) {
         if (top != 0) {
-            TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_TOP[top], String.valueOf(top));
-            parentGroup.addGrouping(coat);
+            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_TOP, top).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -588,13 +576,13 @@ public class RabbitTexture {
         TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
 
         if (middle != 0) {
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_MIDDLE[middle], String.valueOf(middle));
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_MIDDLE, middle).add();
         } else {
             rabbit.addDelimiter();
         }
 
         if (higher != 0) {
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_HIGHER[higher], String.valueOf(higher));
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_HIGHER, higher).add();
         } else {
             rabbit.addDelimiter();
         }
@@ -604,9 +592,9 @@ public class RabbitTexture {
 
     private static void createUnderCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int under, int lower) {
         TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_UNDER[under], String.valueOf(under));
+        rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_UNDER, under).add();
         if (lower != 0) {
-            rabbit.addTextureToAnimalTextureGrouping(coat, RABBIT_TEXTURES_LOWER[lower], String.valueOf(lower));
+            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_LOWER, lower).add();
         } else {
             rabbit.addDelimiter();
         }

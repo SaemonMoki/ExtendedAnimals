@@ -504,8 +504,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combSingleM",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-0.5F, -1.0F, -3.0F, 1, 1, 1, cubeDeformation)
-//                        .addBox(-0.5F, -1.5F, -3.0F, 1, 1, 1, cubeDeformation)
                         .addBox(-0.5F, -2.5F, -2.0F, 1, 1, 1, cubeDeformation)
                         .addBox(-0.5F, -2.0F, -1.0F, 1, 0.5F, 1, cubeDeformation)
                         .addBox(-0.5F, -2.5F, 0.0F, 1, 1, 1, cubeDeformation)
@@ -515,9 +513,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combSingleL",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-
-/*                        .addBox(-0.5F, -2.5F, -3.5F, 1, 1, 1, cubeDeformation)
-                        .addBox(-0.5F, -1.5F, -3.0F, 1, 2, 1, cubeDeformation)*/
                         .addBox(-0.5F, -3.5F, -2.0F, 1, 4, 1, cubeDeformation)
                         .addBox(-0.5F, -2.5F, -1.0F, 1, 3, 1, cubeDeformation)
                         .addBox(-0.5F, -4.0F, 0.0F, 1, 4, 1, cubeDeformation)
@@ -568,7 +563,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseTallS",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-//                    .addBox(-1F, -1.5F, -3.125F, 2, 2, 1, new CubeDeformation(-0.25F))
                     .addBox(-0.5F, -2.25F, -2.625F, 1, 2, 1, new CubeDeformation(-0.1F))
                     .addBox(-0.5F, -2.65F, -2.125F, 1, 1, 1, new CubeDeformation(-0.25F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -576,7 +570,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseTallM",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-//                    .addBox(-0.5F, -1.25F, -3.0F, 1, 1, 1, new CubeDeformation(0.5F, 0.5F, 0.0F))
                     .addBox(-0.5F, -2.25F, -2.0F, 1, 2, 1, new CubeDeformation(0.25F))
                     .addBox(-0.5F, -3.25F, -1.0F, 1, 1, 1),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -584,7 +577,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseTallL",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-//                        .addBox(-1.0F, -1.25F, -3.25F, 2, 2, 1)
                         .addBox(-0.5F, -2.25F, -2.75F, 1, 2, 2, new CubeDeformation(0.2F))
                         .addBox(-0.5F, -3.25F, -0.75F, 1, 2, 1)
                         .addBox(-0.5F, -4.25F, -0.25F, 1, 1, 1),
@@ -593,7 +585,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseFlatS",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-0.5F, -1.0F, -2.5F, 1, 1, 1, new CubeDeformation(0.1F))
                         .addBox(-0.5F, -1.5F, -2.0F, 1, 1, 1)
                         .addBox(-0.5F, -1.4F, -1.0F, 1, 1, 1),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -601,7 +592,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseFlatM",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-1.0F, -1.5F, -3.0F, 2, 2, 1)
                         .addBox(-1.0F, -1.5F, -2.0F, 2, 1, 1)
                         .addBox(-0.5F, -2.0F, -2.0F, 1, 1, 1, new CubeDeformation(0.25F))
                         .addBox(-0.5F, -2.0F, -1.0F, 1, 1, 1),
@@ -610,7 +600,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRoseFlatL",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-1.0F, -1.5F, -3.25F, 2, 2, 1)
                         .addBox(-1.0F, -1.75F, -2.5F, 2, 1, 2)
                         .addBox(-0.5F, -1.5F, -0.5F, 1, 1, 1, new CubeDeformation(0.2F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -618,7 +607,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combPeaS",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-0.5F, -1.0F, -3.0F, 1, 1, 1, new CubeDeformation(-0.25F))
                         .addBox(-0.5F, -1.5F, -2.75F, 1, 1, 1, new CubeDeformation(-0.15F))
                         .addBox(-0.5F, -1.5F, -2.4F, 1, 1, 1, new CubeDeformation(-0.25F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -626,7 +614,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combPeaM",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-0.5F, -1.0F, -3.125F, 1, 1, 2, new CubeDeformation(-0.2F))
                         .addBox(-0.5F, -1.5F, -2.75F, 1, 1, 1)
                         .addBox(-0.5F, -2.0F, -2.25F, 1, 2, 1, new CubeDeformation(-0.2F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -634,7 +621,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combPeaL",
                     CubeListBuilder.create()
                             .texOffs(0, 0)
-//                            .addBox(-0.5F, -1.0F, -3.125F, 1, 1, 2, new CubeDeformation(-0.1F))
                             .addBox(-0.5F, -1.5F, -2.75F, 1, 1, 1, new CubeDeformation(0.0F, 0.1F, 0.1F))
                             .addBox(-0.5F, -2.0F, -2.25F, 1, 2, 1, new CubeDeformation(-0.1F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
@@ -692,9 +678,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, -1.5F, -3.0F, 1, 1.75F, 1, new CubeDeformation(-0.125F))
                         .addBox(-0.5F, -1.5F, -2.5F, 1, 1, 1, new CubeDeformation(-0.125F))
                         .addBox(-0.5F, -1.5F, -2.25F, 1, 1.25F, 2, new CubeDeformation(-0.125F))
-//                        .addBox(-0.5F, -2.5F, -1.25F, 1, 1, 1, new CubeDeformation(-0.125F))
                         .addBox(-0.5F, -1.5F, -0.75F, 1, 0.75F, 1, new CubeDeformation(-0.125F))
-//                        .addBox(-0.5F, -2.0F, 0.0F, 1, 1, 1, new CubeDeformation(-0.125F))
                 ,
                 PartPose.offset(0.0F, 1.0F, 2.5F)
         );
@@ -725,10 +709,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-0.5F, -1.5F, -3.0F, 1, 2, 1, cubeDeformation)
                         .addBox(-0.5F, -1.5F, -2.0F, 1, 1.5F, 1, cubeDeformation)
                         .addBox(-0.5F, -1.5F, -1.0F, 1, 2, 1, cubeDeformation)
-/*                        .addBox(-0.5F, -1.5F, 0.0F, 1, 2, 1, cubeDeformation)
-                        .addBox(-0.5F, -1.5F, 1.0F, 1, 1, 1, cubeDeformation)
-                        .addBox(-0.5F, -1.5F, 2.0F, 1, 1, 1, cubeDeformation)
-                        .addBox(-0.5F, -1.5F, 3.0F, 1, 0.5F, 1, cubeDeformation)*/,
+                ,
                 PartPose.offset(0.0F, 1.0F, 2.5F)
         );
         base.addOrReplaceChild("combRootRoseTallS",
@@ -782,7 +763,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combRootPeaL",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
-//                        .addBox(-0.5F, -0.75F, -2.5F, 1, 1, 1, new CubeDeformation(-0.1F))
                         .addBox(-0.5F, -1.0F, -3.125F, 1, 1, 2, new CubeDeformation(-0.1F)),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
         );
@@ -1062,13 +1042,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     public ModelEnhancedChicken(ModelPart modelPart) {
         super(modelPart);
         ModelPart base = modelPart.getChild("base");
-
-/*        chickenModelParts.forEach( (k,v) -> chickenModelParts.put(k, new WrappedModelPart(k, base)) ); */
-/*        for (Map.Entry<String, WrappedModelPart> entry : chickenModelParts.entrySet()) {
-            String k = entry.getKey();
-            entry.setValue(new WrappedModelPart(k, base));}*/
-/*        theEars.pushPopChildren = false;
-        combDuplex.pushPopChildren = false;*/
 
         theChicken = new WrappedModelPart("bChicken", base);
         theBody = new WrappedModelPart("bBody", base);

@@ -99,13 +99,17 @@ public class WrappedModelPart {
     public float getZRot() {
         return this.modelPart.zRot;
     }
-    
+
     public boolean lerpXRot(float xRot) {
+        return lerpXRot(xRot, 0.05F);
+    }
+
+    public boolean lerpXRot(float xRot, float speed) {
         if (this.modelPart.xRot != xRot) {
             if (Mth.abs(this.modelPart.xRot - xRot) < 0.0001F) {
                 this.modelPart.xRot = xRot;
             } else {
-                this.modelPart.xRot = Mth.lerp(0.05F, this.modelPart.xRot, xRot);
+                this.modelPart.xRot = Mth.lerp(speed, this.modelPart.xRot, xRot);
                 return false;
             }
         }
@@ -113,11 +117,15 @@ public class WrappedModelPart {
     }
 
     public boolean lerpYRot(float yRot) {
+        return lerpYRot(yRot, 0.05F);
+    }
+
+    public boolean lerpYRot(float yRot, float speed) {
         if (this.modelPart.yRot != yRot) {
             if (Mth.abs(this.modelPart.yRot - yRot) < 0.0001F) {
                 this.modelPart.yRot = yRot;
             } else {
-                this.modelPart.yRot = Mth.lerp(0.05F, this.modelPart.yRot, yRot);
+                this.modelPart.yRot = Mth.lerp(speed, this.modelPart.yRot, yRot);
                 return false;
             }
         }
@@ -125,11 +133,15 @@ public class WrappedModelPart {
     }
 
     public boolean lerpZRot(float zRot) {
+        return lerpZRot(zRot, 0.05F);
+    }
+
+    public boolean lerpZRot(float zRot, float speed) {
         if (this.modelPart.zRot != zRot) {
             if (Mth.abs(this.modelPart.zRot - zRot) < 0.0001F) {
                 this.modelPart.zRot = zRot;
             } else {
-                this.modelPart.zRot = Mth.lerp(0.05F, this.modelPart.zRot, zRot);
+                this.modelPart.zRot = Mth.lerp(speed, this.modelPart.zRot, zRot);
                 return false;
             }
         }
@@ -137,11 +149,15 @@ public class WrappedModelPart {
     }
 
     public boolean lerpX(float x) {
+        return lerpX(x, 0.05F);
+    }
+
+    public boolean lerpX(float x, float speed) {
         if (this.modelPart.x != x) {
             if (Mth.abs(this.modelPart.x - x) < 0.0001F) {
                 this.modelPart.x = x;
             } else {
-                this.modelPart.x = Mth.lerp(0.05F, this.modelPart.x, x);
+                this.modelPart.x = Mth.lerp(speed, this.modelPart.x, x);
                 return false;
             }
         }
@@ -149,11 +165,15 @@ public class WrappedModelPart {
     }
 
     public boolean lerpY(float y) {
+        return lerpY(y, 0.05F);
+    }
+
+    public boolean lerpY(float y, float speed) {
         if (this.modelPart.y != y) {
             if (Mth.abs(this.modelPart.y - y) < 0.0001F) {
                 this.modelPart.y = y;
             } else {
-                this.modelPart.y = Mth.lerp(0.05F, this.modelPart.y, y);
+                this.modelPart.y = Mth.lerp(speed, this.modelPart.y, y);
                 return false;
             }
         }
@@ -161,11 +181,15 @@ public class WrappedModelPart {
     }
 
     public boolean lerpZ(float z) {
+        return lerpZ(z, 0.05F);
+    }
+
+    public boolean lerpZ(float z, float speed) {
         if (this.modelPart.z != z) {
             if (Mth.abs(this.modelPart.z - z) < 0.0001F) {
                 this.modelPart.z = z;
             } else {
-                this.modelPart.z = Mth.lerp(0.05F, this.modelPart.z, z);
+                this.modelPart.z = Mth.lerp(speed, this.modelPart.z, z);
                 return false;
             }
         }

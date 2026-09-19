@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
 
 public class ChickenPhenotype implements Phenotype {
+    public final float combFlop;
     public Crested crestType = Crested.NONE;
     public FootFeathers footFeatherType = FootFeathers.NONE;
     public EarType ear = EarType.NONE;
@@ -109,21 +110,7 @@ public class ChickenPhenotype implements Phenotype {
                         this.comb = Comb.WALNUT;
                     }
                 } else if (gene[46] != 3 || gene[47] != 3) {
-                    if (gene[46] == 1 || gene[47] == 1) {
-                        //rose comb
-//                        if (gene[46] == 3 || gene[47] == 3) {
-//                            this.comb = Comb.HET_ROSE_ONE;
-//                        } else {
-                        this.comb = Comb.ROSE_ONE;
-//                        }
-                    } else {
-                        //rose comb2
-//                        if (gene[46] == 3 || gene[47] == 3) {
-//                            this.comb = Comb.HET_ROSE_TWO;
-//                        } else {
-                        this.comb = Comb.ROSE_TWO;
-//                        }
-                    }
+                    this.comb = gene[46] == 1 || gene[47] == 1 ? Comb.ROSE_ONE : Comb.ROSE_TWO;
                 }
 
                 if (gene[50] == 2 || gene[51] == 2) {
@@ -300,6 +287,13 @@ public class ChickenPhenotype implements Phenotype {
         this.tailless = sGene[20] == 2 || (!isFemale && sGene[21] == 2);
 
         this.tailPinch = getTailPinch(gene);
+
+        this.combFlop = getCombFloppiness();
+    }
+
+    private float getCombFloppiness() {
+        return 1.0F;
+//        return 0.0F;
     }
 
     private float getTailPinch(int[] gene) {

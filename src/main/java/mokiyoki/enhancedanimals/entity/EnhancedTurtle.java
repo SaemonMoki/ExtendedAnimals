@@ -239,15 +239,15 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeTurtle.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeTurtle.get().longValue();
         return this.adultAge;
     }
 
     @Override
-    protected int getFullSizeAge() {
-        return (int)(this.getAnimalSize() > 1.0F ? getAdultAge() * this.getAnimalSize() : getAdultAge());
+    protected long getFullSizeAge() {
+        return (long)(this.getAnimalSize() > 1.0F ? getAdultAge() * this.getAnimalSize() : getAdultAge());
     }
 
     public void setHasScute() {

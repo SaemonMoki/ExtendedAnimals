@@ -1,22 +1,34 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.ai.brain.ValidatePath;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.util.HerdManager;
-import net.minecraft.core.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.UUID;
 
 public class HerdGoal extends Goal {
 
     private static final int MEMBERSHIP_RECHECK_INTERVAL = 500;
     private static final int PATH_RECALC_INTERVAL = 20;
-    private static final int PATH_VALIDATION_NODE_LIMIT = 16;
+
+    // Debug: tints the herd id nametag. Both instances claim Flag.MOVE so only one runs at a
+    // time, which is why each can own the colour without coordinating with the other.
+    private static final ChatFormatting WANDERING_COLOUR = ChatFormatting.GREEN;
+    private static final ChatFormatting LEASH_FOLLOW_COLOUR = ChatFormatting.AQUA;
+    private static final ChatFormatting STOPPED_COLOUR = ChatFormatting.WHITE;
+
+    // Why a running goal produced no movement.
+    private static final ChatFormatting NO_STEERING_COLOUR = ChatFormatting.LIGHT_PURPLE;
+    private static final ChatFormatting PREEMPTED_COLOUR = ChatFormatting.GOLD;
 
     private final EnhancedAnimalAbstract entity;
     private final PathNavigation navigation;
@@ -25,6 +37,7 @@ public class HerdGoal extends Goal {
 
     private int membershipTimer;
     private int pathTimer = 0;
+    private ChatFormatting lastDiagnosis = STOPPED_COLOUR;
     private EnhancedAnimalAbstract leashedLeader;
 
     public HerdGoal(EnhancedAnimalAbstract entity, double speed) {
@@ -36,8 +49,7 @@ public class HerdGoal extends Goal {
         this.navigation = entity.getNavigation();
         this.speed = speed;
         this.leashFollow = leashFollow;
-        // Stagger the first membership check by entity id so a batch of animals spawning
-        // together doesn't run their (expensive) checks all on the same tick.
+        // Staggered by id so a batch spawning together doesn't all check on the same tick.
         this.membershipTimer = Math.floorMod(entity.getId(), MEMBERSHIP_RECHECK_INTERVAL);
         this.setFlags(EnumSet.of(Flag.MOVE));
     }
@@ -58,9 +70,8 @@ public class HerdGoal extends Goal {
             return leashedLeader != null;
         }
 
-        // Membership upkeep is herd bookkeeping, not herd movement: it runs on its own
-        // schedule whether or not this goal ends up running, and regardless of whether
-        // group movement is switched on.
+        // Bookkeeping, not movement: runs whether or not this goal does, and regardless of
+        // whether group movement is switched on.
         HerdManager.ensureRegistered(entity);
         maybeRecheckMembership();
 
@@ -81,12 +92,15 @@ public class HerdGoal extends Goal {
     @Override
     public void start() {
         pathTimer = 0;
+        lastDiagnosis = leashFollow ? LEASH_FOLLOW_COLOUR : WANDERING_COLOUR;
+        setDebugNameColour(lastDiagnosis);
     }
 
     @Override
     public void stop() {
         navigation.stop();
         leashedLeader = null;
+        setDebugNameColour(STOPPED_COLOUR);
     }
 
     @Override
@@ -99,34 +113,58 @@ public class HerdGoal extends Goal {
     }
 
     private void tickWander() {
-        if (--pathTimer > 0) return;
-        pathTimer = PATH_RECALC_INTERVAL;
-
-        Vec3 steering = HerdManager.computeHerdSteering(entity);
-        if (steering == null) return;
-
-        moveToIfReachable(entity.position().add(steering.scale(8.0)));
+        if (--pathTimer <= 0) {
+            pathTimer = PATH_RECALC_INTERVAL;
+            lastDiagnosis = attemptWanderMove();
+        }
+        reportDiagnosis();
     }
 
     private void tickLeashFollow() {
-        if (--pathTimer > 0) return;
-        pathTimer = PATH_RECALC_INTERVAL;
+        if (--pathTimer <= 0) {
+            pathTimer = PATH_RECALC_INTERVAL;
+            lastDiagnosis = attemptLeashFollowMove();
+        }
+        reportDiagnosis();
+    }
 
-        if (leashedLeader == null) return;
+    private ChatFormatting attemptWanderMove() {
+        Vec3 steering = HerdManager.computeHerdSteering(entity);
+        if (steering == null) return NO_STEERING_COLOUR;
+
+        Vec3 target = entity.position().add(steering.scale(8.0));
+        navigation.moveTo(target.x, target.y, target.z, speed * HerdManager.catchUpSpeedMultiplier(entity));
+        return WANDERING_COLOUR;
+    }
+
+    private ChatFormatting attemptLeashFollowMove() {
+        if (leashedLeader == null) return NO_STEERING_COLOUR;
 
         Vec3 steering = HerdManager.computeLeaderSteering(entity, leashedLeader);
         Vec3 target = steering != null
                 ? entity.position().add(steering.scale(8.0))
                 : leashedLeader.position();
-        moveToIfReachable(target);
-    }
-
-    private void moveToIfReachable(Vec3 target) {
-        if (!ValidatePath.isValidPath(entity, new BlockPos(target), PATH_VALIDATION_NODE_LIMIT)) return;
         navigation.moveTo(target.x, target.y, target.z, speed);
+        return LEASH_FOLLOW_COLOUR;
     }
 
-    /** Leaves/joins herds on its own schedule, independent of whether this goal is running. */
+    // Grazing declares no flags, so it can hold the navigator alongside us; it wins the readout.
+    private void reportDiagnosis() {
+        setDebugNameColour(entity.getAIStatus() == AIStatus.EATING ? PREEMPTED_COLOUR : lastDiagnosis);
+    }
+
+    // Re-asserted every tick because setHerdId rebuilds the name unstyled mid-burst. Bails when
+    // the colour already matches, so it only syncs a name on an actual change.
+    private void setDebugNameColour(ChatFormatting colour) {
+        Component name = entity.getCustomName();
+        if (name == null) return;
+
+        TextColor wanted = TextColor.fromLegacyFormat(colour);
+        if (Objects.equals(name.getStyle().getColor(), wanted)) return;
+
+        entity.setCustomName(name.copy().setStyle(Style.EMPTY.withColor(colour)));
+    }
+
     private void maybeRecheckMembership() {
         if (--membershipTimer > 0) return;
         membershipTimer = MEMBERSHIP_RECHECK_INTERVAL;

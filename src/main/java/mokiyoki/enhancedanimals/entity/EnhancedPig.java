@@ -231,15 +231,15 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgePig.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgePig.get().longValue();
         return this.adultAge;
     }
 
     @Override
-    protected int getFullSizeAge() {
-        return (int)(getAdultAge() * 1.25);
+    protected long getFullSizeAge() {
+        return (long)(getAdultAge() * 1.25);
     }
 
     @Override
@@ -330,7 +330,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         int pigletAverage = 11;
         int pigletRange = 4;
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         if (genes[58] == 1 || genes[59] == 1) {
             pigletAverage = 4;
@@ -522,9 +522,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.getGenes().getAutosomalGenes();
         float size = (this.getAnimalSize()-0.7F)*1.25F; // 0 to 1
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int meatDrop;
-        int meatChanceMod;
+        long meatChanceMod;
         float muscle = 0.0F; // 0 to 1
         float fat = 0.0F; // 0 to 1
         float length = 0.0F; // 0 to 1

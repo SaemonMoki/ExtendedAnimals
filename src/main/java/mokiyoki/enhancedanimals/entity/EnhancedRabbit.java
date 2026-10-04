@@ -269,9 +269,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get().longValue();
         return this.adultAge;
     }
 
@@ -441,7 +441,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             timeForGrowth++;
         }
 
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
@@ -656,7 +656,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         float size = getAnimalSize();
 
         if ((((size-0.3F) * 71.4286F) + 25) > random.nextInt(100)) {
@@ -819,7 +819,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            int age = this.getEnhancedAnimalAge();
+            long age = this.getEnhancedAnimalAge();
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
@@ -979,7 +979,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

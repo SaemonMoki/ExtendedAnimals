@@ -224,9 +224,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get().longValue();
         return this.adultAge;
     }
 

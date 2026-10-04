@@ -214,9 +214,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get().longValue();
         return this.adultAge;
     }
 
@@ -969,7 +969,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public String getTexture() {
         if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
-        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.25F)) {
+        } else if (this.reload && this.getEnhancedAnimalAge() >= this.getFullSizeAge()*0.25F) {
             this.reload = false;
             this.reloadTextures();
         }
@@ -1012,7 +1012,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int bodyType = 0;
         int meatSize;
         int featherCount = (genes[108]==2&&genes[109]==2)||(genes[106]==2&&genes[107]==2) ? 0 : random.nextInt(4+looting)-1;

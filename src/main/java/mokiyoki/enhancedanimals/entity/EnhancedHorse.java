@@ -182,7 +182,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return horseFoodMap();
     }
 
-    protected int getAdultAge() { return 120000;}
+    protected long getAdultAge() { return 120000;}
 
     @Override
     protected int gestationConfig() {

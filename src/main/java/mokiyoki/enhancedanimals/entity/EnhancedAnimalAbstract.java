@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModDataSerializers;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
@@ -98,7 +99,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected static final EntityDataAccessor<String> SHARED_GENES = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
     protected static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<String> BIRTH_TIME = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
+    protected static final EntityDataAccessor<Long> BIRTH_TIME = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, ModDataSerializers.LONG);
+    public static final long UNSET_BIRTH_TIME = 0;
     private static final EntityDataAccessor<Float> ANIMAL_SIZE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<String> ENTITY_STATUS = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Float> BAG_SIZE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.FLOAT);
@@ -131,7 +133,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String damName = "???";
     protected Boolean isFemale;
 
-    protected Integer adultAge = null;
+    protected Long adultAge = null;
 
     protected Boolean unbreedable = false;
 
@@ -207,7 +209,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public Map<String, AnimalScheduledFunction> scheduledToRun = new HashMap<>();
 
-    /** Goal priorities the herd feature registers at - see registerHerdGoals. */
     private static final int HERD_FOLLOW_LEASHED_PRIORITY = 2;
     private static final int HERD_WANDER_PRIORITY = 10;
 
@@ -235,7 +236,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.entityData.define(SLEEPING, false);
         this.entityData.define(TAMED, false);
         this.entityData.define(ENTITY_STATUS, new String());
-        this.entityData.define(BIRTH_TIME, "0");
+        this.entityData.define(BIRTH_TIME, UNSET_BIRTH_TIME);
         this.entityData.define(ANIMAL_SIZE, 0.0F);
         if (canLactate()) {
             this.entityData.define(BAG_SIZE, 0.0F);
@@ -284,22 +285,23 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected abstract String getSpecies();
 
     //returns the age an animal becomes an adult
-    protected abstract int getAdultAge();
+    protected abstract long getAdultAge();
 
     //returns the age when the animal finishes growing
-    protected int getFullSizeAge() {
+    protected long getFullSizeAge() {
         return getAdultAge();
     }
 
     //returns if the animal is still growing
     public boolean isGrowing() {
-        return this.getEnhancedAnimalAge()<(float)this.getFullSizeAge();
+        return this.getEnhancedAnimalAge() < this.getFullSizeAge();
     }
 
     //returns how grown the animal is
     public float growthAmount() {
-        int age = Math.max(this.getEnhancedAnimalAge(), 0);
-        return age > this.getFullSizeAge() ? 1.0F : age/(float)this.getFullSizeAge();
+        long age = Math.max(this.getEnhancedAnimalAge(), 0L);
+        long fullSizeAge = this.getFullSizeAge();
+        return age >= fullSizeAge ? 1.0F : age/(float)fullSizeAge;
     }
 
     //returns the config for the animals gestation or any overrides
@@ -406,19 +408,36 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
 
     public void setBirthTime() {
-        this.setBirthTime(String.valueOf(this.level.getLevelData().getGameTime()));
+        this.setBirthTime(this.level.getLevelData().getGameTime());
     }
 
-    public void setBirthTime(Level world, int age) {
-        this.setBirthTime(String.valueOf(world.getLevelData().getGameTime() + age));
+    public void setBirthTime(Level world, long age) {
+        this.setBirthTime(world.getLevelData().getGameTime() + age);
     }
 
-    public void setBirthTime(String birthTime) {
+    public void setBirthTime(long birthTime) {
         this.entityData.set(BIRTH_TIME, birthTime);
     }
 
-    public String getBirthTime() {
+    public long getBirthTime() {
         return this.entityData.get(BIRTH_TIME);
+    }
+
+    public static long parseBirthTime(String birthTime) {
+        if (birthTime == null || birthTime.isEmpty()) {
+            return UNSET_BIRTH_TIME;
+        }
+        try {
+            long parsed = Long.parseLong(birthTime);
+            return parsed == 0L ? UNSET_BIRTH_TIME : parsed;
+        } catch (NumberFormatException e) {
+            return UNSET_BIRTH_TIME;
+        }
+    }
+
+    //clamped because minecraft...
+    public static int clampToInt(long value) {
+        return (int)Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
     }
 
 
@@ -487,16 +506,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.entityData.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
-        if (this.level.dimensionType().bedWorks()) {
-            if (this.isInWaterRainOrBubble()) {
-                return false;
-            } else if (this.isLedByEntity()) {
-                return false;
-            } else {
-                return this.entityData.get(SLEEPING);
-            }
+        if (!this.entityData.get(SLEEPING)) {
+            return false;
         }
-        return false;
+        if (!this.level.dimensionType().bedWorks()) {
+            return false;
+        }
+        if (this.isInWaterRainOrBubble()) {
+            return false;
+        }
+        return !this.isLedByEntity();
     }
 
     public void awaken() {
@@ -560,27 +579,20 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
     }
 
-    /**
-     * True when something is actively leading this animal - a player or another entity holding
-     * a lead - as opposed to being tied to a fence post, which doesn't count as being led.
-     */
+    // Being led by a player or mob, as opposed to tied to a fence post.
     public boolean isLedByEntity() {
         Entity holder = this.getLeashHolder();
         return holder != null && !(holder instanceof LeashFenceKnotEntity);
     }
 
-    /** Assigns this animal to a nearby herd, or starts its own. Safe to call on every spawn. */
+    // Joins a nearby herd or starts its own. Safe to call on every spawn.
     protected void initialiseHerdIfNeeded() {
         if (this.getHerdId() == null) {
             HerdManager.initialiseHerd(this);
         }
     }
 
-    /**
-     * Registers both herd goals at the priorities the feature expects: leash-following above
-     * grazing/eating/wandering so a led herd doesn't scatter, and herd wandering below them so
-     * it yields to those instead.
-     */
+    // Leash-following outranks grazing so a led herd holds together, wandering yields to it.
     protected void registerHerdGoals(double speed) {
         this.goalSelector.addGoal(HERD_FOLLOW_LEASHED_PRIORITY, new HerdGoal(this, speed * 1.25D, true));
         this.goalSelector.addGoal(HERD_WANDER_PRIORITY, new HerdGoal(this, speed, false));
@@ -609,14 +621,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     //overloaded version of getAge
-    public int getEnhancedAnimalAge() {
-        String birthTime = getBirthTime();
-        if (!(birthTime == null) && !birthTime.equals("") && !birthTime.equals(0)) {
-            return (int)(this.level.getLevelData().getGameTime() - Long.parseLong(birthTime));
-        } else {
-            setBirthTime(String.valueOf(this.level.getLevelData().getGameTime() - this.getAdultAge()));
-            return this.getAdultAge();
+    public long getEnhancedAnimalAge() {
+        long gameTime = this.level.getLevelData().getGameTime();
+        long birthTime = getBirthTime();
+        if (birthTime != UNSET_BIRTH_TIME) {
+            return gameTime - birthTime;
         }
+        //an animal with no birth time is assumed to be a fresh adult
+        if (this.level instanceof ServerLevel) {
+            setBirthTime(gameTime - this.getAdultAge());
+        }
+        return this.getAdultAge();
     }
 
     protected void setBagSize(float size) { this.entityData.set(BAG_SIZE, size); }
@@ -1051,7 +1066,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 if (this.hunger >= 4000 || GeneticAnimalsConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
                     if (GeneticAnimalsConfig.COMMON.feedGrowth.get()) {
-                        this.ageUp((int) ((float) (-this.getEnhancedAnimalAge() / 20) * 0.1F), true);
+                        this.ageUp((int) ((-this.getEnhancedAnimalAge() / 20) * 0.1F), true);
                     }
                     if (MILK_ITEMS.test(itemStack)) {
                         if (item == ModItems.HALF_MILK_BOTTLE.get()) {
@@ -1158,7 +1173,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         compound.putString("Status", getEntityStatus());
 
-        compound.putString("BirthTime", this.getBirthTime());
+        compound.putLong("BirthTime", this.getBirthTime());
 
         compound.putString("MateName", this.mateName);
         compound.putString("SireName", this.sireName);
@@ -1252,7 +1267,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         this.setEntityStatus(compound.getString("Status"));
 
-        this.setBirthTime(compound.getString("BirthTime"));
+        this.setBirthTime(readBirthTime(compound));
 
         this.setTame(compound.getBoolean("Tamed"));
 
@@ -1306,9 +1321,19 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         readScheduling(compound);
     }
 
+    //worlds saved before birth times became longs stored them as a string
+    private long readBirthTime(CompoundTag compound) {
+        if (compound.contains("BirthTime", 4)) {
+            return compound.getLong("BirthTime");
+        } else if (compound.contains("BirthTime", 8)) {
+            return parseBirthTime(compound.getString("BirthTime"));
+        }
+        return UNSET_BIRTH_TIME;
+    }
+
     protected void resetGrowingAgeToAge() {
-        int resetAge = this.getEnhancedAnimalAge() - this.getAdultAge();
-        super.setAge(Math.min(resetAge, 0));
+        long resetAge = this.getEnhancedAnimalAge() - this.getAdultAge();
+        super.setAge(resetAge >= 0L ? 0 : clampToInt(resetAge));
     }
 
     private void readInventory(CompoundTag compound) {
@@ -1430,12 +1455,12 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     Entity Creation
     */
 
-    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, Level inWorld, Genes babyGenes, int childAge) {
+    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, Level inWorld, Genes babyGenes, long childAge) {
         enhancedAnimalChild.setGenes(babyGenes);
         enhancedAnimalChild.setSharedGenes(babyGenes);
         enhancedAnimalChild.initilizeAnimalSize();
-        enhancedAnimalChild.setAge(childAge);
-        enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedAnimalChild.setAge(clampToInt(childAge));
+        enhancedAnimalChild.setBirthTime(inWorld.getGameTime());
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
         enhancedAnimalChild.setParent(this.getUUID().toString());
@@ -1705,8 +1730,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected String getAnimalsAgeString() {
-        int age = this.getEnhancedAnimalAge();
-        int adultAge = getAdultAge();
+        long age = this.getEnhancedAnimalAge();
+        long adultAge = getAdultAge();
         if (age < adultAge) {
             if (age > (adultAge*3)/4) {
                 return "YOUNG";
@@ -1721,9 +1746,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean isBaby() {
-        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
-        int adultAge = getAdultAge();
-        return age < adultAge;
+        return this.getEnhancedAnimalAge() < getAdultAge(); //overloaded version of getAge
     }
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
@@ -2082,10 +2105,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         if (!this.breed.isEmpty()) {
             this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true) : createInitialBreedGenes(this.level, new BlockPos(this.blockPosition()), this.breed);
             setInitialDefaults();
-            int childAge = this.getAdultAge();
+            long childAge = this.getAdultAge();
             if (this.random.nextInt(20) == 0) {
-                childAge = this.random.nextInt(childAge);
-                this.setAge(childAge);
+                childAge = randomAgeUpTo(childAge);
+                this.setAge(clampToInt(childAge));
                 this.setBirthTime(this.level, -childAge);
             } else {
                 this.setAge(0);
@@ -2098,10 +2121,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         } else if (this.genetics.getAutosomalGene(0) == 0) {
             this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true);
             setInitialDefaults();
-            int childAge = this.getAdultAge();
+            long childAge = this.getAdultAge();
             if (this.random.nextInt(20) == 0) {
-                childAge = this.random.nextInt(childAge);
-                this.setAge(childAge);
+                childAge = randomAgeUpTo(childAge);
+                this.setAge(clampToInt(childAge));
                 this.setBirthTime(this.level, -childAge);
             } else {
                 this.setAge(0);
@@ -2142,21 +2165,27 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void setGrowingAge() {
-        super.setAge(-this.getAdultAge());
+        super.setAge(clampToInt(-this.getAdultAge()));
     }
 
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-        int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
-        this.setBirthTime(String.valueOf(newBirthTime));
+        long birthTime = getBirthTime();
+        if (birthTime != UNSET_BIRTH_TIME) {
+            this.setBirthTime(birthTime - (long)(getAdultAge()*0.1));
+        }
         super.ageUp(growthSeconds, updateForcedAge);
         if (!this.isBaby() && this.getEnhancedAnimalAge() <= -1) {
             this.setAge(0);
         }
     }
 
-    protected SpawnGroupData commonInitialSpawnSetup(LevelAccessor inWorld, @Nullable SpawnGroupData livingdata, int childAge, int ageMinimum, int ageMaximum, MobSpawnType spawnReason) {
+    private long randomAgeUpTo(long ageUpTo) {
+        return this.random.nextInt(clampToInt(Math.max(ageUpTo, 1L)));
+    }
+
+    protected SpawnGroupData commonInitialSpawnSetup(LevelAccessor inWorld, @Nullable SpawnGroupData livingdata, long childAge, int ageMinimum, int ageMaximum, MobSpawnType spawnReason) {
         Genes spawnGenes;
 
         if (spawnReason.equals(MobSpawnType.STRUCTURE)) {
@@ -2172,8 +2201,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         boolean canBePregnant = false;
         if (this.random.nextInt(20) == 0) {
-            int age = this.random.nextInt(childAge);
-            this.setAge(age);
+            long age = randomAgeUpTo(childAge);
+            this.setAge(clampToInt(age));
             this.setBirthTime(this.level, -age);
         } else {
             this.setAge(0);

@@ -1177,7 +1177,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
             }
 
             if (!this.chestTabEnabled && !this.photoModeEnabled) {
-                Integer ageInt = this.enhancedAnimalInfo.age/24000;
+                Long ageInt = this.enhancedAnimalInfo.age/24000;
     //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
                 String age = "";
                 if (ageInt < 8) {

@@ -679,6 +679,7 @@ NBT read/write
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
+            EnhancedAxolotlBucket.setVariation(stack, this.getVariationSeed(), this.getOrSetIsFemale());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
         }
     }

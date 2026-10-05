@@ -47,7 +47,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class CarryClientHandler {
 
-    public static final KeyMapping CARRY_KEY = new KeyMapping("key.eanimod.carry", KeyConflictContext.IN_GAME, InputConstants.Type.MOUSE.getOrCreate(2), "key.categories.eanimod");
+    public static final KeyMapping CARRY_KEY = new KeyMapping("key.eanimod.carry", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_GRAVE), "key.categories.eanimod");
 
     private static final Map<UUID, ItemStack> CARRIED = new HashMap<>();
 

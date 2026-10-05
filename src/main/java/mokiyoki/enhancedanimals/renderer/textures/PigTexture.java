@@ -2,8 +2,11 @@ package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class PigTexture {
     /*
@@ -199,7 +202,7 @@ public class PigTexture {
             "", "pattern_whitebelly.png", "pattern_whitebelly.png",
     };
     
-    public static void calculatePigTexture(EnhancedPig pig, int[] gene, char[] uuidArry) {
+    public static void calculatePigTexture(EnhancedPig pig, int[] gene, Variation variation) {
 
         int eyes = 0;
         int red = 1;
@@ -793,75 +796,75 @@ public class PigTexture {
 
         //random brindle
         if (black == idx_brindle) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             black = idx_brindle + d;
         }
         //random big brindle
         else if (black == idx_brindle_med) {
-            int d = uuidArry[3] % 4;
+            int d = variation.get(PIG_PATTERN, 4);
             black = idx_brindle_med + d;
         }
         //random big brindle
         else if (black == idx_brindle_berkshire) {
-            int d = uuidArry[3] % 8;
+            int d = variation.get(PIG_PATTERN, 8);
             black = idx_brindle_berkshire + d;
         }
         //random het brindle
         else if (black == idx_brindle_het) {
-            int d = uuidArry[3] % 6;
+            int d = variation.get(PIG_PATTERN, 6);
             black = idx_brindle_het + d;
         }
         //random big het brindle
         else if (black == idx_brindle_het_med) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             black = idx_brindle_het_med + d;
         }
         //random patch + white points aka spotted
         else if (white == idx_spottedpatch) {
             whiteFace = 0;
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_spottedpatch + d;
         }
         //random patch
         else if (white == idx_patch) {
-            int d = uuidArry[3] % 11;
+            int d = variation.get(PIG_PATTERN, 11);
             white = idx_patch + d;
         }
         //random patch brindle (pietrain)
         else if (white == idx_brindlepatch) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_brindlepatch + d;
         }
         //random patch brindle (oldspot aka extended white)
         else if (white == idx_brindlepatch_ext) {
-            int d = uuidArry[3] % 6;
+            int d = variation.get(PIG_PATTERN, 6);
             white = idx_brindlepatch_ext + d;
         }
         //random patch big brindle
         else if (white == idx_brindlepatch_med) {
-            int d = uuidArry[3] % 4;
+            int d = variation.get(PIG_PATTERN, 4);
             white = idx_brindlepatch_med + d;
         }
         //random big/irregular belt
         else if (white == idx_hugebelt) {
-            int d = uuidArry[3] % 7;
+            int d = variation.get(PIG_PATTERN, 7);
             white = idx_hugebelt + d;
         }
         //random lethal
         else if (white == idx_lethal) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_lethal + d;
         }
         //random min tux
         else if (white == idx_tuxmin) {
             if (whiteExtension == 2) {
-                int d3 = uuidArry[3] % 6;
-                int d2 = uuidArry[2] % 6;
+                int d3 = variation.get(PIG_PATTERN, 6);
+                int d2 = variation.get(PIG_WHITE_FACE, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             } else {
-                int d3 = uuidArry[3] % 3;
-                int d2 = uuidArry[2] % 3;
+                int d3 = variation.get(PIG_PATTERN, 3);
+                int d2 = variation.get(PIG_WHITE_FACE, 3);
                 white = idx_tuxmin + d3;
                 whiteFace = idx_tuxface_min + d2;
             }
@@ -869,65 +872,65 @@ public class PigTexture {
         // random med-high tux
         else if (white == idx_tuxmed) {
             if (whiteExtension == 2) {
-                int d3 = uuidArry[3] % 4;
-                int d2 = uuidArry[2] % 4;
+                int d3 = variation.get(PIG_PATTERN, 4);
+                int d2 = variation.get(PIG_WHITE_FACE, 4);
                 white = idx_tuxhigh + d3;
                 whiteFace = idx_tuxface_high + d2;
             } else {
-                int d3 = uuidArry[3] % 6;
-                int d2 = uuidArry[2] % 6;
+                int d3 = variation.get(PIG_PATTERN, 6);
+                int d2 = variation.get(PIG_WHITE_FACE, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             }
         } else if (white == idx_belt) {
             //random belt
             if (whiteExtension == 2) {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + 3 + d;
             } else if (whiteExtension == 1) {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + 2 + d;
             } else {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + d;
             }
         } else if (white == idx_patch_belt) {
             //random patch belt
-            int d3 = uuidArry[3] % 2;
+            int d3 = variation.get(PIG_PATTERN, 2);
             white = idx_patch_belt + d3;
         } else if (white == idx_patch_bigbelt) {
             //random patch bigbelt
-            int d3 = uuidArry[3] % 4;
+            int d3 = variation.get(PIG_PATTERN, 4);
             white = idx_patch_bigbelt + d3;
         } else if (white == idx_patch_hereford) {
             //random patch hereford
-            int d3 = uuidArry[3] % 5;
+            int d3 = variation.get(PIG_PATTERN, 5);
             white = idx_patch_hereford + d3;
         }
 
         if (whiteSplash == idx_hereford_belly_min) {
             //random min hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 4;
-            int d2 = uuidArry[2] % 4;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 4);
+            int d2 = variation.get(PIG_WHITE_FACE, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_min + d3;
             whiteLeg = 2 + d4;
             whiteTail = 1 + d4;
         } else if (whiteSplash == idx_hereford_belly_med) {
             //random med hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 3;
-            int d2 = uuidArry[2] % 4;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 3);
+            int d2 = variation.get(PIG_WHITE_FACE, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_med + d3;
             whiteLeg = 5;
             whiteTail = 1 + d4;
         } else if (whiteSplash == idx_hereford_belly_high) {
             //random high hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 5;
-            int d2 = uuidArry[2] % 6;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 5);
+            int d2 = variation.get(PIG_WHITE_FACE, 6);
             whiteFace = idx_whitehead_high + d2;
             whiteSplash = idx_hereford_belly_high + d3;
             whiteLeg = 5;
@@ -935,23 +938,21 @@ public class PigTexture {
         }
         //random white points
         if (whiteFace == 1) {
-            int d2 = uuidArry[2];
-            int d4 = uuidArry[5] % 2;
-            //int d2 = uuidArry[3];
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
             switch (whiteExtension) {
                 case 0 -> {
-                    whiteFace = 1 + (d2 % 4);
-                    whiteLeg = 1 + (d2 % 2);
+                    whiteFace = 1 + variation.get(PIG_WHITE_FACE, 4);
+                    whiteLeg = 1 + variation.get(PIG_WHITE_FACE, 2);
                     whiteTail = 1;
                 }
                 case 1 -> {
-                    whiteFace = 5 + (d2 % 5);
-                    whiteLeg = 2 + (d2 % 2);
+                    whiteFace = 5 + variation.get(PIG_WHITE_FACE, 5);
+                    whiteLeg = 2 + variation.get(PIG_WHITE_FACE, 2);
                     whiteTail = 1 + d4;
                 }
                 case 2 -> {
-                    whiteFace = 7 + (d2 % 5);
-                    whiteLeg = 2 + (d2 % 3);
+                    whiteFace = 7 + variation.get(PIG_WHITE_FACE, 5);
+                    whiteLeg = 2 + variation.get(PIG_WHITE_FACE, 3);
                     whiteTail = 1 + d4;
                 }
             }
@@ -968,12 +969,12 @@ public class PigTexture {
         if (heterochromia == 2 || white == 1 || gene[12] == 1 || gene[13] == 1) {
             eyes = 2;
         } else if (heterochromia == 1) {
-            int d4 = uuidArry[4] % 2;
+            int d4 = variation.get(PIG_HETEROCHROMIA, 2);
             eyes = (d4 == 1) ? 3 : 4;
         }
 
         if (!pig.isBaby()) {
-            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+            if (pig.getSexVariation() >= 8) {
                 //tusks if "male"
                 tusks = true;
             }

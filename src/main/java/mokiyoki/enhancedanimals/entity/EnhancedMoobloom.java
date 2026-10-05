@@ -131,6 +131,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
+            enhancedcow.copyVariationFrom(this);
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {

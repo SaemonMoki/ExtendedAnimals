@@ -1,4 +1,10 @@
 package mokiyoki.enhancedanimals.model.modeldata;
+
+import mokiyoki.enhancedanimals.entity.util.Variation;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.COW_HORNS;
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.COW_MUSHROOMS;
+
 public class CowPhenotype implements Phenotype {
     public boolean isFemale;
     public float hornScale;
@@ -21,12 +27,12 @@ public class CowPhenotype implements Phenotype {
     public boolean hairy = false;
     public int[] mushrooms;
 
-    public CowPhenotype(int[] gene, char[] uuidArray, boolean isFemale, boolean isMooshroom) {
+    public CowPhenotype(int[] gene, Variation variation, boolean isFemale, boolean isMooshroom) {
         super();
         this.isFemale = isFemale;
         this.hornType = calculateHornType(gene, isFemale);
         this.hornScale = getHornScale(gene, this.hornType);
-        this.setHornLengths(gene, uuidArray[4], this.hornType);
+        this.setHornLengths(gene, variation.hexChar(COW_HORNS), this.hornType);
         this.setHornGenetics(gene, this.hornType);
         this.dwarf = gene[26] == 1 || gene[27] == 1;
 
@@ -67,24 +73,12 @@ public class CowPhenotype implements Phenotype {
         this.calculateEarRotations(gene);
 
         if (isMooshroom) {
-            this.mushrooms = new int[]{
-                    mushroomX(uuidArray[20]),mushroomZ(uuidArray[20]),
-                    mushroomX(uuidArray[21]),mushroomZ(uuidArray[21]),
-                    mushroomX(uuidArray[22]),mushroomZ(uuidArray[22]),
-                    mushroomX(uuidArray[23]),mushroomZ(uuidArray[23]),
-                    mushroomX(uuidArray[24]),mushroomZ(uuidArray[24]),
-                    mushroomX(uuidArray[25]),mushroomZ(uuidArray[25]),
-                    mushroomX(uuidArray[26]),mushroomZ(uuidArray[26]),
-                    mushroomX(uuidArray[27]),mushroomZ(uuidArray[27]),
-                    mushroomX(uuidArray[28]),mushroomZ(uuidArray[28]),
-                    mushroomX(uuidArray[29]),mushroomZ(uuidArray[29]),
-                    mushroomX(uuidArray[30]),mushroomZ(uuidArray[30]),
-                    mushroomX(uuidArray[31]),mushroomZ(uuidArray[31]),
-                    mushroomX(uuidArray[32]),mushroomZ(uuidArray[32]),
-                    mushroomX(uuidArray[33]),mushroomZ(uuidArray[33]),
-                    mushroomX(uuidArray[34]),mushroomZ(uuidArray[34]),
-                    mushroomX(uuidArray[35]),mushroomZ(uuidArray[35])
-            };
+            this.mushrooms = new int[COW_MUSHROOMS.length * 2];
+            for (int i = 0; i < COW_MUSHROOMS.length; i++) {
+                char mushroom = variation.hexChar(COW_MUSHROOMS[i]);
+                this.mushrooms[i * 2] = mushroomX(mushroom);
+                this.mushrooms[(i * 2) + 1] = mushroomZ(mushroom);
+            }
         }
     }
 

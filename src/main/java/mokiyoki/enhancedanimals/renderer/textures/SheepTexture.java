@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
@@ -74,7 +75,7 @@ public class SheepTexture {
             "eyes_black.png"
     };
 
-    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene, char[] uuid) {
+    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene, Variation variation) {
         boolean mealy = false;
         int pattern1 = 0;
         int pattern2 = 0;

@@ -3,6 +3,8 @@ package mokiyoki.enhancedanimals.renderer.textures;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
+import mokiyoki.enhancedanimals.entity.util.VariationKey;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -12,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_SPLASH;
 
 public class ChickenTexture {
     /**
@@ -38,7 +42,7 @@ public class ChickenTexture {
     private static final int EAR_COLOUR_SLOTS     = 2;
     private static final int FEATHER_COVER_SLOTS  = 4;
     private static final int BASE_COLOUR_SLOTS    = 4;
-    /** three uuid-driven splash spots plus the splash base. */
+    /** three randomly placed splash spots plus the splash base. */
     private static final int SPLASH_SLOTS         = 4;
     private static final int PAINT_SPOT_SLOTS     = 5;
     /** the paint spots plus the feather base under them. */
@@ -978,15 +982,13 @@ public class ChickenTexture {
         }
 
             if (splash) {
-                char[] uuid = chicken.getStringUUID().toCharArray();
+                Variation variation = chicken.getVariation();
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
-                int spotVal = Integer.parseInt(String.valueOf(uuid[1]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[2]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[3]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                for (VariationKey splashKey : CHICKEN_SPLASH) {
+                    int spotVal = variation.hex(splashKey);
+                    chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                }
 
                 spots.addGrouping(spotsCutout);
                 chicken.layer(spots).texture("feather_colour/spots/splash_base.png").add();

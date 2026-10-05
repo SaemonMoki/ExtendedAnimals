@@ -2,11 +2,14 @@ package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class CowTexture {
 
@@ -129,15 +132,6 @@ public class CowTexture {
             int coat = 0;
             int eelstripe = 0;
             int mealy = 0;
-            char[] uuidArry;
-
-            String mooshroomUUIDForTexture = cow.getEntityData().get(cow.getMooshroomEntityData());
-
-            if (mooshroomUUIDForTexture.equals("0")) {
-                uuidArry = cow.getStringUUID().toCharArray();
-            } else {
-                uuidArry = mooshroomUUIDForTexture.toCharArray();
-            }
 
             //dominant red
             if (gene[6] == 1 || gene[7] == 1) {
@@ -244,7 +238,7 @@ public class CowTexture {
             addCounterShading(cow, cowGroup, mealy, eelstripe);
             addBaseSkinDetails(cow, cowGroup, skin);
 
-            addWhiteSpots(cow, cowGroup, gene, uuidArry);
+            addWhiteSpots(cow, cowGroup, gene, cow.getVariation());
 
             addLegacyBrockling(cow, cowGroup, gene, black);
 
@@ -285,7 +279,7 @@ public class CowTexture {
         parentGroup.addGrouping(grouping);
     }
 
-    private static void addWhiteSpots(EnhancedCow cow, TextureGrouping parentGroup, int[] gene, char[] uuid) {
+    private static void addWhiteSpots(EnhancedCow cow, TextureGrouping parentGroup, int[] gene, Variation variation) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MASK_GROUP);
         TextureGrouping spotShape = new TextureGrouping(TexturingType.MERGE_GROUP);
 
@@ -303,7 +297,8 @@ public class CowTexture {
 //                    //makes all cows with roan and uuid of 0 infertile
 //                }
             } else {
-                cow.layer(spotShape).texture("spots/roan/" + uuid[7] +".png").keyedAs(String.valueOf(uuid[7])).add();
+                char roan = variation.hexChar(COW_ROAN);
+                cow.layer(spotShape).texture("spots/roan/" + roan +".png").keyedAs(String.valueOf(roan)).add();
             }
         } else {
             cow.addSkippedSlot();
@@ -316,7 +311,8 @@ public class CowTexture {
                 cow.layer(spotShape).texture("spots/speckled/homozygous/0.png").keyedAs("hs").add();
             } else {
                 //speckled
-                cow.layer(spotShape).texture("spots/speckled/heterozygous/" + (uuid[8] % 4) +".png").keyedAs("s" + uuid[8]).add();
+                int speckled = variation.get(COW_SPECKLED, 4);
+                cow.layer(spotShape).texture("spots/speckled/heterozygous/" + speckled +".png").keyedAs("s" + speckled).add();
             }
         } else {
             cow.addSkippedSlot();
@@ -325,7 +321,8 @@ public class CowTexture {
         //colour sided
         if (gene[20] == 1 || gene[21] == 1) {
             //coloursided
-            cow.layer(spotShape).texture("spots/coloursided/" + (uuid[6]%4) +".png").keyedAs(String.valueOf(uuid[6])).add();
+            int coloursided = variation.get(COW_COLOURSIDED, 4);
+            cow.layer(spotShape).texture("spots/coloursided/" + coloursided +".png").keyedAs(String.valueOf(coloursided)).add();
         } else {
             cow.addSkippedSlot();
         }
@@ -359,9 +356,11 @@ public class CowTexture {
 
         } else if (gene[16] == 4 && gene[17] == 4) {
             //piebald
-            cow.layer(spotShape).texture("spots/piebald/body/" + uuid[1] +".png").keyedAs(String.valueOf(uuid[1])).add();
-            if (uuid[0] != uuid[1]) {
-                cow.layer(spotShape).texture("spots/piebald/head/" + uuid[2] +".png").keyedAs(String.valueOf(uuid[2])).add();
+            char body = variation.hexChar(COW_PIEBALD_BODY);
+            cow.layer(spotShape).texture("spots/piebald/body/" + body +".png").keyedAs(String.valueOf(body)).add();
+            if (cow.getSexVariation() != variation.hex(COW_PIEBALD_BODY)) {
+                char head = variation.hexChar(COW_PIEBALD_HEAD);
+                cow.layer(spotShape).texture("spots/piebald/head/" + head +".png").keyedAs(String.valueOf(head)).add();
             } else {
                 cow.addSkippedSlot();
             }
@@ -371,7 +370,8 @@ public class CowTexture {
 
         //Belted
         if (gene[250] == 2 || gene[251] == 2) {
-            cow.layer(spotShape).texture("spots/belt/" + uuid[5] +".png").keyedAs(String.valueOf(uuid[5])).add();
+            char belt = variation.hexChar(COW_BELT);
+            cow.layer(spotShape).texture("spots/belt/" + belt +".png").keyedAs(String.valueOf(belt)).add();
         } else {
             cow.addSkippedSlot();
         }
@@ -379,9 +379,11 @@ public class CowTexture {
         //Blaze
         if (gene[252] == 2 || gene[253] == 2) {
             if (gene[252] == 2 && gene[253] == 2) {
-                cow.layer(spotShape).texture("spots/doubleblaze/" + (uuid[3]%3) +".png").keyedAs(String.valueOf(uuid[3]%3)).add();
+                int blaze = variation.get(COW_BLAZE, 3);
+                cow.layer(spotShape).texture("spots/doubleblaze/" + blaze +".png").keyedAs("d" + blaze).add();
             } else {
-                cow.layer(spotShape).texture("spots/blaze/" + (uuid[3]%7) +".png").keyedAs(String.valueOf(uuid[3]%7)).add();
+                int blaze = variation.get(COW_BLAZE, 7);
+                cow.layer(spotShape).texture("spots/blaze/" + blaze +".png").keyedAs(String.valueOf(blaze)).add();
             }
         } else {
             cow.addSkippedSlot();
@@ -390,10 +392,12 @@ public class CowTexture {
         //Legacy Genes
         if (gene[18] == 1 || gene[19] == 1) {
             //belted
-            cow.layer(spotShape).texture("spots/belt/" + uuid[3] +".png").keyedAs(String.valueOf(uuid[3])).add();
+            char belt = variation.hexChar(COW_BLAZE);
+            cow.layer(spotShape).texture("spots/belt/" + belt +".png").keyedAs(String.valueOf(belt)).add();
         } else if (gene[18] == 2 || gene[19] == 2) {
             //blaze
-            cow.layer(spotShape).texture("spots/doubleblaze/" + (uuid[3]%3) +".png").keyedAs(String.valueOf(uuid[5])).add();
+            int blaze = variation.get(COW_BLAZE, 3);
+            cow.layer(spotShape).texture("spots/doubleblaze/" + blaze +".png").keyedAs("d" + blaze).add();
         } else {
             cow.addSkippedSlot();
         }

@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class TurtleTexture {
 
@@ -28,7 +31,7 @@ public class TurtleTexture {
             + PATTERN_CUTOUT_SLOTS + PATTERN_COLOUR_SLOTS + TORTISHELL_SLOTS + 2;
     private static final int PIEBALD_SLOTS          = 2;
 
-    public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, char[] uuid) {
+    public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, Variation variation) {
         boolean tortishell = gene[10]==2 || gene[11]==2;
         boolean nonaxanthic = gene[2] == 1 || gene[3] == 1;
         String axanthic = nonaxanthic ? "nonaxanthic/" : "axanthic/";
@@ -156,7 +159,7 @@ public class TurtleTexture {
         }
 
         if (gene[6] == 2 && gene[7] == 2) {
-            piebald(turtle, gene, uuid, parentGroup);
+            piebald(turtle, gene, variation, parentGroup);
         } else {
             turtle.addSkippedSlots(PIEBALD_SLOTS);
         }
@@ -172,38 +175,11 @@ public class TurtleTexture {
         turtle.setTextureGrouping(parentGroup);
     }
 
-    private static void piebald(EnhancedTurtle turtle, int[] gene, char[] uuid, TextureGrouping parentGroup) {
+    private static void piebald(EnhancedTurtle turtle, int[] gene, Variation variation, TextureGrouping parentGroup) {
         int piebald;
         TextureGrouping spots = new TextureGrouping(TexturingType.MASK_GROUP);
 
-        if ( Character.isDigit(uuid[5]) ){
-            piebald = 1 + (uuid[5]-48);
-        } else {
-            char d = uuid[5];
-
-            switch (d) {
-                case 'a':
-                    piebald = 11;
-                    break;
-                case 'b':
-                    piebald = 12;
-                    break;
-                case 'c':
-                    piebald = 13;
-                    break;
-                case 'd':
-                    piebald = 14;
-                    break;
-                case 'e':
-                    piebald = 15;
-                    break;
-                case 'f':
-                    piebald = 16;
-                    break;
-                default:
-                    piebald = 0;
-            }
-        }
+        piebald = 1 + variation.hex(TURTLE_PIEBALD);
 
         if (gene[8] == 2 && gene[9] == 2) {
             piebald = 1;

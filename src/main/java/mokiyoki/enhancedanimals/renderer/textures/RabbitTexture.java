@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class RabbitTexture {
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
@@ -112,7 +115,7 @@ public class RabbitTexture {
             "skin_pink.png", "skin_brown.png", "skin_white.png"
     };
 
-    public static void calculateRabbitTextures(EnhancedRabbit rabbit, int[] genesForText, char[] uuidArry) {
+    public static void calculateRabbitTextures(EnhancedRabbit rabbit, int[] genesForText, Variation variation) {
         int under = 0;
         int lower = 0;
         int middle = 0;
@@ -283,66 +286,12 @@ public class RabbitTexture {
                 //Random variants of vienna marked
                 //eyes
                 if (genesForText[4] < 4 && genesForText[5] < 4) {
-                    if (Character.isDigit(uuidArry[1])) {
-                        vieye = 1 + (uuidArry[1] - 48);
-                    } else {
-                        char d = uuidArry[1];
-
-                        switch (d) {
-                            case 'a':
-                                vieye = 11;
-                                break;
-                            case 'b':
-                                vieye = 12;
-                                break;
-                            case 'c':
-                                vieye = 13;
-                                break;
-                            case 'd':
-                                vieye = 14;
-                                break;
-                            case 'e':
-                                vieye = 15;
-                                break;
-                            case 'f':
-                                vieye = 16;
-                                break;
-                            default:
-                                vieye = 0;
-                        }
-                    }
+                    vieye = 1 + variation.hex(RABBIT_VIENNA_EYES);
                 }
 
                 //spots
-                if ( Character.isDigit(uuidArry[2]) ){
-                    if ( Character.isDigit(uuidArry[3]) ){
-                        vienna = 1 + (uuidArry[3]-48);
-                    }else{
-                        char d = uuidArry[3];
-
-                        switch (d) {
-                            case 'a':
-                                vienna = 11;
-                                break;
-                            case 'b':
-                                vienna = 12;
-                                break;
-                            case 'c':
-                                vienna = 13;
-                                break;
-                            case 'd':
-                                vienna = 14;
-                                break;
-                            case 'e':
-                                vienna = 15;
-                                break;
-                            case 'f':
-                                vienna = 16;
-                                break;
-                            default:
-                                vienna = 0;
-                        }
-                    }
+                if (variation.hex(RABBIT_VIENNA_SPOTTED) < 10) {
+                    vienna = 1 + variation.hex(RABBIT_VIENNA_SPOTS);
                 }
             }
 
@@ -390,34 +339,7 @@ public class RabbitTexture {
 
             if (genesForText[10] == 2 || genesForText[11] == 2) {
                 //broken patterned
-                if ( Character.isDigit(uuidArry[4]) ){
-                    broken = 1 + (uuidArry[4]-48);
-                } else {
-                    char d = uuidArry[4];
-
-                    switch (d) {
-                        case 'a':
-                            broken = 11;
-                            break;
-                        case 'b':
-                            broken = 12;
-                            break;
-                        case 'c':
-                            broken = 13;
-                            break;
-                        case 'd':
-                            broken = 14;
-                            break;
-                        case 'e':
-                            broken = 15;
-                            break;
-                        case 'f':
-                            broken = 16;
-                            break;
-                        default:
-                            broken = 0;
-                    }
-                }
+                broken = 1 + variation.hex(RABBIT_BROKEN);
 
                 if (genesForText[10] == 2 && genesForText[11] == 2){
                     //charlie patterned
@@ -428,34 +350,7 @@ public class RabbitTexture {
             if (genesForText[12] == 2 && genesForText[13] == 2) {
                 //dutch patterned
                 //TODO add dutch textures with 16 variations
-                if ( Character.isDigit(uuidArry[5]) ){
-                    dutch = 1 + (uuidArry[5]-48);
-                } else {
-                    char d = uuidArry[5];
-
-                    switch (d) {
-                        case 'a':
-                            dutch = 11;
-                            break;
-                        case 'b':
-                            dutch = 12;
-                            break;
-                        case 'c':
-                            dutch = 13;
-                            break;
-                        case 'd':
-                            dutch = 14;
-                            break;
-                        case 'e':
-                            dutch = 15;
-                            break;
-                        case 'f':
-                            dutch = 16;
-                            break;
-                        default:
-                            dutch = 0;
-                    }
-                }
+                dutch = 1 + variation.hex(RABBIT_DUTCH);
             }
 
         }

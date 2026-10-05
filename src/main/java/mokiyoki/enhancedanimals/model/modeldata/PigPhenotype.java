@@ -1,9 +1,12 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.util.Mth;
 
 import java.util.List;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.PIG_TAIL_CURL;
 
 public class PigPhenotype implements Phenotype {
     public float earFlopMod;
@@ -33,8 +36,8 @@ public class PigPhenotype implements Phenotype {
     public List<Float> earScalings;
     public List<Float> headScalings;
 
-    public PigPhenotype(int[] gene,char uuid) {
-        this.tailCurl = Character.isLetter(uuid);
+    public PigPhenotype(int[] gene, Variation variation) {
+        this.tailCurl = variation.hex(PIG_TAIL_CURL) >= 10;
 
         float earSize = 0.0F;
         float earFlop = 1.0F;

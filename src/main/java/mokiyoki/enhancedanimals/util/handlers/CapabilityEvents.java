@@ -1,10 +1,13 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import mokiyoki.enhancedanimals.capability.carry.CarryCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -22,6 +25,7 @@ public class CapabilityEvents {
     public static final ResourceLocation HAY_CAP = new ResourceLocation(Reference.MODID, "haycap");
     public static final ResourceLocation EGG_CAP = new ResourceLocation(Reference.MODID, "eggcap");
     public static final ResourceLocation NEST_CAP = new ResourceLocation(Reference.MODID, "nestcap");
+    public static final ResourceLocation CARRY_CAP = new ResourceLocation(Reference.MODID, "carrycap");
 
     @SubscribeEvent
     public void onAddCapabilitiesWorld(AttachCapabilitiesEvent<Level> event) {
@@ -34,6 +38,13 @@ public class CapabilityEvents {
     public void onAddCapabilitiesItemStack(AttachCapabilitiesEvent<ItemStack> event) {
         if (event.getObject().getItem() == TURTLE_EGG.get().asItem()) {
             event.addCapability(EGG_CAP, new EggCapabilityProvider());
+        }
+    }
+
+    @SubscribeEvent
+    public void onAddCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player) {
+            event.addCapability(CARRY_CAP, new CarryCapabilityProvider());
         }
     }
 

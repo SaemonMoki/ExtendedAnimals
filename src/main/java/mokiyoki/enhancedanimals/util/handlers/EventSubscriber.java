@@ -14,10 +14,13 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.capability.carry.CarryCapabilityProvider;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -693,6 +696,29 @@ public class EventSubscriber {
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
                 EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) trackingPlayer), equipmentPacket);
             }
+        } else if (targetEntity instanceof Player carryingPlayer) {
+            ServerPlayer trackingPlayer = (ServerPlayer) event.getPlayer();
+            //always send the true current state, even empty otherwise a newly-tracking client can be left with
+            //a stale "carrying" render from a previous tracking session if the item was dropped while untracked
+            carryingPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> trackingPlayer), new CarrySyncPacket(carryingPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.handleCarryToggle(serverPlayer, -1);
+        }
+    }
+
+    //the logout-time sync above can fail to reach a disconnecting client this self-corrects on (re)join
+    //regardless of how the previous session ended, since the server's own capability state is always correct
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CarrySyncPacket(serverPlayer.getId(), cap.getCarried())));
         }
     }
 

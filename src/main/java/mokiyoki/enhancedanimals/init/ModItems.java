@@ -463,6 +463,8 @@ public class ModItems {
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_MOOSHROOM_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_mooshroom_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_PIG_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_pig_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
 
+    public static final RegistryObject<Item> CARRIED_ANIMAL = ITEMS_DEFERRED_REGISTRY.register("carried_animal", () -> new CarriedAnimalItem(new Item.Properties().stacksTo(1)));
+
     public static void register(IEventBus modEventBus) {
         ITEMS_DEFERRED_REGISTRY.register(modEventBus);
     }

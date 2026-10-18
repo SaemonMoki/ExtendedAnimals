@@ -2020,8 +2020,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
                 combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
             } else {
-                if (collar) {
-                    combFlop = 1.0F;
+                if (combFlop != 0.0F) {
                     float y = combFlop > 0? -0.5F : 0.5F;
                     switch (combType) {
                         case WALNUT,PEA -> {

@@ -1,4 +1,7 @@
 {
+  "key.categories.eanimod": "Genetic Animals",
+  "key.eanimod.carry": "Carry Animal",
+  "item.eanimod.carried_animal": "Carried Animal",
   "block.eanimod.egg_carton": "Egg Carton",
   "block.eanimod.growable_allium": "Growing Allium",
   "block.eanimod.growable_azure_bluet": "Growing Azure Bluet",

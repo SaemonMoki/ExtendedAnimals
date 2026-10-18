@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
+import mokiyoki.enhancedanimals.network.CarryTogglePacket;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
@@ -142,6 +144,8 @@ public class EnhancedAnimals {
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
         channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
+        channel.messageBuilder(CarryTogglePacket.class, messageNumber++).encoder(CarryTogglePacket::writePacketData).decoder(CarryTogglePacket::new).consumer(CarryTogglePacket::processPacket).add();
+        channel.messageBuilder(CarrySyncPacket.class, messageNumber++).encoder(CarrySyncPacket::writePacketData).decoder(CarrySyncPacket::new).consumer(CarrySyncPacket::processPacket).add();
 
         try {
             StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(new ResourceLocation("village/common/animals"));

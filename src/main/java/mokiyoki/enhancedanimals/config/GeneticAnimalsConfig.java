@@ -33,6 +33,7 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
         public final ForgeConfigSpec.BooleanValue onlyKilledWithAxe;
         public final ForgeConfigSpec.BooleanValue force16x;
+        public final ForgeConfigSpec.DoubleValue maxCarryVolume;
 
         public final ForgeConfigSpec.BooleanValue leatherWorkerTrades;
         public final ForgeConfigSpec.BooleanValue shepardTrades;
@@ -56,6 +57,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightPigs;
         public final ForgeConfigSpec.IntValue minimumPigGroup;
         public final ForgeConfigSpec.IntValue maximumPigGroup;
+        public final ForgeConfigSpec.BooleanValue pigCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue pigCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaCows;
         public final ForgeConfigSpec.BooleanValue spawnGeneticCows;
@@ -64,6 +67,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightCows;
         public final ForgeConfigSpec.IntValue minimumCowGroup;
         public final ForgeConfigSpec.IntValue maximumCowGroup;
+        public final ForgeConfigSpec.BooleanValue cowCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue cowCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaMooshroom;
         public final ForgeConfigSpec.BooleanValue spawnGeneticMooshroom;
@@ -84,6 +89,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightLlamas;
         public final ForgeConfigSpec.IntValue minimumLlamaGroup;
         public final ForgeConfigSpec.IntValue maximumLlamaGroup;
+        public final ForgeConfigSpec.BooleanValue llamaCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue llamaCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
         public final ForgeConfigSpec.BooleanValue spawnGeneticSheep;
@@ -92,6 +99,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightSheep;
         public final ForgeConfigSpec.IntValue minimumSheepGroup;
         public final ForgeConfigSpec.IntValue maximumSheepGroup;
+        public final ForgeConfigSpec.BooleanValue sheepCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue sheepCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
         public final ForgeConfigSpec.BooleanValue spawnGeneticChickens;
@@ -107,6 +116,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.BooleanValue allowRoostersToCrow;
         public final ForgeConfigSpec.IntValue minimumWaitForCrowTime;
         public final ForgeConfigSpec.IntValue maximumWaitForCrowTime;
+        public final ForgeConfigSpec.BooleanValue chickenCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue chickenCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
         public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
@@ -115,6 +126,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightRabbits;
         public final ForgeConfigSpec.IntValue minimumRabbitGroup;
         public final ForgeConfigSpec.IntValue maximumRabbitGroup;
+        public final ForgeConfigSpec.BooleanValue rabbitCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue rabbitCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaTurtles;
         public final ForgeConfigSpec.BooleanValue spawnGeneticTurtles;
@@ -126,6 +139,8 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue turtleHatchingWindowStart;
         public final ForgeConfigSpec.IntValue turtleHatchingWindowEnd;
         public final ForgeConfigSpec.IntValue turtleDaytimeChanceToNotHatch;
+        public final ForgeConfigSpec.BooleanValue turtleCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue turtleCarryBabiesOnly;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
         public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
@@ -135,11 +150,15 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue spawnWeightAxolotls;
         public final ForgeConfigSpec.IntValue minimumAxolotlGroup;
         public final ForgeConfigSpec.IntValue maximumAxolotlGroup;
-        
+        public final ForgeConfigSpec.BooleanValue axolotlCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue axolotlCarryBabiesOnly;
+
         public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
         public final ForgeConfigSpec.BooleanValue spawnGeneticHorses;
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
         public final ForgeConfigSpec.IntValue adultAgeHorse;
+        public final ForgeConfigSpec.BooleanValue horseCanBeCarried;
+        public final ForgeConfigSpec.BooleanValue horseCarryBabiesOnly;
 
         //Multipliers
         public final ForgeConfigSpec.DoubleValue milkMultiplier;
@@ -180,6 +199,9 @@ public class GeneticAnimalsConfig {
                     .define("Genetic animals are immune to all damage unless attacked with an axe by a player", false);
             force16x = builder
                     .define("Force Genetic Animals to use a 16x base texture", false);
+            maxCarryVolume = builder
+                    .comment("Maximum bounding box volume (width*width*height) of an animal that can be picked up and carried")
+                    .defineInRange("Max Carry Volume:", 4.0D, 0.0D, 1000.0D);
             builder.pop();
 
             builder.push("Trading");
@@ -242,6 +264,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of pigs you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumPigGroup = builder
                     .defineInRange("The maximum number of pigs you want to find in a group at spawn, Default is 3", 3, 1, 60);
+            pigCanBeCarried = builder
+                    .define("Allow Pigs to be picked up and carried:", true);
+            pigCarryBabiesOnly = builder
+                    .define("Only baby Pigs can be picked up and carried:", false);
             builder.pop();
 
             builder.push("cow");
@@ -261,6 +287,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of cows you want to find in a group at spawn, Default is 4", 4, 1, 60);
             milkMultiplier = builder
                     .defineInRange("This number multiplies how fast a cow regains milk, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            cowCanBeCarried = builder
+                    .define("Allow Cows to be picked up and carried:", true);
+            cowCarryBabiesOnly = builder
+                    .define("Only baby Cows can be picked up and carried:", false);
             builder.pop();
 
             builder.push("mooshroom");
@@ -309,6 +339,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of llamas you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierLlama = builder
                     .defineInRange("This number multiplies how fast a llama regains its wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            llamaCanBeCarried = builder
+                    .define("Allow Llamas to be picked up and carried:", true);
+            llamaCarryBabiesOnly = builder
+                    .define("Only baby Llamas can be picked up and carried:", false);
             builder.pop();
 
             builder.push("sheep");
@@ -328,6 +362,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of Sheep you want to find in a group at spawn, Default is 4", 4, 1, 60);
             woolMultiplierSheep = builder
                     .defineInRange("This number multiplies how fast a llama regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            sheepCanBeCarried = builder
+                    .define("Allow Sheep to be picked up and carried:", true);
+            sheepCarryBabiesOnly = builder
+                    .define("Only baby Sheep can be picked up and carried:", false);
             builder.pop();
 
             builder.push("chicken");
@@ -363,6 +401,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             eggThrowHatchChance = builder
                     .defineInRange("This number is a percentage chance for thrown eggs to hatch into chicks, Default is 15%", 15, 0, 100);
+            chickenCanBeCarried = builder
+                    .define("Allow Chickens to be picked up and carried:", true);
+            chickenCarryBabiesOnly = builder
+                    .define("Only baby Chickens can be picked up and carried:", false);
             builder.pop();
 
             builder.push("rabbit");
@@ -382,6 +424,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of Rabbit you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierRabbit = builder
                     .defineInRange("This number multiplies how fast a rabbit with wool regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            rabbitCanBeCarried = builder
+                    .define("Allow Rabbits to be picked up and carried:", true);
+            rabbitCarryBabiesOnly = builder
+                    .define("Only baby Rabbits can be picked up and carried:", false);
             builder.pop();
 
             builder.push("turtle");
@@ -406,6 +452,10 @@ public class GeneticAnimalsConfig {
             turtleDaytimeChanceToNotHatch = builder
                     .defineInRange("The chance that eggs won't hatch if their block is ticked, default is 500, use 1 to guarantee they increment hatching", 500, 0, Integer.MAX_VALUE);
 
+            turtleCanBeCarried = builder
+                    .define("Allow Turtles to be picked up and carried:", true);
+            turtleCarryBabiesOnly = builder
+                    .define("Only baby Turtles can be picked up and carried:", false);
             builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
             builder.pop();
 
@@ -418,6 +468,10 @@ public class GeneticAnimalsConfig {
                     .define("Allow vanilla minecraft Horses to spawn/exist:", false);
             spawnGeneticHorses = builder
                     .define("Allow Genetic Horse to continue to spawn/exist:", true);
+            horseCanBeCarried = builder
+                    .define("Allow Horses to be picked up and carried:", true);
+            horseCarryBabiesOnly = builder
+                    .define("Only baby Horses can be picked up and carried:", false);
             builder.pop();
             
             builder.push("axolotl");
@@ -437,6 +491,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
                     .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
+            axolotlCanBeCarried = builder
+                    .define("Allow Axolotls to be picked up and carried:", true);
+            axolotlCarryBabiesOnly = builder
+                    .define("Only baby Axolotls can be picked up and carried:", false);
             builder.pop();
 
             builder.push("passageOfTime");

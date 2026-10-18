@@ -512,15 +512,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         base.addOrReplaceChild("combSingleL",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-                        .addBox(-0.5F, -3.5F, -2.0F, 1, 4, 1, cubeDeformation)
-                        .addBox(-0.5F, -2.5F, -1.0F, 1, 3, 1, cubeDeformation)
+                        .addBox(-0.5F, -2.5F, -3.5F, 1, 1, 1, cubeDeformation)
+                        .addBox(-0.5F, -2.0F, -3.0F, 1, 1.5F, 1, cubeDeformation)
+                        .addBox(-0.5F, -3.5F, -2.0F, 1, 3.5F, 1, cubeDeformation)
+                        .addBox(-0.5F, -2.5F, -1.0F, 1, 2.5F, 1, cubeDeformation)
                         .addBox(-0.5F, -4.0F, 0.0F, 1, 4, 1, cubeDeformation)
                         .addBox(-0.5F, -2.5F, 1.0F, 1, 2, 1, cubeDeformation)
                         .addBox(-0.5F, -3.5F, 2.0F, 1, 3, 1, cubeDeformation)
-                        .addBox(-0.5F, -2.0F, 3.0F, 1, 1, 1, cubeDeformation)
-
-                    .addBox(-0.5F, -2.5F, -3.5F, 1, 1, 1, cubeDeformation)
-                    .addBox(-0.5F, -2.0F, -3.0F, 1, 0.5F, 1, cubeDeformation),
+                        .addBox(-0.5F, -2.0F, 3.0F, 1, 1, 1, cubeDeformation),
                 PartPose.offset(0.0F, 1.0F, 2.5F)
             );
         base.addOrReplaceChild("combSingleXl",

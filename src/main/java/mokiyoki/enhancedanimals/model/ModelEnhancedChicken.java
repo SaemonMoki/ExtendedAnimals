@@ -2001,7 +2001,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theComb.setY(-2.0F);
 
             comb.setRotation(0.0F, 0.0F, 0.0F);
-            comb.setY(0.0F);
+            comb.setPos(0.0F, 0.0F, 0.0F);
 
             if (duplex) {
                 comb.setX(0.0F);
@@ -2038,6 +2038,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         float y = combAngle > 0? -0.5F : 0.5F;
         if (speed==0.0F) {
             comb.setRotation(0.0F, 0.0F, combAngle * 1.8F);
+            comb.setX(combAngle*0.5F);
             comb.setY(combAngle * y);
         } else {
             comb.lerpZRot(combAngle * 1.8F, speed);

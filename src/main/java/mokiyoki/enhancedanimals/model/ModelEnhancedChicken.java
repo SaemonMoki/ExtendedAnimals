@@ -1901,6 +1901,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         map.put("bTail", this.getRotationVector(theTail));
         map.put("bTailPos", this.getPosVector(theTail));
         map.put("boots", this.getPosVector(bootsLeft));
+        map.put("bCombRot", this.getRotationVector(theComb));
         map.put("bCombPos", this.getPosVector(theComb));
         map.put("comb", this.getRotationVector(comb));
         map.put("combPos", this.getPosVector(comb));
@@ -1982,6 +1983,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theTail.setRotation(map.get("bTail"));
             theTail.setPos(map.get("bTailPos"));
             bootsLeft.setY(map.get("boots").y());
+            theComb.setRotation(map.get("bCombRot"));
             theComb.setPos(map.get("bCombPos"));
             comb.setRotation(map.get("comb"));
             comb.setPos(map.get("combPos"));

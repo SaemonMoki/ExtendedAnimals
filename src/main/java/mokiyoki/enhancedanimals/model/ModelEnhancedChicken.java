@@ -1997,9 +1997,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed, float combFlop, boolean collar) {
-        if (combed) {
-            theComb.setY(-2.0F);
+        theComb.setX(0.0F);
+        theComb.setY(-2.0F);
+        theComb.setXRot(0.0F);
+        theComb.setYRot(0.0F);
+        theComb.setZRot(0.0F);
 
+        if (combed) {
             comb.setRotation(0.0F, 0.0F, 0.0F);
             comb.setPos(0.0F, 0.0F, 0.0F);
 
@@ -2021,7 +2025,28 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
             } else {
                 if (collar) {
-                    naturalCombFlop(combFlop, 0.0F);
+                    combFlop = 1.0F;
+                    float y = combFlop > 0? -0.5F : 0.5F;
+                    switch (combType) {
+                        case ROSE_ONE,WALNUT,PEA -> {
+                            combFlop *= 0.5F;
+                            comb.setRotation(0.0F, 0.0F, combFlop * 1.8F);
+                            comb.setX(combFlop * 0.5F);
+                            comb.setY(combFlop * y);
+                        }
+                        case ROSE_TWO -> {
+                            combFlop *= 0.5F;
+                            theComb.setZRot(combFlop * 1.8F * 0.5F);
+                            comb.setRotation(0.0F, 0.0F, combFlop * 1.8F * 0.5F);
+                            comb.setY(-y*0.1F);
+                            theComb.setX(combFlop);
+                        }
+                        default -> {
+                            comb.setRotation(0.0F, 0.0F, combFlop * 1.8F);
+                            comb.setX(combFlop * 0.5F);
+                            comb.setY(combFlop * y);
+                        }
+                    }
                 }
             }
 
@@ -2031,18 +2056,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
         } else {
             theCrest.setXRot(0.0F);
-        }
-    }
-
-    private static void naturalCombFlop(float combAngle, float speed) {
-        float y = combAngle > 0? -0.5F : 0.5F;
-        if (speed==0.0F) {
-            comb.setRotation(0.0F, 0.0F, combAngle * 1.8F);
-            comb.setX(combAngle*0.5F);
-            comb.setY(combAngle * y);
-        } else {
-            comb.lerpZRot(combAngle * 1.8F, speed);
-            comb.lerpY(combAngle * y, speed);
         }
     }
 

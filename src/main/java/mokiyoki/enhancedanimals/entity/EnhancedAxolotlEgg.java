@@ -269,8 +269,8 @@ public class EnhancedAxolotlEgg extends Entity {
         axolotl.setSireName(this.getSire());
         axolotl.setDamName(this.getDam());
         axolotl.initilizeAnimalSize();
-        axolotl.setAge(-axolotl.getAdultAge());
-        axolotl.setBirthTime(String.valueOf(level.getGameTime()));
+        axolotl.setAge(EnhancedAnimalAbstract.clampToInt(-axolotl.getAdultAge()));
+        axolotl.setBirthTime(level.getGameTime());
         axolotl.initilizeAnimalSize();
         axolotl.moveTo(this.xo,this.yo, this.zo, this.xRotO, this.yRotO);
         if (this.hasCustomName()) {

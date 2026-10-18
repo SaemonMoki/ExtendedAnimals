@@ -162,16 +162,16 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
@@ -896,7 +896,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
+        SpawnGroupData data = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
+        initialiseHerdIfNeeded();
+        return data;
     }
 
     @Override
@@ -1010,6 +1012,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(0, new FloatGoal(this));
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
+            registerHerdGoals(speed);
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Items.CARROT_ON_A_STICK));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, Items.AIR));
 //            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, this.parent,speed*1.25D));
@@ -1022,10 +1025,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.grazingGoal = new GrazingGoal(this, speed);
             this.goalSelector.addGoal(8, grazingGoal);
             this.goalSelector.addGoal(9, this.wanderEatingGoal);
-            this.goalSelector.addGoal(10, new EnhancedWanderingGoal(this, speed));
-            this.goalSelector.addGoal(11, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-            this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
-            this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
+            this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+            this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
+            this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
         }
         aiConfigured = true;
     }

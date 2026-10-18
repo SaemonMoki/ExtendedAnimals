@@ -156,6 +156,11 @@ public class GeneticAnimalsConfig {
         public final ForgeConfigSpec.IntValue passageOfTimeChickenStages;
         public final ForgeConfigSpec.BooleanValue passageOfTimeChickenNoHatch;
 
+        //Herding
+        public final ForgeConfigSpec.BooleanValue herdMovementEnabled;
+        public final ForgeConfigSpec.IntValue herdMoveDurationTicks;
+        public final ForgeConfigSpec.BooleanValue herdLeashFollowEnabled;
+
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -448,6 +453,17 @@ public class GeneticAnimalsConfig {
                     .defineInRange("How many 'stages' can pass for a chicken when it is loaded in, each of these is one stage: Make a nest, lay in the nest, hatch the nest, Default is 2 stages", 2, 1, 3);
             passageOfTimeChickenNoHatch = builder
                     .define("Disable hatching from passage of time regards of stages setting and time passed", false);
+            builder.pop();
+
+            builder.push("herd");
+            herdMovementEnabled = builder
+                    .comment("If true, herds of animals will periodically move around together as a group. This does not affect animals being led on a lead, herd-mates will still follow a leashed leader regardless of this setting")
+                    .define("Enable herd group movement", true);
+            herdMoveDurationTicks = builder
+                    .defineInRange("How many ticks a herd moves together for before stopping, Default is 250", 250, 1, Integer.MAX_VALUE);
+            herdLeashFollowEnabled = builder
+                    .comment("If true, herd-mates will follow a herd member that is being led on a lead by a player, regardless of the herdMovementEnabled setting")
+                    .define("Enable herd following a leashed member", true);
             builder.pop();
         }
     }

@@ -61,7 +61,6 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -199,7 +198,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     public Boolean isAnimalSleeping() {
         if (!this.isInWaterRainOrBubble() || this.hasEgg()) {
             return false;
-        } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
+        } else if (this.isLedByEntity()) {
             return false;
         } else {
             this.sleeping = this.entityData.get(SLEEPING);
@@ -223,9 +222,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get().longValue();
         return this.adultAge;
     }
 

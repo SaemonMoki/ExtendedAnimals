@@ -1,9 +1,7 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
-import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
@@ -50,19 +48,19 @@ public class SeekShelterGoal extends FleeSunGoal {
         }
     }
 
-    private void getData(PathfinderMob animal) {
+    private void getData(EnhancedAnimalAbstract animal) {
         Biome biome = this.world.getBiome(animal.blockPosition()).value();
-        this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashFenceKnotEntity) && animal.getLeashHolder() != null;
+        this.isLeashedToEntity = animal.isLedByEntity();
         if (!this.isLeashedToEntity) {
             this.isBeingRainedOn = animal.isInWaterOrRain() && !animal.isInWater();
             if (this.world.isDay() && !this.isBeingRainedOn) {
-                this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 6000;
+                this.isHungry = animal.getHunger() > 6000;
                 // TODO 18: Biome.getTemperature() is now private and deprecated
                 float temperature = 0.3f;
                 //float temperature = this.world.getBiome(animal.blockPosition()).getTemperature(animal.blockPosition());
                 this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
             } else {
-                this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 12000;
+                this.isHungry = animal.getHunger() > 12000;
             }
         }
     }

@@ -9,7 +9,6 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 
 import java.util.Random;
 
@@ -31,7 +30,7 @@ public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
         if ((isBeingRainedOn(geneticAnimal) || isHot(serverLevel, geneticAnimal))) {
             if (geneticAnimal.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET)) {
                 return false;
-            } else if (isHungry(serverLevel, geneticAnimal) || geneticAnimal.isOnFire() || !serverLevel.canSeeSky(geneticAnimal.blockPosition()) || isLeashedToEntity(geneticAnimal)) {
+            } else if (isHungry(serverLevel, geneticAnimal) || geneticAnimal.isOnFire() || !serverLevel.canSeeSky(geneticAnimal.blockPosition()) || geneticAnimal.isLedByEntity()) {
                 return false;
             }
 
@@ -76,9 +75,6 @@ public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
         }
     }
 
-    private boolean isLeashedToEntity(EnhancedAnimalAbstract geneticAnimal) {
-        return !(geneticAnimal.getLeashHolder() instanceof LeashFenceKnotEntity) && geneticAnimal.getLeashHolder() != null;
-    }
 
     private boolean isBeingRainedOn(EnhancedAnimalAbstract geneticAnimal) {
         return geneticAnimal.isInWaterOrRain() && !geneticAnimal.isInWater();

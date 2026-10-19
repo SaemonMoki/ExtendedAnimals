@@ -397,6 +397,7 @@ public class CowTexture {
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
 
                 // Random patch count, so they all share one key field
+                //TODO move this to the new variationKey methods
                 int t = ThreadLocalRandom.current().nextInt(1, 5);
                 for (int i = 0; i < t; i++) {
                     int rand = ThreadLocalRandom.current().nextInt(0, 13);

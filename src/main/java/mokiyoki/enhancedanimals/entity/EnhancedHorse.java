@@ -430,7 +430,6 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
                 int letter = 0;
                 int sclera = 0;
                 boolean silver = false;
-                char[] uuidArry = getStringUUID().toCharArray();
 
                 if ((genesForText[18] == 20 || genesForText[18] == 28 || genesForText[18] == 29) && (genesForText[19] == 20 || genesForText[19] == 28 || genesForText[19] == 29)) {
 
@@ -466,63 +465,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
                     //TODO liver
 
-                    if (Character.isDigit(uuidArry[16])) {
-                        number = uuidArry[16] - 48;
-                        if (number >= 8) {
-                            number = number - 8;
-                        }
-                    } else {
-                        char test = uuidArry[16];
-                        switch (test) {
-                            case 'a':
-                                number = 3;
-                                break;
-                            case 'b':
-                                number = 4;
-                                break;
-                            case 'c':
-                                number = 5;
-                                break;
-                            case 'd':
-                                number = 6;
-                                break;
-                            case 'e':
-                                number = 7;
-                                break;
-                            case 'f':
-                                number = 8;
-                                break;
-                        }
-                    }
 
-                    if (Character.isDigit(uuidArry[17])) {
-                        letter = uuidArry[17] - 48;
-                        if (letter >= 8) {
-                            letter = letter - 8;
-                        }
-                    } else {
-                        char test = uuidArry[17];
-                        switch (test) {
-                            case 'a':
-                                letter = 3;
-                                break;
-                            case 'b':
-                                letter = 4;
-                                break;
-                            case 'c':
-                                letter = 5;
-                                break;
-                            case 'd':
-                                letter = 6;
-                                break;
-                            case 'e':
-                                letter = 7;
-                                break;
-                            case 'f':
-                                letter = 8;
-                                break;
-                        }
-                    }
                 }
 
                 if (genesForText[26] == 2 && genesForText[27] == 2) {

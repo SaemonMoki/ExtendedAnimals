@@ -7,6 +7,8 @@ import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
+import mokiyoki.enhancedanimals.entity.util.Variation;
+import mokiyoki.enhancedanimals.entity.util.VariationKeys;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -102,6 +104,15 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     private static final EntityDataAccessor<Integer> MILK_AMOUNT = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAS_COLLAR = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
+    //0 means no stored seed yet, so one is derived from the UUID
+    private static final EntityDataAccessor<Integer> VARIATION_SEED = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.INT);
+    //empty unless the animal predates variation seeds, then the uuid its old patterns were read from
+    private static final EntityDataAccessor<String> LEGACY_VARIATION_UUID = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
+    //SEX_UNSET, SEX_FEMALE or SEX_MALE
+    private static final EntityDataAccessor<Byte> SEX = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BYTE);
+    private static final byte SEX_UNSET = 0;
+    private static final byte SEX_FEMALE = 1;
+    private static final byte SEX_MALE = 2;
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -126,8 +137,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected String mateName = "???";
     protected String sireName = "???";
     protected String damName = "???";
-    protected Boolean isFemale;
-
     protected Integer adultAge = null;
 
     protected Boolean unbreedable = false;
@@ -230,6 +239,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
         this.entityData.define(HAS_COLLAR, false);
         this.entityData.define(RESET_TEXTURE, false);
+        this.entityData.define(VARIATION_SEED, 0);
+        this.entityData.define(LEGACY_VARIATION_UUID, "");
+        this.entityData.define(SEX, SEX_UNSET);
     }
 
     @Override
@@ -677,14 +689,94 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     */
 
     public boolean getOrSetIsFemale() {
-        if (this.isFemale == null) {
-            return this.isFemale = getStringUUID().toCharArray()[0] - 48 < 8;
+        byte sex = this.entityData.get(SEX);
+        if (sex == SEX_UNSET) {
+            boolean isFemale = getVariation().hex(VariationKeys.SEX) < 8;
+            if (!this.level.isClientSide) {
+                setIsFemale(isFemale);
+            }
+            return isFemale;
         }
-        return this.isFemale;
+        return sex == SEX_FEMALE;
+    }
+
+    public void setIsFemale(boolean isFemale) {
+        this.entityData.set(SEX, isFemale ? SEX_FEMALE : SEX_MALE);
     }
 
     protected void setIsFemale(CompoundTag compound) {
-        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getStringUUID().toCharArray()[0] - 48 < 8;
+        if (compound.contains("IsFemale")) {
+            setIsFemale(compound.getBoolean("IsFemale"));
+        } else {
+            //saves from before sex was stored used the first uuid character
+            setIsFemale(getStringUUID().toCharArray()[0] - 48 < 8);
+        }
+    }
+
+    /**
+     * The "sex" variation value, 0-7 for females and 8-15 for males; for features that were
+     * tied to the old sex uuid character. Agrees with {@link #getOrSetIsFemale()}, except on
+     * legacy animals where it is the old uuid character as it always was.
+     */
+    public int getSexVariation() {
+        Variation variation = getVariation();
+        if (variation.isLegacy()) {
+            //exactly the old character, even where it disagrees with the stored sex
+            return variation.hex(VariationKeys.SEX);
+        }
+        int value = variation.get(VariationKeys.SEX, 8);
+        return getOrSetIsFemale() ? value : value + 8;
+    }
+
+    /*
+    Variation
+    */
+
+    /** Per-animal randomness for patterns and shapes; see {@link Variation}. */
+    public Variation getVariation() {
+        return new Variation(getVariationSeed(), this.entityData.get(LEGACY_VARIATION_UUID));
+    }
+
+    public int getVariationSeed() {
+        int seed = this.entityData.get(VARIATION_SEED);
+        return seed != 0 ? seed : Variation.seedFrom(this.getUUID());
+    }
+
+    public void setVariationSeed(int seed) {
+        this.entityData.set(VARIATION_SEED, seed);
+    }
+
+    /** Makes this animal look the same as {@code other}, e.g. when a mooshroom is sheared into a cow. */
+    public void copyVariationFrom(EnhancedAnimalAbstract other) {
+        this.setVariationSeed(other.getVariationSeed());
+        this.entityData.set(LEGACY_VARIATION_UUID, other.entityData.get(LEGACY_VARIATION_UUID));
+        this.setIsFemale(other.getOrSetIsFemale());
+    }
+
+    protected void readVariation(CompoundTag compound) {
+        if (compound.contains("VariationSeed")) {
+            this.setVariationSeed(compound.getInt("VariationSeed"));
+            this.entityData.set(LEGACY_VARIATION_UUID, compound.getString("LegacyVariationUUID"));
+        } else if (compound.contains("Genetics") || compound.contains("Genes")) {
+            //saved before variation seeds were added: old features keep reading the old uuid
+            this.entityData.set(LEGACY_VARIATION_UUID, getLegacyVariationUUID(compound));
+            this.setVariationSeed(Variation.seedFrom(this.getUUID()));
+        }
+        //otherwise this is a new animal built from a tag (/summon, spawners), so it keeps the
+        //seed it already takes from its uuid
+    }
+
+    protected void writeVariation(CompoundTag compound) {
+        compound.putInt("VariationSeed", this.getVariationSeed());
+        String legacyUUID = this.entityData.get(LEGACY_VARIATION_UUID);
+        if (!legacyUUID.isEmpty()) {
+            compound.putString("LegacyVariationUUID", legacyUUID);
+        }
+    }
+
+    /** The uuid string this animal's patterns were read from before variation seeds were saved. */
+    protected String getLegacyVariationUUID(CompoundTag compound) {
+        return this.getStringUUID();
     }
 
     /*
@@ -1119,6 +1211,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
+        this.writeVariation(compound);
+
         if (this.unloadTime != null) {
             compound.putLong("UnloadTime", this.unloadTime);
         }
@@ -1209,6 +1303,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             geneFixer();
         }
 
+        this.readVariation(compound);
         this.setIsFemale(compound);
 
         setSharedGenes(this.genetics);

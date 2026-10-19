@@ -410,6 +410,7 @@ public class CowTexture {
 
                 //the patch count is generated, so the patches share one slot rather than
                 //writing one field each
+                //TODO move this to the new variationKey methods
                 int t = ThreadLocalRandom.current().nextInt(1, 5);
                 for (int i = 0; i < t; i++) {
                     int rand = ThreadLocalRandom.current().nextInt(0, 13);

@@ -17,6 +17,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
@@ -814,9 +815,10 @@ public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockInteractEvent(PlayerInteractEvent.RightClickBlock event) {
-        Item item = event.getItemStack().getItem();
+        ItemStack itemStack = event.getItemStack();
+        Item item = itemStack.getItem();
         Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
-        if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
+        if (block.defaultBlockState().is(ModTags.Blocks.HAY_BLOCKS) && (itemStack.is(ModTags.Items.HAY_CUTTING_TOOLS))) {
             Direction.Axis axis = event.getWorld().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
             event.getWorld().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
@@ -836,7 +838,7 @@ public class EventSubscriber {
             if (event.getEntity() instanceof EnhancedAnimalAbstract) {
                 Entity damageSource = event.getSource().getDirectEntity();
                 if (damageSource instanceof Player) {
-                    if (!(((Player) damageSource).getMainHandItem().getItem() instanceof AxeItem)) {
+                    if (!(((Player) damageSource).getMainHandItem().is(ModTags.Items.BUTCHER_TOOLS))) {
                         event.setCanceled(true);
                     }
                 } else {

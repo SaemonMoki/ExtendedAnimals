@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:rawchicken_darkbig",
+    "eanimod:rawchicken_dark",
+    "eanimod:rawchicken_darksmall",
+    "minecraft:chicken",
+    "eanimod:rawchicken_pale",
+    "eanimod:rawchicken_palesmall"
+  ]
+}

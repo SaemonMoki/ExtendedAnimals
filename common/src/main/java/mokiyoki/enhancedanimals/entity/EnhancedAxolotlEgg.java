@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import net.minecraft.core.component.DataComponents;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlEggModelData;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -198,13 +199,12 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     public static boolean isEggLayableBlock(Boolean inWater, BlockState blockState) {
-        return !blockState.getBlock().equals(Blocks.BIG_DRIPLEAF_STEM) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER);
+        return !blockState.is(ModTags.Blocks.AXOLOTL_NESTABLE_UNDER) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER); //TODO why is the big drip leaf like this
     }
 
     public static boolean isEggAttachableBlock(Boolean inWater, BlockState blockState) {
         if (inWater) {
-            Block block = blockState.getBlock();
-            return Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.BIG_DRIPLEAF_STEM.equals(block);
+            return blockState.is(ModTags.Blocks.AXOLOTL_NESTABLE);
         }
         return false;
     }

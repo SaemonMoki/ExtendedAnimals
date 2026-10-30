@@ -66,7 +66,7 @@ public abstract class AbstractGeneticsInitialiser {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.DESERT.location()).get(), false);
         } else if (biome.contains("tundra") || biome.contains("snow")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SNOWY_PLAINS.location()).get(), false);
-        } else if (biome.contains("mountains")) {
+        } else if (biome.contains("mountain") || biome.contains("wind")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.WINDSWEPT_HILLS.location()).get(), false);
         } else if (biome.contains("sunflower")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SUNFLOWER_PLAINS.location()).get(), false);

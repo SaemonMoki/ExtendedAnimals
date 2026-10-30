@@ -72,7 +72,7 @@ public abstract class AbstractGeneticsInitialiser {
             return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.DESERT).get(), pos, false);
         } else if (biome.contains("tundra") || biome.contains("snow")) {
             return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SNOWY_PLAINS).get(), pos, false);
-        } else if (biome.contains("mountains")) {
+        } else if (biome.contains("mountain") || biome.contains("wind")) {
             return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.WINDSWEPT_HILLS).get(), pos, false);
         } else if (biome.contains("sunflower")) {
             return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SUNFLOWER_PLAINS).get(), pos, false);

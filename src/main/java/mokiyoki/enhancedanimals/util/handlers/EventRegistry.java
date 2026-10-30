@@ -85,7 +85,7 @@ public class EventRegistry {
     public static final MenuType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeMenuType.create(EggCartonContainer::new);
     public static final MenuType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeMenuType.create((windowId, inv, data) -> {
         Entity entity = inv.player.level().getEntity(data.readInt());
-        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readUtf());
+        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data);
         if(entity instanceof EnhancedAnimalAbstract) {
             return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimalAbstract) entity, animalInfo);
         } else {

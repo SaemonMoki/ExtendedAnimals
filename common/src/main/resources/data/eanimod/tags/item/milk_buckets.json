@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:milk_bucket",
+    "eanimod:fivesixths_milk_bucket",
+    "eanimod:twothirds_milk_bucket",
+    "eanimod:half_milk_bucket",
+    "eanimod:onethird_milk_bucket",
+    "eanimod:onesixth_milk_bucket"
+  ]
+}

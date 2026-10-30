@@ -134,6 +134,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             wildType = 4;
         }
 
+        boolean hasPowderedSnow = wildType == 3 && Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.MOUNTAIN);
+
         if (isFlat) {
             int randomizeWT = ThreadLocalRandom.current().nextInt(10);
             if (randomizeWT <= 4) {
@@ -659,24 +661,27 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
             autosomalGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
-            autosomalGenes[58] = 3;
+            autosomalGenes[58] = hasPowderedSnow ? 1 : 3;
         }
         if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
             autosomalGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
-            autosomalGenes[59] = 3;
+            autosomalGenes[59] = hasPowderedSnow ? 1 : 3;
         }
+
 
         //Foot feather enhancer [ enhancer, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
             autosomalGenes[60] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             autosomalGenes[60] = 2;
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
-            autosomalGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
+            if (wildType == 3 && Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.MOUNTAIN)) {
+                autosomalGenes[61] = 1;
+            } else {
+                autosomalGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            }
         } else {
             autosomalGenes[61] = 2;
         }

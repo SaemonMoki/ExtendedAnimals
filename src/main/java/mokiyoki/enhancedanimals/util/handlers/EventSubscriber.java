@@ -23,6 +23,7 @@ import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.server.TickTask;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
@@ -31,13 +32,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HayBlock;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -63,13 +57,10 @@ import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -165,60 +156,65 @@ public class EventSubscriber {
             }
         }
 
-        if (entity instanceof Villager) {
-            Set<String> tags = entity.getTags();
-            if (!tags.contains("eanimodTradeless")) {
-                if (!entity.getTags().contains("eanimodTrader")) {
-                    entity.addTag("eanimodTrader");
+        if (entity instanceof Mob mob) {
+            if (entity instanceof Villager) {
+                Set<String> tags = entity.getTags();
+                if (!tags.contains("eanimodTradeless")) {
+                    if (!entity.getTags().contains("eanimodTrader")) {
+                        entity.addTag("eanimodTrader");
+                    }
                 }
-            }
-        } else if (entity instanceof Wolf) {
-            final Predicate<LivingEntity> TARGETS = (targetEntity) -> {
-                return targetEntity instanceof EnhancedSheep || targetEntity instanceof EnhancedRabbit || ((targetEntity instanceof EnhancedPig || targetEntity instanceof EnhancedCow) && targetEntity.isBaby()) ;
-            };
-            ((Wolf) entity).targetSelector.addGoal(3, new AvoidEntityGoal<>((Wolf) entity, EnhancedLlama.class, 24.0F, 1.5D, 1.5D));
-            ((Wolf) entity).targetSelector.addGoal(5, new NonTameRandomTargetGoal<>((Wolf) entity, Animal.class, false, TARGETS));
-            ((Wolf) entity).targetSelector.addGoal(6, new NonTameRandomTargetGoal<>((Wolf) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Fox) {
-            int priority = ((Fox) entity).getFoxType() == Fox.Type.RED ? 4 : 6;
-            ((Fox) entity).targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, Animal.class, 10, false, false, (targetEntity) -> {
-                return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
-            }));
-            ((Fox) entity).targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Cat) {
-            ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
-            ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, Animal.class, false, (targetEntity) -> {
-                return targetEntity.isBaby() && (targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit);
-            }));
-        } else if (entity instanceof Ocelot) {
-            ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-            ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedChicken.class, false));
-        } else if (entity instanceof Zombie) {
-            if (!(entity instanceof ZombifiedPiglin)) {
-                ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-                if (entity instanceof Drowned) {
-                    ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), EnhancedAxolotl.class, true, false));
+            } else if (entity.getType().is(ModTags.EntityTypes.HUNTING_WOLVES)) {
+                final Predicate<LivingEntity> TARGETS = (targetEntity) -> {
+                    return targetEntity.getType().is(ModTags.EntityTypes.WOLF_HUNTABLE) || (targetEntity.getType().is(ModTags.EntityTypes.WOLF_HUNTABLE_IF_BABY) && targetEntity.isBaby());
+                };
+                mob.targetSelector.addGoal(3, new AvoidEntityGoal<>((Wolf) entity, EnhancedLlama.class, 24.0F, 1.5D, 1.5D));
+                mob.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>((Wolf) entity, Animal.class, false, TARGETS));
+                mob.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>((Wolf) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity.getType().is(ModTags.EntityTypes.HUNTING_FOXES)) {
+                int priority = 5;
+                if (entity instanceof Fox) {
+                    priority = ((Fox) entity).getFoxType() == Fox.Type.RED ? 4 : 6;
                 }
-            }
-            ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
-        } else if (entity instanceof AbstractSkeleton) {
-            ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Guardian) {
-            ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
-                return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
-            }));
-        } else if (entity instanceof EnhancedAnimalAbstract) {
-            if (((EnhancedAnimalAbstract) entity).isLeashed()) {
-                Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
-                if (leashHolder instanceof WanderingTrader) {
-                    ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
+                mob.targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, Animal.class, 10, false, false, (targetEntity) -> {
+                    return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
+                }));
+                mob.targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity instanceof Cat) {
+                ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
+                ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, Animal.class, false, (targetEntity) -> {
+                    return targetEntity.isBaby() && (targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit);
+                }));
+            } else if (entity instanceof Ocelot) {
+                ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedChicken.class, false));
+            } else if (entity instanceof Zombie) {
+                if (!(entity instanceof ZombifiedPiglin)) {
+                    ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                    if (entity instanceof Drowned) {
+                        ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), EnhancedAxolotl.class, true, false));
+                    }
                 }
-            }
-            if (entity instanceof EnhancedChicken) {
-                if (((EnhancedChicken) entity).isChickenJockey()) {
-                    ((EnhancedChicken) entity).scheduleDespawn(4000);
+                ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
+            } else if (entity instanceof AbstractSkeleton) {
+                ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity instanceof Guardian) {
+                ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
+                    return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr(entity) > 9.0D;
+                }));
+            } else if (entity instanceof EnhancedAnimalAbstract) {
+                if (((EnhancedAnimalAbstract) entity).isLeashed()) {
+                    Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
+                    if (leashHolder instanceof WanderingTrader) {
+                        ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay() - 1);
+                    }
                 }
-                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
+                if (entity instanceof EnhancedChicken) {
+                    if (((EnhancedChicken) entity).isChickenJockey()) {
+                        ((EnhancedChicken) entity).scheduleDespawn(4000);
+                    }
+                    ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
+                }
             }
         }
     }

@@ -264,6 +264,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return super.mobInteract(entityPlayer, hand);
     }
 
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot equipmentSlot) {
+        if (equipmentSlot == EquipmentSlot.FEET) {
+            int[] gene = this.genetics.getAutosomalGenes(); //TODO make sure this is dedicated server safe
+            if (gene[108] == 1 || gene[109] == 1) {
+                if (gene[58] < 3 || gene[59] < 3) {
+                    if (gene[60] == 1 || gene[61] == 1 || (gene[58] < 3 && gene[59] < 3)) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    } else if (gene[58] == 2 || gene[59] == 2) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    }
+                }
+            }
+        }
+        return super.getItemBySlot(equipmentSlot);
+    }
+
     public void setSharedGenesFromEntityEgg(String genes) {
         this.entityData.set(SHARED_GENES, genes);
     }

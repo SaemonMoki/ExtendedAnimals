@@ -49,4 +49,36 @@ public class ModTags {
         }
     }
 
+    public static class EntityTypes {
+        public static final TagKey<EntityType<?>> GENETIC_ANIMALS = tag("genetic_animals");
+        public static final TagKey<EntityType<?>> AXOLOTLS = forgeTag("axolotls");
+        public static final TagKey<EntityType<?>> CHICKENS = forgeTag("chickens");
+        public static final TagKey<EntityType<?>> COWS = forgeTag("cows");
+        public static final TagKey<EntityType<?>> LLAMAS = forgeTag("llamas");
+        public static final TagKey<EntityType<?>> MOOBLOOMS = forgeTag("mooblooms");
+        public static final TagKey<EntityType<?>> MOOSHROOMS = forgeTag("mooshrooms");
+        public static final TagKey<EntityType<?>> PIGS = forgeTag("pigs");
+        public static final TagKey<EntityType<?>> RABBITS = forgeTag("rabbits");
+        public static final TagKey<EntityType<?>> SHEEP = forgeTag("sheep");
+        public static final TagKey<EntityType<?>> HUNTING_WOLVES = tag("hunting_wolves");
+        public static final TagKey<EntityType<?>> WOLF_HUNTABLE = tag("wolf_huntable");
+        public static final TagKey<EntityType<?>> WOLF_HUNTABLE_IF_BABY = tag("wolf_huntable_if_baby");
+        public static final TagKey<EntityType<?>> WOLF_HUNTABLE_IF_BABY_ON_LAND = tag("wolf_huntable_if_baby_on_land");
+        public static final TagKey<EntityType<?>> WOLF_REPELLING = tag("wolf_repelling");
+        public static final TagKey<EntityType<?>> HUNTING_FOXES = tag("hunting_foxes");
+        public static final TagKey<EntityType<?>> FOX_HUNTABLE = tag("fox_huntable");
+        public static final TagKey<EntityType<?>> FOX_HUNTABLE_IF_BABY = tag("fox_huntable_if_baby");
+        public static final TagKey<EntityType<?>> CAT_HUNTABLE = tag("cat_huntable");
+        public static final TagKey<EntityType<?>> CAT_HUNTABLE_IF_BABY = tag("cat_huntable_if_baby");
+        public static final TagKey<EntityType<?>> UNDEAD_HUNTABLE = tag("undead_huntable");
+        public static final TagKey<EntityType<?>> UNDEAD_HUNTABLE_IF_BABY = tag("undead_huntable_if_baby");
+
+        private static TagKey<EntityType<?>> tag(String name) {
+            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(Reference.MODID, name));
+        }
+        private static TagKey<EntityType<?>> forgeTag(String name) {
+            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation("forge", name));
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
@@ -833,7 +834,7 @@ public class EventSubscriber {
     public void onRightClickBlock(Player player, Level level, BlockPos pos, ItemStack stack) {
         Item item = stack.getItem();
         Block block = level.getBlockState(pos).getBlock();
-        if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
+        if (block.defaultBlockState().is(ModTags.Blocks.HAY_BLOCKS) && (stack.is(ModTags.Items.HAY_CUTTING_TOOLS))) {
             Direction.Axis axis = level.getBlockState(pos).getValue(BlockStateProperties.AXIS);
             level.setBlock(pos, ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
@@ -852,7 +853,7 @@ public class EventSubscriber {
             if (entity instanceof EnhancedAnimalAbstract) {
                 Entity damageSource = source.getDirectEntity();
                 if (damageSource instanceof Player) {
-                    if (!(((Player) damageSource).getMainHandItem().getItem() instanceof AxeItem)) {
+                    if (!(((Player) damageSource).getMainHandItem().is(ModTags.Items.BUTCHER_TOOLS))) {
                         cancelled = true;
                     }
                 } else {

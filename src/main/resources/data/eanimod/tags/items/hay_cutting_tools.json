@@ -2,7 +2,7 @@
   "replace": true,
   "values": [
     "#forge:axes",
-    "#eanimod:swords",
+    "#forge:swords",
     "#forge:shears"
   ]
 }

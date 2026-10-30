@@ -75,21 +75,23 @@ public class ChickenPhenotype implements Phenotype {
             }
 
             //Foot Feather Type
-            if (gene[60] == 1 || gene[61] == 1) {
-                if (gene[58] == 2 && gene[59] == 2) {
-                    this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
-                } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                    this.footFeatherType = FootFeathers.TOEFEATHERS;
-                } else if (gene[58] == 1 || gene[59] == 1) {
-                    this.footFeatherType = FootFeathers.FOOTFEATHERS;
-                }
-            } else {
-                if (gene[58] == 2 && gene[59] == 2) {
-                    this.footFeatherType = FootFeathers.TOEFEATHERS;
-                } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                    this.footFeatherType = FootFeathers.FOOTFEATHERS;
-                } else if (gene[58] == 1 || gene[59] == 1) {
-                    this.footFeatherType = FootFeathers.LEGFEATHERS;
+            if (gene[58] < 3 || gene[59] < 3) {
+                if (gene[60] == 1 || gene[61] == 1) {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS; // 4
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS; // 3
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS; // 2
+                    }
+                } else {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS; // 3
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS; // 2
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.LEGFEATHERS; // 1
+                    }
                 }
             }
         }

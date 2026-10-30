@@ -1613,7 +1613,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                     }
                 }, buf -> {
                     buf.writeInt(enhancedAnimal.getId());
-                    buf.writeUtf(animalInfo.serialiseToString());
+                    animalInfo.write(buf);
                 });
             }
         }

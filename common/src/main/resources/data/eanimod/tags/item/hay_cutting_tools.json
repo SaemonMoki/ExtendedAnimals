@@ -1,8 +1,8 @@
 {
   "replace": true,
   "values": [
-    "#forge:axes",
-    "#forge:swords",
+    "#minecraft:axes",
+    "#minecraft:swords",
     "#forge:shears"
   ]
 }

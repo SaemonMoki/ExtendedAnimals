@@ -1,5 +1,9 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.entity.util.Variation;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.RABBIT_LOP;
+
 public class RabbitPhenotype implements Phenotype {
     public float lopL = 0.0F;
     public float lopR;
@@ -8,7 +12,7 @@ public class RabbitPhenotype implements Phenotype {
 
     public LionsMane lionsMane = LionsMane.NONE;
 
-    public RabbitPhenotype(int[] gene, char uuid) {
+    public RabbitPhenotype(int[] gene, Variation variation) {
 
         if (gene[36] == 3 && gene[37] == 3) {
             this.lopL = 0.25F;
@@ -35,7 +39,7 @@ public class RabbitPhenotype implements Phenotype {
             this.lopL = 1.0F;
         }
 
-        this.lop = getLop(this.lopL, uuid);
+        this.lop = getLop(this.lopL, variation.hex(RABBIT_LOP));
 
         this.lopR = this.lop[1] ? this.lopL : this.lopL*0.75F;
         this.lopL = this.lop[0] ? this.lopL : this.lopL*0.75F;
@@ -47,24 +51,17 @@ public class RabbitPhenotype implements Phenotype {
         }
     }
 
-    private boolean[] getLop(float val, char uuid) {
+    private boolean[] getLop(float val, int lop) {
         if (val > 0.5F) {
             if (val >= 0.75F) {
                 return new boolean[] {true, true};
             } else {
-                switch (uuid) {
-                    case '0', '1', '2', '3', '4' -> {
-                        return new boolean[] {true, false};
-                    }
-                    case  '5', '6', '7', '8', '9' -> {
-                        return new boolean[] {false, true};
-                    }
-                    case 'a', 'b', 'c', 'd', 'e', 'f' -> {
-                        return new boolean[] {true, true};
-                    }
-                    default -> {
-                        return new boolean[] {false, false};
-                    }
+                if (lop < 5) {
+                    return new boolean[] {true, false};
+                } else if (lop < 10) {
+                    return new boolean[] {false, true};
+                } else {
+                    return new boolean[] {true, true};
                 }
             }
         }

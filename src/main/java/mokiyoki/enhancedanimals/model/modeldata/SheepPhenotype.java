@@ -1,5 +1,10 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.entity.util.Variation;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.SHEEP_HORNS;
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.SHEEP_POLY_HORNS;
+
 public class SheepPhenotype implements Phenotype {
     public int faceWool;
     public int tailLength = 4;
@@ -14,7 +19,7 @@ public class SheepPhenotype implements Phenotype {
     public float[] hornGeneticsZ;
 
 
-    public SheepPhenotype(int[] gene, boolean isFemale, char[] uuid) {
+    public SheepPhenotype(int[] gene, boolean isFemale, Variation variation) {
         faceWool = 0;
         if (gene[42] == 1 || gene[43] == 1) {
             if (gene[40] == 1) {
@@ -45,7 +50,8 @@ public class SheepPhenotype implements Phenotype {
             this.hornType = isFemale ? HornType.POLLED : HornType.HORNED;
         }
 
-        this.polyHorns = (gene[36] == 1 || gene[37] == 1) && (isFemale ? uuid[2] - 48 <= 3 : Character.isLetter(uuid[2]) || uuid[2] - 48 >= 3);
+        int polyHorns = variation.hex(SHEEP_POLY_HORNS);
+        this.polyHorns = (gene[36] == 1 || gene[37] == 1) && (isFemale ? polyHorns <= 3 : polyHorns >= 3);
 
         float a = 0.2F + ((1.0F - (this.polyHorns ? -0.001F : 1.0F))* -0.05F);
         float b = 0.3F + ((1.0F - (this.polyHorns ? -0.001F : 1.0F))* 0.05F);
@@ -63,10 +69,10 @@ public class SheepPhenotype implements Phenotype {
         }
         this.hornGeneticsZ = new float[]{a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a};
 
-        calculateMaxHornLength(gene, isFemale, uuid);
+        calculateMaxHornLength(gene, isFemale, variation.hexChar(SHEEP_HORNS));
     }
 
-    private void calculateMaxHornLength(int[] gene, boolean isFemale, char[] uuid) {
+    private void calculateMaxHornLength(int[] gene, boolean isFemale, char uuid) {
         if (this.hornType != HornType.POLLED) {
             if (this.hornType == HornType.HORNED) {
                 this.leftHornLength = 5;
@@ -75,20 +81,20 @@ public class SheepPhenotype implements Phenotype {
                 this.leftHornLength = this.leftHornLength + 8;
                 this.rightHornLength = this.rightHornLength + 8;
 
-                if (Character.isDigit(uuid[4])) {
-                    if ((uuid[4] - 48) <= 3) {
+                if (Character.isDigit(uuid)) {
+                    if ((uuid - 48) <= 3) {
                         //shorten left horn
-                        this.leftHornLength = this.leftHornLength + (uuid[4] - 48);
-                    } else if ((uuid[4] - 48) <= 7) {
+                        this.leftHornLength = this.leftHornLength + (uuid - 48);
+                    } else if ((uuid - 48) <= 7) {
                         //shorten right horn
-                        this.rightHornLength = this.rightHornLength + (uuid[4] - 52);
+                        this.rightHornLength = this.rightHornLength + (uuid - 52);
                     } else {
                         // shorten evenly
-                        this.leftHornLength = this.leftHornLength + (uuid[4] - 55);
+                        this.leftHornLength = this.leftHornLength + (uuid - 55);
                         this.rightHornLength = this.leftHornLength;
                     }
                 } else {
-                    char a = uuid[4];
+                    char a = uuid;
                     switch (a) {
                         case 'a':
                             this.leftHornLength = this.leftHornLength + 1;

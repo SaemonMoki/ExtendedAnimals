@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "#eanimod:eggs/gray",
+    "eanimod:egg_warmgrey",
+    "eanimod:egg_warmgrey_spatter",
+    "eanimod:egg_warmgrey_speckle",
+    "eanimod:egg_warmgrey_spot",
+    "eanimod:egg_reseda",
+    "eanimod:egg_reseda_spatter",
+    "eanimod:egg_reseda_speckle",
+    "eanimod:egg_reseda_spot",
+    "eanimod:egg_pinkgrey",
+    "eanimod:egg_pinkgrey_spatter",
+    "eanimod:egg_pinkgrey_speckle",
+    "eanimod:egg_pinkgrey_spot",
+    "eanimod:egg_laurel",
+    "eanimod:egg_laurel_spatter",
+    "eanimod:egg_laurel_speckle",
+    "eanimod:egg_laurel_spot"
+  ]
+}

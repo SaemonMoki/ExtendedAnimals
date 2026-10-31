@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:egg_green",
+    "eanimod:egg_green_spatter",
+    "eanimod:egg_green_speckle",
+    "eanimod:egg_green_spot",
+    "eanimod:egg_creamdark",
+    "eanimod:egg_creamdark_spatter",
+    "eanimod:egg_creamdark_speckle",
+    "eanimod:egg_creamdark_spot",
+    "eanimod:egg_pinkdark",
+    "eanimod:egg_pinkdark_spatter",
+    "eanimod:egg_pinkdark_speckle",
+    "eanimod:egg_pinkdark_spot",
+    "eanimod:egg_pinkdarkest",
+    "eanimod:egg_cherry_spatter",
+    "eanimod:egg_cherry_speckle",
+    "eanimod:egg_cherry_spot",
+    "eanimod:egg_blue",
+    "eanimod:egg_mint",
+    "eanimod:egg_mint_spatter",
+    "eanimod:egg_mint_speckle",
+    "eanimod:egg_mint_spot"
+  ]
+}

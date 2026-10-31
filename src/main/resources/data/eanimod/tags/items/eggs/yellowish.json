@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "#eanimod:eggs/cream",
+    "eanimod:egg_khaki",
+    "eanimod:egg_khaki_spatter",
+    "eanimod:egg_khaki_speckle",
+    "eanimod:egg_khaki_spot",
+    "eanimod:egg_grullo",
+    "eanimod:egg_grullo_spatter",
+    "eanimod:egg_grullo_speckle",
+    "eanimod:egg_grullo_spot",
+    "eanimod:egg_khakidark",
+    "eanimod:egg_khakidark_spatter",
+    "eanimod:egg_khakidark_speckle",
+    "eanimod:egg_khakidark_spot"
+  ]
+}

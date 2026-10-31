@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:egg_brownlight",
+    "eanimod:egg_brownlight_spatter",
+    "eanimod:egg_brownlight_speckle",
+    "eanimod:egg_brownlight_spot",
+    "eanimod:egg_cream",
+    "eanimod:egg_cream_spatter",
+    "eanimod:egg_cream_speckle",
+    "eanimod:egg_cream_spot",
+    "eanimod:egg_creamlight",
+    "eanimod:egg_honeydew",
+    "eanimod:egg_pinklight"
+  ]
+}

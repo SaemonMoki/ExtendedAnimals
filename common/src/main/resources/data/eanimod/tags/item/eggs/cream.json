@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:egg_creamlight",
+    "eanimod:egg_cream",
+    "eanimod:egg_cream_spatter",
+    "eanimod:egg_cream_speckle",
+    "eanimod:egg_cream_spot",
+    "eanimod:egg_warmgrey",
+    "eanimod:egg_warmgrey_spatter",
+    "eanimod:egg_warmgrey_speckle",
+    "eanimod:egg_warmgrey_spot"
+  ]
+}

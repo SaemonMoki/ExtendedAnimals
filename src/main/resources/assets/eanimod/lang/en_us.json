@@ -45,6 +45,7 @@
   "eanimod.animalinfocontainer.photomode.transparent": "Enable Transparent Mode For Photo",
   "eanimod.animalinfocontainer.photomode.stickerstyle": "Add a sticker style edge to the picture",
   "eanimod.animalinfocontainer.photomode.takephoto": "Click this to take photo!",
+  "eanimod.animalinfocontainer.photomode.reset": "Reset the animal's position, rotation and zoom",
   "eanimod.animalinfocontainer.sire": "Sire",
   "eanimod.animalinfocontainer.weeks": "weeks",
   "eanimod.animalinfocontainer.years": "years",

@@ -40,6 +40,10 @@ public class ModTags {
         public static final TagKey<Item> AXES = forgeTag("axes");
         public static final TagKey<Item> SWORDS = forgeTag("swords");
         public static final TagKey<Item> EGGS = forgeTag("eggs");
+        public static final TagKey<Item> GENETIC_EGGS = tag("eggs");
+        public static final TagKey<Item> AXES = ItemTags.create(new ResourceLocation("minecraft", "axes"));
+        public static final TagKey<Item> SWORDS = ItemTags.create(new ResourceLocation("minecraft", "swords"));
+        public static final TagKey<Item> EGGS = ItemTags.create(new ResourceLocation("minecraft", "eggs"));
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(new ResourceLocation(Reference.MODID, name));

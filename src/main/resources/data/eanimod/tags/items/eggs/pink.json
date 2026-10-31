@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:egg_pinklight",
+    "eanimod:egg_pink",
+    "eanimod:egg_pink_spatter",
+    "eanimod:egg_pink_speckle",
+    "eanimod:egg_pink_spot",
+    "eanimod:egg_pinkdark",
+    "eanimod:egg_pinkdark_spatter",
+    "eanimod:egg_pinkdark_speckle",
+    "eanimod:egg_pinkdark_spot",
+    "eanimod:egg_pinkdarkest",
+    "eanimod:egg_cherry_spatter",
+    "eanimod:egg_cherry_speckle",
+    "eanimod:egg_cherry_spot"
+  ]
+}

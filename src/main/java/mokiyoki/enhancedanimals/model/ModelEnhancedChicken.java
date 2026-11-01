@@ -2052,6 +2052,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                                 comb.setY(combFlop);
                             }
                         }
+                        case SINGLE -> {
+                            comb.setRotation(0.0F, 0.0F, combFlop * (1.8F + (0.15F * size)));
+                            comb.setX(combFlop * 0.5F);
+                            comb.setY(combFlop * y * 0.2F);
+                        }
                         default -> {
                             comb.setRotation(0.0F, 0.0F, combFlop * 1.8F);
                             comb.setX(combFlop * 0.5F);

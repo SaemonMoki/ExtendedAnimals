@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.util;
 
+import net.minecraft.network.FriendlyByteBuf;
+
 public class EnhancedAnimalInfo {
 
     public int health = 0;
@@ -17,36 +19,31 @@ public class EnhancedAnimalInfo {
 
     public EnhancedAnimalInfo(){}
 
-    public EnhancedAnimalInfo(String serialised) {
-        if (serialised != null && !serialised.isEmpty()) {
-            String[] splits = serialised.split("\\|");
-            health = Integer.valueOf(splits[0]);
-            hunger = Integer.valueOf(splits[1]);
-            isFemale = Boolean.valueOf(splits[2]);
-            pregnant = Integer.valueOf(splits[3]);
-            name = String.valueOf(splits[4]);
-            agePrefix = String.valueOf(splits[5]);
-            age = Integer.valueOf(splits[6]);
-            sire = String.valueOf(splits[7]);
-            dam = String.valueOf(splits[8]);
-            tameness = Integer.valueOf(splits[9]);
-            created = true;
-        }
+    public EnhancedAnimalInfo(FriendlyByteBuf buf) {
+        health = buf.readVarInt();
+        hunger = buf.readVarInt();
+        isFemale = buf.readBoolean();
+        pregnant = buf.readVarInt();
+        name = buf.readUtf();
+        agePrefix = buf.readUtf();
+        age = buf.readVarInt();
+        sire = buf.readUtf();
+        dam = buf.readUtf();
+        tameness = buf.readVarInt();
+        created = true;
     }
 
-    public String serialiseToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(health).append("|");
-        sb.append(hunger).append("|");
-        sb.append(isFemale).append("|");
-        sb.append(pregnant).append("|");
-        sb.append(name).append("|");
-        sb.append(agePrefix).append("|");
-        sb.append(age).append("|");
-        sb.append(sire).append("|");
-        sb.append(dam).append("|");
-        sb.append(tameness).append("|");
-        return sb.toString();
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarInt(health);
+        buf.writeVarInt(hunger);
+        buf.writeBoolean(isFemale);
+        buf.writeVarInt(pregnant);
+        buf.writeUtf(name);
+        buf.writeUtf(agePrefix);
+        buf.writeVarInt(age);
+        buf.writeUtf(sire);
+        buf.writeUtf(dam);
+        buf.writeVarInt(tameness);
     }
 
 

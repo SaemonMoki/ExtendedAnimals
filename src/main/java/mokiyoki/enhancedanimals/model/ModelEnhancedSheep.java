@@ -135,17 +135,17 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         );
         bHead.addOrReplaceChild("headW", CubeListBuilder.create()
                         .texOffs(0, 55)
-                        .addBox(-2.5F, 0.0F, 0.0F, 5, 5, 4, new CubeDeformation(0.5F)),
+                        .addBox(-2.5F, 0.0F, 0.0F, 5, 5, 4, new CubeDeformation(0.51F, 0.51F, 0.51F)),
                 PartPose.offsetAndRotation(0.0F, 4.0F, -4.0F, Mth.HALF_PI, 0.0F, 0.0F)
         );
         bHead.addOrReplaceChild("cheekW", CubeListBuilder.create()
                         .texOffs(14, 50)
-                        .addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, new CubeDeformation(0.51F)),
-                PartPose.offset(0.0F, 2.25F, -5.0F)
+                        .addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, new CubeDeformation(0.511F, 0.51F, 0.5F)),
+                PartPose.offset(0.0F, 2.5F, -4.5F)
         );
         bHead.addOrReplaceChild("noseW", CubeListBuilder.create()
                         .texOffs(0, 50)
-                        .addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, new CubeDeformation(0.5F)),
+                        .addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, new CubeDeformation(0.505F)),
                 PartPose.offset(0.0F, 0.25F, -2.0F)
         );
 

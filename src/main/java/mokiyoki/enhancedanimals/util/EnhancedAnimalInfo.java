@@ -14,6 +14,7 @@ public class EnhancedAnimalInfo {
     public Integer age = 0;
     public String sire = "???";
     public String dam = "???";
+    public boolean hasName = false;
 
     public boolean created = false;
 
@@ -30,6 +31,7 @@ public class EnhancedAnimalInfo {
         sire = buf.readUtf();
         dam = buf.readUtf();
         tameness = buf.readVarInt();
+        hasName = buf.readBoolean();
         created = true;
     }
 
@@ -44,6 +46,7 @@ public class EnhancedAnimalInfo {
         buf.writeUtf(sire);
         buf.writeUtf(dam);
         buf.writeVarInt(tameness);
+        buf.writeBoolean(hasName);
     }
 
 

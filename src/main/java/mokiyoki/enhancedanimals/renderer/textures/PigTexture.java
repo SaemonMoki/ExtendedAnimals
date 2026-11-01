@@ -6,22 +6,13 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class PigTexture {
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every pig writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
     private static final int BLACK_SKIN_SLOTS    = 2;
     private static final int WHITE_SKIN_SLOTS    = 7;
     private static final int SWALLOWBELLY_SLOTS  = 3;
-    /** the dark and light agouti detail layers. */
     private static final int AGOUTI_DETAIL_SLOTS = 2;
     private static final int BLACK_HAIR_SLOTS    = 3 + AGOUTI_DETAIL_SLOTS;
     private static final int WHITE_HAIR_SLOTS    = 7;
-    /** red group, swallowbelly, whitebelly, black, white, coat texture, coat alpha. */
+    // red, swallowbelly, whitebelly, black, white, coat, coat alpha
     private static final int HAIR_SLOTS          = 3 + SWALLOWBELLY_SLOTS + 1 + BLACK_HAIR_SLOTS + WHITE_HAIR_SLOTS + 2;
 
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
@@ -1088,8 +1079,7 @@ public class PigTexture {
             } else {
                 agoutiTex = wideband ? 2 : 1;
             }
-            //the whitebelly layer attaches either before or after the black section depending on
-            //agoutiBlack, so its key slot is written here in both cases to pin the position
+            // Whitebelly can land before or after black, so its key is written here to keep its position fixed
             pig.addDelimiter(whitebelly != 0 ? String.valueOf(whitebelly) : "");
 
             if (black != 0) {
@@ -1145,12 +1135,12 @@ public class PigTexture {
             pig.layer(hairGroup).textureTableSelector(PIG_TEXTURES_ALPHA, coat_alpha).onlyIf(coat_alpha != 0).add();
             hairGroup.addGrouping(hairTexGroup);
 
-                /*if (belt != 0) {
-                    if (genesForText[12] == 1 || genesForText[13] == 1) {
-                        belt = 1;
-                    }
-                    addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BELTED, belt, true);
-                }*/
+                //if (belt != 0) {
+                //    if (genesForText[12] == 1 || genesForText[13] == 1) {
+                //        belt = 1;
+                //    }
+                //    addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BELTED, belt, true);
+                //}
 
             //addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
 

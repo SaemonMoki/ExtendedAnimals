@@ -1,0 +1,33 @@
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:saddle"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.opened_gui.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.opened_gui.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "opened_gui": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "entity": {
+          "type": "#eanimod:genetic_animals"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "opened_gui"
+    ]
+  ]
+}

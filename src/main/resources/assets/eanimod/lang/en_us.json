@@ -425,5 +425,11 @@
   "item.eanimod.twothirds_milk_bucket": "Two Thirds Filled Milk Bucket",
   "itemGroup.eanimod": "Genetic Animals",
   "item.eanimod.chicken_nest": "Chicken Nest",
-  "block.eanimod.chicken_nest": "Chicken Nest"
+  "block.eanimod.chicken_nest": "Chicken Nest",
+  "eanimod.advancements.husbandry.root.title": "Genetic Animals",
+  "eanimod.advancements.husbandry.root.description": "The world is full of infinitely unique animal friends!",
+  "eanimod.advancements.husbandry.opened_gui.title": "What's all this then?",
+  "eanimod.advancements.husbandry.opened_gui.description": "Open a Genetic Animals GUI for the first time.",
+  "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.title": "Tacked Up",
+  "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.description": "Put a Bridle and Saddle on a Genetic Animal and ride it"
 }

@@ -37,6 +37,8 @@ public class ModTags {
         public static final TagKey<Item> FULLSIZE_COOKED_CHICKEN = forgeTag("cooked_chickens");
         public static final TagKey<Item> FULLSIZE_RAW_CHICKEN = forgeTag("raw_chickens");
         public static final TagKey<Item> SADDLES = forgeTag("saddles");
+        public static final TagKey<Item> BRIDLES = tag("bridles");
+        public static final TagKey<Item> BELL_COLLARS = tag("bell_collars");
         public static final TagKey<Item> GENETIC_EGGS = tag("eggs");
         public static final TagKey<Item> WHITE_EGGS = tag("eggs/white");
         public static final TagKey<Item> TINTED_EGGS = tag("eggs/tinted");

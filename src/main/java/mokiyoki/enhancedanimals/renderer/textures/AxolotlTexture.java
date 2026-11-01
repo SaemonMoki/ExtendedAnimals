@@ -8,13 +8,8 @@ public class AxolotlTexture {
 
     /*
      * Slot counts per section of the cache key.
-     *
-     * Every axolotl writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
      */
-    /** one per gill colour, averaged together. */
+    /** one slot per gill colour, to be averaged together. */
     private static final int CHEEK_SLOTS = 2;
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {

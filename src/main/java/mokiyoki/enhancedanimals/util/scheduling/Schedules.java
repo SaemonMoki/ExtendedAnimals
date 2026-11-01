@@ -17,7 +17,7 @@ public enum Schedules {
 
     RESIZE_AND_REFRESH_TEXTURE_SCHEDULE("ResizeAndRefreshSchedule", (ticks) ->
             new AnimalScheduledFunction(ticks, (eaa) -> {
-            if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0) {
+            if (eaa.getEnhancedAnimalAge() > 0 && eaa.level().getLevelData().getGameTime() > 0) {
                 eaa.refreshDimensions();
                 eaa.updateColouration = true;
             }
@@ -32,7 +32,7 @@ public enum Schedules {
     CROW_SCHEDULE("CrowSchedule", (ticks) ->
         new AnimalScheduledFunction(ticks, (eaa) -> {
             if (eaa instanceof EnhancedChicken) {
-                eaa.level.broadcastEntityEvent(eaa, (byte)11);
+                eaa.level().broadcastEntityEvent(eaa, (byte)11);
                 ((EnhancedChicken)eaa).crowTick = 120;
                 eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                 eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
@@ -42,7 +42,7 @@ public enum Schedules {
     STOP_BROODING_SCHEDULE("StopBroodingSchedule", (ticks) ->
         new AnimalScheduledFunction(ticks, (eaa) -> {
             if (eaa instanceof EnhancedChicken enhancedChicken) {
-                if (!(eaa.level.getBlockEntity(eaa.blockPosition()) instanceof ChickenNestTileEntity)) {
+                if (!(eaa.level().getBlockEntity(eaa.blockPosition()) instanceof ChickenNestTileEntity)) {
                     enhancedChicken.setBroody(false);
                     enhancedChicken.setBrooding(false);
                     enhancedChicken.setNest(BlockPos.ZERO);
@@ -54,7 +54,7 @@ public enum Schedules {
     START_PREEN_SCHEDULE("StartPreenSchedule", (ticks) ->
             new AnimalScheduledFunction(ticks, (eaa) -> {
                 if (eaa instanceof EnhancedChicken) {
-                    eaa.level.broadcastEntityEvent(eaa, (byte)12);
+                    eaa.level().broadcastEntityEvent(eaa, (byte)12);
                     eaa.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                     eaa.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
                     eaa.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_WALKING.get(), true);
@@ -63,7 +63,7 @@ public enum Schedules {
     STOP_PREEN_SCHEDULE("StopPreenSchedule", (ticks) ->
             new AnimalScheduledFunction(ticks, (eaa) -> {
                 if (eaa instanceof EnhancedChicken) {
-                    eaa.level.broadcastEntityEvent(eaa, (byte)13);
+                    eaa.level().broadcastEntityEvent(eaa, (byte)13);
                     eaa.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
                 }
             })),
@@ -72,7 +72,7 @@ public enum Schedules {
             new AnimalScheduledFunction(12000, (eaa) -> {
                 if (eaa instanceof EnhancedChicken chicken) {
                     if (((EnhancedChicken) eaa).getNest() != null && ((EnhancedChicken) eaa).getNest() != BlockPos.ZERO) {
-                        if (chicken.level.getBlockEntity(((EnhancedChicken) eaa).getNest()) instanceof ChickenNestTileEntity nestEntity) {
+                        if (chicken.level().getBlockEntity(((EnhancedChicken) eaa).getNest()) instanceof ChickenNestTileEntity nestEntity) {
                             if (nestEntity.getEggCount() > 0) {
                                 return;
                             }
@@ -81,20 +81,20 @@ public enum Schedules {
                     for (int x = -1; x <= 1; x++) {
                         for (int z = -1; z <= 1; z++) {
                             BlockPos pos = eaa.blockPosition().offset(x, 0, z);
-                            if (eaa.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
+                            if (eaa.level().getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
                                 if (nestTileEntity.isFull()) {
                                     continue;
                                 }
                                 chicken.rateAndSetBetterNest(pos);
                             }
 
-                            BlockState state = eaa.level.getBlockState(pos);
+                            BlockState state = eaa.level().getBlockState(pos);
                             if (state.isAir()) {
-                                if (eaa.level.isEmptyBlock(pos.below())) {
+                                if (eaa.level().isEmptyBlock(pos.below())) {
                                     pos = pos.below();
                                 }
                             } else {
-                                if (eaa.level.isEmptyBlock(pos.above())) {
+                                if (eaa.level().isEmptyBlock(pos.above())) {
                                     pos = pos.above();
                                 }
                             }
@@ -109,7 +109,7 @@ public enum Schedules {
 
     CHECK_RAIN_STOPPED_SCHEDULE("CheckRainStoppedSchedule", (ticks) ->
             new AnimalScheduledFunction(ticks, (eaa) -> {
-                if (!eaa.getLevel().getLevelData().isRaining()) {
+                if (!eaa.level().getLevelData().isRaining()) {
                     eaa.getBrain().eraseMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get());
                 }
             }, EnhancedAnimalAbstract::isRainingInLevel)

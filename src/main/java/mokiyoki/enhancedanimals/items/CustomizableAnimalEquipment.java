@@ -1,11 +1,11 @@
 package mokiyoki.enhancedanimals.items;
 
-import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.DyedItemColor;
 
-public class CustomizableAnimalEquipment extends Item implements DyeableLeatherItem {
+public class CustomizableAnimalEquipment extends Item {
     private int defaultColour;
 
     public CustomizableAnimalEquipment(Properties builder, int originalColour) {
@@ -21,10 +21,21 @@ public class CustomizableAnimalEquipment extends Item implements DyeableLeatherI
         return this.defaultColour;
     }
 
-    @Override
+    public boolean hasCustomColor(ItemStack stack) {
+        return stack.has(DataComponents.DYED_COLOR);
+    }
+
     public int getColor(ItemStack stack) {
-        CompoundTag compoundnbt = stack.getTagElement("display");
-        return compoundnbt != null && compoundnbt.contains("color", 99) ? compoundnbt.getInt("color") : getDefaultColour();
+        DyedItemColor dyedItemColor = stack.get(DataComponents.DYED_COLOR);
+        return dyedItemColor != null ? dyedItemColor.rgb() : getDefaultColour();
+    }
+
+    public void clearColor(ItemStack stack) {
+        stack.remove(DataComponents.DYED_COLOR);
+    }
+
+    public void setColor(ItemStack stack, int colour) {
+        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(colour, true));
     }
 
 }

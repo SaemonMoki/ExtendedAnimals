@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.syncher.SynchedEntityData;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
@@ -36,8 +38,8 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -169,8 +171,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         super.customServerAiStep();
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
     }
 
     protected String getSpecies() {
@@ -282,8 +284,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.HORSE_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL.value(), 1.0F, 0.1F);
         }
     }
 
@@ -303,7 +305,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.level().getDayTime()%24000 >= 12600 && this.level().getDayTime()%24000 <= 22000) || this.level().isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
     @Override
@@ -321,7 +323,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedhorse.setGenes(babyGenes);
         enhancedhorse.setSharedGenes(babyGenes);
@@ -338,11 +340,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedhorse, inWorld, babyGenes, -this.getAdultAge());
         enhancedhorse.configureAI();
-        this.level.addFreshEntity(enhancedhorse);
+        this.level().addFreshEntity(enhancedhorse);
     }
 
     @Override
@@ -372,8 +374,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return this.motherUUID;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(level, source, recentlyHitIn);
 
         int leatherDrop = this.random.nextInt(3);
 
@@ -661,7 +663,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 108000, spawnReason);
     }
 

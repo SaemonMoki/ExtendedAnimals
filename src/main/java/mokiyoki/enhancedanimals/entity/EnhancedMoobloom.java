@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import javax.annotation.Nullable;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
@@ -21,8 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_MOOBLOOM;
 
 
-public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
+public class EnhancedMoobloom extends EnhancedCow implements net.neoforged.neoforge.common.IShearable {
     private static final EntityDataAccessor<String> MOOBLOOM_TYPE = SynchedEntityData.defineId(EnhancedMoobloom.class, EntityDataSerializers.STRING);
 
     private static final String[] MOOBLOOM_FLOWER = new String[] {
@@ -41,9 +42,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
         super(entityType, worldIn);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(MOOBLOOM_TYPE, "yellow");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(MOOBLOOM_TYPE, "yellow");
     }
 
     @Override
@@ -73,11 +74,11 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     protected void createAndSpawnEnhancedChild(Level level) {
-        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.get().create(this.level);
+        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedmoobloom, level, babyGenes, -this.getAdultAge());
         enhancedmoobloom.configureAI();
-        this.level.addFreshEntity(enhancedmoobloom);
+        this.level().addFreshEntity(enhancedmoobloom);
     }
 
     @Override
@@ -109,17 +110,17 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    public boolean isShearable(ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
+    public boolean isShearable(@Nullable Player player, ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
         return !this.isBaby();
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(Player playerEntity, ItemStack item, Level world, net.minecraft.core.BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(@Nullable Player playerEntity, ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
-        if (!this.level.isClientSide) {
+        this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
+        if (!this.level().isClientSide) {
             this.remove(RemovalReason.DISCARDED);
-            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level());
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
@@ -136,7 +137,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
             }
-            this.level.addFreshEntity(enhancedcow);
+            this.level().addFreshEntity(enhancedcow);
             for(int i = 0; i < 5; ++i) {
                 if (random.nextInt(5) == 0) {
                     ret.add(new ItemStack(Blocks.SUNFLOWER));

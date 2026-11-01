@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:dark_oak_fence"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "id": "eanimod:post_dark_oak"
+  }
+}

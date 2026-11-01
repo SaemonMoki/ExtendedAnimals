@@ -8,8 +8,8 @@
 //import net.minecraft.client.renderer.entity.EntityRendererManager;
 //import net.minecraft.client.renderer.entity.MobRenderer;
 //import net.minecraft.util.ResourceLocation;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import java.util.Map;
 //
@@ -17,7 +17,7 @@
 //public class RenderEnhancedBee extends MobRenderer<EnhancedBee, ModelEnhancedBee<EnhancedBee>> {
 //    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
 //    private static final String ENHANCED_BEE_TEXTURE_LOCATION = "eanimod:textures/entities/bee/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/bee/beebase.png");
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entities/bee/beebase.png");
 //
 //
 //
@@ -44,7 +44,7 @@
 //            }
 //
 //            try {
-//                resourcelocation = new ResourceLocation(s);
+//                resourcelocation = ResourceLocation.parse(s);
 //                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_BEE_TEXTURE_LOCATION, null, textures, null));
 //                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
 //            } catch (IllegalStateException e) {

@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 
 public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomStrollGoal {
 
-    private static final Predicate<BlockState> IS_GRASSBLOCK = BlockStatePredicate.forBlock(Blocks.GRASS);
-//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+    private static final Predicate<BlockState> IS_GRASSBLOCK = BlockStatePredicate.forBlock(Blocks.SHORT_GRASS);
+//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.SHORT_GRASS);
 //    private static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
     public EnhancedWaterAvoidingRandomWalkingGoal(PathfinderMob p_i47301_1_, double p_i47301_2_) {
@@ -73,10 +73,10 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomS
 //        } else if (IS_GRASS.test(this.creature.world.getBlockState(blockpos))) {
 //            return true;
 //        } else
-            if (IS_GRASSBLOCK.test(this.mob.level.getBlockState(blockpos))) {
+            if (IS_GRASSBLOCK.test(this.mob.level().getBlockState(blockpos))) {
             return true;
         } else {
-            return this.mob.level.getBlockState(blockpos.below()).getBlock() == Blocks.GRASS_BLOCK;
+            return this.mob.level().getBlockState(blockpos.below()).getBlock() == Blocks.GRASS_BLOCK;
         }
     }
 

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.util.RandomSource;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
@@ -30,7 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 
@@ -93,7 +93,7 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     /**
      * Performs a random tick on a block.
      */
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (random.nextFloat() < Math.max(level.getBiome(pos).value().getBaseTemperature(), 0.01F)) {
             int i = state.getValue(HATCH);
             if (i < 2) {

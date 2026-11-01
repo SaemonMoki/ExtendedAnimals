@@ -17,9 +17,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class FeatherParticle extends TextureSheetParticle {
         super(level, x, y, z);
         ItemStack feather = new ItemStack(Items.FEATHER);
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(feather, level, (LivingEntity) null, 0);
-        this.setSprite(model.getParticleIcon(EmptyModelData.INSTANCE));
+        this.setSprite(model.getParticleIcon(ModelData.EMPTY));
 
         this.setSize(0.25F, 0.25F);
         this.setPos(x, y, z);
@@ -61,7 +61,7 @@ public class FeatherParticle extends TextureSheetParticle {
 
         float friction = 0.98F;
         if (this.onGround) {
-            BlockPos below = new BlockPos(this.x, this.y - 1.0D, this.z);
+            BlockPos below = BlockPos.containing(this.x, this.y - 1.0D, this.z);
             friction = this.level.getBlockState(below).getFriction(this.level, below, null) * 0.98F;
         }
         this.xd *= friction;
@@ -120,7 +120,7 @@ public class FeatherParticle extends TextureSheetParticle {
     }
 
     private void vertex(VertexConsumer buffer, float x, float y, float z, float u, float v, int light) {
-        buffer.vertex(x, y, z).uv(u, v).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(light).endVertex();
+        buffer.addVertex(x, y, z).setUv(u, v).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(light);
     }
 
     @Override

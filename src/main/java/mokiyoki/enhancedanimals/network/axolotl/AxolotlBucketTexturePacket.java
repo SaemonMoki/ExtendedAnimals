@@ -2,14 +2,19 @@ package mokiyoki.enhancedanimals.network.axolotl;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+import static mokiyoki.enhancedanimals.util.Reference.MODID;
 
-public class AxolotlBucketTexturePacket {
+public class AxolotlBucketTexturePacket implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<AxolotlBucketTexturePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "axolotl_bucket_texture"));
+    public static final StreamCodec<FriendlyByteBuf, AxolotlBucketTexturePacket> STREAM_CODEC = StreamCodec.ofMember(AxolotlBucketTexturePacket::writePacketData, AxolotlBucketTexturePacket::new);
 
     private int entityID;
     private int[] bucketTexture;
@@ -29,11 +34,10 @@ public class AxolotlBucketTexturePacket {
         buf.writeVarIntArray(this.bucketTexture);
     }
 
-    public static void processPacket(AxolotlBucketTexturePacket packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ServerPlayer serverPlayer = ctx.get().getSender();
-            if (serverPlayer != null && serverPlayer.level instanceof ServerLevel) {
-                ServerLevel server = (ServerLevel)serverPlayer.level;
+    public static void processPacket(AxolotlBucketTexturePacket packet, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.player() instanceof ServerPlayer serverPlayer && serverPlayer.level() instanceof ServerLevel) {
+                ServerLevel server = (ServerLevel)serverPlayer.level();
                 Entity entity = server.getEntity(packet.getEntityID());
                 if (entity instanceof EnhancedAxolotl) {
                     EnhancedAxolotl axolotl = (EnhancedAxolotl) entity;
@@ -41,7 +45,11 @@ public class AxolotlBucketTexturePacket {
                 }
             }
         });
-        ctx.get().setPacketHandled(true);
+    }
+
+    @Override
+    public CustomPacketPayload.Type<AxolotlBucketTexturePacket> type() {
+        return TYPE;
     }
 
     private int getEntityID() {

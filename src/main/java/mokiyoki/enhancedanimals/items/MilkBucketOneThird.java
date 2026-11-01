@@ -22,7 +22,7 @@ public class MilkBucketOneThird extends MilkBucketItem {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         int i = ThreadLocalRandom.current().nextInt(3);
-        if (!worldIn.isClientSide && i == 0) entityLiving.curePotionEffects(stack); // FORGE - move up so stack.shrink does not turn stack into air
+        if (!worldIn.isClientSide && i == 0) entityLiving.removeEffectsCuredBy(net.neoforged.neoforge.common.EffectCures.MILK); // FORGE - move up so stack.shrink does not turn stack into air
 
         if (entityLiving instanceof ServerPlayer) {
             ServerPlayer serverplayerentity = (ServerPlayer)entityLiving;

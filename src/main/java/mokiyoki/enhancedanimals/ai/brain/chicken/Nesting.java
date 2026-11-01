@@ -76,7 +76,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
             checkNotReachedNestTicks(serverLevel, chicken);
 
             if (blockPos.closerToCenterThan(chicken.position(), GeneticAnimalsConfig.COMMON.chickenNestTeleportDistance.get())) {
-                if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
+                if (chicken.blockPosition().getY() != blockPos.getY() && chicken.onGround()) {
                     chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.02));
                 } else {
                     chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.02));
@@ -84,12 +84,12 @@ public class Nesting extends Behavior<EnhancedChicken> {
             }
 
             if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
-                BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
+                BehaviorUtils.setWalkAndLookTargetMemories(chicken, BlockPos.containing(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 1.0F, 0);
 
                 if (chicken.isGoodNestSite(blockPos)) {
                     if (!chicken.isBrooding()) chicken.setBrooding(true);
 
-                    Level world = chicken.level;
+                    Level world = chicken.level();
                     if (world.isEmptyBlock(blockPos)) {
                         List<BlockPos> nestList = new ArrayList<>();
                         if (world.getBlockEntity(blockPos.north()) instanceof ChickenNestTileEntity) nestList.add(blockPos.north());
@@ -114,18 +114,18 @@ public class Nesting extends Behavior<EnhancedChicken> {
             } else if (chicken.getNavigation().isDone()) {
                 Vec3 vec3 = new Vec3(blockPos.getX() + 0.5D, blockPos.getY() + 0.0625D, blockPos.getZ() + 0.5D);
 
-                BehaviorUtils.setWalkAndLookTargetMemories(chicken, new BlockPos(vec3), 1.0F, 0);
+                BehaviorUtils.setWalkAndLookTargetMemories(chicken, BlockPos.containing(vec3), 1.0F, 0);
             }
         } else {
             if (blockPos.closerToCenterThan(chicken.position(), GeneticAnimalsConfig.COMMON.chickenNestTeleportDistance.get())) {
                 if (blockPos.closerToCenterThan(chicken.position(), 0.75D)) {
-                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
+                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.onGround()) {
                         chicken.setPos(new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D));
                     } else {
                         chicken.setPos(new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D));
                     }
                 } else {
-                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.isOnGround()) {
+                    if (chicken.blockPosition().getY() != blockPos.getY() && chicken.onGround()) {
                         chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, chicken.position().y+0.0625D, blockPos.getZ()+0.5D), 0.02));
                     } else {
                         chicken.setPos(moveCloser(chicken.position(), new Vec3(blockPos.getX()+0.5D, blockPos.getY()+0.0625D, blockPos.getZ()+0.5D), 0.02));
@@ -150,7 +150,7 @@ public class Nesting extends Behavior<EnhancedChicken> {
 
     public static void setWalkAndLookTargetMemories(LivingEntity p_22618_, Vec3 vec3, float p_22620_, int p_22621_) {
         WalkTarget walktarget = new WalkTarget(vec3, p_22620_, p_22621_);
-        p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(new BlockPos(vec3)));
+        p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(BlockPos.containing(vec3)));
         p_22618_.getBrain().setMemory(MemoryModuleType.WALK_TARGET, walktarget);
     }
 

@@ -14,15 +14,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_AXOLOTL_TEXTURE_LOCATION = "eanimod:textures/entity/axolotl/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/axolotl/base.png");
-    public static final ModelLayerLocation AXOLOTL_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl"), "axolotl_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/axolotl/base.png");
+    public static final ModelLayerLocation AXOLOTL_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "axolotl"), "axolotl_layer");
 
     public RenderEnhancedAxolotl(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER), RenderType::entityTranslucent), 0.5F);
@@ -52,7 +52,7 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 EnhancedLayeredTexturer texture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration, 64, 64);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                 textureCache.putInCache(s, resourcelocation);

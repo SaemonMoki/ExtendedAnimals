@@ -13,16 +13,16 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelEnhancedCow<EnhancedMoobloom>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entity/cow/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/cow/cowbase.png");
-    public static final ModelLayerLocation MOOBLOOM_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "moobloom"), "moobloom_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/cow/cowbase.png");
+    public static final ModelLayerLocation MOOBLOOM_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "moobloom"), "moobloom_layer");
 
     public RenderEnhancedMoobloom(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedCow<>(renderManager.bakeLayer(MOOBLOOM_LAYER), true), 0.7F);
@@ -48,7 +48,7 @@ public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelE
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_COW_TEXTURE_LOCATION, textureGrouping, colourRGB, 256));
 
                 textureCache.putInCache(s, resourcelocation);

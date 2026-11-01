@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -53,8 +54,8 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -117,7 +118,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         ediblePlants.put(ModBlocks.GROWABLE_DANDELION.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
         ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
-        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.SHORT_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(ModBlocks.GROWABLE_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
@@ -146,10 +147,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super.customServerAiStep();
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(RESET_TEXTURE, false);
-        this.entityData.define(MOOSHROOM_UUID, "0");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(RESET_TEXTURE, false);
+        builder.define(MOOSHROOM_UUID, "0");
     }
 
     @Override
@@ -218,8 +219,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL.value(), 1.0F, 0.1F);
         }
     }
 
@@ -314,8 +315,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(1.0F, 1.25F).scale(this.getScale());
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(1.0F, 1.25F).scale(this.getAgeScale());
     }
 
     @Override
@@ -338,7 +339,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public void aiStep() {
         super.aiStep();
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
@@ -377,7 +378,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
+        return (((this.level().getDayTime()%24000 >= 12600 && this.level().getDayTime()%24000 <= 22000) || this.level().isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
@@ -405,7 +406,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         enhancedcow.setGenes(babyGenes);
         enhancedcow.setSharedGenes(babyGenes);
@@ -422,12 +423,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level level) {
-        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, level, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
-        this.level.addFreshEntity(enhancedcow);
+        this.level().addFreshEntity(enhancedcow);
     }
 
     public void lethalGenes(){
@@ -438,10 +439,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean shouldDropExperience() { return true; }
+    public boolean shouldDropExperience() { return true; }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(level, source, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         this.isOnFire();
         float cowSize = this.getAnimalSize();
@@ -797,7 +798,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                    refillAmount = currentMilk;
             }
 
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 int resultingMilkAmount = currentMilk - refillAmount;
                 this.setMilkAmount(resultingMilkAmount);
 
@@ -895,7 +896,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
     }
 

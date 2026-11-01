@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -79,6 +80,13 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
     private static final VoxelShape Z_HAY_BLUE = Block.box(11D, 11D, 0D, 16D, 16D, 16D);
     
     private final Map<BlockState, VoxelShape> stateToShapeMap;
+
+    public static final MapCodec<UnboundHayBlock> CODEC = simpleCodec(UnboundHayBlock::new);
+
+    @Override
+    protected MapCodec<UnboundHayBlock> codec() {
+        return CODEC;
+    }
 
     public UnboundHayBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -222,7 +230,7 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
             if (bites < 8) {
                 world.setBlockAndUpdate(pos, state.setValue(BITES, Integer.valueOf(bites + 1)).setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
             } else {
-                world.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                world.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
                 world.removeBlock(pos, false);
             }
         }
@@ -247,7 +255,7 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
             if (i < 8) {
                 worldIn.setBlock(pos, state.setValue(BITES, Integer.valueOf(i + 1)), 3);
             } else {
-                worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                worldIn.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
                 worldIn.removeBlock(pos, false);
             }
         }
@@ -275,7 +283,7 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos pos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
             if (worldIn instanceof ServerLevel) {
-                ((ServerLevel)worldIn).getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                ((ServerLevel)worldIn).getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
             }
             worldIn.removeBlock(pos, false);
         }
@@ -330,18 +338,18 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
     public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, float fallDistance) {
         BlockState state = worldIn.getBlockState(pos);
         float bites = state.getValue(BITES);
-        entityIn.causeFallDamage(fallDistance, 0.2F + (bites*0.1F), DamageSource.FALL);
+        entityIn.causeFallDamage(fallDistance, 0.2F + (bites*0.1F), entityIn.damageSources().fall());
     }
 
     @Override
     public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
-        worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+        worldIn.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
         super.wasExploded(worldIn, pos, explosionIn);
     }
 
     @Override
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+    public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+        worldIn.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
         if (!worldIn.isClientSide && !player.isCreative()) {
             int bites = state.getValue(BITES);
             ItemStack itemstack = new ItemStack(Items.WHEAT, (9-bites));
@@ -349,18 +357,18 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
             itementity.setDefaultPickUpDelay();
             worldIn.addFreshEntity(itementity);
         }
-        super.playerWillDestroy(worldIn, pos, state, player);
+        return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Override
     public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).addHayPos(pos);
+        worldIn.getData(HayCapabilityProvider.HAY_CAP).addHayPos(pos);
         super.onPlace(state, worldIn, pos, oldState, isMoving);
     }
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+        worldIn.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(pos);
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 

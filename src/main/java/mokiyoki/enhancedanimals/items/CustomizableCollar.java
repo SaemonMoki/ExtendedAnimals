@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.items;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.world.item.Item.Properties;
@@ -22,9 +22,9 @@ public class CustomizableCollar extends CustomizableAnimalEquipment{
     }
 
     public String getCollarName(ItemStack stack) {
-        CompoundTag compoundnbt = stack.getTagElement("display");
-        if (compoundnbt != null && compoundnbt.contains("Name", 8)) {
-            return Component.Serializer.fromJson(compoundnbt.getString("Name")).getString();
+        Component customName = stack.get(DataComponents.CUSTOM_NAME);
+        if (customName != null) {
+            return customName.getString();
         }
         return "";
     }

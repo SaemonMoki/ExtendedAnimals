@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.entity.util;
 
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 import java.awt.*;
 
@@ -334,12 +333,7 @@ public class Colouration {
     public static int getEquipmentColor(ItemStack stack) {
         int colour = 0;
         if (stack.getItem() instanceof CustomizableAnimalEquipment) {
-            CompoundTag compoundnbt = stack.getTagElement("display");
-            if (compoundnbt != null && compoundnbt.contains("color", 99)) {
-                colour = compoundnbt.getInt("color");
-            } else {
-                colour = ((CustomizableAnimalEquipment) stack.getItem()).getDefaultColour();
-            }
+            colour = ((CustomizableAnimalEquipment) stack.getItem()).getColor(stack);
         } else {
             colour = 10511680; //leather colour
         }

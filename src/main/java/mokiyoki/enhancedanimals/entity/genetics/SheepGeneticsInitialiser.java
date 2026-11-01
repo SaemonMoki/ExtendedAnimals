@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
+import mokiyoki.enhancedanimals.util.LegacyBiomeCategory;
 import mokiyoki.enhancedanimals.init.breeds.SheepBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -60,12 +61,12 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(16) + 1);
         } else {
-            autosomalGenes[0] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
+            autosomalGenes[0] = (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS ? 1 : 13);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(16) + 1);
         } else {
-            autosomalGenes[1] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
+            autosomalGenes[1] = (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS ? 1 : 13);
         }
 
         //Chocolate [ Wildtype+, chocolate ]
@@ -190,11 +191,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
 
-        if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS || biome.getPrecipitation() == Biome.Precipitation.SNOW ) {
+        if (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS || LegacyBiomeCategory.precipitationOf(biome) == Biome.Precipitation.SNOW ) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] * 2;
             }
-        } else if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+        } else if (LegacyBiomeCategory.precipitationOf(biome) == Biome.Precipitation.NONE) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] != 1 ? (int)(woolmod[i] * 0.5) : 1;
             }
@@ -360,7 +361,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+            if (LegacyBiomeCategory.precipitationOf(biome) == Biome.Precipitation.NONE) {
                 autosomalGenes[46] = 1;
             } else {
                 autosomalGenes[46] = 2;
@@ -369,7 +370,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
+            if (LegacyBiomeCategory.precipitationOf(biome) == Biome.Precipitation.NONE) {
                 autosomalGenes[47] = 1;
             } else {
                 autosomalGenes[47] = 2;
@@ -528,7 +529,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[72] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
             autosomalGenes[72] = 1;
-            switch (Biome.getBiomeCategory(biomeHolder)) {
+            switch (LegacyBiomeCategory.of(biomeHolder)) {
                 case PLAINS, ICY -> autosomalGenes[72] = 6;
                 case DESERT -> autosomalGenes[72] = 3;
                 case SAVANNA -> autosomalGenes[72] = 2;
@@ -539,7 +540,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[73] = (ThreadLocalRandom.current().nextInt(5) + 1);
         } else {
             autosomalGenes[73] = 1;
-            switch (Biome.getBiomeCategory(biomeHolder)) {
+            switch (LegacyBiomeCategory.of(biomeHolder)) {
                 case PLAINS, ICY -> autosomalGenes[73] = 5;
                 case DESERT -> autosomalGenes[73] = 3;
                 case SAVANNA -> autosomalGenes[73] = 2;

@@ -100,7 +100,7 @@ public class SeekingNest extends Behavior<EnhancedChicken> {
 
     public static void setWalkAndLookTargetMemories(LivingEntity p_22618_, Vec3 vec3, float p_22620_, int p_22621_) {
         WalkTarget walktarget = new WalkTarget(vec3, p_22620_, p_22621_);
-        p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(new BlockPos(vec3)));
+        p_22618_.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(BlockPos.containing(vec3)));
         p_22618_.getBrain().setMemory(MemoryModuleType.WALK_TARGET, walktarget);
     }
 }

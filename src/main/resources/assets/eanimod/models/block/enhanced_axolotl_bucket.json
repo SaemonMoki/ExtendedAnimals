@@ -1,7 +1,7 @@
 {
 	"ambientocclusion": true,
 	"textures": {
-		"particle": "eanimod:items/axolotlbucket/axolotl_bucket"
+		"particle": "eanimod:item/axolotlbucket/axolotl_bucket"
 	},
 	"elements": [
 		{

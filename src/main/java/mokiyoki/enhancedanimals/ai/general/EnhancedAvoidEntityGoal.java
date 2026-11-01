@@ -60,7 +60,7 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean canUse() {
-        this.toAvoid = this.entity.level.getNearestEntity(this.classToAvoid, this.avoidEntityTargeting, this.entity, this.entity.getX(), this.entity.getY(), this.entity.getZ(), this.entity.getBoundingBox().inflate((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
+        this.toAvoid = this.entity.level().getNearestEntity(this.classToAvoid, this.avoidEntityTargeting, this.entity, this.entity.getX(), this.entity.getY(), this.entity.getZ(), this.entity.getBoundingBox().inflate((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
         if (this.toAvoid == null) {
             return false;
         } else {

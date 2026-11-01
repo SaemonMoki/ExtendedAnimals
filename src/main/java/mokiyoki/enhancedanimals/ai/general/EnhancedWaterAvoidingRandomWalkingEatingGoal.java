@@ -60,7 +60,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     private int expireCacheTimer = 12000;
 
 
-    protected static final Predicate<BlockState> IS_GRASS = BlockStatePredicate.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASS = BlockStatePredicate.forBlock(Blocks.SHORT_GRASS);
     protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStatePredicate.forBlock(Blocks.GRASS_BLOCK);
     protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStatePredicate.forBlock(ModBlocks.SPARSEGRASS_BLOCK.get());
     protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStatePredicate.forBlock(Blocks.TALL_GRASS);
@@ -72,7 +72,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.searchLength = length; //how long to search
         this.verticalSearchStart = 0;
         this.verticalSearchRange = depth;
-        this.entityWorld = creature.level;
+        this.entityWorld = creature.level();
         this.probability = probabilityIn; //probably to pick block???
         this.wanderExecutionChance = wanderExecutionChance; //chance to wander
         this.hungerModifier = hungerModifier; //the amount to divide the hunger timer by to then take away from the 1/1000 chance to eat
@@ -309,7 +309,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(this.entityWorld, blockState, this.destinationBlock);
                 } else {
                     //clean up
-                    entityWorld.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
+                    entityWorld.getData(HayCapabilityProvider.HAY_CAP).removeHayPos(this.destinationBlock);
                 }
             }
         }
@@ -318,21 +318,21 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     protected void eatBlocks() {
         BlockPos blockpos = new BlockPos(this.creature.blockPosition());
         if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos))) {
-            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+            if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);
             }
             this.creature.ate();
         } else {
             BlockPos blockposDown = blockpos.below();
             if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
                     this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
                     this.entityWorld.setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
                 }
 
                 this.creature.ate();
             } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
                     this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
                     this.entityWorld.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
                 }
@@ -377,7 +377,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     private boolean findIfNearbyHay() {
-        Set<BlockPos> hayList = entityWorld.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
+        Set<BlockPos> hayList = entityWorld.getData(HayCapabilityProvider.HAY_CAP).getAllHayPos();
         double closestDistance = 128;
         boolean found = false;
         for (BlockPos pos : hayList) {

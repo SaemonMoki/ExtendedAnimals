@@ -1,5 +1,9 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.core.component.DataComponents;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
@@ -80,24 +84,24 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.NaturalSpawner;
-import net.minecraftforge.common.util.LogicalSidedProvider;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
-import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.util.LogicalSidedProvider;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,20 +130,20 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void editMobs(EntityJoinWorldEvent event) {
+    public void editMobs(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
         if (event.loadedFromDisk()) {
-            if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
+            if (event.getLevel() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract) {
                 if (GeneticAnimalsConfig.COMMON.passageOfTimeEnabled.get() && !((EnhancedAnimalAbstract) entity).isNoAi()) {
-                    ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getWorld().getGameTime());
+                    ((EnhancedAnimalAbstract)entity).checkActionsForPassageOfTime(event.getLevel().getGameTime());
                 }
             }
         } else {
-            if (event.getWorld() instanceof ServerLevel serverLevel && entity instanceof EnhancedChicken enhancedChicken) {
+            if (event.getLevel() instanceof ServerLevel serverLevel && entity instanceof EnhancedChicken enhancedChicken) {
                 if (enhancedChicken.getOrSetIsFemale()) {
                     ChunkAccess chunk = serverLevel.getChunkSource().getChunkNow((int)enhancedChicken.getX() >> 4, (int)enhancedChicken.getZ() >> 4);
 
-                    if (chunk != null && chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
+                    if (chunk != null && chunk.getPersistedStatus().isOrAfter(ChunkStatus.FULL)) {
 
                         var executor = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
                         executor.tell(new TickTask( serverLevel.getServer().getTickCount() + 1, () -> {
@@ -149,11 +153,11 @@ public class EventSubscriber {
                                 }
                             }
 
-                            if(event.getWorld().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                            if(event.getLevel().getBlockEntity(enhancedChicken.blockPosition().below()) instanceof ChickenNestTileEntity chickenNestEntity) {
                                 chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
                                 enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
                                 enhancedChicken.setNest(chickenNestEntity.getBlockPos());
-                            } else if (event.getWorld().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
+                            } else if (event.getLevel().getBlockEntity(enhancedChicken.blockPosition()) instanceof ChickenNestTileEntity chickenNestEntity) {
                                 chickenNestEntity.setNestDecayTime(serverLevel.getGameTime());
                                 enhancedChicken.rateAndSetBetterNest(chickenNestEntity.getBlockPos());
                                 enhancedChicken.setNest(chickenNestEntity.getBlockPos());
@@ -179,7 +183,7 @@ public class EventSubscriber {
             ((Wolf) entity).targetSelector.addGoal(5, new NonTameRandomTargetGoal<>((Wolf) entity, Animal.class, false, TARGETS));
             ((Wolf) entity).targetSelector.addGoal(6, new NonTameRandomTargetGoal<>((Wolf) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
         } else if (entity instanceof Fox) {
-            int priority = ((Fox) entity).getFoxType() == Fox.Type.RED ? 4 : 6;
+            int priority = ((Fox) entity).getVariant() == Fox.Type.RED ? 4 : 6;
             ((Fox) entity).targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, Animal.class, 10, false, false, (targetEntity) -> {
                 return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
             }));
@@ -223,10 +227,10 @@ public class EventSubscriber {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {
+    public void entityLeaveWorldEvent(EntityLeaveLevelEvent event) {
         Entity entity = event.getEntity();
-        if (event.getWorld() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract && entity.getRemovalReason() != Entity.RemovalReason.KILLED) {
-            ((EnhancedAnimalAbstract)entity).setUnloadTime(event.getWorld().getGameTime());
+        if (event.getLevel() instanceof ServerLevel && entity instanceof EnhancedAnimalAbstract && entity.getRemovalReason() != Entity.RemovalReason.KILLED) {
+            ((EnhancedAnimalAbstract)entity).setUnloadTime(event.getLevel().getGameTime());
         }
     }
 
@@ -244,7 +248,7 @@ public class EventSubscriber {
 
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onLivingUpdateEvent(LivingEvent.LivingUpdateEvent event) {
+    public void onLivingUpdateEvent(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
         if (entity instanceof Villager && entity.getTags().contains("eanimodTrader")) {
             VillagerProfession profession = ((Villager)entity).getVillagerData().getProfession();
@@ -310,7 +314,7 @@ public class EventSubscriber {
             if (entity instanceof Sheep) {
                 if (!GeneticAnimalsConfig.COMMON.spawnVanillaSheep.get() && GeneticAnimalsConfig.COMMON.spawnGeneticSheep.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("sheep")) {
-                        EnhancedSheep enhancedSheep = ENHANCED_SHEEP.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedSheep enhancedSheep = ENHANCED_SHEEP.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                         if (enhancedSheep != null) {
                             enhancedSheep.setFleeceDyeColour(((Sheep) entity).getColor());
                             if (entity.hasCustomName()) {
@@ -338,7 +342,7 @@ public class EventSubscriber {
                             Chicken vanillaChicken = ((Chicken) entity);
                             if (!vanillaChicken.getPassengers().isEmpty() && entity.tickCount > 1) {
                                 List<Entity> riders = vanillaChicken.getPassengers();
-                                EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.JOCKEY, false, false);
+                                EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.JOCKEY);
                                 if (enhancedChicken != null) {
                                     if (entity.hasCustomName()) {
                                         enhancedChicken.setCustomName(entity.getCustomName());
@@ -366,7 +370,7 @@ public class EventSubscriber {
                                 }
                             }
                         } else {
-                            EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                             if (enhancedChicken != null) {
                                 if (entity.hasCustomName()) {
                                     enhancedChicken.setCustomName(entity.getCustomName());
@@ -391,7 +395,7 @@ public class EventSubscriber {
             } else if (entity instanceof Pig) {
                 if (!GeneticAnimalsConfig.COMMON.spawnVanillaPigs.get() && GeneticAnimalsConfig.COMMON.spawnGeneticPigs.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("pig")) {
-                        EnhancedPig enhancedPig = ENHANCED_PIG.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedPig enhancedPig = ENHANCED_PIG.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                         if (enhancedPig != null) {
                             if (entity.hasCustomName()) {
                                 enhancedPig.setCustomName(entity.getCustomName());
@@ -419,7 +423,7 @@ public class EventSubscriber {
                 if (entity instanceof MushroomCow) {
                     if (!GeneticAnimalsConfig.COMMON.spawnVanillaMooshroom.get() && GeneticAnimalsConfig.COMMON.spawnGeneticMooshroom.get()) {
                         if (entity.getClass().getName().toLowerCase().contains("shroom")) {
-                            EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                             if (enhancedMooshroom != null) {
                                 if (entity.hasCustomName()) {
                                     enhancedMooshroom.setCustomName(entity.getCustomName());
@@ -432,7 +436,7 @@ public class EventSubscriber {
                                     enhancedMooshroom.setAge(0);
                                     enhancedMooshroom.setBirthTime(entity.getCommandSenderWorld(), -500000);
                                 }
-                                enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getMushroomType().name()));
+                                enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MushroomCow) entity).getVariant().name()));
                                 if (((MushroomCow) entity).isLeashed()) {
                                     enhancedMooshroom.setLeashedTo(((MushroomCow) entity).getLeashHolder(), true);
                                 }
@@ -443,7 +447,7 @@ public class EventSubscriber {
                     }
                 } else if (entity.getClass().getName().toLowerCase().contains("bloom")) {
                     if (GeneticAnimalsConfig.COMMON.spawnGeneticMoobloom.get()) {
-                        EnhancedMoobloom enhancedMoobloom = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedMoobloom enhancedMoobloom = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                         if (enhancedMoobloom!=null) {
                             if (entity.hasCustomName()) {
                                 enhancedMoobloom.setCustomName(entity.getCustomName());
@@ -466,7 +470,7 @@ public class EventSubscriber {
                     }
                 } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
                     if (!GeneticAnimalsConfig.COMMON.spawnVanillaCows.get() && GeneticAnimalsConfig.COMMON.spawnGeneticCows.get()) {
-                        EnhancedCow enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);;
+                        EnhancedCow enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);;
                         if (enhancedCow!=null) {
                             if (entity.hasCustomName()) {
                                 enhancedCow.setCustomName(entity.getCustomName());
@@ -496,7 +500,7 @@ public class EventSubscriber {
                             enhancedLlama.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedLlama.yBodyRot = ((Llama) entity).yBodyRot;
                             String breed = "";
-                            switch (((Llama) entity).getVariant()) {
+                            switch (((Llama) entity).getVariant().getId()) {
                                 case 0:
                                     breed = "cream";
                                     break;
@@ -542,14 +546,14 @@ public class EventSubscriber {
                                         enhancedLlama.equipAnimal(((Llama) entity).hasChest(), ((Llama) entity).getSwag());
                                     }
                                     if (((Llama) entity).hasChest()) {
-                                        CompoundTag nbt = entity.serializeNBT();
+                                        CompoundTag nbt = entity.serializeNBT(entity.registryAccess());
                                         ListTag listnbt = nbt.getList("Items", 10);
 
                                         for (int i = 0; i < listnbt.size(); ++i) {
                                             CompoundTag compoundnbt = listnbt.getCompound(i);
                                             int j = compoundnbt.getByte("Slot") & 255;
                                             if (j >= 2 && j + 5 < enhancedLlama.getEnhancedInventory().getContainerSize()) {
-                                                enhancedLlama.getEnhancedInventory().setItem(j + 5, ItemStack.of(compoundnbt));
+                                                enhancedLlama.getEnhancedInventory().setItem(j + 5, ItemStack.parseOptional(entity.registryAccess(), compoundnbt));
                                             }
                                         }
                                     }
@@ -574,7 +578,7 @@ public class EventSubscriber {
                             enhancedRabbit.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedRabbit.yBodyRot = ((Rabbit) entity).yBodyRot;
                             String breed = "";
-                            switch (((Rabbit) entity).getRabbitType()) {
+                            switch (((Rabbit) entity).getVariant().id()) {
                                 case 1:
                                 case 3:
                                     breed = "snow";
@@ -612,7 +616,7 @@ public class EventSubscriber {
             } else if (entity instanceof Turtle) {
                 if (!GeneticAnimalsConfig.COMMON.spawnVanillaTurtles.get() && GeneticAnimalsConfig.COMMON.spawnGeneticTurtles.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("turtle")) {
-                        EnhancedTurtle enhancedTurtle = ENHANCED_TURTLE.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedTurtle enhancedTurtle = ENHANCED_TURTLE.get().spawn((ServerLevel) entity.getCommandSenderWorld(), entity.blockPosition(), MobSpawnType.NATURAL);
                         if (enhancedTurtle != null) {
                             if (entity.hasCustomName()) {
                                 enhancedTurtle.setCustomName(entity.getCustomName());
@@ -686,27 +690,27 @@ public class EventSubscriber {
     public void onStartEntityTracking(PlayerEvent.StartTracking event) {
         Entity targetEntity = event.getTarget();
         if (targetEntity instanceof EnhancedAnimalAbstract) {
-            Player trackingPlayer = event.getPlayer();
+            Player trackingPlayer = event.getEntity();
 
             for(int invSlot = 0; invSlot < 7; invSlot++) {
                 ItemStack inventoryItemStack = ((EnhancedAnimalAbstract)targetEntity).getEnhancedInventory().getItem(invSlot);
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
-                EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) trackingPlayer), equipmentPacket);
+                PacketDistributor.sendToPlayer((ServerPlayer) trackingPlayer, equipmentPacket);
             }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
+    public void livingspawnEvent(FinalizeSpawnEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTrader) {
-            LevelAccessor world = event.getWorld();
+            LevelAccessor world = event.getLevel();
             ((WanderingTrader)entity).setDespawnDelay(48000);
             if(world instanceof ServerLevel) {
                 if(!GeneticAnimalsConfig.COMMON.spawnVanillaLlamas.get()) {
                     for (int i = 0; i < 2; i++) {
                         BlockPos blockPos = nearbySpawn(((ServerLevel)world), new BlockPos(entity.blockPosition()));
-                        EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().spawn((ServerLevel)world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
+                        EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().spawn((ServerLevel)world, blockPos, MobSpawnType.EVENT);
                         if(enhancedLlama != null) {
                             enhancedLlama.setLeashedTo(entity, true);
                             enhancedLlama.setAge(0);
@@ -759,18 +763,17 @@ public class EventSubscriber {
 
                         if (animals.get(selection) == ENHANCED_TURTLE.get()) {
                             ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
-                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
+                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemCost(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
                         } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
                             ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
-                            CompoundTag tag = stack.getOrCreateTag();
-                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200) == 0 ? 4 : ThreadLocalRandom.current().nextInt(4));
+                            CustomData.update(DataComponents.BUCKET_ENTITY_DATA, stack, tag -> tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200) == 0 ? 4 : ThreadLocalRandom.current().nextInt(4)));
                             //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
 //                        CompoundTag entityTags = new CompoundTag();
 //                        ListTag listtag = new ListTag();
 //                        listtag.add(StringTag.valueOf("WanderingTrader"));
 //                        entityTags.put("Tags", listtag);
 //                        tag.put("EntityTags",entityTags);
-                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
+                            ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemCost(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
                         } else {
                             for (int i = 1; i <= 2; i++) {
                                 BlockPos blockPos = nearbySpawn(((ServerLevel) world), new BlockPos(entity.blockPosition()));
@@ -815,20 +818,20 @@ public class EventSubscriber {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockInteractEvent(PlayerInteractEvent.RightClickBlock event) {
         Item item = event.getItemStack().getItem();
-        Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
+        Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
         if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
-            Direction.Axis axis = event.getWorld().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
-            event.getWorld().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
+            Direction.Axis axis = event.getLevel().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
+            event.getLevel().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
-            event.getWorld().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
+            event.getLevel().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {
-            event.getWorld().setBlock(event.getPos(), Blocks.DIRT_PATH.defaultBlockState(), 11);
+            event.getLevel().setBlock(event.getPos(), Blocks.DIRT_PATH.defaultBlockState(), 11);
         }
     }
 
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onLivingHurtEvent(LivingHurtEvent event) {
+    public void onLivingHurtEvent(LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof EnhancedAnimalAbstract geneticAnimal && geneticAnimal.invulnerable > 0) {
             event.setCanceled(true);
         }
@@ -899,7 +902,7 @@ public class EventSubscriber {
             int k = blockPosOfEntity.getZ() + world.random.nextInt(4 * 2) - 4;
             int l = world.getHeight(Heightmap.Types.WORLD_SURFACE, j, k);
             BlockPos blockpos1 = new BlockPos(j, l, k);
-            if (NaturalSpawner.isSpawnPositionOk(SpawnPlacements.Type.ON_GROUND, world, blockpos1, EntityType.WANDERING_TRADER)) {
+            if (SpawnPlacementTypes.ON_GROUND.isSpawnPositionOk(world, blockpos1, EntityType.WANDERING_TRADER)) {
                 blockpos = blockpos1;
                 break;
             }

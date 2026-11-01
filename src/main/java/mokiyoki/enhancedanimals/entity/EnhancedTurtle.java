@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.util.RandomSource;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
@@ -17,7 +18,6 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -49,7 +49,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
@@ -66,8 +66,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -104,9 +104,9 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, Level worldIn) {
         super(type, worldIn, 2, TURTLE_AUTOSOMAL_GENES_LENGTH, false);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.moveControl = new EnhancedTurtle.MoveHelperController(this);
-        this.maxUpStep = 1.0F;
+        this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0F);
     }
 
     protected void registerGoals() {
@@ -122,11 +122,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(1.2F, 0.4F).scale(this.getScale());
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(1.2F, 0.4F).scale(this.getDimensionScale());
     }
 
-    public float getScale() {
+    public float getDimensionScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float newbornSize = 0.2F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
@@ -201,7 +201,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         this.entityData.set(TRAVELLING, isTravelling);
     }
 
-    public boolean canBeLeashed(Player player) {
+    public boolean canBeLeashed() {
         return false;
     }
 
@@ -255,7 +255,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public boolean canDropScute() {
-        return this.hasScute && this.isAddedToWorld() && GeneticAnimalsConfig.COMMON.turtleScuteDropAge.get() <= this.getEnhancedAnimalAge();
+        return this.hasScute && this.isAddedToLevel() && GeneticAnimalsConfig.COMMON.turtleScuteDropAge.get() <= this.getEnhancedAnimalAge();
     }
 
     @Override
@@ -274,13 +274,13 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (this.homePosFixer && this.isAddedToWorld()) {
+        if (this.homePosFixer && this.isAddedToLevel()) {
             this.homePosFixer = false;
             this.setHome(this.blockPosition());
         }
         if (this.canDropScute()) {
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-                this.spawnAtLocation(Items.SCUTE, 1);
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                this.spawnAtLocation(Items.TURTLE_SCUTE, 1);
             }
             this.hasScute = false;
         }
@@ -309,7 +309,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(this.level);
+        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         turtle.setGenes(babyGenes);
         turtle.setSharedGenes(babyGenes);
@@ -345,13 +345,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         return false;
     }
 
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    public MobType getMobType() {
-        return MobType.WATER;
-    }
 
     /**
      * Get number of ticks, at least during which the living entity will be silent.
@@ -362,7 +355,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Nullable
     protected SoundEvent getAmbientSound() {
-        return !this.isInWater() && this.onGround && !this.isBaby() ? SoundEvents.TURTLE_AMBIENT_LAND : super.getAmbientSound();
+        return !this.isInWater() && this.onGround() && !this.isBaby() ? SoundEvents.TURTLE_AMBIENT_LAND : super.getAmbientSound();
     }
 
     protected void playSwimSound(float volume) {
@@ -387,8 +380,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         SoundEvent soundevent = this.isBaby() ? SoundEvents.TURTLE_SHAMBLE_BABY : SoundEvents.TURTLE_SHAMBLE;
         this.playSound(soundevent, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells() && this.random.nextBoolean()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE, 0.5F, 0.2F);
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.4F, 0.155F);
+            this.playSound(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE.value(), 0.5F, 0.2F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.4F, 0.155F);
         }
     }
 
@@ -449,14 +442,14 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         return this.hasEgg() ? 11 : -1;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HOME_POS, BlockPos.ZERO);
-        this.entityData.define(HAS_EGG, false);
-        this.entityData.define(TRAVEL_POS, BlockPos.ZERO);
-        this.entityData.define(GOING_HOME, false);
-        this.entityData.define(TRAVELLING, false);
-        this.entityData.define(IS_DIGGING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HOME_POS, BlockPos.ZERO);
+        builder.define(HAS_EGG, false);
+        builder.define(TRAVEL_POS, BlockPos.ZERO);
+        builder.define(GOING_HOME, false);
+        builder.define(TRAVELLING, false);
+        builder.define(IS_DIGGING, false);
     }
 
     public void addAdditionalSaveData(CompoundTag compound) {
@@ -503,7 +496,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData livingdata) {
         return commonInitialSpawnSetup(worldIn, livingdata, getAdultAge(), 48000, 800000, reason);
     }
 
@@ -515,18 +508,18 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         this.setHasScute();
     }
 
-    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, LevelAccessor p_223322_1_, MobSpawnType reason, BlockPos p_223322_3_, Random p_223322_4_) {
+    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, LevelAccessor p_223322_1_, MobSpawnType reason, BlockPos p_223322_3_, RandomSource p_223322_4_) {
         return p_223322_3_.getY() < p_223322_1_.getSeaLevel() + 4 && EnhancedTurtleEggBlock.hasProperHabitat(p_223322_1_, p_223322_3_) && p_223322_1_.getRawBrightness(p_223322_3_, 0) > 8;
     }
 
     @Override
     protected Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic) {
-        return new TurtleGeneticsInitialiser().generateNewGenetics(this.level, pos, isDomestic);
+        return new TurtleGeneticsInitialiser().generateNewGenetics(this.level(), pos, isDomestic);
     }
 
     @Override
     public Genes createInitialBreedGenes(LevelAccessor inWorld, BlockPos pos, String breed) {
-        return new TurtleGeneticsInitialiser().generateWithBreed(this.level, pos, breed);
+        return new TurtleGeneticsInitialiser().generateWithBreed(this.level(), pos, breed);
     }
 
     public void travel(Vec3 travelVector) {
@@ -544,7 +537,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public void thunderHit(ServerLevel p_241841_1_, LightningBolt p_241841_2_) {
-        this.hurt(DamageSource.LIGHTNING_BOLT, Float.MAX_VALUE);
+        this.hurt(this.damageSources().lightningBolt(), Float.MAX_VALUE);
     }
 
     static class GoHomeGoal extends Goal {
@@ -614,7 +607,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     vec31 = DefaultRandomPos.getPosTowards(this.turtle, 8, 7, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vec31 != null && !flag && !this.turtle.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
+                if (vec31 != null && !flag && !this.turtle.level().getBlockState(BlockPos.containing(vec31)).is(Blocks.WATER)) {
                     vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 5, vec3, (double)((float)Math.PI / 2F));
                 }
 
@@ -642,7 +635,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return !this.turtle.isInWater() && this.tryTicks <= 1200 && this.isValidTarget(this.turtle.level, this.getMoveToTarget());
+            return !this.turtle.isInWater() && this.tryTicks <= 1200 && this.isValidTarget(this.turtle.level(), this.getMoveToTarget());
         }
 
         /**
@@ -700,7 +693,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 if (this.turtle.isDigging < 1) {
                     this.turtle.setDigging(true);
                 } else if (this.turtle.isDigging > 200) {
-                    Level world = this.turtle.level;
+                    Level world = this.turtle.level();
                     world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
                     int numberOfEggs = this.turtle.random.nextInt(4) + 1;
                     BlockPos pos = this.blockPos.above();
@@ -708,7 +701,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     String name = this.turtle.hasCustomName() ? this.turtle.getName().getString() : "???";
                     for (int i = 0; i < numberOfEggs;i++) {
                         Genes eggGenes = new Genes(this.turtle.getGenes()).makeChild(true, true, this.turtle.mateGenetics);
-                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
+                        world.getData(NestCapabilityProvider.NEST_CAP).addNestEggPos(pos, mateName,name, eggGenes, true);
                     }
                     world.setBlock(pos, ModBlocks.TURTLE_EGG.get().defaultBlockState().setValue(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.turtle.setHasEgg(false);
@@ -781,7 +774,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
-            Random random = this.animal.getRandom();
+            RandomSource random = this.animal.getRandom();
             if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
@@ -806,7 +799,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 if (this.turtle.isBaby()) {
                     this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 3.0F, 0.06F));
                 }
-            } else if (this.turtle.onGround) {
+            } else if (this.turtle.onGround()) {
                 this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 2.0F, 0.06F));
             }
 
@@ -874,7 +867,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             if (this.mob.getLastHurtByMob() == null && !this.mob.isOnFire()) {
                 return false;
             } else {
-                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7);
+                BlockPos blockpos = this.lookForWater(this.mob.level(), this.mob, 7);
                 if (blockpos != null) {
                     this.posX = (double)blockpos.getX();
                     this.posY = (double)blockpos.getY();
@@ -909,7 +902,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 --this.cooldown;
                 return this.turtle.getHunger() < 3000;
             } else {
-                this.tempter = this.turtle.level.getNearestPlayer(TEMPT_TARGETING, this.turtle);
+                this.tempter = this.turtle.level().getNearestPlayer(TEMPT_TARGETING, this.turtle);
                 if (this.tempter == null) {
                     return false;
                 } else {
@@ -976,15 +969,15 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         public void start() {
             int i = 512;
             int j = 4;
-            Random random = this.turtle.random;
+            RandomSource random = this.turtle.random;
             int k = random.nextInt(1025) - 512;
             int l = random.nextInt(9) - 4;
             int i1 = random.nextInt(1025) - 512;
-            if ((double)l + this.turtle.getY() > (double)(this.turtle.level.getSeaLevel() - 1)) {
+            if ((double)l + this.turtle.getY() > (double)(this.turtle.level().getSeaLevel() - 1)) {
                 l = 0;
             }
 
-            BlockPos blockpos = new BlockPos((double)k + this.turtle.getX(), (double)l + this.turtle.getY(), (double)i1 + this.turtle.getZ());
+            BlockPos blockpos = BlockPos.containing((double)k + this.turtle.getX(), (double)l + this.turtle.getY(), (double)i1 + this.turtle.getZ());
             this.turtle.setTravelPos(blockpos);
             this.turtle.setTravelling(true);
             this.stuck = false;
@@ -1005,7 +998,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     int i = Mth.floor(vec31.x);
                     int j = Mth.floor(vec31.z);
                     int k = 34;
-                    if (!this.turtle.level.hasChunksAt(i - 34, j - 34, i + 34, j + 34)) {
+                    if (!this.turtle.level().hasChunksAt(i - 34, j - 34, i + 34, j + 34)) {
                         vec31 = null;
                     }
                 }

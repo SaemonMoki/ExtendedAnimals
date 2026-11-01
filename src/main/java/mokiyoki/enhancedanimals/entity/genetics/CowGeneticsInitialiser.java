@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
+import mokiyoki.enhancedanimals.util.LegacyBiomeCategory;
 import mokiyoki.enhancedanimals.init.breeds.CowBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -60,7 +61,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Biome biome = biomeHolder.value();
 
         int wildType = 2;
-        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
+        if (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS) {
             wildType = 3;
         } else if (biome.getBaseTemperature() >= 0.9F){
             wildType = 1;

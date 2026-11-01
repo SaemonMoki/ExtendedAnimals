@@ -32,7 +32,7 @@ public class ECRunAroundLikeCrazy extends Goal {
      */
     public boolean canUse() {
         if (this.rideable.isOnFire()) {
-            BlockPos blockpos = this.lookForWater(this.rideable.level, this.rideable, 5);
+            BlockPos blockpos = this.lookForWater(this.rideable.level(), this.rideable, 5);
             if (blockpos != null) {
                 this.posX = (double)blockpos.getX();
                 this.posY = (double)blockpos.getY();
@@ -75,7 +75,7 @@ public class ECRunAroundLikeCrazy extends Goal {
             if (entity instanceof Player) {
                 int i = this.rideable.getTemper();
                 int j = this.rideable.getMaxTemper();
-                if (j > 0 && this.rideable.getRandom().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(rideable, (Player)entity)) {
+                if (j > 0 && this.rideable.getRandom().nextInt(j) < i && !net.neoforged.neoforge.event.EventHooks.onAnimalTame(rideable, (Player)entity)) {
                     this.rideable.setTamedBy((Player)entity);
                     return;
                 }
@@ -85,7 +85,7 @@ public class ECRunAroundLikeCrazy extends Goal {
 
             this.rideable.ejectPassengers();
             this.rideable.makeMad();
-            this.rideable.level.broadcastEntityEvent(this.rideable, (byte)6);
+            this.rideable.level().broadcastEntityEvent(this.rideable, (byte)6);
         }
 
     }

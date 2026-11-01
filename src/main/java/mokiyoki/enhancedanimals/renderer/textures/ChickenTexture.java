@@ -376,7 +376,7 @@ public class ChickenTexture {
                 chicken.layer(patternCutOutGroup).texture("pattern/mottles/mottles.png").onlyIf(mottled && (gene[22]==2 || gene[23]==2)).orKey("1").add();
                 if (
                         pattern.contains("het") &&
-                                !Minecraft.getInstance().getResourceManager().hasResource( new ResourceLocation("eanimod:textures/entity/chicken/pattern/"+pattern+".png"))
+                                Minecraft.getInstance().getResourceManager().getResource( ResourceLocation.parse("eanimod:textures/entity/chicken/pattern/"+pattern+".png")).isEmpty()
                 ) {
 
                     TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);

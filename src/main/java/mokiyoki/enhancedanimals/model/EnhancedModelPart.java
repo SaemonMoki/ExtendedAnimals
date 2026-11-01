@@ -1,15 +1,15 @@
 package mokiyoki.enhancedanimals.model;
 
+import com.mojang.math.Axis;
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Map;
@@ -122,15 +122,15 @@ public class EnhancedModelPart {
    public void translateAndRotate(PoseStack p_104300_) {
       p_104300_.translate((double)(this.x / 16.0F), (double)(this.y / 16.0F), (double)(this.z / 16.0F));
       if (this.zRot != 0.0F) {
-         p_104300_.mulPose(Vector3f.ZP.rotation(this.zRot));
+         p_104300_.mulPose(Axis.ZP.rotation(this.zRot));
       }
 
       if (this.yRot != 0.0F) {
-         p_104300_.mulPose(Vector3f.YP.rotation(this.yRot));
+         p_104300_.mulPose(Axis.YP.rotation(this.yRot));
       }
 
       if (this.xRot != 0.0F) {
-         p_104300_.mulPose(Vector3f.XP.rotation(this.xRot));
+         p_104300_.mulPose(Axis.XP.rotation(this.xRot));
       }
 
    }
@@ -214,11 +214,11 @@ public class EnhancedModelPart {
 
       public void compile(PoseStack.Pose p_171333_, VertexConsumer p_171334_, int p_171335_, int p_171336_, float p_171337_, float p_171338_, float p_171339_, float p_171340_) {
          Matrix4f matrix4f = p_171333_.pose();
-         Matrix3f matrix3f = p_171333_.normal();
+         Vector3f vector3fBuffer = new Vector3f();
+         int colour = FastColor.ARGB32.colorFromFloat(p_171340_, p_171337_, p_171338_, p_171339_);
 
          for(EnhancedModelPart.Polygon modelpart$polygon : this.polygons) {
-            Vector3f vector3f = modelpart$polygon.normal.copy();
-            vector3f.transform(matrix3f);
+            Vector3f vector3f = p_171333_.transformNormal(modelpart$polygon.normal, vector3fBuffer);
             float f = vector3f.x();
             float f1 = vector3f.y();
             float f2 = vector3f.z();
@@ -227,9 +227,8 @@ public class EnhancedModelPart {
                float f3 = modelpart$vertex.pos.x() / 16.0F;
                float f4 = modelpart$vertex.pos.y() / 16.0F;
                float f5 = modelpart$vertex.pos.z() / 16.0F;
-               Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-               vector4f.transform(matrix4f);
-               p_171334_.vertex(vector4f.x(), vector4f.y(), vector4f.z(), p_171337_, p_171338_, p_171339_, p_171340_, modelpart$vertex.u, modelpart$vertex.v, p_171336_, p_171335_, f, f1, f2);
+               Vector3f vector4f = matrix4f.transformPosition(f3, f4, f5, vector3fBuffer);
+               p_171334_.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), colour, modelpart$vertex.u, modelpart$vertex.v, p_171336_, p_171335_, f, f1, f2);
             }
          }
 

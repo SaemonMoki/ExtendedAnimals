@@ -46,8 +46,8 @@
 //import net.minecraft.world.DifficultyInstance;
 //import net.minecraft.world.IWorld;
 //import net.minecraft.world.World;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import javax.annotation.Nullable;
 //import java.util.ArrayList;
@@ -146,7 +146,7 @@
 //
 //    Map<Item, Integer> foodWeightMap = new HashMap() {{
 ////        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-////        put(new ItemStack(Items.GRASS).getItem(), 3000);
+////        put(new ItemStack(Items.SHORT_GRASS).getItem(), 3000);
 ////        put(new ItemStack(Items.CARROT).getItem(), 3000);
 ////        put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
 ////        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
@@ -752,7 +752,7 @@
 ////
 ////        }
 ////
-////        return new ResourceLocation(Reference.MODID, "enhanced_cat");
+////        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "enhanced_cat");
 ////    }
 //
 //    public void lethalGenes(){

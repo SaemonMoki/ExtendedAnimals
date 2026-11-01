@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.world.ItemInteractionResult;
 import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import net.minecraft.world.level.block.Block;
@@ -265,10 +266,18 @@ public class PostBlock extends Block implements SimpleWaterloggedBlock {
             return state;
     }
 
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack itemstack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.isClientSide) {
-            ItemStack itemstack = player.getItemInHand(handIn);
-            return itemstack.getItem() == Items.LEAD ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            return itemstack.getItem() == Items.LEAD ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        } else {
+            return super.useItemOn(itemstack, state, worldIn, pos, player, handIn, hit);
+        }
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
+        if (worldIn.isClientSide) {
+            return InteractionResult.PASS;
         } else {
             return LeadItem.bindPlayerMobs(player, worldIn, pos);
         }
@@ -288,26 +297,26 @@ public class PostBlock extends Block implements SimpleWaterloggedBlock {
         builder.add(FACING, WATERLOGGED, NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
-    public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
     @Override
     public void setPlacedBy(Level worldIn, BlockPos blockPos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (state.getValue(FACING) != Direction.UP) {
-            worldIn.getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).addPostPos(blockPos);
+            worldIn.getData(PostCapabilityProvider.POST_CAP).addPostPos(blockPos);
         }
     }
 
     @Override
     public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
-        worldIn.getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
+        worldIn.getData(PostCapabilityProvider.POST_CAP).removePostPos(pos);
     }
 
     @Override
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        worldIn.getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
-        super.playerWillDestroy(worldIn, pos, state, player);
+    public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+        worldIn.getData(PostCapabilityProvider.POST_CAP).removePostPos(pos);
+        return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
 }

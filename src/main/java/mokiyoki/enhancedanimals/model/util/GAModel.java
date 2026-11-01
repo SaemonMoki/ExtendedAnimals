@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.model.util;
 
 
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -8,8 +9,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
                 }
 
                 if (wrapped.boxIsRendered) {
-                    wrapped.modelPart.compile(poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    wrapped.modelPart.compile(poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, FastColor.ARGB32.colorFromFloat(alpha, red, green, blue));
                 }
 
                 for(WrappedModelPart childPart : wrapped.children) {

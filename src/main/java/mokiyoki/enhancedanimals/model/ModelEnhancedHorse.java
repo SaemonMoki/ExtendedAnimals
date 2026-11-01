@@ -1,8 +1,9 @@
 package mokiyoki.enhancedanimals.model;
 
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.model.modeldata.HorseModelData;
 import mokiyoki.enhancedanimals.model.modeldata.HorsePhenotype;
@@ -15,8 +16,8 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Map;
 
@@ -241,7 +242,11 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int colour) {
+        float red = (float) FastColor.ARGB32.red(colour) / 255.0F;
+        float green = (float) FastColor.ARGB32.green(colour) / 255.0F;
+        float blue = (float) FastColor.ARGB32.blue(colour) / 255.0F;
+        float alpha = (float) FastColor.ARGB32.alpha(colour) / 255.0F;
         if (this.horseModelData!=null && this.horseModelData.getPhenotype() != null) {
             HorsePhenotype horse = horseModelData.getPhenotype();
 
@@ -311,8 +316,8 @@ public class ModelEnhancedHorse<T extends EnhancedHorse> extends EnhancedAnimalM
 //import net.minecraft.world.SimpleContainer;
 //import net.minecraft.world.item.ItemStack;
 //import net.minecraft.util.Mth;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import java.util.ArrayList;
 //import java.util.HashMap;

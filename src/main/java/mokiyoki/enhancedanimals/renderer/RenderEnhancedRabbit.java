@@ -12,8 +12,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by saemon on 2/09/2018.
@@ -22,8 +22,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhancedRabbit<EnhancedRabbit>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_RABBIT_TEXTURE_LOCATION = "eanimod:textures/entity/rabbit/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/rabbit/rabbitbase.png");
-    public static final ModelLayerLocation RABBIT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "rabbit"), "rabbit_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/rabbit/rabbitbase.png");
+    public static final ModelLayerLocation RABBIT_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "rabbit"), "rabbit_layer");
 
     public RenderEnhancedRabbit(EntityRendererProvider.Context renderManager)
     {
@@ -53,7 +53,7 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_RABBIT_TEXTURE_LOCATION, textureGrouping, entity.colouration, 128, 64));
 
                 textureCache.putInCache(s, resourcelocation);

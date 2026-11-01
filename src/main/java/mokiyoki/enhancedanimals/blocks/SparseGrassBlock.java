@@ -1,36 +1,44 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.PlantType;
+import mokiyoki.enhancedanimals.util.LegacyPlantType;
+import net.neoforged.neoforge.common.util.TriState;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-import static net.minecraftforge.common.PlantType.BEACH;
-import static net.minecraftforge.common.PlantType.CAVE;
-import static net.minecraftforge.common.PlantType.CROP;
-import static net.minecraftforge.common.PlantType.DESERT;
-import static net.minecraftforge.common.PlantType.NETHER;
-import static net.minecraftforge.common.PlantType.PLAINS;
-import static net.minecraftforge.common.PlantType.WATER;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.BEACH;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.CAVE;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.CROP;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.DESERT;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.NETHER;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.PLAINS;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.WATER;
 
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
+
+    public static final MapCodec<SparseGrassBlock> CODEC = simpleCodec(SparseGrassBlock::new);
+
+    @Override
+    protected MapCodec<SparseGrassBlock> codec() {
+        return CODEC;
+    }
 
     public SparseGrassBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.randomTick(state, level, pos, random);
         if (!level.isClientSide) {
             if (!level.isAreaLoaded(pos, 3))
@@ -54,23 +62,27 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable) {
-        if (plantable instanceof GrowablePlant || plantable instanceof GrowableDoubleHigh) return true;
-        PlantType type = plantable.getPlantType(world, pos.relative(facing));
+    public TriState canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, BlockState plantable) {
+        if (plantable.getBlock() instanceof GrowablePlant || plantable.getBlock() instanceof GrowableDoubleHigh) return TriState.TRUE;
+        LegacyPlantType type = LegacyPlantType.of(plantable);
 
         if (DESERT.equals(type) || NETHER.equals(type) || CROP.equals(type) || WATER.equals(type)) {
-            return false;
+            return TriState.FALSE;
         } else if (CAVE.equals(type) || PLAINS.equals(type)) {
-            return true;
+            return TriState.TRUE;
         } else if (BEACH.equals(type)) {
-            boolean hasWater = (world.getBlockState(pos.east()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.west()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.north()).getMaterial() == Material.WATER ||
-                    world.getBlockState(pos.south()).getMaterial() == Material.WATER);
-            return hasWater;
+            boolean hasWater = (isWater(world.getBlockState(pos.east())) ||
+                    isWater(world.getBlockState(pos.west())) ||
+                    isWater(world.getBlockState(pos.north())) ||
+                    isWater(world.getBlockState(pos.south())));
+            return hasWater ? TriState.TRUE : TriState.FALSE;
         }
 
-        return false;
+        return TriState.FALSE;
+    }
+
+    private static boolean isWater(BlockState state) {
+        return state.is(Blocks.WATER) || state.is(Blocks.BUBBLE_COLUMN);
     }
 
 //    @Nullable

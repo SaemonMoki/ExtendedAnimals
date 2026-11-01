@@ -10,14 +10,14 @@
 //import net.minecraft.client.renderer.entity.EntityRendererProvider;
 //import net.minecraft.client.renderer.entity.MobRenderer;
 //import net.minecraft.resources.ResourceLocation;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //@OnlyIn(Dist.CLIENT)
 //public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhancedHorse<EnhancedHorse>> {
 //    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
 //    private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entities/horse/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/horse/horsebase.png");
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entities/horse/horsebase.png");
 //
 //    public RenderEnhancedHorse(EntityRendererProvider.Context renderManager) {
 //        super(renderManager, new ModelEnhancedHorse<>(), 0.8F);
@@ -46,7 +46,7 @@
 //            }
 //
 //            try {
-//                resourcelocation = new ResourceLocation(s);
+//                resourcelocation = ResourceLocation.parse(s);
 //                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, textures, null, colourRGB));
 //
 //                textureCache.putInCache(s, resourcelocation);

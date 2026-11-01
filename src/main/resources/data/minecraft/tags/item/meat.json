@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:rawchicken_darksmall",
+    "eanimod:rawchicken_dark",
+    "eanimod:rawchicken_darkbig",
+    "eanimod:rawchicken_palesmall",
+    "eanimod:rawchicken_pale",
+    "eanimod:cookedchicken_darksmall",
+    "eanimod:cookedchicken_dark",
+    "eanimod:cookedchicken_darkbig",
+    "eanimod:cookedchicken_palesmall",
+    "eanimod:cookedchicken_pale",
+    "eanimod:rawrabbit_small",
+    "eanimod:cookedrabbit_small",
+    "eanimod:rabbitstew_weak"
+  ]
+}

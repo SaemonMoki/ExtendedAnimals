@@ -3,7 +3,10 @@ package mokiyoki.enhancedanimals.items;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
 import net.minecraft.core.BlockPos;
+import mokiyoki.enhancedanimals.util.CustomDataHelper;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -24,15 +27,16 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
 
 public class EnhancedAxolotlEggBucket extends MobBucketItem {
     public EnhancedAxolotlEggBucket(Supplier<? extends EntityType<?>> entitySupplier, Supplier<? extends Fluid> fluidSupplier, Supplier<? extends SoundEvent> soundSupplier, Properties properties) {
-        super(entitySupplier, fluidSupplier, soundSupplier, properties);
+        super(entitySupplier.get(), fluidSupplier.get(), soundSupplier.get(), properties);
     }
 
     public static void setData(ItemStack stack, String sireName, String damName, String genes, int hatchTime) {
-        CompoundTag data = stack.getOrCreateTagElement("display");
-        data.putString("SireName", sireName);
-        data.putString("DamName", damName);
-        data.putInt("HatchTime", hatchTime);
-        data.putString("Genetics", genes);
+        CustomDataHelper.updateTagElement(stack, "display", data -> {
+            data.putString("SireName", sireName);
+            data.putString("DamName", damName);
+            data.putInt("HatchTime", hatchTime);
+            data.putString("Genetics", genes);
+        });
     }
 
     @Override
@@ -45,10 +49,10 @@ public class EnhancedAxolotlEggBucket extends MobBucketItem {
 
     private void spawnAxolotlEgg(ServerLevel level, ItemStack stack, BlockPos pos) {
         EnhancedAxolotlEgg axolotlEgg = ENHANCED_AXOLOTL_EGG.get().create(level);
-        CompoundTag data = stack.getOrCreateTagElement("display");
+        CompoundTag data = CustomDataHelper.getTagElementOrEmpty(stack, "display");
         axolotlEgg.setParentNames(data.getString("SireName"), data.getString("DamName"));
         axolotlEgg.setGenes(data.getString("Genetics"));
-        if (stack.hasCustomHoverName()) {
+        if (stack.has(DataComponents.CUSTOM_NAME)) {
             axolotlEgg.setCustomName(stack.getHoverName());
         }
         axolotlEgg.setHatchTime(data.contains("HatchTime") ? data.getInt("HatchTime") : GeneticAnimalsConfig.COMMON.axolotlHatchTime.get());
@@ -57,6 +61,6 @@ public class EnhancedAxolotlEggBucket extends MobBucketItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack p_151155_, @Nullable Level p_151156_, List<Component> p_151157_, TooltipFlag p_151158_) {}
+    public void appendHoverText(ItemStack p_151155_, Item.TooltipContext p_151156_, List<Component> p_151157_, TooltipFlag p_151158_) {}
 
 }

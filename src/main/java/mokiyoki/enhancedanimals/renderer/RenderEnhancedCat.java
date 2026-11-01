@@ -8,8 +8,8 @@
 //import net.minecraft.client.renderer.entity.EntityRendererManager;
 //import net.minecraft.client.renderer.entity.MobRenderer;
 //import net.minecraft.util.ResourceLocation;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import java.util.Map;
 //
@@ -18,7 +18,7 @@
 //{
 //    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
 //    private static final String ENHANCED_CAT_TEXTURE_LOCATION = "eanimod:textures/entities/cat/";
-//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cat/catbase.png");
+//    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entities/cat/catbase.png");
 //
 //    public RenderEnhancedCat(EntityRendererManager render)
 //    {
@@ -45,7 +45,7 @@
 //            }
 //
 //            try {
-//                resourcelocation = new ResourceLocation(s);
+//                resourcelocation = ResourceLocation.parse(s);
 //                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CAT_TEXTURE_LOCATION, textures, null, null));
 //                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
 //            } catch (IllegalStateException e) {

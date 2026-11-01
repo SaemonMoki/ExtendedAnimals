@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.model;
 
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotlEgg;
@@ -49,11 +50,15 @@ public class ModelEnhancedAxolotlEgg<T extends EnhancedAxolotlEgg> extends Entit
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int colour) {
+        float red = (float) FastColor.ARGB32.red(colour) / 255.0F;
+        float green = (float) FastColor.ARGB32.green(colour) / 255.0F;
+        float blue = (float) FastColor.ARGB32.blue(colour) / 255.0F;
+        float alpha = (float) FastColor.ARGB32.alpha(colour) / 255.0F;
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.0F, 0.0D);
         poseStack.scale(1.0F, 1.0F, 1.0F);
-        this.egg.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.egg.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, FastColor.ARGB32.colorFromFloat(alpha, red, green, blue));
         poseStack.popPose();
     }
 }

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.util;
 
+import net.minecraft.world.item.trading.ItemCost;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -9,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,7 +124,7 @@ public final class EanimodVillagerTrades extends MerchantOffers {
                 }
             }
         }
-        return new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH.get()), ThreadLocalRandom.current().nextInt(level)+10, level*level, 0.2F);
+        return new MerchantOffer(new ItemCost(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH.get()), ThreadLocalRandom.current().nextInt(level)+10, level*level, 0.2F);
     }
 
     public static MerchantOffer getWanderingEanimodTrade() {
@@ -131,7 +132,7 @@ public final class EanimodVillagerTrades extends MerchantOffers {
         selectedTradeType.addAll(LeatherWorkerTrades);
         selectedTradeType.addAll(ShepardTrades);
         int numberOfTrades = selectedTradeType.size();
-        return numberOfTrades!= 0 ? selectedTradeType.get(ThreadLocalRandom.current().nextInt(numberOfTrades)).getSale(ThreadLocalRandom.current().nextInt(8)+2, Items.EMERALD, true) : new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH.get()), ThreadLocalRandom.current().nextInt(5)+10, 0, 0.2F);
+        return numberOfTrades!= 0 ? selectedTradeType.get(ThreadLocalRandom.current().nextInt(numberOfTrades)).getSale(ThreadLocalRandom.current().nextInt(8)+2, Items.EMERALD, true) : new MerchantOffer(new ItemCost(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH.get()), ThreadLocalRandom.current().nextInt(5)+10, 0, 0.2F);
     }
 
     private static ItemStack getRandomDye(ItemStack itemStack) {
@@ -151,7 +152,7 @@ public final class EanimodVillagerTrades extends MerchantOffers {
         int maxValue;
         boolean dyeable = false;
 
-        public SaleItemHolder(RegistryObject<Item> saleItem, int minLevel, int maxLevel, int minValue, int maxValue, boolean dyeable, Item... types) {
+        public SaleItemHolder(DeferredHolder<Item, ? extends Item> saleItem, int minLevel, int maxLevel, int minValue, int maxValue, boolean dyeable, Item... types) {
             this.minLevel = minLevel;
             this.maxLevel = maxLevel;
             this.saleItem = saleItem.get();
@@ -161,7 +162,7 @@ public final class EanimodVillagerTrades extends MerchantOffers {
             this.types.addAll(Arrays.asList(types));
         }
 
-        public SaleItemHolder(Item saleItem, int minLevel, int maxLevel, int minValue, int maxValue, boolean dyeable, RegistryObject<Item> types) {
+        public SaleItemHolder(Item saleItem, int minLevel, int maxLevel, int minValue, int maxValue, boolean dyeable, DeferredHolder<Item, ? extends Item> types) {
             this.minLevel = minLevel;
             this.maxLevel = maxLevel;
             this.saleItem = saleItem;
@@ -277,9 +278,9 @@ public final class EanimodVillagerTrades extends MerchantOffers {
             int experience = this.minLevel >= villagerLevel? villagerLevel*villagerLevel : ThreadLocalRandom.current().nextInt(this.minLevel, villagerLevel) * ThreadLocalRandom.current().nextInt(this.minLevel, villagerLevel);
 
             if (this.dyeable) {
-                return new MerchantOffer(payment, ThreadLocalRandom.current().nextInt(4)==0 ? getRandomDye(new ItemStack(this.saleItem)) : new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
+                return new MerchantOffer(new ItemCost(payment.getItem(), payment.getCount()), ThreadLocalRandom.current().nextInt(4)==0 ? getRandomDye(new ItemStack(this.saleItem)) : new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
             } else {
-                return new MerchantOffer(payment, new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
+                return new MerchantOffer(new ItemCost(payment.getItem(), payment.getCount()), new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
             }
         }
     }

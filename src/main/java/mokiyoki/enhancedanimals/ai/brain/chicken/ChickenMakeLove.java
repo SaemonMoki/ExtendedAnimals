@@ -16,7 +16,7 @@ public class ChickenMakeLove extends AnimalMakeLove {
     EnhancedChicken breedTarget;
 
     public ChickenMakeLove(float speed) {
-        super(ModEntities.ENHANCED_CHICKEN.get(), speed);
+        super(ModEntities.ENHANCED_CHICKEN.get(), speed, 2);
     }
 
     @Override

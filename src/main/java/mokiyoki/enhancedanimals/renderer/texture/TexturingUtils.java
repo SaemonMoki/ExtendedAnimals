@@ -11,11 +11,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mojang.blaze3d.platform.NativeImage.combine;
-import static com.mojang.blaze3d.platform.NativeImage.getA;
-import static com.mojang.blaze3d.platform.NativeImage.getB;
-import static com.mojang.blaze3d.platform.NativeImage.getG;
-import static com.mojang.blaze3d.platform.NativeImage.getR;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.combine;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getA;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getB;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getG;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getR;
 
 public class TexturingUtils {
 
@@ -28,8 +28,8 @@ public class TexturingUtils {
 
     public static NativeImage loadNativeImage(String texture, ResourceManager manager, String modLocation, int x, int y) {
         try {
-            Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture));
-            NativeImage image = NativeImage.read(iresource.getInputStream());
+            Resource iresource = manager.getResourceOrThrow(ResourceLocation.parse(modLocation+texture));
+            NativeImage image = NativeImage.read(iresource.open());
             if (image.getWidth() != x || image.getHeight() != y) {
                 NativeImage image1 = new NativeImage(x, y, true);
                 int xb = image.getWidth();

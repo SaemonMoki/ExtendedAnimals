@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.util.RandomSource;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Dynamic;
@@ -15,6 +17,7 @@ import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
+import net.neoforged.neoforge.network.PacketDistributor;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -45,7 +48,6 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -76,11 +78,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -90,7 +92,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL_EGG;
@@ -114,10 +115,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
         super(type, worldIn, 2, AXOLOTL_AUTOSOMAL_GENES_LENGTH, false);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.moveControl = new EnhancedAxolotl.AxolotlMoveControl(this);
         this.lookControl = new EnhancedAxolotl.AxolotlLookControl(this, 20);
-        this.maxUpStep = 1.0F;
+        this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0F);
     }
 
     protected void registerGoals() {
@@ -133,7 +134,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void customServerAiStep() {
-        this.getBrain().tick((ServerLevel)this.level, this);
+        this.getBrain().tick((ServerLevel)this.level(), this);
         AxolotlBrain.updateActivity(this);
         if (!this.isNoAi()) {
             Optional<Integer> optional = this.getBrain().getMemory(MemoryModuleType.PLAY_DEAD_TICKS);
@@ -147,23 +148,22 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(0.75F, 0.42F).scale(this.getScale());
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(0.75F, 0.42F).scale(this.getDimensionScale());
     }
 
-    @Override
-    public float getScale() {
+    public float getDimensionScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float nbSize = 0.25F;
         return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HAS_EGG, false);
-        this.entityData.define(DATA_PLAYING_DEAD, false);
-        this.entityData.define(FROM_BUCKET, false);
-        this.entityData.define(BUCKET_IMG, "");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_EGG, false);
+        builder.define(DATA_PLAYING_DEAD, false);
+        builder.define(FROM_BUCKET, false);
+        builder.define(BUCKET_IMG, "");
     }
 
     public void setBucketImageData(String imageArray) {
@@ -290,7 +290,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(this.level);
+        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(this.level());
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), otherParent.getOrSetIsFemale(), otherParent.getGenes());
         axolotl.setGenes(babyGenes);
         axolotl.setSharedGenes(babyGenes);
@@ -340,13 +340,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         return false;
     }
 
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    public MobType getMobType() {
-        return MobType.WATER;
-    }
 
     public void setPlayingDead(boolean p_149199_) {
         this.entityData.set(DATA_PLAYING_DEAD, p_149199_);
@@ -395,8 +388,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells() && this.random.nextBoolean()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE, 0.5F, 0.2F);
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.4F, 0.155F);
+            this.playSound(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE.value(), 0.5F, 0.2F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.4F, 0.155F);
         }
         super.playStepSound(pos, blockIn);
     }
@@ -540,7 +533,7 @@ NBT read/write
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 48000, 800000, spawnReason);
     }
 
@@ -551,7 +544,7 @@ NBT read/write
 
     @Override
     protected Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic) {
-        return new AxolotlGeneticsInitialiser().generateNewGenetics(this.level, pos, isDomestic);
+        return new AxolotlGeneticsInitialiser().generateNewGenetics(this.level(), pos, isDomestic);
     }
 
     @Override
@@ -562,7 +555,7 @@ NBT read/write
 
     @Override
     public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
-        return new AxolotlGeneticsInitialiser().generateWithBreed(this.level, pos, breed);
+        return new AxolotlGeneticsInitialiser().generateWithBreed(this.level(), pos, breed);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -652,7 +645,7 @@ NBT read/write
     };
 
     public void sendBucketTextureToServer(int[] bucketImageTexture) {
-        channel.sendToServer(new AxolotlBucketTexturePacket(this.getId(), bucketImageTexture));
+        PacketDistributor.sendToServer(new AxolotlBucketTexturePacket(this.getId(), bucketImageTexture));
     }
 
     @Override
@@ -674,7 +667,7 @@ NBT read/write
             EnhancedAxolotlBucket.setImage(stack, getImageArrayFromString(this.getBucketImage()));
             EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
-            EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
+            EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1), this.registryAccess());
             if (this.hasEgg() && this.mateGenetics != null) {
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
@@ -713,7 +706,7 @@ NBT read/write
             this.setAirSupply(p_149194_ - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
-                this.hurt(DamageSource.DRY_OUT, 2.0F);
+                this.hurt(this.damageSources().dryOut(), 2.0F);
             }
         } else {
             this.setAirSupply(this.getMaxAirSupply());
@@ -735,14 +728,22 @@ NBT read/write
         return 1.5D + (double)p_149185_.getBbWidth() * 2.0D;
     }
 
+    @Override
+    public boolean isWithinMeleeAttackRange(LivingEntity entity) {
+        return this.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) <= this.getMeleeAttackRangeSqr(entity);
+    }
+
     protected PathNavigation createNavigation(Level p_149128_) {
         return new EnhancedAxolotl.AxolotlPathNavigation(this, p_149128_);
     }
 
     public boolean doHurtTarget(Entity p_149201_) {
-        boolean flag = p_149201_.hurt(DamageSource.mobAttack(this), (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
+        DamageSource damageSource = this.damageSources().mobAttack(this);
+        boolean flag = p_149201_.hurt(damageSource, (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
         if (flag) {
-            this.doEnchantDamageEffects(this, p_149201_);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                EnchantmentHelper.doPostAttackEffects(serverLevel, p_149201_, damageSource);
+            }
             this.playSound(SoundEvents.AXOLOTL_ATTACK, 1.0F, 1.0F);
         }
 
@@ -751,7 +752,7 @@ NBT read/write
 
     public boolean hurt(DamageSource p_149115_, float p_149116_) {
         float f = this.getHealth();
-        if (!this.level.isClientSide && !this.isNoAi() && this.level.random.nextInt(3) == 0 && ((float)this.level.random.nextInt(3) < p_149116_ || f / this.getMaxHealth() < 0.5F) && p_149116_ < f && this.isInWater() && (p_149115_.getEntity() != null || p_149115_.getDirectEntity() != null) && !this.isPlayingDead()) {
+        if (!this.level().isClientSide && !this.isNoAi() && this.level().random.nextInt(3) == 0 && ((float)this.level().random.nextInt(3) < p_149116_ || f / this.getMaxHealth() < 0.5F) && p_149116_ < f && this.isInWater() && (p_149115_.getEntity() != null || p_149115_.getDirectEntity() != null) && !this.isPlayingDead()) {
             this.brain.setMemory(MemoryModuleType.PLAY_DEAD_TICKS, 200);
         }
 
@@ -765,7 +766,7 @@ NBT read/write
     public static void onStopAttacking(EnhancedAxolotl p_149120_) {
         Optional<LivingEntity> optional = p_149120_.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET);
         if (optional.isPresent()) {
-            Level level = p_149120_.level;
+            Level level = p_149120_.level();
             LivingEntity livingentity = optional.get();
             if (livingentity.isDeadOrDying()) {
                 DamageSource damagesource = livingentity.getLastDamageSource();
@@ -830,7 +831,7 @@ NBT read/write
         return false;
     }
 
-    public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, Random p_186254_) {
+    public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, RandomSource p_186254_) {
         return p_186251_.getBlockState(p_186253_.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
     }
 
@@ -931,7 +932,7 @@ NBT read/write
                     }
 
                     if (this.axolotl.eggLayingTimer%40 == 0) {
-                        Level level = this.axolotl.getLevel();
+                        Level level = this.axolotl.level();
                         BlockPos pos = this.blockPos;
                         String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
                         String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
@@ -1026,7 +1027,7 @@ NBT read/write
                 CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.axolotl, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
-            Random random = this.animal.getRandom();
+            RandomSource random = this.animal.getRandom();
             if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }

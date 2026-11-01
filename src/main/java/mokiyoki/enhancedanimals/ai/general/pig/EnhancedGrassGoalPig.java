@@ -34,7 +34,7 @@
 //            if (this.eatingGrassTimer == 4) {
 //                BlockPos blockpos = new BlockPos(this.grassEaterEntity.blockPosition());
 //                if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
-//                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+//                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
 //                        this.entityWorld.destroyBlock(blockpos, false);
 //                    }
 //
@@ -42,7 +42,7 @@
 //                    this.grassEaterEntity.ate();
 //
 //                } else if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos)) || IS_MUSHROOM.test(this.entityWorld.getBlockState(blockpos))) {
-//                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+//                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
 //                        this.entityWorld.destroyBlock(blockpos, false);
 //                    }
 //
@@ -51,7 +51,7 @@
 //                }
 //                BlockPos blockpos1 = blockpos.below();
 //                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.COARSE_DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.PODZOL || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.MYCELIUM || this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
-//                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+//                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
 //                        this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 ////                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
 //                        this.entityWorld.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);

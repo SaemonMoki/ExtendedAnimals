@@ -4,11 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Breed {
@@ -122,7 +122,7 @@ public class Breed {
         }
 
         float temp = (0.5F + biome.getBaseTemperature())*0.4F;
-        float rain = biome.getDownfall()*1.1111F;
+        float rain = biome.getModifiedClimateSettings().downfall()*1.1111F;
 
         temp = 1.0F - Math.abs(((0.5F + this.temperature)*0.4F)-temp);
         rain = 1.0F - Math.abs((this.rain*1.1111F) - rain);
@@ -135,7 +135,7 @@ public class Breed {
     }
 
     public final Float likelyhood(boolean forTrader) {
-        return likelyhood(ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()), true);
+        return likelyhood(null, true);
     }
 
     public final Genes generateGenes(Float accuracy, Genes genes){
@@ -168,6 +168,26 @@ public class Breed {
     }
 
     public static class Properties {
+        private static final Map<ResourceKey<Biome>, float[]> BIOME_CLIMATES = Map.ofEntries(
+                Map.entry(Biomes.BEACH, new float[]{0.8F, 0.4F}),
+                Map.entry(Biomes.BIRCH_FOREST, new float[]{0.6F, 0.6F}),
+                Map.entry(Biomes.DARK_FOREST, new float[]{0.7F, 0.8F}),
+                Map.entry(Biomes.DESERT, new float[]{2.0F, 0.0F}),
+                Map.entry(Biomes.FLOWER_FOREST, new float[]{0.7F, 0.8F}),
+                Map.entry(Biomes.FOREST, new float[]{0.7F, 0.8F}),
+                Map.entry(Biomes.JUNGLE, new float[]{0.95F, 0.9F}),
+                Map.entry(Biomes.LUSH_CAVES, new float[]{0.5F, 0.5F}),
+                Map.entry(Biomes.OLD_GROWTH_BIRCH_FOREST, new float[]{0.6F, 0.6F}),
+                Map.entry(Biomes.PLAINS, new float[]{0.8F, 0.4F}),
+                Map.entry(Biomes.SAVANNA, new float[]{2.0F, 0.0F}),
+                Map.entry(Biomes.SNOWY_PLAINS, new float[]{0.0F, 0.5F}),
+                Map.entry(Biomes.SNOWY_TAIGA, new float[]{-0.5F, 0.4F}),
+                Map.entry(Biomes.TAIGA, new float[]{0.25F, 0.8F}),
+                Map.entry(Biomes.THE_VOID, new float[]{0.5F, 0.5F}),
+                Map.entry(Biomes.WINDSWEPT_FOREST, new float[]{0.2F, 0.3F}),
+                Map.entry(Biomes.WINDSWEPT_HILLS, new float[]{0.2F, 0.3F})
+        );
+
         private String breedName;
         private String varietyName;
         private Float temperature;
@@ -179,8 +199,8 @@ public class Breed {
 
         public Breed.Properties setData(String name, ResourceKey<Biome> biome, Breed.Rarity rarity) {
             this.breedName = name.toLowerCase();
-            this.temperature = ForgeRegistries.BIOMES.getValue(biome.location()).getBaseTemperature();
-            this.rain = ForgeRegistries.BIOMES.getValue(biome.location()).getDownfall();
+            this.temperature = BIOME_CLIMATES.get(biome)[0];
+            this.rain = BIOME_CLIMATES.get(biome)[1];
             this.rarity = rarity;
             return this;
         }
@@ -202,8 +222,8 @@ public class Breed {
         }
 
         public Breed.Properties setBiome(ResourceKey<Biome> biome) {
-            this.temperature = ForgeRegistries.BIOMES.getValue(biome.location()).getBaseTemperature();
-            this.rain = ForgeRegistries.BIOMES.getValue(biome.location()).getDownfall();
+            this.temperature = BIOME_CLIMATES.get(biome)[0];
+            this.rain = BIOME_CLIMATES.get(biome)[1];
             return this;
         }
 

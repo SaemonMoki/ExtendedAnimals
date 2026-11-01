@@ -12,8 +12,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -21,8 +21,8 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entity/pig/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/pig/pigbase.png");
-    public static final ModelLayerLocation PIG_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "pig"), "pig_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/pig/pigbase.png");
+    public static final ModelLayerLocation PIG_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "pig"), "pig_layer");
 
     public RenderEnhancedPig(EntityRendererProvider.Context renderManager)
     {
@@ -53,7 +53,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_PIG_TEXTURE_LOCATION, textureGrouping, colourRGB, 256, 256));
 
                 textureCache.putInCache(s, resourcelocation);

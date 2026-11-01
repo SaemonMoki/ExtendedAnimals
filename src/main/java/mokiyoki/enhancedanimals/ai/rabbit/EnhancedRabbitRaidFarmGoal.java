@@ -23,7 +23,7 @@
 //
 //    public boolean canUse() {
 //        if (this.nextStartTick <= 0) {
-//            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.rabbit.level, this.rabbit)) {
+//            if (!net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.rabbit.level, this.rabbit)) {
 //                return false;
 //            }
 //

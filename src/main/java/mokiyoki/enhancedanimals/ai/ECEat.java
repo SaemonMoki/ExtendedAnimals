@@ -8,13 +8,13 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
 
 public class ECEat extends Goal {
-    private static final Predicate<BlockState> IS_TALL_GRASS = BlockStatePredicate.forBlock(Blocks.GRASS);
+    private static final Predicate<BlockState> IS_TALL_GRASS = BlockStatePredicate.forBlock(Blocks.SHORT_GRASS);
 
     private final Mob eatingEntity;
     private final Level entityWorld;
@@ -22,7 +22,7 @@ public class ECEat extends Goal {
 
     public ECEat(Mob chickenEntity) {
         this.eatingEntity = chickenEntity;
-        this.entityWorld = chickenEntity.level;
+        this.entityWorld = chickenEntity.level();
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
@@ -33,7 +33,7 @@ public class ECEat extends Goal {
         if (this.eatingEntity.getRandom().nextInt(this.eatingEntity.isBaby() ? 50 : 1000) != 0) {
             return false;
         } else {
-            BlockPos blockpos = new BlockPos(this.eatingEntity.getX(), this.eatingEntity.getY(), this.eatingEntity.getZ());
+            BlockPos blockpos = BlockPos.containing(this.eatingEntity.getX(), this.eatingEntity.getY(), this.eatingEntity.getZ());
             if (IS_TALL_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
                 return true;
             } else {
@@ -78,17 +78,17 @@ public class ECEat extends Goal {
     public void updateTask() {
         this.eatingTimer = Math.max(0, this.eatingTimer - 1);
         if (this.eatingTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.eatingEntity.getX(), this.eatingEntity.getY(), this.eatingEntity.getZ());
+            BlockPos blockpos = BlockPos.containing(this.eatingEntity.getX(), this.eatingEntity.getY(), this.eatingEntity.getZ());
             //this is to eat the tall grass if the chicken is IN the tall grass
             if (IS_TALL_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
-                if (ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.eatingEntity)) {
+                if (EventHooks.canEntityGrief(this.entityWorld, this.eatingEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
                 }
                 this.eatingEntity.ate();
             } else {
                 BlockPos blockpos1 = blockpos.below();
-                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS) {
-                    if (ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.eatingEntity)) {
+                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SHORT_GRASS) {
+                    if (EventHooks.canEntityGrief(this.entityWorld, this.eatingEntity)) {
                         this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
                         this.entityWorld.setBlock(blockpos1, Blocks.DIRT.defaultBlockState(), 2);
                     }

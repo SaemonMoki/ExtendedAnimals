@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.util.RandomSource;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
@@ -44,7 +46,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
@@ -65,7 +66,7 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         return new ChickenNestTileEntity(blockPos,blockState);
     }
 
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity) {
             if (nestEntity.tick(level)){
                 nestEntity.hatchEggs(level, pos, random);
@@ -147,13 +148,13 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
         }
     }
 
-    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public static void hatchEggs(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestEntity && !nestEntity.isEmpty()) {
             level.playSound((Player) null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
 
             while (!nestEntity.isEmpty()) {
                 ItemStack eggStack = nestEntity.removeItemForHatchNoUpdate(nestEntity.getSlotWithEgg(),1);
-                EggHolder egg = eggStack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(eggStack);
+                EggHolder egg = EggCapabilityProvider.of(eggStack).orElse(null).getEggHolder(eggStack);
 
                 if (egg.hasParents()) {
                     if (egg.getGenes()!=null) {
@@ -191,23 +192,22 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        ItemStack itemStack = player.getItemInHand(interactionHand);
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         ChickenNestTileEntity nestEntity = (ChickenNestTileEntity) level.getBlockEntity(blockPos);
         if (nestEntity!=null) {
             if (itemStack.isEmpty() && !nestEntity.isEmpty()) {
                 player.setItemInHand(interactionHand, nestEntity.removeItem(nestEntity.getSlotWithEgg(), 1));
                 level.playSound(player, player.getX(), player.getY(),player.getZ(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
             } else if (itemStack.getItem() instanceof EnhancedEgg && !nestEntity.isFull()) {
                 nestEntity.addEggToNest(level, itemStack);
                 level.playSound(player, player.getX(), player.getY(),player.getZ(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.setItemInHand(interactionHand, new ItemStack(Items.AIR));
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
     public void onRemove(BlockState wasBlockState, Level level, BlockPos pos, BlockState becomeBlockState, boolean p_51542_) {
@@ -238,12 +238,12 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                     spawnAsGeneticItemEntity(level, pos, eggStack);
                 }
             }
-            state.spawnAfterBreak((ServerLevel)level, pos, stack);
+            state.spawnAfterBreak((ServerLevel)level, pos, stack, false);
         }
     }
 
 
-    public boolean isPathfindable(BlockState blockState, BlockGetter p_53307_, BlockPos blockPos, PathComputationType p_53309_) {
+    protected boolean isPathfindable(BlockState blockState, PathComputationType p_53309_) {
         return p_53309_ == PathComputationType.LAND;
     }
 

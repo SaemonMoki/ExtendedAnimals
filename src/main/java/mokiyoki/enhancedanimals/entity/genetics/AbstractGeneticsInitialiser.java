@@ -6,11 +6,12 @@ import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,7 +25,7 @@ public abstract class AbstractGeneticsInitialiser {
     protected Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
         Holder<Biome> holder = world.getBiome(pos);
 
-        Genes localWildType = generateLocalWildGenetics(holder,holder.value() == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()) || GeneticAnimalsConfig.COMMON.spawnWithRandomBiome.get());
+        Genes localWildType = generateLocalWildGenetics(holder,holder.is(Biomes.THE_VOID) || GeneticAnimalsConfig.COMMON.spawnWithRandomBiome.get());
 
         if (generateBreed) {
             int areaSize = 1; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
@@ -46,7 +47,7 @@ public abstract class AbstractGeneticsInitialiser {
         } else {
             breedAsString = breedAsString.strip().toLowerCase();
             if (isBiome(breedAsString)) {
-                return generateWithBiome(breedAsString);
+                return generateWithBiome(world, breedAsString);
             }
         }
 
@@ -55,36 +56,38 @@ public abstract class AbstractGeneticsInitialiser {
         return getBreedFromStringOrDefault(breeds, breedAsString, localWildType);
     }
 
-    protected Genes generateWithBiome(String biome) {
+    protected Genes generateWithBiome(LevelAccessor world, String biome) {
         biome = biome.toLowerCase();
 
+        Registry<Biome> biomeRegistry = world.registryAccess().registryOrThrow(Registries.BIOME);
+
         if (biome.contains("darkwoods") || biome.equals("darkforest")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.DARK_FOREST.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.DARK_FOREST), false);
         } else if (biome.contains("savanna")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SAVANNA.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.SAVANNA), false);
         } else if (biome.contains("desert")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.DESERT.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.DESERT), false);
         } else if (biome.contains("tundra") || biome.contains("snow")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SNOWY_PLAINS.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.SNOWY_PLAINS), false);
         } else if (biome.contains("mountains")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.WINDSWEPT_HILLS.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.WINDSWEPT_HILLS), false);
         } else if (biome.contains("sunflower")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SUNFLOWER_PLAINS.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.SUNFLOWER_PLAINS), false);
         } else if (biome.contains("marsh") || biome.equals("swamp")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.SWAMP.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.SWAMP), false);
         } else if (biome.contains("jungle")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.JUNGLE.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.JUNGLE), false);
         } else if (biome.contains("mushroom")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.MUSHROOM_FIELDS.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.MUSHROOM_FIELDS), false);
         } else if (biome.contains("plains")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.PLAINS.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.PLAINS), false);
         } else if (biome.contains("flower")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.FLOWER_FOREST.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.FLOWER_FOREST), false);
         } else if (biome.contains("woods") || biome.contains("forest")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.FOREST.location()).get(), false);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.FOREST), false);
         }
 
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getHolder(Biomes.THE_VOID.location()).get(), true);
+            return generateLocalWildGenetics(biomeRegistry.getHolderOrThrow(Biomes.THE_VOID), true);
     }
 
     protected abstract Genes generateLocalWildGenetics(Holder<Biome> biome, boolean isFlat);
@@ -121,8 +124,8 @@ public abstract class AbstractGeneticsInitialiser {
         return selectBreed(selection, biome, random, false);
     }
 
-    public Breed selectBreed(List<Breed> selection, boolean forTrader) {
-        return selectBreed(selection, ForgeRegistries.BIOMES.getHolder(Biomes.THE_VOID.location()).get(), new Random(), forTrader);
+    public Breed selectBreed(LevelAccessor world, List<Breed> selection, boolean forTrader) {
+        return selectBreed(selection, world.registryAccess().registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.THE_VOID), new Random(), forTrader);
     }
 
     public Boolean isBiome(String biome) {

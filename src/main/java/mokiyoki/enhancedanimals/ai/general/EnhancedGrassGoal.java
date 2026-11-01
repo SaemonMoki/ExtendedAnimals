@@ -20,8 +20,8 @@ import java.util.function.Predicate;
 
 public class EnhancedGrassGoal extends Goal {
 
-    protected static final Predicate<BlockState> IS_GRASSBLOCK = BlockStatePredicate.forBlock(Blocks.GRASS);
-//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASSBLOCK = BlockStatePredicate.forBlock(Blocks.SHORT_GRASS);
+//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.SHORT_GRASS);
     protected static final Predicate<BlockState> IS_TALLGRASS = BlockStatePredicate.forBlock(Blocks.TALL_GRASS);
     protected final Mob grassEaterEntity;
     protected final Level entityWorld;
@@ -122,15 +122,15 @@ public class EnhancedGrassGoal extends Goal {
         if (this.eatingGrassTimer == 4) {
             BlockPos blockpos = new BlockPos(this.grassEaterEntity.blockPosition());
             if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
-                    this.entityWorld.setBlockAndUpdate(blockpos, Blocks.GRASS.defaultBlockState());
+                    this.entityWorld.setBlockAndUpdate(blockpos, Blocks.SHORT_GRASS.defaultBlockState());
                 }
 
                 this.grassEaterEntity.ate();
 
             } else if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
                 }
 
@@ -139,7 +139,7 @@ public class EnhancedGrassGoal extends Goal {
             } else {
                 BlockPos blockpos1 = blockpos.below();
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
                         this.entityWorld.setBlock(blockpos1, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
@@ -147,7 +147,7 @@ public class EnhancedGrassGoal extends Goal {
 
                     this.grassEaterEntity.ate();
                 } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
                         this.entityWorld.setBlock(blockpos1, Blocks.DIRT.defaultBlockState(), 2);
                     }

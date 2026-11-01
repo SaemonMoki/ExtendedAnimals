@@ -32,63 +32,61 @@ import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeableLeatherItem;
+import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.*;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.CHICKEN_NEST_TILE_ENTITY;
-import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_PLAIN_TEXTURE;
-import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPECKLE_TEXTURE;
-import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPATTER_TEXTURE;
-import static mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer.EGG_SPOT_TEXTURE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
-import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 
-@Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientEventRegistry {
 
     @SubscribeEvent
-    public static void onStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
-            event.addSprite(EGG_CARTON_TEXTURE);
-            event.addSprite(EGG_PLAIN_TEXTURE);
-            event.addSprite(EGG_SPECKLE_TEXTURE);
-            event.addSprite(EGG_SPATTER_TEXTURE);
-            event.addSprite(EGG_SPOT_TEXTURE);
-        }
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return RenderEnhancedAxolotlBucket.AXOLOTL_BUCKET_RENDERER;
+            }
+        }, ModItems.ENHANCED_AXOLOTL_BUCKET.get());
     }
 
     @SubscribeEvent
-    public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ModParticles.FEATHER.get(), new FeatherParticle.Provider());
+    public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
+        event.registerSpecial(ModParticles.FEATHER.get(), new FeatherParticle.Provider());
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
+        event.register(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
     }
 
     @SubscribeEvent
     public static void initClientSetup(FMLClientSetupEvent event) {
-
-        MenuScreens.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
-        MenuScreens.register(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
-
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK.get(), RenderType.cutout());
@@ -114,7 +112,7 @@ public class ClientEventRegistry {
     }
 
     @SubscribeEvent
-    public static void onBlockColouredEvent(ColorHandlerEvent.Block event) {
+    public static void onBlockColouredEvent(RegisterColorHandlersEvent.Block event) {
         event.getBlockColors().register((state, blockAndTintGetter, pos, tintIndex) ->
                 blockAndTintGetter != null && pos != null ? BiomeColors.getAverageGrassColor(blockAndTintGetter, pos) : GrassColor.get(0.5D, 1.0D),
                 ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
@@ -124,13 +122,13 @@ public class ClientEventRegistry {
     }
 
     @SubscribeEvent
-    public static void onItemColouredEvent(ColorHandlerEvent.Item event) {
+    public static void onItemColouredEvent(RegisterColorHandlersEvent.Item event) {
         event.getItemColors().register((stack, tintIndex) -> {
                     BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                     return event.getBlockColors().getColor(BlockState, null, null, tintIndex); },
                 ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
 
-        event.getItemColors().register((itemStack, tintIndex) -> tintIndex > 0 ? -1 : ((DyeableLeatherItem)itemStack.getItem()).getColor(itemStack),
+        event.getItemColors().register((itemStack, tintIndex) -> tintIndex > 0 ? -1 : FastColor.ARGB32.opaque(((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack)),
                 ModItems.BRIDLE_BASIC_LEATHER.get(), ModItems.BRIDLE_BASIC_LEATHER_GOLD.get(), ModItems.BRIDLE_BASIC_LEATHER_DIAMOND.get(),
                 ModItems.BRIDLE_BASIC_CLOTH.get(), ModItems.BRIDLE_BASIC_CLOTH_GOLD.get(), ModItems.BRIDLE_BASIC_CLOTH_DIAMOND.get(),
                 ModItems.SADDLE_BASIC_LEATHER.get(), ModItems.SADDLE_BASIC_LEATHER_DIAMOND.get(), ModItems.SADDLE_BASIC_LEATHER_GOLD.get(), ModItems.SADDLE_BASIC_LEATHER_WOOD.get(),

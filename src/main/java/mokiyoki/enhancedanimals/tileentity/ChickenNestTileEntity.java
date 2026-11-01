@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.tileentity;
 
+import net.minecraft.util.RandomSource;
+import net.minecraft.core.HolderLookup;
 import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
@@ -17,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Random;
 
 public class ChickenNestTileEntity extends BlockEntity implements Container {
     private NonNullList<ItemStack> items = NonNullList.withSize(12, ItemStack.EMPTY);
@@ -32,30 +33,30 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (compound.contains("Items", 9)) {
-            ContainerHelper.loadAllItems(compound, this.items);
+            ContainerHelper.loadAllItems(compound, this.items, provider);
             this.incubation = (int) (compound.getFloat("incubation") * incubationTime);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
         if (!isEmpty()) {
-            ContainerHelper.saveAllItems(compound, this.items, false);
+            ContainerHelper.saveAllItems(compound, this.items, false, provider);
             compound.putFloat("incubation", incubationPercent());
         }
 
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         if (!isEmpty() || resetNest) {
-            ContainerHelper.saveAllItems(tag, this.items, true);
+            ContainerHelper.saveAllItems(tag, this.items, true, provider);
             tag.putFloat("incubation", incubationPercent());
         }
         resetNest = false;
@@ -94,9 +95,9 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        load(nbt);
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(CompoundTag nbt, HolderLookup.Provider provider) {
+        loadAdditional(nbt, provider);
+        super.handleUpdateTag(nbt, provider);
     }
 
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -205,7 +206,7 @@ public class ChickenNestTileEntity extends BlockEntity implements Container {
         setNestDecayTime(level.getGameTime());
     }
 
-    public void hatchEggs(Level level, BlockPos pos, Random random) {
+    public void hatchEggs(Level level, BlockPos pos, RandomSource random) {
         if (level instanceof ServerLevel serverLevel) {
             EnhancedChickenEggBlock.hatchEggs(serverLevel.getBlockState(pos), serverLevel, pos, random);
             incubation = incubationTime;

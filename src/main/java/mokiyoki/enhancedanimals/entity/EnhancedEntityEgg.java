@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.world.item.component.FireworkExplosion;
 import com.google.common.collect.Lists;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
@@ -11,13 +13,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.FireworkRocketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,9 +27,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -66,11 +64,11 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         this.hasParents = hasParents;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(GENES, new String());
-        this.getEntityData().define(SIRE, new String());
-        this.getEntityData().define(DAM, new String());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(GENES, new String());
+        builder.define(SIRE, new String());
+        builder.define(DAM, new String());
     }
 
     public void setGenes(Genes eggGenes) {
@@ -124,14 +122,14 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
 
     protected void onHitEntity(EntityHitResult p_213868_1_) {
         super.onHitEntity(p_213868_1_);
-        p_213868_1_.getEntity().hurt(DamageSource.thrown(this, this.getOwner()), 0.0F);
+        p_213868_1_.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
     }
 
     /**
@@ -140,13 +138,11 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
-        if (this.level instanceof ServerLevel serverLevel && this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nest) {
+        if (this.level() instanceof ServerLevel serverLevel && this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nest) {
             ItemStack egg = this.getItem();
             ((EnhancedEgg) egg.getItem()).setHasParents(egg, hasParents);
             if (!getGenes().equals("INFERTILE")) {
-                egg.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(getGenes()), getSire(), getDam());
-                CompoundTag nbtTagCompound = egg.serializeNBT();
-                egg.deserializeNBT(nbtTagCompound);
+                EggCapabilityProvider.of(egg).orElse(new EggCapabilityProvider()).setEggData(new Genes(getGenes()), getSire(), getDam());
             }
             nest.addEggToNest(serverLevel, egg);
             serverLevel.broadcastEntityEvent(this, (byte) 3);
@@ -159,13 +155,13 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             Genes genetics = new Genes(getGenes());
             if (genetics.isHomozygousFor(70, 2)) {
                 isCreeper = true;
-                if (this.level.isClientSide) {
-                    this.level.createFireworks(this.getX(), this.getY(), this.getZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
+                if (this.level().isClientSide) {
+                    this.level().createFireworks(this.getX(), this.getY(), this.getZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
                 }
             }
-        } else if (this.level instanceof ServerLevel && !this.hasParents) {
-            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
-            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level, this.blockPosition(), "WanderingTrader");
+        } else if (this.level() instanceof ServerLevel && !this.hasParents) {
+            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
+            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level(), this.blockPosition(), "WanderingTrader");
             enhancedchicken.setGenes(chickenGenes);
             enhancedchicken.setSharedGenesFromEntityEgg(chickenGenes.getGenesAsString());
             enhancedchicken.setGrowingAge();
@@ -174,14 +170,14 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
             enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             enhancedchicken.setSireName(getSire());
             enhancedchicken.setDamName(getDam());
-            this.level.addFreshEntity(enhancedchicken);
+            this.level().addFreshEntity(enhancedchicken);
         }
 
-        if (this.level instanceof ServerLevel) {
+        if (this.level() instanceof ServerLevel) {
             if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
                     if (this.random.nextInt(100) < GeneticAnimalsConfig.COMMON.eggThrowHatchChance.get()) {
-                        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
+                        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
                         enhancedchicken.setGenes(new Genes(getGenes()));
                         enhancedchicken.geneFixer();
                         enhancedchicken.setSharedGenesFromEntityEgg(enhancedchicken.getGenes().getGenesAsString());
@@ -191,11 +187,11 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
                         enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                         enhancedchicken.setSireName(getSire());
                         enhancedchicken.setDamName(getDam());
-                        this.level.addFreshEntity(enhancedchicken);
+                        this.level().addFreshEntity(enhancedchicken);
                     }
                 }
             }
-            this.level.broadcastEntityEvent(this, (byte) 3);
+            this.level().broadcastEntityEvent(this, (byte) 3);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -222,11 +218,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         compound.putBoolean("hasParents", this.hasParents);
     }
 
-    private CompoundTag makeCreeperFirework() {
-        ItemStack itemstack = new ItemStack(Items.FIREWORK_ROCKET, 1);
-        ItemStack itemstack1 = new ItemStack(Items.FIREWORK_STAR);
-        CompoundTag compoundnbt = itemstack1.getOrCreateTagElement("Explosion");
-
+    private List<FireworkExplosion> makeCreeperFirework() {
         List<Integer> list = Lists.newArrayList();
         list.add(DyeColor.LIME.getFireworkColor());
         list.add(DyeColor.LIGHT_GRAY.getFireworkColor());
@@ -234,36 +226,14 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         list.add(DyeColor.WHITE.getFireworkColor());
         list.add(DyeColor.GREEN.getFireworkColor());
         list.add(DyeColor.LIME.getFireworkColor());
-        compoundnbt.putIntArray("Colors", list);
 
         List<Integer> fadeList = Lists.newArrayList();
         fadeList.add(DyeColor.GREEN.getFireworkColor());
         fadeList.add(DyeColor.GRAY.getFireworkColor());
         fadeList.add(DyeColor.GREEN.getFireworkColor());
         fadeList.add(DyeColor.GRAY.getFireworkColor());
-        compoundnbt.putIntArray("FadeColors", fadeList);
 
-        compoundnbt.putBoolean("Flicker", true);
-
-        compoundnbt.putByte("Type", (byte) FireworkRocketItem.Shape.CREEPER.getId());
-        CompoundTag compoundnbt1 = itemstack.getOrCreateTagElement("Fireworks");
-        ListTag listnbt = new ListTag();
-        CompoundTag compoundnbt2 = itemstack1.getTagElement("Explosion");
-        if (compoundnbt2 != null) {
-            listnbt.add(compoundnbt2);
-        }
-
-        compoundnbt1.putByte("Flight", (byte)-1);
-        if (!listnbt.isEmpty()) {
-            compoundnbt1.put("Explosions", listnbt);
-        }
-
-        return itemstack.getTagElement("Fireworks");
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return List.of(new FireworkExplosion(FireworkExplosion.Shape.CREEPER, new IntArrayList(list), new IntArrayList(fadeList), false, true));
     }
 
 }

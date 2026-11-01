@@ -1,6 +1,7 @@
 
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.util.RandomSource;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
@@ -36,7 +37,6 @@ import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
@@ -122,12 +122,12 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         int i = state.getValue(EGGS);
         if (i <= 1) {
             if (removeEgg) {
-                worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeNestPos(pos);
+                worldIn.getData(NestCapabilityProvider.NEST_CAP).removeNestPos(pos);
             }
             worldIn.destroyBlock(pos, false);
         } else {
             if (removeEgg) {
-                worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
+                worldIn.getData(NestCapabilityProvider.NEST_CAP).removeEggFromNest(pos);
             }
             worldIn.setBlock(pos, state.setValue(EGGS, Integer.valueOf(i - 1)), 2);
             worldIn.levelEvent(2001, pos, Block.getId(state));
@@ -135,13 +135,13 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (this.canGrow(level) && hasProperHabitat(level, pos)) {
             hatch(state, level, pos, random);
         }
     }
 
-    private static void hatch(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    private static void hatch(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         int i = state.getValue(HATCH);
         if (i < 2) {
             level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
@@ -150,7 +150,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
             level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
             level.removeBlock(pos, false);
 
-            List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
+            List<EggHolder> eggList = level.getData(NestCapabilityProvider.NEST_CAP).removeEggsFromNest(pos);
             int j = 1;
 
             if (eggList!=null) {
@@ -251,7 +251,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
-                return trampler instanceof Player || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
+                return trampler instanceof Player || net.neoforged.neoforge.event.EventHooks.canEntityGrief(worldIn, trampler);
             }
         } else {
             return false;

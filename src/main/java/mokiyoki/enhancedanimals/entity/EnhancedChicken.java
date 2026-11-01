@@ -1,5 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain;
@@ -34,7 +38,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.InteractionHand;
@@ -49,8 +53,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -107,11 +111,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super(entityType, worldIn, CHICKEN_SEXLINKED_GENES_LENGTH, CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = eggLayingTime();
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.createNewHungerLimit();
     }
     protected void customServerAiStep() {
-        this.getBrain().tick((ServerLevel)this.level, this);
+        this.getBrain().tick((ServerLevel)this.level(), this);
 //        ChickenBrain.updateActivity(this);
         if (!this.isNoAi()) {
             if (this.isAnimalSleeping()) {
@@ -133,7 +137,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.getHunger() > hungerLimit) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.HUNGRY.get(), true);
             }
-            if ((this.isRoosting() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get())) && this.level.getDayTime()%24000 < 10500) {
+            if ((this.isRoosting() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get())) && this.level().getDayTime()%24000 < 10500) {
                 this.getBrain().eraseMemory(ModMemoryModuleTypes.ROOSTING.get());
                 this.setRoosting(false);
             }
@@ -162,8 +166,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(0.4F, 0.7F).scale(this.getScale());
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+        EntityDimensions dimensions = EntityDimensions.scalable(0.4F, 0.7F).scale(this.getAgeScale());
+        return dimensions.withEyeHeight(this.isBaby() ? dimensions.height() * 0.85F : dimensions.height() * 0.92F);
     }
 
     @Override
@@ -179,12 +184,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ROOSTING, Boolean.FALSE);
-        this.entityData.define(BROODING, Boolean.FALSE);
-        this.entityData.define(BROODY, Boolean.FALSE);
-        this.entityData.define(NEST_POS, BlockPos.ZERO);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ROOSTING, Boolean.FALSE);
+        builder.define(BROODING, Boolean.FALSE);
+        builder.define(BROODY, Boolean.FALSE);
+        builder.define(NEST_POS, BlockPos.ZERO);
     }
 
     public void scheduleDespawn(int ticksToWait) {
@@ -304,23 +309,19 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return this.entityData.get(NEST_POS);
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-        return this.isBaby() ? sizeIn.height * 0.85F : sizeIn.height * 0.92F;
-    }
-
     public static AttributeSupplier.Builder prepareAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 3.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
-    public void positionRider(Entity passenger) {
-        super.positionRider(passenger);
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        super.positionRider(passenger, callback);
         float f = Mth.sin(this.yBodyRot * ((float)Math.PI / 180F));
         float f1 = Mth.cos(this.yBodyRot * ((float)Math.PI / 180F));
         float f2 = 0.1F;
         float f3 = 0.0F;
-        passenger.setPos(this.getX() + (double)(0.1F * f), this.getY(0.5D) + passenger.getMyRidingOffset() + 0.0D, this.getZ() - (double)(0.1F * f1));
+        callback.accept(passenger, this.getX() + (double)(0.1F * f), this.getY(0.5D) - passenger.getVehicleAttachmentPoint(this).y + 0.0D, this.getZ() - (double)(0.1F * f1));
         if (passenger instanceof LivingEntity) {
             ((LivingEntity)passenger).yBodyRot = this.yBodyRot;
         }
@@ -384,9 +385,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     private void broodingForPassageOfTime(double iterations) {
-        if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+        if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
             if (nestEntity.incubateByAmount((int)iterations * GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) {
-                nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+                nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
                 this.setBroody(false);
                 this.setBrooding(false);
                 this.gestationTimer = this.gestationTimer - (int)iterations*4000;
@@ -417,14 +418,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                         broodingForPassageOfTime(broodingIterations);
                         break; //Even if we have iterations left we stop here
                     } else {
-                        if (!(this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
+                        if (!(this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
                             createNest();
                             stagesPossibleToAdvance++;
                         }
-                        if (this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
+                        if (this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
                             if (!nestEntity.isFull()) {
                                 ItemStack eggItem = createEgg();
-                                nestEntity.addEggToNest(this.level, eggItem);
+                                nestEntity.addEggToNest(this.level(), eggItem);
                             }
                             if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                                 this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
@@ -447,11 +448,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void createNest() {
-        if (this.level instanceof ServerLevel) {
-            this.level.setBlock(this.getNest(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+        if (this.level() instanceof ServerLevel) {
+            this.level().setBlock(this.getNest(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
 
             AABB aabb = AABB.unitCubeFromLowerCorner(this.position()).inflate(12, 3.0, 12);
-            this.level.getEntitiesOfClass(EnhancedChicken.class, aabb, EntitySelector.NO_SPECTATORS).forEach((chicken) -> {
+            this.level().getEntitiesOfClass(EnhancedChicken.class, aabb, EntitySelector.NO_SPECTATORS).forEach((chicken) -> {
                 if (chicken.getNest() == null || chicken.getNest() == BlockPos.ZERO) {
                     chicken.setNest(new BlockPos(this.getNest()));
                 }
@@ -519,8 +520,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     double d6 = this.position().x + d5 + random.nextDouble() * d0;
                     double d7 = this.position().y + random.nextDouble() * d1;
                     double d8 = this.position().z + d5 + random.nextDouble() * d0;
-                    if (!this.level.getBlockState((new BlockPos(d6, d7, d8)).below()).isAir()) {
-                        this.level.addParticle(ParticleTypes.HAPPY_VILLAGER, d6, d7, d8, d2, d3, d4);
+                    if (!this.level().getBlockState((BlockPos.containing(d6, d7, d8)).below()).isAir()) {
+                        this.level().addParticle(ParticleTypes.HAPPY_VILLAGER, d6, d7, d8, d2, d3, d4);
                     }
                 }
             }
@@ -533,16 +534,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         super.aiStep();
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
-        this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
+        this.destPos = (float)((double)this.destPos + (double)(this.onGround() ? -1 : 4) * 0.3D);
         this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
 
-        if (!this.onGround && this.wingRotDelta < 1.0F) {
+        if (!this.onGround() && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
 
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
         Vec3 vec3d = this.getDeltaMovement();
-        if (!this.onGround && vec3d.y < 0.0D) {
+        if (!this.onGround() && vec3d.y < 0.0D) {
             this.setDeltaMovement(vec3d.multiply(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
         }
 
@@ -554,16 +555,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.getOrSetIsFemale() && !this.isBaby() && GeneticAnimalsConfig.COMMON.allowRoostersToCrow.get()) {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
-                if (!this.level.isClientSide) {
+                if (!this.level().isClientSide) {
                     if (this.crowTick == 60 && !this.isAnimalSleeping()) { //TODO this is the start of the crow, change to whatever is needed to match the animation
-                        this.level.playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
+                        this.level().playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
                     }
                     if (this.crowTick <= 5) {
                         this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
                     }
                 }
             } else {
-                if (!this.level.isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
+                if (!this.level().isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
                     //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
                     //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
                     this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(GeneticAnimalsConfig.COMMON.minimumWaitForCrowTime.get(), GeneticAnimalsConfig.COMMON.maximumWaitForCrowTime.get())));
@@ -571,7 +572,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         }
 
-        if (!this.level.isClientSide && !this.sleeping && !this.scheduledToRun.containsKey("StopPreenSchedule")) {
+        if (!this.level().isClientSide && !this.sleeping && !this.scheduledToRun.containsKey("StopPreenSchedule")) {
             int startPreenTime = this.random.nextInt(1000, 6000);
             int preenDuration = this.random.nextInt(100, 500);
             this.scheduledToRun.put(START_PREEN_SCHEDULE.funcName, START_PREEN_SCHEDULE.function.apply(startPreenTime));
@@ -617,14 +618,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isBaby() && this.timeUntilNextEgg <= 0 && !this.isAnimalSleeping()) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = createEgg();
-            if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+            if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
                 if (!this.blockPosition().equals(this.getNest())) {
                     this.rateAndSetBetterNest(this.blockPosition());
                     this.setNest(this.blockPosition());
                 } else if (this.currentNestScore<0.0F) {
                     this.currentNestScore = -this.currentNestScore + 0.1F;
                 }
-                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level, eggItem); }
+                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level(), eggItem); }
                 if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
                     this.setBroody(true);
                 }
@@ -642,9 +643,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         if (this.isBroody()) {
-            if (this.level.getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
-                if (nestEntity.incubate(this.level)) {
-                    nestEntity.hatchEggs(this.level, this.getNest(), this.getRandom());
+            if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
+                if (nestEntity.incubate(this.level())) {
+                    nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
                     this.setBroody(false);
                     this.setBrooding(false);
                 }
@@ -655,22 +656,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     private ItemStack createEgg() {
-        ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
+        ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1);
         ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
         if (this.gestationTimer > 0) {
             String damName = "???";
             if (this.getCustomName()!=null) {
                 damName = this.getCustomName().getString();
             }
-            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
-            CompoundTag nbtTagCompound = eggItem.serializeNBT();
-            eggItem.deserializeNBT(nbtTagCompound);
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            EggCapabilityProvider.of(eggItem).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 int i = 1;
                 while (i > 0) {
                     int j = ExperienceOrb.getExperienceValue(i);
                     i -= j;
-                    this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
+                    this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), j));
                 }
             }
         }
@@ -687,15 +686,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (this.level instanceof ServerLevel) {
-            if (source.msgId.equals("inWall")) {
+        if (this.level() instanceof ServerLevel) {
+            if (source.getMsgId().equals("inWall")) {
                 if (this.suffocationTimer > 50) {
                     if (this.getNavigation().getPath() != null && this.getNavigation().getPath().getNextNodeIndex() > 0) {
                         BlockPos previousPos = this.getNavigation().getPath().getPreviousNode().asBlockPos();
                         this.setPos(previousPos.getX() + 0.5D, previousPos.getY(), previousPos.getZ() + 0.5D);
                         return false;
                     }
-                    if (!((this.level.getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level.getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
+                    if (!((this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level().getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
                         this.setNest(BlockPos.ZERO);
                     }
                     if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
@@ -734,7 +733,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             notReturningToNest = true;
         }
 
-        return (!this.level.isDay() && this.awokenTimer == 0 && !this.sleeping && notReturningToNest);
+        return (!this.level().isDay() && this.awokenTimer == 0 && !this.sleeping && notReturningToNest);
     }
 
     @Override
@@ -775,7 +774,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 2.0F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.5F, 2.0F);
         }
     }
 
@@ -997,7 +996,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         if (this.getEnhancedAnimalAge() > 10000) {
             return true;
         } else {
@@ -1005,8 +1004,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
+        int looting = source.getEntity() instanceof LivingEntity killer ? EnchantmentHelper.getEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING), killer) : 0;
+        super.dropCustomDeathLoot(level, source, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getEnhancedAnimalAge();
         int bodyType = 0;
@@ -1128,7 +1128,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
-        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
+        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
         if (enhancedchicken != null) {
             Genes genes = new Genes(this.genetics).makeChild(!this.getOrSetIsFemale(), otherParent.getGenes(), !otherParent.getOrSetIsFemale(), Genes.Species.CHICKEN);
             enhancedchicken.setGenes(genes);
@@ -1195,7 +1195,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
         if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0 && this.getOrSetIsFemale() && !this.isBaby()) {
             this.setFertile();
@@ -1609,8 +1609,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public boolean isGoodNestSite(BlockPos pos) {
-        if (this.level.getBlockEntity(pos) instanceof ChickenNestTileEntity) {
-           ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level.getBlockEntity(pos);
+        if (this.level().getBlockEntity(pos) instanceof ChickenNestTileEntity) {
+           ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level().getBlockEntity(pos);
             if (nestTileEntity!=null ) {
                 if (!(this.isBrooding() || this.isBroody())) {
                     return !nestTileEntity.isFull();
@@ -1618,33 +1618,33 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 return true;
             }
         }
-        if (this.level.isEmptyBlock(pos.below())) return false;
-        if (this.level.isWaterAt(pos.below())) return false;
-        if (!(this.level.getBlockState(pos.below()).isFaceSturdy(this.level.getChunkForCollisions(this.chunkPosition().x, this.chunkPosition().z), pos.below(), Direction.UP))) return false;
-        if (this.level.isEmptyBlock(pos)) {
+        if (this.level().isEmptyBlock(pos.below())) return false;
+        if (this.level().isWaterAt(pos.below())) return false;
+        if (!(this.level().getBlockState(pos.below()).isFaceSturdy(this.level().getChunkForCollisions(this.chunkPosition().x, this.chunkPosition().z), pos.below(), Direction.UP))) return false;
+        if (this.level().isEmptyBlock(pos)) {
             int blocked = 0;
             int notblocked = 0;
-            if (this.level.isEmptyBlock(pos.north())) {
+            if (this.level().isEmptyBlock(pos.north())) {
                 notblocked++;
             } else {
                 blocked++;
             }
-            if (this.level.isEmptyBlock(pos.east())) {
+            if (this.level().isEmptyBlock(pos.east())) {
                 notblocked++;
             } else {
                 blocked++;
             }
-            if (this.level.isEmptyBlock(pos.south())) {
+            if (this.level().isEmptyBlock(pos.south())) {
                 notblocked++;
             } else {
                 blocked++;
             }
-            if (this.level.isEmptyBlock(pos.west())) {
+            if (this.level().isEmptyBlock(pos.west())) {
                 notblocked++;
             } else {
                 blocked++;
             }
-            if (this.level.isEmptyBlock(pos.above())) {
+            if (this.level().isEmptyBlock(pos.above())) {
                 return blocked >= 2;
             } else {
                 return notblocked >= 1 && blocked >= 1;
@@ -1656,11 +1656,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public float rateAndSetBetterNest(BlockPos pos) {
         float score = 0.0F;
 
-        if (this.level.getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
+        if (this.level().getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
             if (nestTileEntity.isFull()) return 0.0F;
             score += 0.1F;
             if (!nestTileEntity.isEmpty()) score += 0.1F;
-            if (!this.level.canSeeSky(pos)) score += 0.1F;
+            if (!this.level().canSeeSky(pos)) score += 0.1F;
         }
 
         score+=rateWall(pos, Direction.NORTH);
@@ -1683,10 +1683,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     private float rateWall(BlockPos pos, Direction direction) {
         BlockPos directionPos = pos.relative(direction);
-        if (this.level.isEmptyBlock(directionPos)) return 0.0F;
+        if (this.level().isEmptyBlock(directionPos)) return 0.0F;
         int x = directionPos.getX()/16;
         int z = directionPos.getZ()/16;
-        return this.level.getBlockState(directionPos).isSolidRender(this.level.getChunkForCollisions(x, z), directionPos) ? 0.1F : 0.05F;
+        return this.level().getBlockState(directionPos).isSolidRender(this.level().getChunkForCollisions(x, z), directionPos) ? 0.1F : 0.05F;
     }
 /*
     static class InteractWithParentGoal extends EnhancedLookAtGoal {

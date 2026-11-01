@@ -40,33 +40,33 @@
 //    protected void eatBlocks() {
 //        BlockPos blockpos = new BlockPos(this.creature.blockPosition());
 //        if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.entityWorld.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.entityWorld.getBlockState(blockpos))) {
-//            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//            if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                this.entityWorld.destroyBlock(blockpos, false);
 //            }
 //            this.creature.ate();
 //        } else {
 //            BlockPos blockposDown = blockpos.below();
 //            if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
-//                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                    this.entityWorld.setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.defaultBlockState(), 2);
 //                }
 //                this.creature.ate();
 //            }else if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
-//                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
 //                    this.entityWorld.setBlock(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.defaultBlockState(), 2);
 //                }
 //                this.creature.ate();
 //            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
-//                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                    this.entityWorld.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
 //                }
 //
 //                this.creature.ate();
 //            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK) {
-//                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.MYCELIUM.defaultBlockState()));
 //                    this.entityWorld.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
 //                }

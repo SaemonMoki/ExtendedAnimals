@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.tileentity;
 
+import net.minecraft.core.HolderLookup;
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
@@ -31,10 +32,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -267,32 +267,32 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
     }
 
     protected Component getDefaultName() {
-        return new TranslatableComponent("Egg Carton");
+        return Component.translatable("Egg Carton");
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        this.loadFromNbt(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        this.loadFromNbt(compound, provider);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
-        this.saveToNbt(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
+        this.saveToNbt(compound, provider);
     }
 
-    public void loadFromNbt(CompoundTag compound) {
+    public void loadFromNbt(CompoundTag compound, HolderLookup.Provider provider) {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(compound) && compound.contains("Items", 9)) {
-            ContainerHelper.loadAllItems(compound, this.items);
+            ContainerHelper.loadAllItems(compound, this.items, provider);
         }
 
     }
 
-    public CompoundTag saveToNbt(CompoundTag compound) {
+    public CompoundTag saveToNbt(CompoundTag compound, HolderLookup.Provider provider) {
         if (!this.trySaveLootTable(compound)) {
-            ContainerHelper.saveAllItems(compound, this.items, false);
+            ContainerHelper.saveAllItems(compound, this.items, false, provider);
         }
 
         return compound;
@@ -342,9 +342,8 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
         return new EggCartonContainer(id, player, this);
     }
 
-    @Override
-    protected net.minecraftforge.items.IItemHandler createUnSidedHandler() {
-        return new net.minecraftforge.items.wrapper.SidedInvWrapper(this, Direction.UP);
+    public net.neoforged.neoforge.items.IItemHandler createUnSidedHandler() {
+        return new net.neoforged.neoforge.items.wrapper.SidedInvWrapper(this, Direction.UP);
     }
 
     public static enum AnimationStatus {

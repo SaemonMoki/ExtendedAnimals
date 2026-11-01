@@ -8,24 +8,37 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
+import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModDataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Created by saemon on 30/09/2018.
  */
-public class EggCapabilityProvider implements IEggCapability, ICapabilitySerializable<Tag> {
+public class EggCapabilityProvider implements IEggCapability {
 
-    public static Capability<IEggCapability> EGG_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+    private ItemStack stack;
 
-    private final LazyOptional<IEggCapability> holder = LazyOptional.of(() -> this);
+    public static Optional<EggCapabilityProvider> of(ItemStack stack) {
+        if (!(stack.getItem() instanceof EnhancedEgg) && stack.getItem() != ModBlocks.TURTLE_EGG.get().asItem()) {
+            return Optional.empty();
+        }
+        EggCapabilityProvider provider = new EggCapabilityProvider();
+        CustomData eggData = stack.get(ModDataComponents.EGG_DATA.get());
+        if (eggData != null) {
+            provider.deserializeNBT(eggData.copyTag());
+        }
+        provider.stack = stack;
+        return Optional.of(provider);
+    }
+
+    private void save() {
+        if (this.stack != null) {
+            this.stack.set(ModDataComponents.EGG_DATA.get(), CustomData.of((CompoundTag) this.serializeNBT()));
+        }
+    }
 
     private Genes genes;
 
@@ -37,6 +50,7 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
     @Override
     public void setGenes(Genes genes) {
         this.genes = genes;
+        save();
     }
 
     private String sireName;
@@ -50,6 +64,7 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
         } else {
             this.sireName = "???";
         }
+        save();
     }
 
     private String damName;
@@ -64,6 +79,7 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
         } else {
             this.damName = "???";
         }
+        save();
     }
 
     @Override
@@ -89,13 +105,6 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
         return new EggHolder(this.sireName, this.damName, this.genes, hasParents);
     }
 
-    @Nullable
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        return EGG_CAP.orEmpty(capability, holder);
-    }
-
-    @Override
     public Tag serializeNBT() {
         CompoundTag compound = new CompoundTag();
         Genes genes = this.getGenes();
@@ -120,7 +129,6 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
 
     }
 
-    @Override
     public void deserializeNBT(Tag nbt) {
         CompoundTag compound = (CompoundTag) nbt;
 

@@ -17,8 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhancedTurtle<EnhancedTurtle>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entity/turtle/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/turtle/turtlebase.png");
-    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "turtle"), "turtle_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/turtle/turtlebase.png");
+    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "turtle"), "turtle_layer");
 
     public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedTurtle<>(renderManager.bakeLayer(TURTLE_LAYER)), 0.5F);
@@ -47,7 +47,7 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
 
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_TURTLE_TEXTURE_LOCATION, textureGrouping, entity.colouration, 128, 64));
 

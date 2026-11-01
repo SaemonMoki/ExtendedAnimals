@@ -33,12 +33,12 @@
 //            if (IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
 //                this.creature.ate();
 //            }
-//            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//            if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                this.entityWorld.destroyBlock(blockpos, false);
 //            }
 //            this.creature.ate();
 //        } else if (IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
-//            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//            if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                this.entityWorld.destroyBlock(blockpos, false);
 //            }
 //        } else {
@@ -50,7 +50,7 @@
 //                }
 //            } else {
 //                if (IS_GRASS.test(blockType) || IS_TALL_GRASS_BLOCK.test(blockType) || IS_BROWN_MUSHROOM.test(blockType)) {
-//                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                        this.entityWorld.destroyBlock(blockpos, false);
 //                    }
 //                    this.creature.ate();
@@ -58,19 +58,19 @@
 //                    BlockPos blockpos1 = blockpos.below();
 //                    Block blockDown = this.entityWorld.getBlockState(blockpos1).getBlock();
 //                    if (blockDown == Blocks.GRASS_BLOCK) {
-//                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                            this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                            this.entityWorld.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
 //                        }
 //                        this.creature.ate();
 //                    } else if (blockDown == ModBlocks.SPARSEGRASS_BLOCK) {
-//                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                            this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                            this.entityWorld.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
 //                        }
 //                        this.creature.ate();
 //                    } else if (blockDown == Blocks.DIRT) {
-//                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+//                        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.creature)) {
 //                            this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                            this.entityWorld.setBlock(blockpos1, Blocks.FARMLAND.defaultBlockState(), 2);
 //                        }

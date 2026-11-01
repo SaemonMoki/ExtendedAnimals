@@ -3,27 +3,22 @@ package mokiyoki.enhancedanimals.capability.post;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import mokiyoki.enhancedanimals.init.ModAttachments;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by saemon on 29/09/2018.
  */
-public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<Tag> {
+public class PostCapabilityProvider implements IPostCapability, INBTSerializable<Tag> {
 
-    public static Capability<IPostCapability> POST_CAP = CapabilityManager.get(new CapabilityToken<>() {});
-
-    private final LazyOptional<IPostCapability> holder = LazyOptional.of(() -> this);
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PostCapabilityProvider>> POST_CAP = ModAttachments.POST_CAP;
 
     List<BlockPos> postBlockPositions = new ArrayList<>();
 
@@ -47,15 +42,8 @@ public class PostCapabilityProvider implements IPostCapability, ICapabilitySeria
         this.postBlockPositions = blockPosList;
     }
 
-    @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        return POST_CAP.orEmpty(capability, holder);
-    }
-
-
-    @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
         List<BlockPos> allPostBlockPos = this.getAllPostPos();
 
@@ -76,7 +64,7 @@ public class PostCapabilityProvider implements IPostCapability, ICapabilitySeria
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         CompoundTag compound = (CompoundTag) nbt;
         List<BlockPos> allPostBlockPos = new ArrayList<BlockPos>();
         ListTag nbttaglist = compound.getList("PostsPos", 10);

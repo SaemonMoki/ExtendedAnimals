@@ -6,11 +6,12 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionHand;
@@ -120,8 +121,8 @@ public class MixableMilkBucket extends Item {
     }
 
     public int getColor(ItemStack stack) {
-        CompoundTag compoundnbt = stack.getTagElement("display");
-        return compoundnbt != null && compoundnbt.contains("color", 99) ? compoundnbt.getInt("color") : 10511680;
+        DyedItemColor dyedItemColor = stack.get(DataComponents.DYED_COLOR);
+        return dyedItemColor != null ? dyedItemColor.rgb() : 10511680;
     }
 
     public int setColour(int milkColour, float oldMilkPercent, float newMilkPercent) {
@@ -159,7 +160,7 @@ public class MixableMilkBucket extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         int i = ThreadLocalRandom.current().nextInt(6);
-        if (!worldIn.isClientSide && i == 0) entityLiving.curePotionEffects(stack); // FORGE - move up so stack.shrink does not turn stack into air
+        if (!worldIn.isClientSide && i == 0) entityLiving.removeEffectsCuredBy(net.neoforged.neoforge.common.EffectCures.MILK); // FORGE - move up so stack.shrink does not turn stack into air
 
         if (entityLiving instanceof ServerPlayer) {
             ServerPlayer serverplayerentity = (ServerPlayer)entityLiving;
@@ -183,7 +184,7 @@ public class MixableMilkBucket extends Item {
     /**
      * How long it takes to use or consume an item
      */
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 32*(this.fullness/6);
     }
 

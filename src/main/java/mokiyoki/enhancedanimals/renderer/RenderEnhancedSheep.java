@@ -12,16 +12,16 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhancedSheep<EnhancedSheep>> {
 
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entity/sheep/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/sheep/sheep.png");
-    public static final ModelLayerLocation SHEEP_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "sheep"), "sheep_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/sheep/sheep.png");
+    public static final ModelLayerLocation SHEEP_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "sheep"), "sheep_layer");
 
     public RenderEnhancedSheep(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedSheep<>(renderManager.bakeLayer(SHEEP_LAYER)), 0.6F);
@@ -52,7 +52,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_SHEEP_TEXTURE_LOCATION, textureGrouping, colourRGB, 128, 64));
 
                 textureCache.putInCache(s, resourcelocation);

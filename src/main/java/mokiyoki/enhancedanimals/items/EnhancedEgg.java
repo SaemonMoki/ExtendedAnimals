@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import mokiyoki.enhancedanimals.util.CustomDataHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,7 +16,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  * Created by moki on 24/08/2018.
@@ -34,7 +34,7 @@ public class EnhancedEgg extends Item {
         level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.EGG_THROW, SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
         if (!level.isClientSide) {
-            EggHolder egg = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(itemstack);
+            EggHolder egg = EggCapabilityProvider.of(itemstack).orElse(null).getEggHolder(itemstack);
             Genes eggGenes = egg.getGenes();
             String sireName = egg.getSire();
             String damName = egg.getDam();
@@ -57,19 +57,12 @@ public class EnhancedEgg extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
     }
 
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        EggCapabilityProvider provider = new EggCapabilityProvider();
-
-        return provider;
-    }
-
     public void setHasParents(ItemStack stack, boolean hasParents) {
-        stack.getOrCreateTagElement("display").putBoolean("hasParents", hasParents);
+        CustomDataHelper.updateTagElement(stack, "display", display -> display.putBoolean("hasParents", hasParents));
     }
 
     public boolean getHasParents(ItemStack stack) {
-        CompoundTag compoundnbt = stack.getTagElement("display");
+        CompoundTag compoundnbt = CustomDataHelper.getTagElement(stack, "display");
         return compoundnbt != null && compoundnbt.contains("hasParents", 99) && compoundnbt.getBoolean("hasParents");
     }
 

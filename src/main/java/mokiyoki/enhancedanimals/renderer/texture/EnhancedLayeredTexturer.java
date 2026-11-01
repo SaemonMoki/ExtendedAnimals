@@ -8,8 +8,8 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.mojang.blaze3d.platform.NativeImage.combine;
-import static com.mojang.blaze3d.platform.NativeImage.getA;
-import static com.mojang.blaze3d.platform.NativeImage.getB;
-import static com.mojang.blaze3d.platform.NativeImage.getG;
-import static com.mojang.blaze3d.platform.NativeImage.getR;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.combine;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getA;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getB;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getG;
+import static mokiyoki.enhancedanimals.renderer.texture.ABGRColour.getR;
 
 @OnlyIn(Dist.CLIENT)
 public class EnhancedLayeredTexturer extends AbstractTexture {

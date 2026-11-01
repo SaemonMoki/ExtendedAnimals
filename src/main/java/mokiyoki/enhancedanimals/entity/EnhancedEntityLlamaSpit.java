@@ -2,13 +2,11 @@ package mokiyoki.enhancedanimals.entity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.LlamaSpit;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA_SPIT;
 
@@ -35,10 +33,5 @@ public class EnhancedEntityLlamaSpit extends LlamaSpit {
         }
 
         this.setDeltaMovement(p_i47274_8_, p_i47274_10_, p_i47274_12_);
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

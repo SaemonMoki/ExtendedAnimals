@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.world.level.LevelReader;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
@@ -47,7 +48,7 @@ public abstract class NestBlock extends Block {
     protected abstract boolean usesCapabilities();
 
     protected List<EggHolder> getEggsRemoveNestCapability(Level world, BlockPos pos) {
-        return world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
+        return world.getData(NestCapabilityProvider.NEST_CAP).removeEggsFromNest(pos);
     }
 
     protected void removeOneEgg(Level world, BlockPos pos, BlockState state) {
@@ -59,12 +60,12 @@ public abstract class NestBlock extends Block {
         int i = getNumberOfEggs(state);
         if (i <= 1) {
             if (removeEgg) {
-                world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeNestPos(pos);
+                world.getData(NestCapabilityProvider.NEST_CAP).removeNestPos(pos);
             }
             world.destroyBlock(pos, false);
         } else {
             if (removeEgg) {
-                world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
+                world.getData(NestCapabilityProvider.NEST_CAP).removeEggFromNest(pos);
             }
             this.subtractEggState(world, pos, state);
         }
@@ -75,10 +76,10 @@ public abstract class NestBlock extends Block {
         BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
 
         if (usesCapabilities() && isEgg(context.getItemInHand().getItem())) {
-            EggHolder eggHolder = context.getItemInHand().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItemInHand());
+            EggHolder eggHolder = EggCapabilityProvider.of(context.getItemInHand()).orElse(null).getEggHolder(context.getItemInHand());
 
             if (eggHolder.getGenes() != null) {
-                context.getLevel().getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(context.getClickedPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
+                context.getLevel().getData(NestCapabilityProvider.NEST_CAP).addNestEggPos(context.getClickedPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
             }
         }
 
@@ -96,22 +97,20 @@ public abstract class NestBlock extends Block {
             getDrops(state, (ServerLevel)worldIn, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
                 spawnAsGeneticItemEntity(worldIn, pos, stackToSpawn);
             });
-            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack);
+            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack, false);
         }
         this.removeOneEgg(worldIn, pos, state, false);
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
         ItemStack itemStack = super.getCloneItemStack(state, target, world, pos, player);
-        EggHolder egg = itemStack.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).getEggInNest(pos);
+        EggHolder egg = new NestCapabilityProvider().getEggInNest(pos);
         if (egg!=null) {
-            itemStack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(egg);
+            EggCapabilityProvider.of(itemStack).orElse(new EggCapabilityProvider()).setEggData(egg);
             if (itemStack.getItem() instanceof EnhancedEgg) {
                 ((EnhancedEgg) itemStack.getItem()).setHasParents(itemStack, egg.hasParents());
             }
-            CompoundTag nbtTagCompound = itemStack.serializeNBT();
-            itemStack.deserializeNBT(nbtTagCompound);
         }
         return itemStack;
     }
@@ -121,14 +120,12 @@ public abstract class NestBlock extends Block {
             double d0 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             double d2 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
-            EggHolder eggHolder = worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
+            EggHolder eggHolder = worldIn.getData(NestCapabilityProvider.NEST_CAP).removeEggFromNest(pos);
             if (eggHolder.getGenes() != null) {
-                stack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(eggHolder.getGenes()), eggHolder.getSire(), eggHolder.getDam());
+                EggCapabilityProvider.of(stack).orElse(new EggCapabilityProvider()).setEggData(new Genes(eggHolder.getGenes()), eggHolder.getSire(), eggHolder.getDam());
                 if (stack.getItem() instanceof EnhancedEgg) {
                     ((EnhancedEgg)stack.getItem()).setHasParents(stack, eggHolder.getGenes()!=null);
                 }
-                CompoundTag nbtTagCompound = stack.serializeNBT();
-                stack.deserializeNBT(nbtTagCompound);
             }
             ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
             itementity.setDefaultPickUpDelay();

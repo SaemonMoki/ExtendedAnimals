@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "eanimod:block/egg_carton"
+    },
+    {
+      "type": "single",
+      "resource": "eanimod:block/chicken_nest/plain_egg"
+    },
+    {
+      "type": "single",
+      "resource": "eanimod:block/chicken_nest/speckle_egg"
+    },
+    {
+      "type": "single",
+      "resource": "eanimod:block/chicken_nest/splotch_egg"
+    },
+    {
+      "type": "single",
+      "resource": "eanimod:block/chicken_nest/spot_egg"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ public class ECSandBath  extends Goal
 
     public ECSandBath(Mob sandBatherEntityIn) {
         this.sandBatherEntity = sandBatherEntityIn;
-        this.entityWorld = sandBatherEntityIn.level;
+        this.entityWorld = sandBatherEntityIn.level();
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
     }
 
@@ -42,7 +42,7 @@ public class ECSandBath  extends Goal
         }
         else
         {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
+            BlockPos blockpos = BlockPos.containing(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
             return this.entityWorld.getBlockState(blockpos.below()).getBlock() == Blocks.SAND;
         }
     }
@@ -88,11 +88,11 @@ public class ECSandBath  extends Goal
         this.sandBathTimer = Math.max(0, this.sandBathTimer - 1);
 
         if (this.sandBathTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
+            BlockPos blockpos = BlockPos.containing(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
                 BlockPos blockpos1 = blockpos.below();
 
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SAND) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.sandBatherEntity)) {
+                    if (net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.entityWorld, this.sandBatherEntity)) {
                         this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.SAND.defaultBlockState()));
                         this.entityWorld.setBlock(blockpos1, Blocks.SAND.defaultBlockState(), 2);
                     }

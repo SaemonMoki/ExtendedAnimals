@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
+import mokiyoki.enhancedanimals.util.LegacyBiomeCategory;
 import mokiyoki.enhancedanimals.init.breeds.PigBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -46,7 +47,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Biome biome = biomeHolder.value();
 
         int wildType = 2;
-        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
+        if (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS) {
             wildType = 1;
         }
         if (isFlat) {

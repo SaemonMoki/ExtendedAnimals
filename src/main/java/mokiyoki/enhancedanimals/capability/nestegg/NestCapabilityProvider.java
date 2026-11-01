@@ -4,27 +4,22 @@ import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import mokiyoki.enhancedanimals.init.ModAttachments;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class NestCapabilityProvider implements INestEggCapability, ICapabilitySerializable<Tag> {
+public class NestCapabilityProvider implements INestEggCapability, INBTSerializable<Tag> {
 
-    public static Capability<INestEggCapability> NEST_CAP = CapabilityManager.get(new CapabilityToken<>() {});
-
-    private final LazyOptional<INestEggCapability> holder = LazyOptional.of(() -> this);
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<NestCapabilityProvider>> NEST_CAP = ModAttachments.NEST_CAP;
 
     Map<BlockPos, List<EggHolder>> eggsInNests = new HashMap<>();
 
@@ -84,15 +79,8 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
         return eggsInNest.get(0);
     }
 
-    @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        return NEST_CAP.orEmpty(capability, holder);
-    }
-
-
-    @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
         Map<BlockPos, List<EggHolder>> allTurtleEggPos = this.getAllNestEggPos();
         ListTag nbttaglist = new ListTag();
@@ -123,7 +111,7 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         CompoundTag compound = (CompoundTag) nbt;
         Map<BlockPos, List<EggHolder>> allNestBlockPos = new HashMap<>();
         ListTag nbttaglist = compound.getList("NestPos", 10);

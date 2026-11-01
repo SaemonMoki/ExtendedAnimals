@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.CactusBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.FlowerBlock;
-import net.minecraft.world.level.block.MelonBlock;
 import net.minecraft.world.level.block.PumpkinBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.TallFlowerBlock;
@@ -23,7 +22,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +44,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
         super(animalIn, (double)0.7F, 16);
         this.animal = animalIn;
         this.ediblePlants = foods;
-        this.griefingAllowed = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.animal.level, this.animal);
+        this.griefingAllowed = net.neoforged.neoforge.event.EventHooks.canEntityGrief(this.animal.level(), this.animal);
     }
 
     public boolean canUse() {
@@ -69,7 +68,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
         super.tick();
         this.animal.getLookControl().setLookAt((double)this.blockPos.getX() + 0.5D, (double)(this.blockPos.getY() + 1), (double)this.blockPos.getZ() + 0.5D, 10.0F, (float)this.animal.getMaxHeadXRot());
         if (this.isReachedTarget()) {
-            Level world = this.animal.level;
+            Level world = this.animal.level();
             BlockPos blockpos = this.blockPos.above();
             if (this.canEat && isEdible(world, blockpos)) {
                 BlockState blockState = world.getBlockState(blockpos);
@@ -78,7 +77,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 if (blockValues != null) {
                     Integer integer = getPlantAge(blockState);
                     this.animal.decreaseHunger(blockValues.getHungerPoints(integer, getPlantMaxAge(block)));
-                    if (block instanceof MelonBlock || block instanceof PumpkinBlock) {
+                    if (block == Blocks.MELON || block instanceof PumpkinBlock) {
                         world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 2);
                         world.destroyBlock(blockpos, false);
                     } else {
@@ -91,7 +90,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 }
             }
         } else if (this.blockPos.closerThan(this.animal.blockPosition(), 2.0D)) {
-            Level world = this.animal.level;
+            Level world = this.animal.level();
             BlockPos blockpos = this.blockPos.above();
             BlockState blockState = world.getBlockState(blockpos);
             Block block = blockState.getBlock();
@@ -100,7 +99,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 blockpos = blockpos.above();
                 cactusSize++;
             }
-            if ((block instanceof CactusBlock && cactusSize != 0) || block instanceof MelonBlock || block instanceof PumpkinBlock) {
+            if ((block instanceof CactusBlock && cactusSize != 0) || block == Blocks.MELON || block instanceof PumpkinBlock) {
                 EatValues blockValues = this.ediblePlants.get(block);
                 if (blockValues != null) {
                     this.animal.decreaseHunger(blockValues.hungerPoints);
@@ -234,7 +233,7 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                     world.setBlock(blockpos.above(), ModBlocks.GROWABLE_SUNFLOWER.get().defaultBlockState().setValue(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).setValue(HALF, DoubleBlockHalf.UPPER), 2);
                 }
             } else if (block instanceof TallGrassBlock) {
-                if (block == Blocks.GRASS) {
+                if (block == Blocks.SHORT_GRASS) {
                     world.setBlock(blockpos, ModBlocks.GROWABLE_GRASS.get().defaultBlockState().setValue(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);
                 } else if (block == Blocks.FERN) {
                     world.setBlock(blockpos, ModBlocks.GROWABLE_FERN.get().defaultBlockState().setValue(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);

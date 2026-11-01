@@ -1,8 +1,9 @@
 package mokiyoki.enhancedanimals.model;
 
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.Phenotype;
@@ -19,8 +20,8 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.List;
@@ -645,7 +646,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int colour) {
+        float red = (float) FastColor.ARGB32.red(colour) / 255.0F;
+        float green = (float) FastColor.ARGB32.green(colour) / 255.0F;
+        float blue = (float) FastColor.ARGB32.blue(colour) / 255.0F;
+        float alpha = (float) FastColor.ARGB32.alpha(colour) / 255.0F;
         if (this.pigModelData!=null && this.pigModelData.getPhenotype() != null) {
             PigPhenotype pig = pigModelData.getPhenotype();
 

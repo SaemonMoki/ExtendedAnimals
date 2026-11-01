@@ -10,9 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.IReverseTag;
+import net.neoforged.fml.loading.FMLPaths;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
@@ -180,21 +178,21 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
         public boolean isFoodItem(Item item) {
             return foodMapList.stream()
-                    .anyMatch(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .anyMatch(f -> f.registryName.equals(BuiltInRegistries.ITEM.getKey(item).toString())
                             || findTags(item, f.tag));
         }
 
         public boolean isBreedingItem(Item item) {
             return foodMapList.stream()
-                    .filter(f -> f.registryName.equals(item.getRegistryName().toString())
+                    .filter(f -> f.registryName.equals(BuiltInRegistries.ITEM.getKey(item).toString())
                             || findTags(item, f.tag))
                     .anyMatch(f -> f.isBreedingItem);
         }
 
         public int getHungerRestored(Item item) {
-            if (item.getRegistryName() != null) {
+            if (BuiltInRegistries.ITEM.getKey(item) != null) {
                 FoodMap foodMap = foodMapList.stream()
-                        .filter(f -> f.registryName.equals(item.getRegistryName().toString()))
+                        .filter(f -> f.registryName.equals(BuiltInRegistries.ITEM.getKey(item).toString()))
                         .findFirst().orElse(null);
                 if (foodMap != null) {
                     return foodMap.hungerRestored;
@@ -211,7 +209,7 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
         }
 
         private boolean findTags(Item item, String foodTag) {
-            return ForgeRegistries.ITEMS.tags().getReverseTag(item).map(IReverseTag::getTagKeys).orElseGet(Stream::of).anyMatch(tag -> tag.toString().equals(foodTag));
+            return BuiltInRegistries.ITEM.wrapAsHolder(item).tags().anyMatch(tag -> tag.toString().equals(foodTag));
         }
     }
 }

@@ -1,5 +1,14 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.world.item.component.ItemContainerContents;
+import com.mojang.serialization.MapCodec;
+import mokiyoki.enhancedanimals.init.ModTileEntities;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.core.component.DataComponents;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import net.minecraft.world.level.block.Block;
@@ -18,7 +27,6 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -43,14 +51,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -61,11 +67,18 @@ import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTI
 public class EggCartonBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final ResourceLocation CONTENTS = new ResourceLocation("contents");
+    public static final ResourceLocation CONTENTS = ResourceLocation.parse("contents");
     protected static final VoxelShape SHAPE_DEFAULT = Block.box(1.0D, 0.0D, 2.0D, 15.0D, 8.0D, 14.0D);
     protected static final VoxelShape SHAPE_EASTWEST = Block.box(2.0D, 0.0D, 1.0D, 14.0D, 8.0D, 15.0D);
     protected static final VoxelShape SHAPE_NORTHSOUTH = Block.box(1.0D, 0.0D, 2.0D, 15.0D, 8.0D, 14.0D);
 
+
+    public static final MapCodec<EggCartonBlock> CODEC = simpleCodec(EggCartonBlock::new);
+
+    @Override
+    protected MapCodec<EggCartonBlock> codec() {
+        return CODEC;
+    }
 
     public EggCartonBlock(Properties properties) {
         super(properties);
@@ -85,7 +98,7 @@ public class EggCartonBlock extends BaseEntityBlock {
         return createTickerHelper(blockEntityType, EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntity::tick);
     }
 
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
         if (worldIn.isClientSide) {
             return InteractionResult.SUCCESS;
         } else if (player.isSpectator()) {
@@ -182,19 +195,19 @@ public class EggCartonBlock extends BaseEntityBlock {
         builder.add(FACING);
     }
 
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
         BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
             if (!worldIn.isClientSide && player.isCreative() && !eggCartonTileEntity.isEmpty()) {
                 ItemStack itemstack = /*new ItemStack(ModBlocks.EGG_CARTON)*/ new ItemStack(Blocks.SHULKER_BOX);
-                CompoundTag compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundTag());
+                CompoundTag compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundTag(), worldIn.registryAccess());
                 if (!compoundnbt.isEmpty()) {
-                    itemstack.addTagElement("BlockEntityTag", compoundnbt);
+                    BlockItem.setBlockEntityData(itemstack, BlockEntityType.SHULKER_BOX, compoundnbt);
                 }
 
                 if (eggCartonTileEntity.hasCustomName()) {
-                    itemstack.setHoverName(eggCartonTileEntity.getCustomName());
+                    itemstack.set(DataComponents.CUSTOM_NAME, eggCartonTileEntity.getCustomName());
                 }
 
                 ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
@@ -205,15 +218,15 @@ public class EggCartonBlock extends BaseEntityBlock {
             }
         }
 
-        super.playerWillDestroy(worldIn, pos, state, player);
+        return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
 
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity tileentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
-            builder = builder.withDynamicDrop(CONTENTS, (p_220168_1_, p_220168_2_) -> {
+            builder = builder.withDynamicDrop(CONTENTS, (p_220168_2_) -> {
                 for(int i = 0; i < eggCartonTileEntity.getContainerSize(); ++i) {
                     p_220168_2_.accept(eggCartonTileEntity.getItem(i));
                 }
@@ -225,17 +238,23 @@ public class EggCartonBlock extends BaseEntityBlock {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        CompoundTag compoundnbt = stack.getTagElement("BlockEntityTag");
-        if (compoundnbt != null) {
-            if (compoundnbt.contains("LootTable", 8)) {
-                tooltip.add(new TextComponent("???????"));
+        CustomData blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        CompoundTag compoundnbt = blockEntityData != null ? blockEntityData.copyTag() : null;
+        ItemContainerContents containerContents = stack.get(DataComponents.CONTAINER);
+        if (compoundnbt != null || containerContents != null || stack.has(DataComponents.CONTAINER_LOOT)) {
+            if ((compoundnbt != null && compoundnbt.contains("LootTable", 8)) || stack.has(DataComponents.CONTAINER_LOOT)) {
+                tooltip.add(Component.literal("???????"));
             }
 
-            if (compoundnbt.contains("Items", 9)) {
+            if (containerContents != null || (compoundnbt != null && compoundnbt.contains("Items", 9) && worldIn.registries() != null)) {
                 NonNullList<ItemStack> nonnulllist = NonNullList.withSize(17, ItemStack.EMPTY);
-                ContainerHelper.loadAllItems(compoundnbt, nonnulllist);
+                if (containerContents != null) {
+                    containerContents.copyInto(nonnulllist);
+                } else {
+                    ContainerHelper.loadAllItems(compoundnbt, nonnulllist, worldIn.registries());
+                }
                 int i = 0;
                 int j = 0;
 
@@ -252,7 +271,7 @@ public class EggCartonBlock extends BaseEntityBlock {
                 }
 
                 if (j - i > 0) {
-                    tooltip.add((new TranslatableComponent("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
+                    tooltip.add((Component.translatable("container.egg_carton.more", j - i)).withStyle(ChatFormatting.ITALIC));
                 }
             }
         }
@@ -285,12 +304,12 @@ public class EggCartonBlock extends BaseEntityBlock {
         }
     }
 
-    public ItemStack getCloneItemStack(BlockGetter worldIn, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader worldIn, BlockPos pos, BlockState state) {
         ItemStack itemstack = super.getCloneItemStack(worldIn, pos, state);
         EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)worldIn.getBlockEntity(pos);
-        CompoundTag compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundTag());
+        CompoundTag compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundTag(), worldIn.registryAccess());
         if (!compoundnbt.isEmpty()) {
-            itemstack.addTagElement("BlockEntityTag", compoundnbt);
+            BlockItem.setBlockEntityData(itemstack, ModTileEntities.EGG_CARTON_TILE_ENTITY.get(), compoundnbt);
         }
         return itemstack;
     }

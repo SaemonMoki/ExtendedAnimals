@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.renderer;
 
+import net.minecraft.util.FastColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -26,11 +27,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class ChickenNestTileEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
-    public static final ResourceLocation EGG_PLAIN_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/plain_egg");
-    public static final ResourceLocation EGG_SPECKLE_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/speckle_egg");
-    public static final ResourceLocation EGG_SPATTER_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/splotch_egg");
-    public static final ResourceLocation EGG_SPOT_TEXTURE = new ResourceLocation(Reference.MODID, "block/chicken_nest/spot_egg");
-    public static final ModelLayerLocation CHICKEN_NEST = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "chicken_nest"), "main");
+    public static final ResourceLocation EGG_PLAIN_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "block/chicken_nest/plain_egg");
+    public static final ResourceLocation EGG_SPECKLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "block/chicken_nest/speckle_egg");
+    public static final ResourceLocation EGG_SPATTER_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "block/chicken_nest/splotch_egg");
+    public static final ResourceLocation EGG_SPOT_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "block/chicken_nest/spot_egg");
+    public static final ModelLayerLocation CHICKEN_NEST = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "chicken_nest"), "main");
 
     private final ModelPart[] egg = new ModelPart[12];
     public ChickenNestTileEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -93,6 +94,6 @@ public class ChickenNestTileEntityRenderer<T extends BlockEntity> implements Blo
         float b = ((rgb  & 255) >> 0)/255F;
         Material rendermaterial = new Material(Sheets.CHEST_SHEET, texture);
         VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferIn, RenderType::entityCutout);
-        part.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn,r,g,b,1.0F);
+        part.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn, FastColor.ARGB32.colorFromFloat(1.0F, r, g, b));
     }
 }

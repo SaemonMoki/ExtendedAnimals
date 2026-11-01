@@ -1,11 +1,14 @@
 package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import mokiyoki.enhancedanimals.util.CustomDataHelper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -17,14 +20,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.IItemRenderProperties;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
@@ -58,21 +58,11 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     };
 
     public EnhancedAxolotlBucket(Properties properties, Supplier<? extends EntityType<?>> entitySupplier, Supplier<? extends Fluid> fluidSupplier, Supplier<? extends SoundEvent> soundSupplier) {
-        super(entitySupplier, fluidSupplier, soundSupplier, properties);
-    }
-
-    @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-                return RenderEnhancedAxolotlBucket.AXOLOTL_BUCKET_RENDERER;
-            }
-        });
+        super(entitySupplier.get(), fluidSupplier.get(), soundSupplier.get(), properties);
     }
 
     public static void setGillType(ItemStack stack, GillType type) {
-            stack.getOrCreateTagElement("display").putString("type", type.name());
+            CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("type", type.name()));
     }
 
     public static void setGlowType(ItemStack stack, boolean eyes, boolean body, boolean gills) {
@@ -80,12 +70,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         tag.putBoolean("eyes", eyes);
         tag.putBoolean("body", body);
         tag.putBoolean("gills", gills);
-        stack.getOrCreateTagElement("display").put("gfp", tag);
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.put("gfp", tag));
     }
 
     public static GillType getGillType(ItemStack stack) {
-        if (stack.getOrCreateTagElement("display").contains("type")) {
-            String type = stack.getOrCreateTagElement("display").getString("type");
+        if (CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("type")) {
+            String type = CustomDataHelper.getTagElementOrEmpty(stack, "display").getString("type");
             if (type.equals("GREATER")) {
                 return GillType.GREATER;
             } else if (type.equals("LONG")) {
@@ -95,16 +85,16 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return GillType.MINOR;
     }
 
-    public static void setEquipment(ItemStack stack, ItemStack equipment) {
+    public static void setEquipment(ItemStack stack, ItemStack equipment, HolderLookup.Provider provider) {
         if (equipment != ItemStack.EMPTY) {
-            stack.getOrCreateTagElement("display").put("collar", equipment.save(new CompoundTag()));
+            CustomDataHelper.updateTagElement(stack, "display", element -> element.put("collar", equipment.saveOptional(provider)));
         }
     }
 
     public static void setGenes(ItemStack stack, Genes genes) {
         if (genes != null) {
-            stack.getOrCreateTagElement("Genetics").putIntArray("SGenes", genes.getSexlinkedGenes());
-            stack.getOrCreateTagElement("Genetics").putIntArray("AGenes", genes.getAutosomalGenes());
+            CustomDataHelper.updateTagElement(stack, "Genetics", element -> element.putIntArray("SGenes", genes.getSexlinkedGenes()));
+            CustomDataHelper.updateTagElement(stack, "Genetics", element -> element.putIntArray("AGenes", genes.getAutosomalGenes()));
 
             setGillType(stack, (genes.isHomozygousFor(34, 2) && genes.isHomozygousFor(36, 2))? GillType.GREATER : (genes.isHomozygousFor(34, 2) || genes.isHomozygousFor(36, 2)? GillType.LONG : GillType.MINOR));
             setGlowType(stack, genes.has(20, 6), genes.has(10, 3) && !genes.has(10, 2), genes.has(38, 3) && !genes.has(38, 2));
@@ -112,61 +102,61 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     }
 
     public Genes getGenes(ItemStack stack) {
-        CompoundTag genetics = stack.getOrCreateTagElement("Genetics");
+        CompoundTag genetics = CustomDataHelper.getTagElementOrEmpty(stack, "Genetics");
         return new Genes(genetics.getIntArray("SGenes"), genetics.getIntArray("AGenes"));
     }
 
     public static void setParentNames(ItemStack stack, String sireName, String damName) {
-        stack.getOrCreateTagElement("display").putString("SireName", sireName);
-        stack.getOrCreateTagElement("display").putString("DamName", damName);
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("SireName", sireName));
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("DamName", damName));
     }
 
 
 
     public static void setMateGenes(ItemStack stack, Genes genes, boolean isFemale) {
         if (genes != null) {
-            stack.getOrCreateTagElement("MateGenetics").putIntArray("SGenes", genes.getSexlinkedGenes());
-            stack.getOrCreateTagElement("MateGenetics").putIntArray("AGenes", genes.getAutosomalGenes());
-            stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
+            CustomDataHelper.updateTagElement(stack, "MateGenetics", element -> element.putIntArray("SGenes", genes.getSexlinkedGenes()));
+            CustomDataHelper.updateTagElement(stack, "MateGenetics", element -> element.putIntArray("AGenes", genes.getAutosomalGenes()));
+            CustomDataHelper.updateTagElement(stack, "MateGenetics", element -> element.putBoolean("MateIsFemale", isFemale));
         }
     }
 
     private Genes getMateGenes(ItemStack stack) {
-        CompoundTag genetics = stack.getOrCreateTagElement("MateGenetics");
+        CompoundTag genetics = CustomDataHelper.getTagElementOrEmpty(stack, "MateGenetics");
         return new Genes(genetics.getIntArray("SGenes"), genetics.getIntArray("AGenes"));
     }
 
     public static void setAxolotlUUID(ItemStack stack, String uuid) {
-        stack.getOrCreateTagElement("display").putString("UUID", uuid);
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("UUID", uuid));
     }
 
     private boolean getMateIsFemale(ItemStack stack) {
-        return stack.getOrCreateTagElement("MateGenetics").getBoolean("MateIsFemale");
+        return CustomDataHelper.getTagElementOrEmpty(stack, "MateGenetics").getBoolean("MateIsFemale");
     }
 
     public static void setBirthTime(ItemStack stack, String birthTime) {
-        stack.getOrCreateTagElement("display").putString("BirthTime", birthTime);
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("BirthTime", birthTime));
     }
 
     public static void setImage(ItemStack stack, int[] imageArray) {
         if (imageArray != null) {
-            stack.getOrCreateTagElement("display").putIntArray("image", imageArray);
+            CustomDataHelper.updateTagElement(stack, "display", element -> element.putIntArray("image", imageArray));
         }
     }
 
     public static int[] getImage(ItemStack stack) {
-        CompoundTag compoundTag = stack.getOrCreateTagElement("display");
+        CompoundTag compoundTag = CustomDataHelper.getTagElementOrEmpty(stack, "display");
         return buildImage(compoundTag.contains("image") ? compoundTag.getIntArray("image") : getBlankImage());
     }
 
     public static int[] getGlowingImage(ItemStack stack) {
-        if (stack.getOrCreateTagElement("display").contains("gfp")) {
+        if (CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("gfp")) {
             int[] image = getImage(stack);
-            CompoundTag tag = stack.getOrCreateTagElement("display").getCompound("gfp");
+            CompoundTag tag = CustomDataHelper.getTagElementOrEmpty(stack, "display").getCompound("gfp");
             boolean body = tag.getBoolean("body");
             boolean eyes = body || tag.getBoolean("eyes");
             boolean gills = body || tag.getBoolean("gills");
-            boolean hasEquipment = body && stack.getOrCreateTagElement("display").contains("collar");
+            boolean hasEquipment = body && CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("collar");
 
             List<Integer> glowImage = new ArrayList();
 
@@ -262,7 +252,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     private void spawnAxolotl(ServerLevel level, ItemStack stack, BlockPos pos) {
         EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
         axolotl.setFromBucket(true);
-        CompoundTag data = stack.getOrCreateTagElement("display");
+        CompoundTag data = CustomDataHelper.getTagElementOrEmpty(stack, "display");
         if (level.getEntity(UUID.fromString(data.getString("UUID"))) == null) {
             axolotl.setUUID(UUID.fromString(data.getString("UUID")));
         }
@@ -285,20 +275,22 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         }
         if (data.contains("collar")) {
             CompoundTag collar = data.getCompound("collar");
-            axolotl.getEnhancedInventory().setItem(1, ItemStack.of(collar));
+            axolotl.getEnhancedInventory().setItem(1, ItemStack.parseOptional(level.registryAccess(), collar));
         }
-        if (stack.hasCustomHoverName()) {
+        if (stack.has(DataComponents.CUSTOM_NAME)) {
             axolotl.setCustomName(stack.getHoverName());
         }
         axolotl.setBirthTime(data.getString("BirthTime"));
         axolotl.initilizeAnimalSize();
-        axolotl.loadFromBucketTag(stack.getOrCreateTag());
+        CompoundTag bucketTag = stack.getOrDefault(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY).copyTag();
+        bucketTag.merge(CustomDataHelper.getTagOrEmpty(stack));
+        axolotl.loadFromBucketTag(bucketTag);
         axolotl.moveTo((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);
         level.addFreshEntity(axolotl);
     }
 
     @Override
-    public void appendHoverText(ItemStack p_151155_, @Nullable Level p_151156_, List<Component> p_151157_, TooltipFlag p_151158_) { }
+    public void appendHoverText(ItemStack p_151155_, Item.TooltipContext p_151156_, List<Component> p_151157_, TooltipFlag p_151158_) { }
 
     public enum GillType {
         GREATER,

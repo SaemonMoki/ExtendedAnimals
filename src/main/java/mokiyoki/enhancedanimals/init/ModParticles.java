@@ -3,16 +3,16 @@ package mokiyoki.enhancedanimals.init;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ModParticles {
 
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Reference.MODID);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES_DEFERRED_REGISTRY = DeferredRegister.create(Registries.PARTICLE_TYPE, Reference.MODID);
 
-    public static final RegistryObject<SimpleParticleType> FEATHER = PARTICLE_TYPES_DEFERRED_REGISTRY.register("feather", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FEATHER = PARTICLE_TYPES_DEFERRED_REGISTRY.register("feather", () -> new SimpleParticleType(false));
 
     public static void register(IEventBus modEventBus) {
         PARTICLE_TYPES_DEFERRED_REGISTRY.register(modEventBus);

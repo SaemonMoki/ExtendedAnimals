@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.util.RandomSource;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,9 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class GrowableDoubleHigh extends CropBlock {
@@ -72,7 +71,7 @@ public class GrowableDoubleHigh extends CropBlock {
      * this block
      */
 
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
         DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
         BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
         BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -85,7 +84,7 @@ public class GrowableDoubleHigh extends CropBlock {
             }
         }
 
-        super.playerWillDestroy(worldIn, pos, state, player);
+        return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Override
@@ -105,7 +104,7 @@ public class GrowableDoubleHigh extends CropBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if (state.getValue(HALF) != DoubleBlockHalf.UPPER) {
             Block groundType = worldIn.getBlockState(pos.below()).getBlock();
             if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {
@@ -161,13 +160,6 @@ public class GrowableDoubleHigh extends CropBlock {
 //        Vector3d vec3d = state.getOffset(worldIn, pos);
 //        return SHAPE_BY_AGE[state.get(this.getAgeProperty())].withOffset(vec3d.x, vec3d.y, vec3d.z);
 //    }
-
-    /**
-     * Get the OffsetType for this Block. Determines if the model is rendered slightly offset.
-     */
-    public OffsetType getOffsetType() {
-        return OffsetType.XZ;
-    }
 
     @Override
     public ItemLike getBaseSeedId() { return this.plantType; }

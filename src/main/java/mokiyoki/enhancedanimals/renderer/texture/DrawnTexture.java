@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.renderer.texture;
 
+import java.io.InputStream;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,8 +33,8 @@ public class DrawnTexture extends AbstractTexture {
     @Override
     public void load(ResourceManager manager) throws IOException {
         try (
-                Resource iresource = manager.getResource(new ResourceLocation(this.resourceLocation));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+                InputStream inputstream = manager.getResourceOrThrow(ResourceLocation.parse(this.resourceLocation)).open();
+                NativeImage nativeimage = NativeImage.read(inputstream);
         ) {
             if (imageArray!=null) {
                 int w = nativeimage.getWidth();
@@ -54,7 +54,7 @@ public class DrawnTexture extends AbstractTexture {
                 for (int x = 0; x < w; x++) {
                     for (int y = 0; y < h; y++) {
                         if (cuttoutArray == null) {
-                            nativeimage.setPixelRGBA(x, y, NativeImage.combine(0, 0, 0, 0));
+                            nativeimage.setPixelRGBA(x, y, ABGRColour.combine(0, 0, 0, 0));
                         } else {
                             nativeimage.setPixelRGBA(x, y, cuttoutArray[x][y] ? baseImage.getPixelRGBA(x, y) : 0);
                         }

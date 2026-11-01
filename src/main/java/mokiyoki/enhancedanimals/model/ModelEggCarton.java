@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.model;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.Mod;
 
 import java.util.function.Function;
 

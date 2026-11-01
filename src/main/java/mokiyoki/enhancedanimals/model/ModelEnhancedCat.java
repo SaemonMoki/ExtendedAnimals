@@ -8,8 +8,8 @@
 //import net.minecraft.client.world.ClientWorld;
 //import net.minecraft.util.math.MathHelper;
 //import net.minecraft.world.storage.WorldInfo;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import java.util.HashMap;
 //import java.util.Map;

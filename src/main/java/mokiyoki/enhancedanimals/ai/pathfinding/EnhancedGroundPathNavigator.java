@@ -7,7 +7,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -32,7 +33,7 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
     }
 
     protected boolean canUpdatePath() {
-        return this.mob.isOnGround() || this.isInLiquid() || this.mob.isPassenger();
+        return this.mob.onGround() || this.mob.isInLiquid() || this.mob.isPassenger();
     }
 
     protected Vec3 getTempMobPos() {
@@ -56,11 +57,11 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
             pos = blockpos;
         }
 
-        if (!this.level.getBlockState(pos).getMaterial().isSolid()) {
+        if (!this.level.getBlockState(pos).isSolid()) {
             return super.createPath(pos, p_179680_2_);
         } else {
             BlockPos blockpos1;
-            for(blockpos1 = pos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).getMaterial().isSolid(); blockpos1 = blockpos1.above()) {
+            for(blockpos1 = pos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).isSolid(); blockpos1 = blockpos1.above()) {
             }
 
             return super.createPath(blockpos1, p_179680_2_);
@@ -74,12 +75,12 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
     private int getPathablePosY() {
         if (this.mob.isInWater() && this.canFloat()) {
             int i = Mth.floor(this.mob.getY());
-            Block block = this.level.getBlockState(new BlockPos(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
+            Block block = this.level.getBlockState(BlockPos.containing(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
             int j = 0;
 
             while(block == Blocks.WATER) {
                 ++i;
-                block = this.level.getBlockState(new BlockPos(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
+                block = this.level.getBlockState(BlockPos.containing(this.mob.getX(), (double)i, this.mob.getZ())).getBlock();
                 ++j;
                 if (j > 16) {
                     return Mth.floor(this.mob.getY());
@@ -96,11 +97,11 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
         super.trimPath();
         if (this.shouldSeekShelter) {
             if (this.isHot) {
-                if (this.level.canSeeSky(new BlockPos(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ()))) {
+                if (this.level.canSeeSky(BlockPos.containing(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ()))) {
                     return;
                 }
             } else {
-                if (this.level.canSeeSky(new BlockPos(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ())) && this.level.isWaterAt(this.mob.blockPosition())) {
+                if (this.level.canSeeSky(BlockPos.containing(this.mob.getX(), this.mob.getY() + 0.5D, this.mob.getZ())) && this.level.isWaterAt(this.mob.blockPosition())) {
                     return;
                 }
             }
@@ -199,18 +200,18 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
                     double d0 = (double)k + 0.5D - vec31.x;
                     double d1 = (double)l + 0.5D - vec31.z;
                     if (!(d0 * p_179683_8_ + d1 * p_179683_10_ < 0.0D)) {
-                        BlockPathTypes pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y - 1, l, this.mob, sizeX, sizeY, sizeZ, false, true);
+                        PathType pathnodetype = this.nodeEvaluator.getPathTypeOfMob(new PathfindingContext(this.level, this.mob), k, y - 1, l, this.mob);
                         if (!this.hasValidPathType(pathnodetype)) {
                             return false;
                         }
 
-                        pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y, l, this.mob, sizeX, sizeY, sizeZ, false, true);
+                        pathnodetype = this.nodeEvaluator.getPathTypeOfMob(new PathfindingContext(this.level, this.mob), k, y, l, this.mob);
                         float f = this.mob.getPathfindingMalus(pathnodetype);
                         if (f < 0.0F || f >= 8.0F) {
                             return false;
                         }
 
-                        if (pathnodetype == BlockPathTypes.DAMAGE_FIRE || pathnodetype == BlockPathTypes.DANGER_FIRE || pathnodetype == BlockPathTypes.DAMAGE_OTHER) {
+                        if (pathnodetype == PathType.DAMAGE_FIRE || pathnodetype == PathType.DANGER_FIRE || pathnodetype == PathType.DAMAGE_OTHER) {
                             return false;
                         }
                     }
@@ -221,13 +222,13 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
         }
     }
 
-    protected boolean hasValidPathType(BlockPathTypes nodeType) {
-        if (nodeType == BlockPathTypes.WATER) {
+    protected boolean hasValidPathType(PathType nodeType) {
+        if (nodeType == PathType.WATER) {
             return false;
-        } else if (nodeType == BlockPathTypes.LAVA) {
+        } else if (nodeType == PathType.LAVA) {
             return false;
         } else {
-            return nodeType != BlockPathTypes.OPEN;
+            return nodeType != PathType.OPEN;
         }
     }
 
@@ -238,7 +239,7 @@ public class EnhancedGroundPathNavigator extends PathNavigation {
         for(BlockPos blockpos : BlockPos.betweenClosed(new BlockPos(x, y, z), new BlockPos(x + sizeX - 1, y + sizeY - 1, z + sizeZ - 1))) {
             double d0 = (double)blockpos.getX() + 0.5D - p_179692_7_.x;
             double d1 = (double)blockpos.getZ() + 0.5D - p_179692_7_.z;
-            if (!(d0 * p_179692_8_ + d1 * p_179692_10_ < 0.0D) && !this.level.getBlockState(blockpos).isPathfindable(this.level, blockpos, PathComputationType.LAND)) {
+            if (!(d0 * p_179692_8_ + d1 * p_179692_10_ < 0.0D) && !this.level.getBlockState(blockpos).isPathfindable(PathComputationType.LAND)) {
                 return false;
             }
         }

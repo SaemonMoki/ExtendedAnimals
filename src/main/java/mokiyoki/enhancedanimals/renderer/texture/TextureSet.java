@@ -1,11 +1,11 @@
 package mokiyoki.enhancedanimals.renderer.texture;
 
+import java.io.InputStream;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,8 +79,8 @@ public class TextureSet extends AbstractTexture {
         s = iterator.next();
 
         try (
-                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
-                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+                InputStream inputstream = manager.getResourceOrThrow(ResourceLocation.parse(modLocation+s)).open();
+                NativeImage nativeimage = NativeImage.read(inputstream);
         ) {
             switch (textureSet.blendType) {
                 case NORMAL -> {

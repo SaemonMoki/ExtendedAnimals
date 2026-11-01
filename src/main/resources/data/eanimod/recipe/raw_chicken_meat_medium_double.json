@@ -1,0 +1,57 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:rawchicken_dark"
+      },
+      {
+        "item": "eanimod:rawchicken_pale"
+      }
+    ]
+  ],
+  "result": {
+    "count": 4,
+    "id": "minecraft:chicken"
+  }
+}

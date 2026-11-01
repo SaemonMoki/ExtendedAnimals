@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_AXOLOTL_TEXTURE_LOCATION = "eanimod:textures/entity/axolotl/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/axolotl/base.png");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/axolotl/base.png");
 
     public ModelEnhancedAxolotlGlowingLayer(RenderLayerParent<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> layerParent) {
         super(layerParent);
@@ -32,7 +32,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
         AxolotlModelData modelData = ((AxolotlModelData)this.getParentModel().getCreateAnimalModelData(axolotl));
         if (modelData != null && modelData.getPhenotype() != null && (modelData.getPhenotype().glowingBody || modelData.getPhenotype().glowingEyes || modelData.getPhenotype().glowingGills)) {
             VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.eyes(this.getTextureLocation(axolotl)));
-            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
         }
     }
 
@@ -63,7 +63,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
                 EnhancedLayeredTexturer layeredTexture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration, 64, 64);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, layeredTexture);
                 DrawnTexture texture = new DrawnTexture("eanimod:textures/entity/axolotl/blank.png", layeredTexture, getGlowingParts(genes));

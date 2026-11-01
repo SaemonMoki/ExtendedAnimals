@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity.genetics;
 
+import mokiyoki.enhancedanimals.util.LegacyBiomeCategory;
 import mokiyoki.enhancedanimals.init.breeds.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -121,16 +122,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
         int wildType = 0;
 
-        if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getBaseTemperature() >= 0.9F && biome.getModifiedClimateSettings().downfall() > 0.8F) // hot and wet (jungle)
         {
             wildType = 1;
-        } else if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        } else if (biome.getBaseTemperature() >= 0.9F && biome.getModifiedClimateSettings().downfall() < 0.3F) // hot and dry (savanna)
         {
             wildType = 2;
         } else if (biome.getBaseTemperature() < 0.3F) // cold (mountains)
         {
             wildType = 3;
-        } else if (biome.getBaseTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+        } else if (biome.getBaseTemperature() >= 0.8F && biome.getModifiedClimateSettings().downfall() > 0.8F) {
             wildType = 4;
         }
 
@@ -308,7 +309,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS) {
                 autosomalGenes[20] = 2;
             } else {
                 autosomalGenes[20] = 1;
@@ -317,7 +318,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS) {
+            if (LegacyBiomeCategory.of(biomeHolder) == LegacyBiomeCategory.PLAINS) {
                 autosomalGenes[21] = 2;
             } else {
                 autosomalGenes[21] = 1;

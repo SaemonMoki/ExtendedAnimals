@@ -1,14 +1,20 @@
 package mokiyoki.enhancedanimals.network;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+import static mokiyoki.enhancedanimals.util.Reference.MODID;
 
-public class EAEquipmentPacket {
+public class EAEquipmentPacket implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<EAEquipmentPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "equipment"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, EAEquipmentPacket> STREAM_CODEC = StreamCodec.ofMember(EAEquipmentPacket::writePacketData, EAEquipmentPacket::new);
+
     private int entityID;
     private int equipmentSlot;
     private ItemStack itemStack = ItemStack.EMPTY;
@@ -22,27 +28,31 @@ public class EAEquipmentPacket {
         this.itemStack = itemStackIn.copy();
     }
 
-    public EAEquipmentPacket(FriendlyByteBuf buf) {
+    public EAEquipmentPacket(RegistryFriendlyByteBuf buf) {
         this.entityID = buf.readVarInt();
         this.equipmentSlot = buf.readVarInt();
-        this.itemStack = buf.readItem();
+        this.itemStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
     }
 
-    public void readPacketData(FriendlyByteBuf buf){
+    public void readPacketData(RegistryFriendlyByteBuf buf){
         this.entityID = buf.readVarInt();
         this.equipmentSlot = buf.readVarInt();
-        this.itemStack = buf.readItem();
+        this.itemStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
     }
 
-    public void writePacketData(FriendlyByteBuf buf){
+    public void writePacketData(RegistryFriendlyByteBuf buf){
         buf.writeVarInt(this.entityID);
         buf.writeVarInt(this.equipmentSlot);
-        buf.writeItem(this.itemStack);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, this.itemStack);
     }
 
-    public boolean processPacket(Supplier<NetworkEvent.Context> contextSupplier) {
+    public void processPacket(IPayloadContext context) {
         EAPacketHandler.handleAnimalInventorySync(this);
-        return true;
+    }
+
+    @Override
+    public CustomPacketPayload.Type<EAEquipmentPacket> type() {
+        return TYPE;
     }
 
     @OnlyIn(Dist.CLIENT)

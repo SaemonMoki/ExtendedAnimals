@@ -1,5 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.core.component.DataComponents;
+import mokiyoki.enhancedanimals.util.CustomDataHelper;
+import net.minecraft.network.chat.Component;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
@@ -24,7 +27,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -61,11 +63,11 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HAS_CHEST, false);
-        this.entityData.define(HAS_BLANKET, false);
-        this.entityData.define(HAS_BRIDLE, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_CHEST, false);
+        builder.define(HAS_BLANKET, false);
+        builder.define(HAS_BRIDLE, false);
     }
 
     @Override
@@ -230,8 +232,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             this.animalInventory.setItem(0, new ItemStack(Items.CHEST, 1));
             this.initInventory();
         }
-        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
-        traderBlanket.getOrCreateTagElement("tradersblanket");
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET);
+        traderBlanket.set(DataComponents.CUSTOM_NAME, Component.literal("Trader's Blanket"));
+        CustomDataHelper.updateTag(traderBlanket, tag -> tag.put("tradersblanket", new CompoundTag()));
         this.animalInventory.setItem(4, traderBlanket);
     }
 
@@ -239,12 +242,13 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
             ItemStack otherCarpet = this.getEnhancedInventory().getItem(4);
-            ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1).setHoverName(blanketItemStack.getHoverName());
-            if (blanketItemStack.getTagElement("tradersblanket") != null) {
-                equipedBlanket.getOrCreateTagElement("tradersblanket");
+            ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1);
+            equipedBlanket.set(DataComponents.CUSTOM_NAME, blanketItemStack.getHoverName());
+            if (CustomDataHelper.getTagElement(blanketItemStack, "tradersblanket") != null) {
+                CustomDataHelper.updateTag(equipedBlanket, tag -> tag.put("tradersblanket", new CompoundTag()));
             }
             this.animalInventory.setItem(4, equipedBlanket);
-            this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
+            this.playSound(SoundEvents.LLAMA_SWAG.value(), 0.5F, 1.0F);
             blanketItemStack.shrink(1);
             if (!otherCarpet.isEmpty()) {
                 player.setItemInHand(hand, otherCarpet);
@@ -260,7 +264,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             ItemStack otherBridle = this.getEnhancedInventory().getItem(3);
             this.animalInventory.setItem(3, getReplacementItemWithColour(bridleItemStack));
 //            this.animalInventory.setInventorySlotContents(3, bridleItemStack);
-            this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+            this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0.5F, 1.0F);
             bridleItemStack.shrink(1);
             if (!otherBridle.isEmpty()) {
                 player.setItemInHand(hand, otherBridle);
@@ -273,7 +277,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         boolean flag = this.entityData.get(HAS_BLANKET);
         this.updateInventorySlots();
         if (this.tickCount > 20 && !flag && this.entityData.get(HAS_BLANKET)) {
-            this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
+            this.playSound(SoundEvents.LLAMA_SWAG.value(), 0.5F, 1.0F);
         }
     }
 
@@ -347,8 +351,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 if (blanket == Items.BLACK_CARPET) {
                     blanketTextures.add(BLANKET_TEXTURE[1]);
                 } else if (blanket == Items.BLUE_CARPET) {
-                    if (blanketSlot.hasCustomHoverName()) {
-                        if (blanketSlot.getTagElement("tradersblanket") != null) {
+                    if (blanketSlot.has(DataComponents.CUSTOM_NAME)) {
+                        if (CustomDataHelper.getTagElement(blanketSlot, "tradersblanket") != null) {
                             blanketTextures.add(BLANKET_TEXTURE[0]);
                             return blanketTextures;
                         }

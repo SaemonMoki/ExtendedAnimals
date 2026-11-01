@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -8,27 +10,34 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.PlantType;
+import mokiyoki.enhancedanimals.util.LegacyPlantType;
+import net.neoforged.neoforge.common.util.TriState;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-import static net.minecraftforge.common.PlantType.BEACH;
-import static net.minecraftforge.common.PlantType.CAVE;
-import static net.minecraftforge.common.PlantType.CROP;
-import static net.minecraftforge.common.PlantType.DESERT;
-import static net.minecraftforge.common.PlantType.NETHER;
-import static net.minecraftforge.common.PlantType.PLAINS;
-import static net.minecraftforge.common.PlantType.WATER;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.BEACH;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.CAVE;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.CROP;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.DESERT;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.NETHER;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.PLAINS;
+import static mokiyoki.enhancedanimals.util.LegacyPlantType.WATER;
 
 public class PatchyMyceliumBlock extends SpreadingSnowyDirtBlock {
+
+    public static final MapCodec<PatchyMyceliumBlock> CODEC = simpleCodec(PatchyMyceliumBlock::new);
+
+    @Override
+    protected MapCodec<PatchyMyceliumBlock> codec() {
+        return CODEC;
+    }
 
     public PatchyMyceliumBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         super.randomTick(state, worldIn, pos, random);
         if (!worldIn.isClientSide) {
             if (!worldIn.isAreaLoaded(pos, 3))
@@ -52,17 +61,17 @@ public class PatchyMyceliumBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable)
+    public TriState canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, BlockState plantable)
     {
-        PlantType type = plantable.getPlantType(world, pos.relative(facing));
+        LegacyPlantType type = LegacyPlantType.of(plantable);
 
         if (DESERT.equals(type) || NETHER.equals(type) || CROP.equals(type) || PLAINS.equals(type) || WATER.equals(type) || BEACH.equals(type)) {
-            return false;
+            return TriState.FALSE;
         } else if (CAVE.equals(type)) {
-            return true;
+            return TriState.TRUE;
         }
 
-        return false;
+        return TriState.FALSE;
     }
 
     //TODO find out what the new way is

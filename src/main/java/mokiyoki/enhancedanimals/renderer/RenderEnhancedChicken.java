@@ -13,8 +13,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Created by saemon on 2/09/2018.
@@ -23,8 +23,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entity/chicken/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/chicken/chickenbase.png");
-    public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "chicken"), "chicken_layer");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/chicken/chickenbase.png");
+    public static final ModelLayerLocation CHICKEN_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "chicken"), "chicken_layer");
 
     public RenderEnhancedChicken(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedChicken<>(renderManager.bakeLayer(CHICKEN_LAYER)), 0.5F);
@@ -60,7 +60,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             }
 
             try {
-                resourcelocation = new ResourceLocation(s);
+                resourcelocation = ResourceLocation.parse(s);
 
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_CHICKEN_TEXTURE_LOCATION, textureGrouping, entity.colouration, use16x ? 64 : 320));
 

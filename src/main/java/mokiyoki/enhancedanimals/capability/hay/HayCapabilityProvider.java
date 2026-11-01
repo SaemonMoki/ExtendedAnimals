@@ -3,27 +3,22 @@ package mokiyoki.enhancedanimals.capability.hay;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import mokiyoki.enhancedanimals.init.ModAttachments;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by saemon on 29/09/2018.
  */
-public class HayCapabilityProvider implements IHayCapability, ICapabilitySerializable<Tag> {
+public class HayCapabilityProvider implements IHayCapability, INBTSerializable<Tag> {
 
-    public static Capability<IHayCapability> HAY_CAP = CapabilityManager.get(new CapabilityToken<>() {});
-
-    private final LazyOptional<IHayCapability> holder = LazyOptional.of(() -> this);
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<HayCapabilityProvider>> HAY_CAP = ModAttachments.HAY_CAP;
 
     Set<BlockPos> hayBlockPositions = new HashSet<>();
 
@@ -47,14 +42,8 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
         this.hayBlockPositions = blockPosList;
     }
 
-    @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        return HAY_CAP.orEmpty(capability, holder);
-    }
-
-    @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
         Set<BlockPos> allHayBlockPos = this.getAllHayPos();
 
@@ -75,7 +64,7 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         CompoundTag compound = (CompoundTag) nbt;
         Set<BlockPos> allHayBlockPos = new HashSet<>();
         ListTag nbttaglist = compound.getList("HaysPos", 10);

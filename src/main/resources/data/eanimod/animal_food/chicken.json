@@ -2,7 +2,7 @@
   "replaceDefault": false,
   "values": [
     {
-      "tag": "forge:seeds",
+      "tag": "c:seeds",
       "hungerRestored": 4000,
       "isBreedingItem": true
     },

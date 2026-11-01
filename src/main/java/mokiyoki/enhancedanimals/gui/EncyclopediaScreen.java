@@ -22,8 +22,8 @@
 //import net.minecraft.network.chat.Style;
 //import net.minecraft.ChatFormatting;
 //import net.minecraft.network.chat.TranslatableComponent;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.api.distmarker.OnlyIn;
 //
 //import javax.annotation.Nullable;
 //import java.util.Collections;
@@ -45,12 +45,12 @@
 //    private PageButton buttonNextPage;
 //    private PageButton buttonPreviousPage;
 //
-//    public static final ResourceLocation encyclopediaTexture = new ResourceLocation("textures/gui/book.png");
+//    public static final ResourceLocation encyclopediaTexture = ResourceLocation.parse("textures/gui/book.png");
 //
 //    private EncyclopediaScreen.IBookInfo bookInfo;
 //
 //    public EncyclopediaScreen() {
-//        this(new TranslatableComponent(ModItems.GENETICS_ENCYCLOPEDIA.getDescriptionId()));
+//        this(Component.translatable(ModItems.GENETICS_ENCYCLOPEDIA.getDescriptionId()));
 //    }
 //
 //    protected EncyclopediaScreen(Component titleIn) {
@@ -194,7 +194,7 @@
 //
 //        private static List<String> transformIntoStrings(ItemStack encyclopedia) {
 //            CompoundTag compoundnbt = encyclopedia.getTag();
-//            return (List<String>)(compoundnbt != null && GeneticsEncyclopedia.validBookTagContents(compoundnbt) ? EncyclopediaScreen.readFromNBT(compoundnbt) : ImmutableList.of((new TranslatableComponent("book.invalid.tag")).withStyle(ChatFormatting.DARK_RED)));
+//            return (List<String>)(compoundnbt != null && GeneticsEncyclopedia.validBookTagContents(compoundnbt) ? EncyclopediaScreen.readFromNBT(compoundnbt) : ImmutableList.of((Component.translatable("book.invalid.tag")).withStyle(ChatFormatting.DARK_RED)));
 //        }
 //
 //        public int getStringSize() {
@@ -213,7 +213,7 @@
 //                ;
 //            }
 //
-//            return new TextComponent(s);
+//            return Component.literal(s);
 //        }
 //    }
 //

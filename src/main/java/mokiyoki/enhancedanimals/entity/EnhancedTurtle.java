@@ -446,11 +446,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-
-    }
-
-    @Override
     protected int getPregnancyProgression() {
         return this.hasEgg() ? 11 : -1;
     }

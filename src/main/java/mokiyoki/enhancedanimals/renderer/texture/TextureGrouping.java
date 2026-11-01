@@ -12,8 +12,40 @@ import static mokiyoki.enhancedanimals.renderer.texture.TexturingUtils.*;
 
 public class TextureGrouping {
 
-    private List<TextureGrouping> textureGroupings = new ArrayList<>();
-    private List<TextureLayer> textureLayers = new ArrayList<>();
+    private interface Child {
+        NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y);
+    }
+
+    private static final class GroupChild implements Child {
+        private final TextureGrouping group;
+
+        private GroupChild(TextureGrouping group) {
+            this.group = group;
+        }
+
+        @Override
+        public NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y) {
+            return group.processGrouping(modLocation, manager, colouration, x, y);
+        }
+    }
+
+    private static final class LayerChild implements Child {
+        private final TextureLayer layer;
+
+        private LayerChild(TextureLayer layer) {
+            this.layer = layer;
+        }
+
+        @Override
+        public NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y) {
+            if (layer.getTexture().isEmpty()) return null;
+            createTexture(layer, modLocation, manager, x, y);
+            parent.applyLayerSpecifics(layer, colouration);
+            return layer.getTextureImage();
+        }
+    }
+
+    private final List<Child> children = new ArrayList<>();
 
     private TexturingType texturingType;
 
@@ -25,23 +57,15 @@ public class TextureGrouping {
         try {
             List<NativeImage> groupImages = new ArrayList<>();
 
-            for (TextureGrouping group : textureGroupings) {
-                NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration, x, y);
-                if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
-            }
-
-            for (TextureLayer layer : textureLayers) {
-                if (!layer.getTexture().isEmpty()) {
-                    createTexture(layer, modLocation, manager, x, y);
-                    applyLayerSpecifics(layer, colouration);
-                    groupImages.add(layer.getTextureImage());
-                }
+            for (Child child : children) {
+                NativeImage childImage = child.resolve(this, modLocation, manager, colouration, x, y);
+                if (childImage != null) groupImages.add(childImage);
             }
 
             return applyGroupMerging(groupImages, colouration);
         } catch (Exception e) {
             throw new IllegalStateException(
-                    "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);
+                    "Exception occurred in Texturing Grouping" + children.toString(), e);
         }
     }
 
@@ -57,7 +81,6 @@ public class TextureGrouping {
                 case APPLY_SHADING -> applyShading(baseImage, groupImages);
                 case DYE_GROUP -> blendGroupDye(baseImage, groupImages, colouration.getDyeColour());
                 case APPLY_PHEOMELANIN -> generatePheomelanin(baseImage, groupImages);
-//                case SHADE_FEATHERS -> shadeFeathers(baseImage, groupImages);
             }
 
             return baseImage;
@@ -68,112 +91,6 @@ public class TextureGrouping {
 
     private void generatePheomelanin(NativeImage baseImage, List<NativeImage> groupImages) {
         applyPheomelanin(baseImage, groupImages);
-    }
-
-    private void shadeFeathers(NativeImage baseImage, List<NativeImage> groupImages) {
-//        if (groupImages.size() > 1) {
-//            int[][] map = getFeatherColour(groupImages.remove(0));
-//            int[][] featherColour = getFeatherColour(baseImage);
-////
-////            int[][] colourMap = new int[256][256];
-////            for (int[] i:colourMap) {
-////                Arrays.fill(i,16711935);
-////            }
-////
-////            for (int y=0; y < 25; y++) {
-////                for (int x=0; x < 128; x++) {
-////                    int colour = map[x][y];
-////                    int green = colour >> 8 & 255;
-////                    int blue = colour >> 16 & 255;
-////                    colourMap[green][blue] = featherColour[x][y];
-////                }
-////            }
-////
-////            boolean cleared = true;
-////            for (int x=0; x < 256;x++) {
-////                for (int y=0; y < 256;y++) {
-////                    int colour = colourMap[x][y];
-////                    if (colour!=16711935) {
-////                        if (y > 0) {
-////                            int val = colourMap[x][y-1];
-////                            if (val==16711935) {
-////                                colourMap[x][y-1] = colour;
-////                            }
-////                            if (x > 0) {
-////                                val = colourMap[x-1][y-1];
-////                                if (val==16711935) {
-////                                    colourMap[x-1][y-1] = colour;
-////                                }
-////                            }
-////                        }
-////                        if (x > 0) {
-////                            int val = colourMap[x-1][y];
-////                            if (val==16711935) {
-////                                colourMap[x-1][y] = colour;
-////                            }
-////                            if (y < 255) {
-////                                val = colourMap[x-1][y+1];
-////                                if (val==16711935) {
-////                                    colourMap[x-1][y+1] = colour;
-////                                }
-////                            }
-////                        }
-////                        if (y < 255) {
-////                            int val = colourMap[x][y+1];
-////                            if (val==16711935) {
-////                                colourMap[x][y+1] = colour;
-////                            }
-////                            if (x < 255) {
-////                                val = colourMap[x+1][y+1];
-////                                if (val==16711935) {
-////                                    colourMap[x+1][y+1] = colour;
-////                                }
-////                            }
-////                        }
-////                        if (x < 255) {
-////                            int val = colourMap[x+1][y];
-////                            if (val==16711935) {
-////                                colourMap[x+1][y] = colour;
-////                            }
-////                            if (y > 0) {
-////                                val = colourMap[x+1][y-1];
-////                                if (val==16711935) {
-////                                    colourMap[x+1][y-1] = colour;
-////                                }
-////
-////                            }
-////                        }
-////                    } else {
-////                        if (cleared) cleared = false;
-////                    }
-////                    if (x==255 && y==255) {
-////                        if (!cleared) {
-////                            x=0;
-////                            y=0;
-////                        }
-////                    }
-////                }
-////            }
-//
-//            NativeImage feathers = groupImages.remove(0);
-//            layerGroups(feathers, groupImages);
-//
-//            processFeathers(baseImage, feathers, map, featherColour);
-//
-////            int w = baseImage.getWidth();
-////            int h = baseImage.getWidth();
-////            for (int x=0; x < w; x++) {
-////                for (int y=0; y < h; y++) {
-////                    int coords = feathers.getPixelRGBA(x, y);
-////                    if (coords!=0) {
-////                        int colour = colourMap[coords >> 8 & 255][coords >> 16 & 25];
-////                        if (colour!=0) {
-////                            baseImage.setPixelRGBA(x, y, colour);
-////                        }
-////                    }
-////                }
-////            }
-//        }
     }
 
     private void blendGroupDye(NativeImage baseImage, List<NativeImage> groupImages, int dyeColour) {
@@ -257,15 +174,16 @@ public class TextureGrouping {
             case APPLY_RGB -> layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), layer.getRGB()));
             case APPLY_RGBA -> layer.setTextureImage(applyBGRABlend(layer.getTextureImage(), layer.getRGB()));
             case APPLY_SHIFT -> layer.setTextureImage(applyHueShift(layer.getTextureImage(), layer.getRGB()));
+            case APPLY_FLIP -> layer.setTextureImage(mirrorTexture(layer.getTextureImage(), layer.getCubes()));
         }
     }
 
     public void addGrouping(TextureGrouping textureGrouping) {
-            this.textureGroupings.add(textureGrouping);
+        this.children.add(new GroupChild(textureGrouping));
     }
 
     public void addTextureLayers(TextureLayer textureLayer) {
-        this.textureLayers.add(textureLayer);
+        this.children.add(new LayerChild(textureLayer));
     }
 
     public void setTexturingType(TexturingType texturingType) {
@@ -273,9 +191,6 @@ public class TextureGrouping {
     }
 
     public boolean isPopulated() {
-        if (this.textureGroupings.size() > 0 || this.textureLayers.size() > 0) {
-            return true;
-        }
-        return false;
+        return !this.children.isEmpty();
     }
 }

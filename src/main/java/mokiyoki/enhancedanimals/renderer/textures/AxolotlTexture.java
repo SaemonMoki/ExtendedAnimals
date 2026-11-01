@@ -5,6 +5,9 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class AxolotlTexture {
+
+    private static final int CHEEK_SLOTS = 2;
+
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
             "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };
@@ -51,55 +54,55 @@ public class AxolotlTexture {
             {
                     //white belly
                     {
-                            /*weak*/
+                            // weak
                             "spot/whitebelly/weak_splotch.png","spot/whitebelly/weak_hardspeckle.png","spot/whitebelly/weak_softspeckle.png"
                     }, {
-                    /*medium-weak*/
+                    // medium-weak
                     "spot/whitebelly/mediumweak_splotch.png","spot/whitebelly/mediumweak_hardspeckle.png","spot/whitebelly/mediumweak_softspeckle.png"
             }, {
-                    /*medium*/
+                    // medium
                     "spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png"
             }, {
-                    /*medium-high*/
+                    // medium-high
                     "spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png"
             },{
-                    /*high*/
+                    // high
                     "spot/whitebelly/high_splotch.png","spot/whitebelly/high_hardspeckle.png","spot/whitebelly/high_softspeckle.png"
             }
             },{
             //pied belly
             {
-                    /*weak*/
+                    // weak
                     "spot/piedbelly/weak_splotch.png","spot/piedbelly/weak_hardspeckle.png","spot/piedbelly/weak_softspeckle.png"
             }, {
-            /*medium-weak*/
+            // medium-weak
             "spot/piedbelly/mediumweak_splotch.png","spot/piedbelly/mediumweak_hardspeckle.png","spot/piedbelly/mediumweak_softspeckle.png"
     }, {
-            /*medium*/
+            // medium
             "spot/piedbelly/medium_splotch.png","spot/piedbelly/medium_hardspeckle.png","spot/piedbelly/medium_softspeckle.png"
     }, {
-            /*medium-high*/
+            // medium-high
             "spot/piedbelly/mediumhigh_splotch.png","spot/piedbelly/mediumhigh_hardspeckle.png","spot/piedbelly/mediumhigh_softspeckle.png"
     }, {
-            /*high*/
+            // high
             "spot/piedbelly/high_splotch.png","spot/piedbelly/high_hardspeckle.png","spot/piedbelly/high_softspeckle.png"
     }
     },{
             //pied
             {
-                    /*weak*/
+                    // weak
                     "spot/pied/weak_splotch.png","spot/pied/weak_hardspeckle.png","spot/pied/weak_softspeckle.png"
             }, {
-            /*medium-weak*/
+            // medium-weak
             "spot/pied/mediumweak_splotch.png","spot/pied/mediumweak_hardspeckle.png","spot/pied/mediumweak_softspeckle.png"
     }, {
-            /*medium*/
+            // medium
             "spot/pied/medium_splotch.png","spot/pied/medium_hardspeckle.png","spot/pied/medium_softspeckle.png"
     }, {
-            /*medium-high*/
+            // medium-high
             "spot/pied/mediumhigh_splotch.png","spot/pied/mediumhigh_hardspeckle.png","spot/pied/mediumhigh_softspeckle.png"
     }, {
-            /*high*/
+            // high
             "spot/pied/high_splotch.png","spot/pied/high_hardspeckle.png","spot/pied/high_softspeckle.png"
     }
     }
@@ -190,28 +193,30 @@ public class AxolotlTexture {
         if (gillsColour < 0) gillsColour = 0;
         if (gillsColour2 < 0) gillsColour2 = 0;
         TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
-        axolotl.addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour2, gills, true);
+        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour, gills).add();
+        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour2, gills).add();
         parentGroup.addGrouping(gillsGroup);
 
         TextureGrouping bodyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+        axolotl.layer(bodyGroup).texture("alpha_mask.png").add();
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_BASE, base).asType(TexturingType.APPLY_DYE).add();
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
         if (pied < 0) pied = 0;
-        axolotl.addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {
             TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            axolotl.addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
-            axolotl.addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
+            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour).add();
+            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour2).add();
             parentGroup.addGrouping(cheekGroup);
+        } else {
+            axolotl.addSkippedSlots(CHEEK_SLOTS);
         }
 
         TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
-        axolotl.addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eye_right.png");
+        axolotl.layer(detailsGroup).texture("eye_left.png").asType(TexturingType.APPLY_EYE_LEFT_COLOUR).add();
+        axolotl.layer(detailsGroup).texture("eye_right.png").asType(TexturingType.APPLY_EYE_RIGHT_COLOUR).add();
         parentGroup.addGrouping(detailsGroup);
 
         axolotl.setTextureGrouping(parentGroup);

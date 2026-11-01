@@ -6,7 +6,24 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class CowTexture {
+
+    private static final int COUNTER_SHADING_SLOTS = 2;
+    // brockling + the white it's cut out of
+    private static final int SPOT_COLOUR_SLOTS     = 2;
+    private static final int LEGACY_BROCKLING_SLOTS = 1;
+
+    private static final int[] headCubes = new int[] {
+            0, 0, 38, 8, 7, 6,
+            0, 28, 38, 4, 5, 4,
+            0, 16, 51, 5, 4, 3,
+            0, 25, 51, 3, 3, 7,
+            0, 44, 38, 4, 6, 2,
+            0, 51, 50, 10, 8, 8,
+            1, 0, 51, 8, 51, 3, 7, 1
+    };
 
     public static final String[] COW_TEXTURES_UDDER = new String[] {
             "udder_black.png", "udder_brown.png", "udder_pink.png"
@@ -155,20 +172,28 @@ public class CowTexture {
                 }
             }
 
-            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            TextureGrouping parentGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+            TextureGrouping cowGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            addBase(cow, parentGroup, skin);
-            addRedPattern(cow, parentGroup, red);
-            addBlackPattern(cow, parentGroup, black);
-            if (addCounterShading(cow, parentGroup, mealy, eelstripe)) cow.addDelimiter("nc");
-            addBaseSkinDetails(cow, parentGroup, skin);
+            TextureGrouping cutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            cow.layer(cutoutGroup).texture("base.png").add();
 
-            addWhiteSpots(cow, parentGroup, gene, uuidArry);
+            parentGroup.addGrouping(cutoutGroup);
 
-            addLegacyBrockling(cow, parentGroup, gene, black);
+            addBase(cow, cowGroup, skin);
+            addRedPattern(cow, cowGroup, red);
+            addBlackPattern(cow, cowGroup, black);
+            addCounterShading(cow, cowGroup, mealy, eelstripe);
+            addBaseSkinDetails(cow, cowGroup, skin);
 
-            addDetails(cow, parentGroup, hooves, horn, coat);
+            addWhiteSpots(cow, cowGroup, gene, uuidArry);
 
+            addLegacyBrockling(cow, cowGroup, gene, black);
+
+            addDetails(cow, cowGroup, hooves, horn, coat);
+
+
+            parentGroup.addGrouping(cowGroup);
             cow.setTextureGrouping(parentGroup);
     }
 
@@ -179,80 +204,84 @@ public class CowTexture {
             if (!whiteface && (gene[16]!=3 || gene[17]!=3)) whiteface = true;
 
             if (whiteface || (gene[20] == 1 || gene[21] == 1) || (gene[252] == 2 || gene[253] == 2) || (gene[18]<=2 || gene[19]<=2)) {
-                TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-                cow.addDelimiter("legacy");
-                if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12) {
-                    cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_SHADE_MELANIN, "spots/brockling/0.png");
-                } else {
-                    cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_RED, "spots/brockling/0.png");
-                }
-                parentGroup.addGrouping(grouping);
+                // Same texture, different tint, so the tint has to be in the key
+                boolean shaded = black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12;
+                cow.layer(parentGroup).texture("spots/brockling/0.png")
+                        .asType(shaded ? TexturingType.APPLY_SHADE_MELANIN : TexturingType.APPLY_RED)
+                        .keyedAs(shaded ? "bm" : "br").add();
+            } else {
+                cow.addSkippedSlots(LEGACY_BROCKLING_SLOTS);
             }
+        } else {
+            cow.addSkippedSlots(LEGACY_BROCKLING_SLOTS);
         }
     }
 
     private static void addDetails(EnhancedCow cow, TextureGrouping parentGroup, int hooves, int horn, int coat) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_HOOVES, hooves, null);
-        cow.addTextureToAnimalTextureGrouping(grouping, "eyes_black.png");
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_HORNS, horn, null);
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_COAT, coat, null);
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_HOOVES, hooves).add();
+        cow.layer(grouping).texture("eyes_black.png").add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_HORNS, horn).add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_COAT, coat).add();
         parentGroup.addGrouping(grouping);
     }
 
     private static void addWhiteSpots(EnhancedCow cow, TextureGrouping parentGroup, int[] gene, char[] uuid) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MASK_GROUP);
         TextureGrouping spotShape = new TextureGrouping(TexturingType.MERGE_GROUP);
-        String key = "";
+
+        // 8 slots: roan, speckled, colour sided, face, piebald head, belt, blaze, legacy
 
         //roan
         if (gene[8] == 2 || gene[9] == 2) {
             //is roan
             if (gene[8] == 2 && gene[9] == 2) {
                 //white roan
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/roan/solid.png");
+                cow.layer(spotShape).texture("spots/roan/solid.png").keyedAs("s").add();
 //                if ( uuidArry[0]-48 == 0){
 //                    //makes all cows with roan and uuid of 0 infertile
 //                }
             } else {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/roan/" + uuid[7] +".png", String.valueOf(uuid[7]));
+                cow.layer(spotShape).texture("spots/roan/" + uuid[7] +".png").keyedAs(String.valueOf(uuid[7])).add();
             }
         } else {
-            key += "0";
+            cow.addSkippedSlot();
         }
 
         //speckled
         if (gene[14] == 1 || gene[15] == 1) {
             if (gene[14] == 1 && gene[15] == 1) {
                 //pointed white
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/speckled/homozygous/0.png", "hs");
+                cow.layer(spotShape).texture("spots/speckled/homozygous/0.png").keyedAs("hs").add();
             } else {
                 //speckled
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/speckled/heterozygous/" + (uuid[8] % 4) +".png", "s" + uuid[8]);
+                cow.layer(spotShape).texture("spots/speckled/heterozygous/" + (uuid[8] % 4) +".png").keyedAs("s" + uuid[8]).add();
             }
         } else {
-            key += "1";
+            cow.addSkippedSlot();
         }
 
         //colour sided
         if (gene[20] == 1 || gene[21] == 1) {
             //coloursided
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/coloursided/" + (uuid[6]%4) +".png", String.valueOf(uuid[6]));
+            cow.layer(spotShape).texture("spots/coloursided/" + (uuid[6]%4) +".png").keyedAs(String.valueOf(uuid[6])).add();
         } else {
-            key += "2";
+            cow.addSkippedSlot();
         }
 
+        // Face traits share one slot, piebald head gets its own
         if (gene[16] == 1 || gene[17] == 1) {
             if (gene[16] == 2 || gene[17] == 2) {
                 //white face with border spots(Pinzgauer)
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/hereford_coloursided/0.png", "hfp");
+                cow.layer(spotShape).texture("spots/hereford_coloursided/0.png").keyedAs("hfp").add();
             } else if (gene[16] == gene[17]) {
                 //whiteface
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/hereford/homozygous/0.png", "hf");
+                cow.layer(spotShape).texture("spots/hereford/homozygous/0.png").keyedAs("hf").add();
             } else {
                 //het whiteface
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/hereford/heterozygous/0.png", "hhf");
+                cow.layer(spotShape).texture("spots/hereford/heterozygous/0.png").keyedAs("hhf").add();
             }
+            cow.addSkippedSlot();
         } else if (gene[16] == 2 || gene[17] == 2) {
             //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
             int pingauzer = 1;
@@ -263,118 +292,105 @@ public class CowTexture {
                     pingauzer = 2;
                 }
             }
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/pingauzer/" + pingauzer + ".png", "pg"+pingauzer);
+            cow.layer(spotShape).texture("spots/pingauzer/" + pingauzer + ".png").keyedAs("pg"+pingauzer).add();
+            cow.addSkippedSlot();
 
         } else if (gene[16] == 4 && gene[17] == 4) {
             //piebald
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/piebald/body/" + uuid[1] +".png", String.valueOf(uuid[1]));
+            cow.layer(spotShape).texture("spots/piebald/body/" + uuid[1] +".png").keyedAs(String.valueOf(uuid[1])).add();
             if (uuid[0] != uuid[1]) {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/piebald/head/" + uuid[2] +".png", String.valueOf(uuid[2]));
+                cow.layer(spotShape).texture("spots/piebald/head/" + uuid[2] +".png").keyedAs(String.valueOf(uuid[2])).add();
             } else {
-                key += "3";
+                cow.addSkippedSlot();
             }
         } else {
-            key += "4";
+            cow.addSkippedSlots(2);
         }
 
         //Belted
         if (gene[250] == 2 || gene[251] == 2) {
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[5] +".png", String.valueOf(uuid[3]));
+            cow.layer(spotShape).texture("spots/belt/" + uuid[5] +".png").keyedAs(String.valueOf(uuid[5])).add();
         } else {
-            key += "5";
+            cow.addSkippedSlot();
         }
 
         //Blaze
         if (gene[252] == 2 || gene[253] == 2) {
             if (gene[252] == 2 && gene[253] == 2) {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[3]%3) +".png", String.valueOf(uuid[5]));
+                cow.layer(spotShape).texture("spots/doubleblaze/" + (uuid[3]%3) +".png").keyedAs(String.valueOf(uuid[3]%3)).add();
             } else {
-                cow.addTextureToAnimalTextureGrouping(spotShape, "spots/blaze/" + (uuid[3]%7) +".png", String.valueOf(uuid[5]));
+                cow.layer(spotShape).texture("spots/blaze/" + (uuid[3]%7) +".png").keyedAs(String.valueOf(uuid[3]%7)).add();
             }
         } else {
-            key += "6";
+            cow.addSkippedSlot();
         }
 
         //Legacy Genes
         if (gene[18] == 1 || gene[19] == 1) {
             //belted
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/belt/" + uuid[3] +".png", String.valueOf(uuid[3]));
+            cow.layer(spotShape).texture("spots/belt/" + uuid[3] +".png").keyedAs(String.valueOf(uuid[3])).add();
         } else if (gene[18] == 2 || gene[19] == 2) {
             //blaze
-            cow.addTextureToAnimalTextureGrouping(spotShape, "spots/doubleblaze/" + (uuid[3]%3) +".png", String.valueOf(uuid[5]));
+            cow.layer(spotShape).texture("spots/doubleblaze/" + (uuid[3]%3) +".png").keyedAs(String.valueOf(uuid[5])).add();
         } else {
-            key += "7";
+            cow.addSkippedSlot();
         }
 
         if (spotShape.isPopulated()) {
-            if (!key.isEmpty()) {
-                cow.addDelimiter("nos"+key);
-            }
             TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
             if (gene[254] == 2 || gene[255] == 2) {
                 colour.setTexturingType(TexturingType.CUTOUT_GROUP);
-                cow.addTextureToAnimalTextureGrouping(colour, "spots/brockling/0.png", "0");
+                TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+                // Random patch count, so they all share one key field
+                int t = ThreadLocalRandom.current().nextInt(1, 5);
+                for (int i = 0; i < t; i++) {
+                    int rand = ThreadLocalRandom.current().nextInt(0, 13);
+                    boolean flip = ThreadLocalRandom.current().nextBoolean();
+                    cow.layer(brockling).texture("spots/brockling/"+rand+".png").flipped(flip, headCubes).keyedAs(String.valueOf(rand)).add();
+                }
+                colour.addGrouping(brockling);
+            } else {
+                cow.addSkippedSlot();
             }
-            cow.addTextureToAnimalTextureGrouping(colour, "spots/white.png");
+            cow.layer(colour).texture("spots/white.png").add();
             grouping.addGrouping(colour);
             grouping.addGrouping(spotShape);
             parentGroup.addGrouping(grouping);
         } else {
-            cow.addDelimiter("nospots");
+            cow.addSkippedSlots(SPOT_COLOUR_SLOTS);
         }
     }
 
     private static void addBaseSkinDetails(EnhancedCow cow, TextureGrouping parentGroup, int skin) {
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_SKIN, skin, null);
-        parentGroup.addGrouping(grouping);
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_SKIN, skin).add();
     }
 
-    private static boolean addCounterShading(EnhancedCow cow, TextureGrouping parentGroup, int mealy, int eelstripe) {
+    private static void addCounterShading(EnhancedCow cow, TextureGrouping parentGroup, int mealy, int eelstripe) {
         if (mealy != 0 || eelstripe != 0) {
             TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            if (mealy != 0) {
-                cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_MEALY, mealy, null);
-            } else {
-                cow.addDelimiter("nm");
-            }
-            if (eelstripe != 0) {
-                cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_RED, COW_TEXTURES_EELSTRIPE, eelstripe, null);
-            } else {
-                cow.addDelimiter("ne");
-            }
+            cow.layer(grouping).textureTableSelector(COW_TEXTURES_MEALY, mealy).onlyIf(mealy != 0).add();
+            cow.layer(grouping).textureTableSelector(COW_TEXTURES_EELSTRIPE, eelstripe).asType(TexturingType.APPLY_RED).onlyIf(eelstripe != 0).add();
 
             parentGroup.addGrouping(grouping);
-            return false;
+        } else {
+            cow.addSkippedSlots(COUNTER_SHADING_SLOTS);
         }
-        return true;
     }
 
     private static void addBlackPattern(EnhancedCow cow, TextureGrouping parentGroup, int black) {
-        if (black != 0) {
-            TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-            cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_SHADE_MELANIN, COW_TEXTURES_BLACK, black, null);
-            parentGroup.addGrouping(grouping);
-        } else {
-            cow.addDelimiter("nb");
-        }
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_BLACK, black).asType(TexturingType.APPLY_SHADE_MELANIN).onlyIf(black != 0).add();
     }
 
     private static void addRedPattern(EnhancedCow cow, TextureGrouping parentGroup, int red) {
-        if (red != 0) {
-            TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-            cow.addTextureToAnimalTextureGrouping(grouping, TexturingType.APPLY_RED, COW_TEXTURES_RED, red, null);
-            parentGroup.addGrouping(grouping);
-        } else {
-            cow.addDelimiter("nr");
-        }
+        cow.layer(parentGroup).textureTableSelector(COW_TEXTURES_RED, red).asType(TexturingType.APPLY_RED).onlyIf(red != 0).add();
     }
 
     private static void addBase(EnhancedCow cow, TextureGrouping parentGroup, int skin) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        cow.addTextureToAnimalTextureGrouping(grouping, "solid.png");
-        cow.addTextureToAnimalTextureGrouping(grouping, COW_TEXTURES_UDDER[skin], String.valueOf(skin));
+        cow.layer(grouping).texture("solid.png").add();
+        cow.layer(grouping).textureTableSelector(COW_TEXTURES_UDDER, skin).add();
         parentGroup.addGrouping(grouping);
     }
 
@@ -448,9 +464,7 @@ public class CowTexture {
                 }
             }
 
-            /**
-             *  Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
-             */
+            // Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
             if (gene[128] == 2 || gene[129] == 2) {
                 if (gene[128] == 2 && gene[129] == 2) {
                     //homo dun
@@ -466,18 +480,14 @@ public class CowTexture {
                 }
             }
 
-            /**
-             *  Dexter Dun - chocolate
-             */
+            // Dexter Dun - chocolate
             if (gene[10] == 2 && gene[11] == 2) {
                 blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
                 blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
                 blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
             }
 
-            /**
-             *  Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
-             */
+            // Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
             if (gene[2] == 2 || gene[3] == 2) {
                 // simmental or highland dilution
                 if (gene[2] == 2 && gene[3] == 2) {

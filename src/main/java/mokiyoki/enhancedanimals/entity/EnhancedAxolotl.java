@@ -16,8 +16,6 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -443,11 +441,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         if (this.getGenes() != null) {
             calculateAxolotlTextures(this, getGenes().getAutosomalGenes());
         }
-    }
-
-    @Override
-    protected void setAlphaTexturePaths() {
-        this.enhancedAnimalAlphaTextures.add("alpha_mask.png");
     }
 
     @OnlyIn(Dist.CLIENT)

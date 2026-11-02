@@ -215,7 +215,7 @@ public class AxolotlTexture {
         if (gene[0] == 1 || gene[1] == 1) {
             TextureGrouping brindleGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping brindleCutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                axolotl.addTextureToAnimalTextureGrouping(brindleCutoutGroup, AXOLOTL_TEXTURES_BRINDLE, brindle, brindle!=-1);
+                axolotl.layer(brindleCutoutGroup).textureTableSelector(AXOLOTL_TEXTURES_BRINDLE, brindle).onlyIf(brindle!=-1);
             brindleGroup.addGrouping(brindleCutoutGroup);
             TextureGrouping melaninGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
@@ -227,7 +227,7 @@ public class AxolotlTexture {
         TextureGrouping piedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (pied < 0) pied = 0;
         axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
-        axolotl.addTextureToAnimalTextureGrouping(piedGroup, AXOLOTL_TEXTURES_BLAZE, blaze-1, blaze>0);
+        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).onlyIf(blaze>0);
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {

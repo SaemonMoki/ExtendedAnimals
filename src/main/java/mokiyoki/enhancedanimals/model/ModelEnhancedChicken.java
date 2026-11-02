@@ -2024,7 +2024,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     float y = combFlop > 0? -0.5F : 0.5F;
                     switch (combType) {
                         case WALNUT,PEA -> {
-                            combFlop *= 0.5F;
+                            combFlop *= 0.375F;
                             comb.setRotation(0.0F, 0.0F, combFlop * 0.9F);
                             switch (size) {
                                 case 1,2 -> comb.setX(combFlop*0.5F);
@@ -2033,7 +2033,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             }
                         }
                         case ROSE_ONE -> {
-                            combFlop *= 0.5F;
+                            combFlop *= 0.375F;
                             comb.setRotation(0.0F, 0.0F, combFlop * 1.8F * 0.8F);
                             comb.setX(combFlop * 0.5F);
                             theComb.setZRot(combFlop * 1.8F * 0.35F);
@@ -2041,7 +2041,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             theComb.setX(combFlop);
                         }
                         case ROSE_TWO -> {
-                            combFlop *= 0.5F;
+                            combFlop *= 0.375F;
                             comb.setRotation(0.0F, 0.0F, combFlop * 1.8F * 0.65F);
                             comb.setX(combFlop * 0.5F);
                             theComb.setZRot(combFlop * 1.8F * 0.35F);
@@ -2053,11 +2053,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                             }
                         }
                         case SINGLE -> {
+                            combFlop *= 0.75F;
                             comb.setRotation(0.0F, 0.0F, combFlop * (1.8F + (0.15F * size)));
                             comb.setX(combFlop * 0.5F);
                             comb.setY(combFlop * y * 0.2F);
                         }
                         default -> {
+                            combFlop *= 0.75F;
                             comb.setRotation(0.0F, 0.0F, combFlop * 1.8F);
                             comb.setX(combFlop * 0.5F);
                             comb.setY(combFlop * y * 0.2F);

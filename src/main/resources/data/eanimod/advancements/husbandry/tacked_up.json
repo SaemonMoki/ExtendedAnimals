@@ -1,5 +1,5 @@
 {
-  "parent": "eanimod:husbandry/root",
+  "parent": "eanimod:husbandry/fancy",
   "display": {
     "icon": {
       "item": "eanimod:saddle_basicpomel_leather"

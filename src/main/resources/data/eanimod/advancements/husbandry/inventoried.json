@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/root",
   "display": {
     "icon": {
-      "id": "minecraft:saddle"
+      "item": "minecraft:bookshelf"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.opened_gui.title"
@@ -19,6 +19,11 @@
     "opened_gui": {
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
+        "player": {
+          "flags": {
+            "is_sneaking": true
+          }
+        },
         "entity": {
           "type": "#eanimod:genetic_animals"
         }

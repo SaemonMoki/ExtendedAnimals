@@ -2,7 +2,7 @@
   on:
     issues:
       types: [labeled]
-
+  
   jobs:
     branch-and-pr:
       if: ${{ github.event.label.name == 'In Progress' }}
@@ -15,10 +15,49 @@
               const { owner, repo } = context.repo;
               const issue = context.payload.issue;
 
+              // 1. Set Status = In Progress on every Project this issue is in
+              const { node: projInfo } = await github.graphql(`query($id: ID!) {
+                node(id: $id) {
+                  ... on Issue {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                        project {
+                          id title
+                          field(name: "Status") {
+                            ... on ProjectV2SingleSelectField { id options { id name } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }`, { id: issue.node_id });
+
+              const items = projInfo.projectItems.nodes;
+              if (!items.length) core.info(`#${issue.number} isn't in any Project, not setting a status.`);
+              for (const item of items) {
+                const field = item.project.field;
+                const option = field?.options.find(o => o.name.toLowerCase() === 'in progress');
+                if (!option) {
+                  core.warning(`Project "${item.project.title}" has no "In Progress" status option.`);
+                  continue;
+                }
+                await github.graphql(`mutation($input: UpdateProjectV2ItemFieldValueInput!) {
+                  updateProjectV2ItemFieldValue(input: $input) { projectV2Item { id } }
+                }`, { input: {
+                  projectId: item.project.id,
+                  itemId: item.id,
+                  fieldId: field.id,
+                  value: { singleSelectOptionId: option.id } } });
+                core.info(`#${issue.number}: Status set to In Progress in "${item.project.title}".`);
+              }
+
+              // 2. Branch + PR, only for "Create for <version>" subtasks
               // "Create for 1.18: Copper golem block" -> version "1.18", rest "Copper golem block"
               const m = issue.title.match(/^create for\s+([^\s:]+)\s*:?\s*(.*)$/i);
               if (!m) {
-                core.info(`#${issue.number} "${issue.title}" isn't a "Create for <version>" subtask, skipping.`);
+                core.info(`#${issue.number} "${issue.title}" isn't a "Create for <version>" subtask, no branch needed.`);
                 return;
               }
               const [, version, rest] = m;

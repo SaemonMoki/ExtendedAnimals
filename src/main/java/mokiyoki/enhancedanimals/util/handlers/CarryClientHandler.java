@@ -25,21 +25,24 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -49,18 +52,60 @@ public class CarryClientHandler {
 
     public static final KeyMapping CARRY_KEY = new KeyMapping("key.eanimod.carry", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_GRAVE), "key.categories.eanimod");
 
-    private static final Map<UUID, ItemStack> CARRIED = new HashMap<>();
+    // One entry per carrying player this client knows about, each with its own render copy of the animal
+    private record Carried(ItemStack stack, @Nullable UUID animalId, @Nullable EnhancedAnimalAbstract proxy) {
+    }
+
+    private static final Map<UUID, Carried> CARRIED = new HashMap<>();
 
     public static void setCarried(UUID playerId, ItemStack stack) {
         if (stack.isEmpty()) {
             CARRIED.remove(playerId);
-        } else {
-            CARRIED.put(playerId, stack);
+            return;
+        }
+
+        // A resync can deliver a different animal without us ever seeing the drop (picked up out of view),
+        // so rebuild unless it's the exact same animal we already have
+        UUID animalId = RenderCarriedAnimal.animalIdOf(stack);
+        Carried existing = CARRIED.get(playerId);
+        if (existing != null && existing.proxy() != null && animalId != null && animalId.equals(existing.animalId())) {
+            CARRIED.put(playerId, new Carried(stack, animalId, existing.proxy()));
+            return;
+        }
+        CARRIED.put(playerId, new Carried(stack, animalId, RenderCarriedAnimal.createProxy(stack, Minecraft.getInstance().level)));
+    }
+
+    @Nullable
+    public static ItemStack getCarried(UUID playerId) {
+        Carried carried = CARRIED.get(playerId);
+        return carried == null ? null : carried.stack();
+    }
+
+    @Nullable
+    public static EnhancedAnimalAbstract getProxy(UUID playerId) {
+        Carried carried = CARRIED.get(playerId);
+        return carried == null ? null : carried.proxy();
+    }
+
+    // A player leaving view: drop their entry, the server resends their state when they're tracked again
+    @SubscribeEvent
+    public static void onEntityLeaveWorld(EntityLeaveWorldEvent event) {
+        if (event.getWorld().isClientSide() && event.getEntity() instanceof Player player) {
+            CARRIED.remove(player.getUUID());
         }
     }
 
-    public static ItemStack getCarried(UUID playerId) {
-        return CARRIED.get(playerId);
+    // Respawn or dimension change: the old level is thrown away without its entities "leaving", so clear everything
+    // here or the proxies keep the old level alive. The server resends our own state right after (PlayerRespawnEvent /
+    // PlayerChangedDimensionEvent) and other players' when they're tracked in the new level
+    @SubscribeEvent
+    public static void onRespawn(ClientPlayerNetworkEvent.RespawnEvent event) {
+        CARRIED.clear();
+    }
+
+    @SubscribeEvent
+    public static void onLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+        CARRIED.clear();
     }
 
     @SubscribeEvent
@@ -166,15 +211,11 @@ public class CarryClientHandler {
         if (minecraft.player == null || minecraft.options.getCameraType() != CameraType.FIRST_PERSON) {
             return;
         }
-        ItemStack carried = CARRIED.get(minecraft.player.getUUID());
-        if (carried == null) {
+        EnhancedAnimalAbstract proxy = getProxy(minecraft.player.getUUID());
+        if (proxy == null) {
             return;
         }
-        EntityType<?> type = RenderCarriedAnimal.typeOf(carried);
-        if (type == null) {
-            return;
-        }
-        CarryTransform t = CarryTransforms.firstPerson(type);
+        CarryTransform t = CarryTransforms.firstPerson(proxy.getType());
 
         Camera camera = event.getCamera();
         Vec3 camPos = camera.getPosition();
@@ -198,7 +239,7 @@ public class CarryClientHandler {
         MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
         int light = LevelRenderer.getLightColor(minecraft.level, new BlockPos(worldPos));
         float yaw = camera.getYRot() + t.yaw();
-        RenderCarriedAnimal.render(carried, poseStack, buffer, light, yaw, t.flip());
+        RenderCarriedAnimal.render(proxy, poseStack, buffer, light, yaw, t.flip());
         buffer.endBatch();
 
         poseStack.popPose();

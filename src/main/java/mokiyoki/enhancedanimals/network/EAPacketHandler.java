@@ -120,6 +120,11 @@ public class EAPacketHandler {
     }
 
     private static void dropCarried(ServerPlayer player, ICarryCapability cap) {
+        Vec3 look = player.getLookAngle();
+        dropCarried(player, cap, player.getX() + look.x * 2.0D, player.getZ() + look.z * 2.0D);
+    }
+
+    private static void dropCarried(ServerPlayer player, ICarryCapability cap, double dropX, double dropZ) {
         ItemStack stack = cap.getCarried();
         CompoundTag tag = stack.getTagElement("CarriedEntity");
         cap.setCarried(ItemStack.EMPTY);
@@ -129,13 +134,26 @@ public class EAPacketHandler {
             return;
         }
 
-        Vec3 look = player.getLookAngle();
-        double dropX = player.getX() + look.x * 2.0D;
-        double dropZ = player.getZ() + look.z * 2.0D;
         EntityType.create(tag, player.level).ifPresent(created -> {
             created.moveTo(dropX, player.getY(), dropZ, player.getYRot(), 0.0F);
             player.level.addFreshEntity(created);
         });
+    }
+
+    //drops at the player's own position (not 2 blocks ahead) so a death against a wall can't put the animal inside it
+    public static void dropCarriedOnDeath(ServerPlayer player) {
+        player.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap -> {
+            if (cap.isCarrying()) {
+                dropCarried(player, cap, player.getX(), player.getZ());
+            }
+        });
+    }
+
+    //the client clears all carry state when it switches level (respawn/dimension change), so resend the truth to the player
+    //side note: Why mojang? Why is it like this? Why do I have to safeguard around your shit?
+    public static void syncCarryToSelf(ServerPlayer player) {
+        player.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> player), new CarrySyncPacket(player.getId(), cap.getCarried())));
     }
 
     private static void broadcastCarryState(ServerPlayer player, ItemStack carried) {

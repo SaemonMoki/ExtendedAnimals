@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.EntityType;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,17 +31,17 @@ public class CarriedAnimalLayer<T extends AbstractClientPlayer, M extends Player
         }
         renderOutstretchedArms(poseStack, buffer, light, player);
 
-        EntityType<?> type = RenderCarriedAnimal.typeOf(carried);
-        if (type == null) {
+        EnhancedAnimalAbstract proxy = CarryClientHandler.getProxy(player.getUUID());
+        if (proxy == null) {
             return;
         }
-        CarryTransform t = CarryTransforms.thirdPerson(type);
+        CarryTransform t = CarryTransforms.thirdPerson(proxy.getType());
 
         poseStack.pushPose();
         //anchor to the body (not the arm) so it doesn't swing with the walk/attack animation
         getParentModel().body.translateAndRotate(poseStack);
         poseStack.translate(t.sideways(), t.vertical(), t.forward());
-        RenderCarriedAnimal.render(carried, poseStack, buffer, light, t.yaw(), t.flip());
+        RenderCarriedAnimal.render(proxy, poseStack, buffer, light, t.yaw(), t.flip());
         poseStack.popPose();
     }
 

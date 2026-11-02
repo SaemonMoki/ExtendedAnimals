@@ -9,47 +9,48 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public final class RenderCarriedAnimal {
-
-    private static final Map<EntityType<?>, EnhancedAnimalAbstract> proxies = new HashMap<>();
 
     private RenderCarriedAnimal() {
     }
 
     @Nullable
-    public static EntityType<?> typeOf(ItemStack stack) {
+    public static UUID animalIdOf(ItemStack stack) {
         CompoundTag tag = stack.getTagElement("CarriedEntity");
-        return tag == null ? null : EntityType.by(tag).orElse(null);
+        return tag != null && tag.hasUUID("UUID") ? tag.getUUID("UUID") : null;
     }
 
-    public static void render(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float yaw, boolean flip) {
+    // Builds a client-only copy of the carried animal. Loaded once, so its gene, texture and model caches all
+    // belong to this one animal. Never reuse it for a different animal.
+    @Nullable
+    public static EnhancedAnimalAbstract createProxy(ItemStack stack, Level level) {
         CompoundTag tag = stack.getTagElement("CarriedEntity");
-        if (tag == null) {
-            return;
+        if (tag == null || level == null) {
+            return null;
         }
 
         EntityType<?> type = EntityType.by(tag).orElse(null);
         if (type == null) {
-            return;
+            return null;
         }
 
-        EnhancedAnimalAbstract proxy = proxies.computeIfAbsent(type, t -> {
-            Entity created = t.create(Minecraft.getInstance().level);
-            return created instanceof EnhancedAnimalAbstract enhancedAnimal ? enhancedAnimal : null;
-        });
-        if (proxy == null) {
-            return;
+        Entity created = type.create(level);
+        if (!(created instanceof EnhancedAnimalAbstract proxy)) {
+            return null;
         }
-
         proxy.load(tag);
+        return proxy;
+    }
+
+    public static void render(EnhancedAnimalAbstract proxy, PoseStack poseStack, MultiBufferSource buffer, int light, float yaw, boolean flip) {
         //avoid stale animation state from before pickup, and feed the caller's yaw through cleanly (no interpolation spin)
         proxy.hurtTime = 0;
         proxy.setYRot(yaw);

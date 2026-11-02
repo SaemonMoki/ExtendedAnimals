@@ -92,6 +92,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -719,6 +720,41 @@ public class EventSubscriber {
         if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
             serverPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
                     EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CarrySyncPacket(serverPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    //LOWEST so any mods cancelling this shit means the animal won't be in a weird state
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntityLiving() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.dropCarriedOnDeath(serverPlayer);
+        }
+    }
+
+    //leaving the End replaces the player object, so carry the animal over to the new one.
+    //Again, why do I have safeguard against this crap Mojang? Why is just the End different in how dimensions are handled!
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
+        original.reviveCaps();
+        original.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(oldCap ->
+                event.getPlayer().getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(newCap ->
+                        newCap.setCarried(oldCap.getCarried())));
+        original.invalidateCaps();
+    }
+
+    //the client clears its carry state on every level switch, these fire after the respawn packet so the resync lands after the clear
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
         }
     }
 

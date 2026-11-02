@@ -8,10 +8,29 @@ import net.minecraft.world.level.biome.Biomes;
 public final class ChickenBreeds {
     public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
-                       new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5").add(228,"2","2","2","2","1","1","1","1","1","1")));
+                       new GeneSketch()
+                               .add(0, "1","1","1","2","2")
+                               .add(20, "1", "1")
+                               .add(38, "2")
+                               .add(44, "2-3", "3", "2", "1")
+                               .add(52, "2","3","2","3","2")
+                               .add(70, "1", "1")
+                               .add(80, "2","1","2","2")
+                               .add(146, "2","2","1","10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5")
+                               .add(198,"1").add(280, "1")
+                               .add(222, "1","1","2")
+                               .add(228,"2","2","2","2","1","1","1","1","1","1")
+                               .add(258,
+                                       "1","2","2","1","2",
+                                       "1","2","1","1","1")
+                               .add(282, "1")
+                               .add(286, "1|2","1","2")
+                               .add(298, "2","1","1|2","1","1|2")
+                               .add(310, "2","2","2","2")
+            ));
 
     public static final Breed WHITE_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("WhiteLeghorn", Breed.Rarity.ORDINARY)
-            .setGeneSketch(GeneSet.LEGHORNWHITE.get()));
+            .setGeneSketch(new NewGeneSet(GeneSet.SOLIDBLACK, GeneSet.LEGHORNWHITE).get()));
 
     public static final Breed BLACK_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("BlackLeghorn", Breed.Rarity.COMMON)
             .setGeneSketch(GeneSet.SOLIDBLACK.get(), new GeneSketch().add(2, "1").add(6, "1"), new GeneSketch()));
@@ -40,7 +59,7 @@ public final class ChickenBreeds {
 
     public static final Breed WYANDOTTE = new Breed(new Breed.Properties().setData("Wyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new NewGeneSet(GeneSet.FLATROSE,GeneSet.YELLOWLEGS).get(),
-                    new GeneSketch().add(6, "1").add(10, "1", "1"),
+                    new GeneSketch().add(6, "1").add(10, "1", "8"),
                     new GeneSketch()
                             .add(20, "1").add(106, "1").add(150, "1")/*misc*/
                             .add(20, "1", "1", "4")
@@ -90,6 +109,7 @@ public final class ChickenBreeds {
                             .add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2","2","1|2","1|3","1","1","1").add(80, "2","2","2","2").add(146, "1","1")
                             .add(152, "9|11","9|11","7|9|11","3","7","7","1")
                             .add(168,"1","1")
+                            .add(222, "2","2","1")
             ));
 
     public static final Breed PLYMOUTHROCK = new Breed(new Breed.Properties().setData("PlymouthRockBarredRock", Biomes.TAIGA, Breed.Rarity.ORDINARY)
@@ -298,7 +318,13 @@ public final class ChickenBreeds {
             .setGeneSketch(new NewGeneSet(GeneSet.NAKEDNECK, GeneSet.PEA).get()));
 
     public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
+            .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.MELANIZED, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER).get(),
+                    new GeneSketch(),
+                    new GeneSketch().add(258,
+                            "1","1","2","1","1",
+                                    "1","2","1","2","1"
+                            ).add(222, "2","2","1")
+                    ));
 
     public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", Biomes.SAVANNA, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.GREYLEGS, GeneSet.V).get()));

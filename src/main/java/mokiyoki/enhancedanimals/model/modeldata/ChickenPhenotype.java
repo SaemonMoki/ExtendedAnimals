@@ -288,10 +288,10 @@ public class ChickenPhenotype implements Phenotype {
 
         this.tailPinch = getTailPinch(gene);
 
-        this.combFlop = getCombFloppiness(gene);
+        this.combFlop = getCombFloppiness(gene, isFemale);
     }
 
-    private float getCombFloppiness(int[] gene) {
+    private float getCombFloppiness(int[] gene, boolean isFemale) {
         float floppiness = 0.0F;
         if (gene[310] == 2 && gene[311]==2) {
             floppiness += 0.2F;
@@ -317,6 +317,13 @@ public class ChickenPhenotype implements Phenotype {
         }
         if (gene[317] == 2) {
             floppiness += 0.1F;
+        }
+
+        if (!isFemale) {
+            for (int i = 318; i < 324; i++) {
+                if (gene[i] == 1) floppiness -= 0.16F;
+            }
+            if (floppiness < 0.0F) floppiness = 0.0F;
         }
 
         //TODO give floppy direction a random side
@@ -405,7 +412,7 @@ public class ChickenPhenotype implements Phenotype {
     private static float getFluffiness(int[] gene) {
         float fluffiness = 0.0F;
         for (int i = 228; i<248; i++) {
-            if (i<=235) {
+            if (i<236) {
                 if (gene[i]==1) fluffiness += 0.1F;
             } else {
                 if (gene[i]==2) fluffiness += 0.1F;

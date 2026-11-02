@@ -1699,6 +1699,11 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         }
 
+        //male comb flop susceptibility
+        for (int i = 318; i < 324; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
         return new Genes(sexlinkedGenes, autosomalGenes);
     }
 }

@@ -669,7 +669,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.neofor
 
         if ((((size-0.3F) * 71.4286F) + 25) > random.nextInt(100)) {
             ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
-            if (size <= 0.65F || age < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
+            if (size <= 0.65F || age < this.getAdultAge() || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
                 //small meat
                 if (isOnFire()) {
                     meatStack = new ItemStack(ModItems.COOKEDRABBIT_SMALL.get(), 1 + looting);
@@ -708,7 +708,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.neofor
             this.spawnAtLocation(coatStack);
         }
 
-        if (age > 48000 && random.nextInt(20) >= 18-looting) {
+        if (age > this.getAdultAge() && random.nextInt(20) >= 18-looting) {
             this.spawnAtLocation(Items.RABBIT_FOOT, 1);
         }
     }
@@ -718,7 +718,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.neofor
     protected ResourceKey<LootTable> getDefaultLootTable() {
 
         if (!this.level().isClientSide) {
-            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < 48000) {
+            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < this.getAdultAge()) {
                 dropMeatType = "rawrabbit_small";
             } else {
                 dropMeatType = "rawrabbit";

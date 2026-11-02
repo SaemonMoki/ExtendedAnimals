@@ -9,7 +9,7 @@ public class EnhancedAnimalInfo {
     public int pregnant = 0;
     public String name = "Animal";
     public String agePrefix = "ADULT";
-    public Integer age = 0;
+    public Long age = 0L;
     public String sire = "???";
     public String dam = "???";
     public boolean hasName = false;
@@ -27,7 +27,7 @@ public class EnhancedAnimalInfo {
             pregnant = Integer.valueOf(splits[3]);
             name = String.valueOf(splits[4]);
             agePrefix = String.valueOf(splits[5]);
-            age = Integer.valueOf(splits[6]);
+            age = Long.valueOf(splits[6]);
             sire = String.valueOf(splits[7]);
             dam = String.valueOf(splits[8]);
             tameness = Integer.valueOf(splits[9]);

@@ -1,0 +1,80 @@
+  name: Branch and PR for in-progress subtasks
+  on:
+    issues:
+      types: [labeled]
+
+  jobs:
+    branch-and-pr:
+      if: ${{ github.event.label.name == 'In Progress' }}
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/github-script@v7
+          with:
+            github-token: ${{ secrets.PROJECT_TOKEN }}
+            script: |
+              const { owner, repo } = context.repo;
+              const issue = context.payload.issue;
+
+              // "Create for 1.18: Copper golem block" -> version "1.18", rest "Copper golem block"
+              const m = issue.title.match(/^create for\s+([^\s:]+)\s*:?\s*(.*)$/i);
+              if (!m) {
+                core.info(`#${issue.number} "${issue.title}" isn't a "Create for <version>" subtask, skipping.`);
+                return;
+              }
+              const [, version, rest] = m;
+              const name = rest ? `${version}: ${rest}` : version;  // "1.18: Copper golem block"
+              const source = version;                               // source/target branch "1.18"
+              const branch = name.toLowerCase()                     // "1.18-copper-golem-block"
+                .replace(/[^a-z0-9.]+/g, '-')
+                .replace(/\.{2,}/g, '.')
+                .replace(/^[-.]+|[-.]+$/g, '');
+
+              // Skip if this subtask already has a branch (e.g. label removed and re-added)
+              const { node } = await github.graphql(`query($id: ID!) {
+                node(id: $id) { ... on Issue { linkedBranches(first: 1) { totalCount } } }
+              }`, { id: issue.node_id });
+              if (node.linkedBranches.totalCount > 0) {
+                core.info(`#${issue.number} already has a linked branch, skipping.`);
+                return;
+              }
+
+              // Look up the version branch
+              let sourceSha;
+              try {
+                const { data } = await github.rest.git.getRef({ owner, repo, ref: `heads/${source}` });
+                sourceSha = data.object.sha;
+              } catch {
+                core.setFailed(`Source branch "${source}" does not exist.`);
+                return;
+              }
+
+              // Create the branch off the version branch and link it to the subtask
+              const linked = await github.graphql(`mutation($input: CreateLinkedBranchInput!) {
+                createLinkedBranch(input: $input) { linkedBranch { ref { name } } }
+              }`, { input: {
+                issueId: issue.node_id,
+                repositoryId: context.payload.repository.node_id,
+                oid: sourceSha,
+                name: branch } });
+              if (!linked.createLinkedBranch?.linkedBranch) {
+                core.setFailed(`createLinkedBranch did not create "${branch}".`);
+                return;
+              }
+
+              // A PR needs at least one commit, so add an empty starter commit
+              const { data: srcCommit } = await github.rest.git.getCommit({ owner, repo, commit_sha: sourceSha });
+              const { data: commit } = await github.rest.git.createCommit({
+                owner, repo, message: `Start ${name}`,
+                tree: srcCommit.tree.sha, parents: [sourceSha] });
+              await github.rest.git.updateRef({ owner, repo, ref: `heads/${branch}`, sha: commit.sha });
+
+              // Open the PR into the version branch
+              const { data: pr } = await github.rest.pulls.create({
+                owner, repo, head: branch, base: source, title: name,
+                body: `Closes #${issue.number}` });
+
+              const assignees = (issue.assignees || []).map(a => a.login);
+              if (assignees.length) {
+                await github.rest.issues.addAssignees({ owner, repo, issue_number: pr.number, assignees });
+              }
+              core.info(`#${issue.number}: created ${branch} from ${source}, PR #${pr.number} -> ${source}`);

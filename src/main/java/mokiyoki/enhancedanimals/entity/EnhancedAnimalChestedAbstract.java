@@ -172,7 +172,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             }
 
 
-            this.enhancedAnimalEquipmentGrouping.put(Equipment.COLLAR, bridleGroup);
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.BRIDLE, bridleGroup);
 //            }
         } else {
             if(previousBridleTextures != null){

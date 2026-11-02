@@ -1,1 +1,33 @@
-{}
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:pink_dye"
+    },
+    "title": {
+      "text": "True Colors",
+      "color": "light_purple",
+      "bold": true
+    },
+    "description": {
+      "text": "Dye a sheep any color"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:husbandry/root",
+  "criteria": {
+    "dyed_sheep": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "tag": "forge:dyes"
+        },
+        "entity": {
+          "type": "minecraft:sheep"
+        }
+      }
+    }
+  }
+}

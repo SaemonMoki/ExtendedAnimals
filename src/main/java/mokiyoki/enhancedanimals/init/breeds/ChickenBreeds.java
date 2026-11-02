@@ -326,49 +326,71 @@ public final class ChickenBreeds {
 
     public static final Breed SERAMA = new Breed(new Breed.Properties().setData("serama", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS ,GeneSet.YELLOWLEGS, GeneSet.CLEANLEGS).get(),
-                    new GeneSketch()
-                            //size
-                            .add(14,"2","2"),
-                    new GeneSketch()
-                            //neckAngle
-                            .add(10, "2","2","2","2","2")
-
-                            //creeper
-                            .add(70,"1")
-
-                            //size
-                            .add(74,"1","3","1")
-
-                            //wingPlacement
-                            .add(86,"1")
-
-                            //legLength
-                            .add(168,"1")
-
-                            //wingAngle
-                            .add(88,"3")
-                            .add(94,"2","2")
-
-                            //fluffiness
-                            .add(228, "2","2","2","2","2","1","1","1","1","1")
-
-                            //tailAngle
-                            .add(258, "2","2","2","2","2")
-                            .add(268, "1","1","1","1","1")
-
-                            //bodyAngle
-                            .add(186, "2","1","1|2","1","2")
-                            .add(248, "2","1","2","1","1|2")
+                    new GeneSketch().add(14,"2","2"),
+                    new GeneSketch().add(10, "2","2","2","2","2").add(24,"1|2|3|4|5").add(70,"1").add(74,"1","3","1").add(86,"1").add(98, "10%1","2").add(168,"1").add(88,"3").add(94,"2","2").add(228, "2","2","2","2","2","1","1","1","1","1").add(258, "2","2","2","2","2").add(268, "1","1","1","1","1").add(186, "2","1","1|2","1","2").add(248, "2","1","2","1","1|2")
 
             ));
 
     public static final Breed CHABO = new Breed(new Breed.Properties().setData("chabo", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new NewGeneSet(GeneSet.SINGLE, GeneSet.BIG_COMB, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.YELLOWLEGS, GeneSet.CLEANLEGS, GeneSet.SILVER, GeneSet.BLACKTAIL, GeneSet.CREEPER).get(),
-                    new GeneSketch(),
-                    new GeneSketch()
-                            .add(258, "2","2","2","2","2")
-                            .add(268, "1","1","1","1","1")
+            .setGeneSketch(new NewGeneSet(GeneSet.SINGLE, GeneSet.BIG_COMB, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.YELLOWLEGS, GeneSet.CLEANLEGS, GeneSet.CREEPER).get(),
+                    new GeneSketch().add(16, "2"),
+                    new GeneSketch().add(222, "2","2","2").add(258, "2","2","2","2","2").add(268, "1","1","1","1","1")
             ));
+
+    public static final Breed BLACK_TAILED_WHITE_CHABO = new Breed(CHABO, new Breed.Properties().setName("blacktailedwhitechabosirochabo").setGeneSketch(
+            new NewGeneSet(GeneSet.SILVER, GeneSet.BLACKTAIL).get(),
+            new GeneSketch().add(8, "2"),
+            new GeneSketch().add(166, "1")
+    ));
+
+    public static final Breed MOTTLED_CHABO = new Breed(CHABO, new Breed.Properties().setName("mottledchabobutschichabo").setGeneSketch(
+            new NewGeneSet(GeneSet.BIRCHEN, GeneSet.MELANIZED, GeneSet.CHARCOAL, GeneSet.MOTTLED).get()
+    ));
+
+    public static final Breed WHITE_CHABO = new Breed(CHABO, new Breed.Properties().setName("whitechabo").setGeneSketch(
+            new NewGeneSet(GeneSet.WHEATEN, GeneSet.LEGHORNWHITE).get()
+    ));
+
+    public static final Breed MODERN_GAME = new Breed(new Breed.Properties().setData("mglargemoderngame", Biomes.BIRCH_FOREST, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.PEA, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS,GeneSet.CLEANLEGS, GeneSet.GREENLEGS).get(),
+                    new GeneSketch().add(4, "1").add(8, "1").add(12,"11").add(18,"2","1"),
+                    new GeneSketch()
+                            .add(0, "2","2","2","1","1")
+                            .add(70, "1","1","3")
+                            .add(84, "1","2","1","1","2","1","1")
+                            .add(146, "1","2","1")
+                            .add(158, "1")
+                            .add(164, "1","_","2")
+                            .add(222, "2","2","2","2","2","2","2","1","1","1","1","1","1","1")
+                            .add(248, "2","1","2")
+                            .add(258, "2","2","1","2","2","1","1","1","1","1")
+                            .add(278, "1")
+                            .add(286, "1","1","1","1")
+                            .add(298, "2","2","2","2","2","2")
+            ));
+
+    public static final Breed SILVER_BIRCHEN_MODERN_GAME = new Breed(MODERN_GAME, new Breed.Properties().setName("silverbirchenmoderngame").setGeneSketch(
+            new NewGeneSet(GeneSet.SILVER, GeneSet.BIRCHEN, GeneSet.NON_COLUMBIAN,GeneSet.NON_DARKBROWN,GeneSet.PATTERN,GeneSet.NON_MELANIZED).get(),
+            new GeneSketch(),
+            new GeneSketch().add(166, "2")
+    ));
+
+    public static final Breed WHEATEN_MODERN_GAME = new Breed(MODERN_GAME, new Breed.Properties().setName("wheatenmoderngame").setGeneSketch(
+            new NewGeneSet(GeneSet.WHEATEN).get()
+    ));
+
+    public static final Breed MODERN_GAME_BANTAM = new Breed(MODERN_GAME, new Breed.Properties().setName("mgbbantammoderngamebantam").setGeneSketch(
+            new GeneSketch().add(14, "2", "2"),
+            new GeneSketch()
+    ));
+
+    public static final Breed SILVER_BIRCHEN_MODERN_GAME_BANTAM = new Breed(MODERN_GAME_BANTAM, new Breed.Properties().setName("silverbirchenbantammoderngamebantam").setGeneSketch(
+            new NewGeneSet(GeneSet.SILVER, GeneSet.BIRCHEN, GeneSet.NON_COLUMBIAN,GeneSet.NON_DARKBROWN,GeneSet.PATTERN,GeneSet.NON_MELANIZED).get()
+    ));
+
+    public static final Breed WHEATEN_MODERN_GAME_BANTAM = new Breed(MODERN_GAME_BANTAM, new Breed.Properties().setName("wheatenbantammoderngamebantam").setGeneSketch(
+            new NewGeneSet(GeneSet.WHEATEN).get()
+    ));
 
     public static final Breed BUTTERCUP_COMB = new Breed(new Breed.Properties().setData("buttercup", Biomes.THE_VOID, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.CRESTLESS, GeneSet.BUTTERCUPCOMB).get(),
@@ -394,27 +416,6 @@ public final class ChickenBreeds {
                     new GeneSketch().add(20, "1").add(38, "2","2")
             ));
 
-//    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
-//            .setVarieties(new Breed.VarientHolder(
-//                    createVarientList(GeneSet.FLATROSE.with(GeneSet.BEARDED).with(GeneSet.CRESTLESS).with(GeneSet.CLEANLEGS).get(),
-//                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).get(),
-//                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.RUMPLESS).get(),
-//                            GeneSet.RUMPLESS.with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.FLATROSE).with(GeneSet.CLEANLEGS).get(),
-//                            GeneSet.TRIFIDROSE.with(GeneSet.BEARDED).with(GeneSet.CLEANLEGS).get()),
-//                    createVarientList(GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).get(),
-//                            GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
-//                            GeneSet.CUCKOO.get(),
-//                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).get(),
-//                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
-//                            GeneSet.SOLIDBLACK.get(),
-//                            GeneSet.SOLIDBLACK.with(GeneSet.BLUE).get(),
-//                            GeneSet.SOLIDBLACK.with(GeneSet.LAVENDER).get(),
-//                            GeneSet.QUAIL.get(),
-//                            GeneSet.QUAIL.with(GeneSet.LAVENDER).get(),
-//                            GeneSet.QUAIL.with(GeneSet.BLUE).get()
-//                            )))
-//            .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
-
     public enum GeneSet {
         NONE(),
         GOLD(new GeneSketch().add(0, "1"), new GeneSketch().add(170, "1")),
@@ -429,13 +430,20 @@ public final class ChickenBreeds {
         TRIFIDROSE("empty", new GeneSketch().add(46, "1", "2", "1").add(54, "1")),
         BIG_COMB(new GeneSketch().add(4, "6").add(12, "6").add(18, "1"), new GeneSketch().add(80, "2", "1")),
         CUCKOO(new GeneSketch().add(12, "2"), new GeneSketch().add(24, "5")),
-        SOLIDBLACK("empty", new GeneSketch().add(24, "5")),
+        SOLIDBLACK("empty", new GeneSketch().add(24, "5").add(30, "1").add(100, "2")),
         SOLIDBLUE("empty", new GeneSketch().add(24, "5").add(40, "1|2")),
         BIRCHEN("empty", new GeneSketch().add(24, "1", "2", "2", "2").add(98, "2", "1")),
         DUCKWING("empty", new GeneSketch().add(24, "2", "2", "2", "2").add(98, "2", "1")),
         BROWN("empty", new GeneSketch().add(24, "4", "2", "2", "2").add(98, "2", "1")),
         WHEATEN("empty", new GeneSketch().add(24, "3", "2", "2", "2").add(98, "2", "1")),
         COLUMBIAN("empty", new GeneSketch().add(28, "1")),
+        NON_COLUMBIAN("empty", new GeneSketch().add(28, "2")),
+        DARKBROWN("empty", new GeneSketch().add(98, "1")),
+        NON_DARKBROWN("empty", new GeneSketch().add(98, "2")),
+        PATTERN("empty", new GeneSketch().add(26, "1")),
+        NON_PATTERN("empty", new GeneSketch().add(26, "2")),
+        MELANIZED("empty", new GeneSketch().add(30, "1")),
+        NON_MELANIZED("empty", new GeneSketch().add(30, "2")),
         SPANGLED("empty", new GeneSketch().add(24, "4", "1", "2", "1").add(98, "1")),
         AUTOSOMAL_BARRED("empty", new GeneSketch().add(24, "1", "1", "2", "2").add(98, "1")),
         BUTTERCUP_BARRED("empty", new GeneSketch().add(24, "4", "1", "2", "2").add(98, "1")),
@@ -472,7 +480,8 @@ public final class ChickenBreeds {
         CREEPER("empty", new GeneSketch().add(70, "1,2")),
         NAKEDNECK("empty", new GeneSketch().add(52, "1,1|2")),
         SCALELESS("empty", new GeneSketch().add(108, "2")),
-        CHARCOAL("empty", new GeneSketch(100, "2"));
+        CHARCOAL("empty", new GeneSketch(100, "2")),
+        NON_CHARCOAL("empty", new GeneSketch(100, "1"));
 
         public final GeneSketch sexlinked;
         public final GeneSketch autosomal;

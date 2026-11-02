@@ -64,7 +64,6 @@ public class CowTexture {
     };
 
     public static void calculateCowTextures(EnhancedCow cow, int[] gene) {
-            int base = 0;
             int red = 1;
             int black = 0;
             int skin = 0;

@@ -343,4 +343,15 @@ public class CowBreeds {
                     .add(116, "111-999")/*.add(116, "1-999")*/
             )
     );
+
+    public static final Breed BROCKLED = new Breed(new Breed.Properties().setName("brockled")
+            .setGeneSketch(new GeneSketch() ,new GeneSketch()
+                    .add(4,"4").add(16,"1").add(254,"2")
+            )
+    );
+    public static final Breed OLD_BROCKLED = new Breed(new Breed.Properties().setName("oldbrockling")
+            .setGeneSketch(new GeneSketch() ,new GeneSketch()
+                    .add(4,"4").add(16,"1").add(18,"3")
+            )
+    );
 }

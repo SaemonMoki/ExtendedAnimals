@@ -42,7 +42,8 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.types.add(CowBreeds.SPANISH);
         this.types.add(CowBreeds.WILD_HORNS);
         this.types.add(CowBreeds.U_SHAPE_HORNS);
-//        this.breeds.add(CowBreeds.TEST);
+        this.types.add(CowBreeds.BROCKLED);
+        this.types.add(CowBreeds.OLD_BROCKLED);
 
         this.types.addAll(this.breeds);
     }

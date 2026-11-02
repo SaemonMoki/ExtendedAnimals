@@ -646,9 +646,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateLlamaTextures(this, this.getGenes().getAutosomalGenes(), this.getStringUUID().toCharArray());
-            }
-            }
+            calculateLlamaTextures(this, this.getGenes().getAutosomalGenes(), this.getVariation());
+        }
+    }
 
     @Override
     public void initilizeAnimalSize() {

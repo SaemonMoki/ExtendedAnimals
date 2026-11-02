@@ -140,6 +140,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         stack.getOrCreateTagElement("display").putString("UUID", uuid);
     }
 
+    //kept separately from the uuid, which can't always be restored
+    public static void setVariation(ItemStack stack, int variationSeed, boolean isFemale) {
+        stack.getOrCreateTagElement("display").putInt("VariationSeed", variationSeed);
+        stack.getOrCreateTagElement("Genetics").putBoolean("IsFemale", isFemale);
+    }
+
     private boolean getMateIsFemale(ItemStack stack) {
         return stack.getOrCreateTagElement("MateGenetics").getBoolean("MateIsFemale");
     }
@@ -265,6 +271,9 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         CompoundTag data = stack.getOrCreateTagElement("display");
         if (level.getEntity(UUID.fromString(data.getString("UUID"))) == null) {
             axolotl.setUUID(UUID.fromString(data.getString("UUID")));
+        }
+        if (data.contains("VariationSeed")) {
+            axolotl.setVariationSeed(data.getInt("VariationSeed"));
         }
         axolotl.setSireName(data.getString("SireName"));
         axolotl.setDamName(data.getString("DamName"));

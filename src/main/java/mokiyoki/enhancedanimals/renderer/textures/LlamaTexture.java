@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class LlamaTexture {
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
@@ -44,7 +47,7 @@ public class LlamaTexture {
             "skin_black.png", "skin_pink.png"
     };
 
-    public static void calculateLlamaTextures(EnhancedLlama llama, int[] gene, char[] uuid) {
+    public static void calculateLlamaTextures(EnhancedLlama llama, int[] gene, Variation variation) {
         int ground;
         int pattern = 0;
         int roan = 0;
@@ -96,13 +99,12 @@ public class LlamaTexture {
         if ( gene[6] == 1 || gene[7] == 1){
             //dominant white   0 1 2 3 4 5 6 7 8 9 a b c d e f
 
-            if ( Character.isDigit(uuid[1]) ){
-                if ((uuid[1]-48) < 5 ){
-                    domwhite = 1;
-                } else {
-                    domwhite = 2;
-                }
-            }else{
+            int d = variation.hex(LLAMA_DOMINANT_WHITE);
+            if (d < 5) {
+                domwhite = 1;
+            } else if (d < 10) {
+                domwhite = 2;
+            } else {
                 domwhite = 3;
             }
 
@@ -111,101 +113,19 @@ public class LlamaTexture {
         if ( gene[8] == 1 || gene[9] == 1){
             //roan
 
-            if (Character.isDigit(uuid[2])){
-                roan = 1 + (uuid[2]-48);
-            } else {
-                char d = uuid[2];
-
-                switch (d){
-                    case 'a':
-                        roan = 11;
-                        break;
-                    case 'b':
-                        roan = 12;
-                        break;
-                    case 'c':
-                        roan = 13;
-                        break;
-                    case 'd':
-                        roan = 14;
-                        break;
-                    case 'e':
-                        roan = 15;
-                        break;
-                    case 'f':
-                        roan = 16;
-                        break;
-                    //TODO add debugging default option
-                }
-            }
+            roan = 1 + variation.hex(LLAMA_ROAN);
         }
 
         if ( gene[10] == 2 && gene[11] == 2){
             //piebald
 
-            if ( Character.isDigit(uuid[4]) ){
-                piebald = 1 + (uuid[4] - 48);
-            } else {
-                char d = uuid[4];
-
-                switch (d){
-                    case 'a':
-                        piebald = 11;
-                        break;
-                    case 'b':
-                        piebald = 12;
-                        break;
-                    case 'c':
-                        piebald = 13;
-                        break;
-                    case 'd':
-                        piebald = 14;
-                        break;
-                    case 'e':
-                        piebald = 15;
-                        break;
-                    case 'f':
-                        piebald = 16;
-                        break;
-                    //TODO add debugging default option
-                }
-            }
+            piebald = 1 + variation.hex(LLAMA_PIEBALD);
         }
 
         if ( gene[12] == 1 || gene[13] == 1){
             //tuxedo
 
-            if ( Character.isDigit(uuid[6]) ){
-                tux = 1 + (uuid[6]-48);
-            } else {
-                char d = uuid[6];
-
-                switch (d){
-                    case 'a':
-                        tux = 11;
-                        break;
-                    case 'b':
-                        tux = 12;
-                        break;
-                    case 'c':
-                        tux = 13;
-                        break;
-                    case 'd':
-                        tux = 14;
-                        break;
-                    case 'e':
-                        tux = 15;
-                        break;
-                    case 'f':
-                        tux = 16;
-                        break;
-                    default:
-                        ground = 0;
-                        pattern = 0;
-                        tux = 0;
-                        //TODO add debugging default option
-                }
-            }
+            tux = 1 + variation.hex(LLAMA_TUXEDO);
         }
 
         if (domwhite > 0){

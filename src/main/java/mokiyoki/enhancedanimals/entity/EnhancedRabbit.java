@@ -702,7 +702,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.spawnAtLocation(coatStack);
         }
 
-        if (age > 48000 && random.nextInt(20) >= 18-looting) {
+        if (age > this.getAdultAge() && random.nextInt(20) >= 18-looting) {
             this.spawnAtLocation(Items.RABBIT_FOOT, 1);
         }
     }
@@ -712,7 +712,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected ResourceLocation getDefaultLootTable() {
 
         if (!this.level().isClientSide) {
-            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < 48000) {
+            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < this.getAdultAge()) {
                 dropMeatType = "rawrabbit_small";
             } else {
                 dropMeatType = "rawrabbit";

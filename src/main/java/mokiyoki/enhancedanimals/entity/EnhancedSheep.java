@@ -19,8 +19,6 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -913,12 +911,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getVariation());
         }
     }
-
-    @Override
-    protected void setAlphaTexturePaths() {}
 
     @Override
     public Colouration getRgb() {

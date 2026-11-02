@@ -2,15 +2,13 @@ package mokiyoki.enhancedanimals.ai.brain.chicken;
 
 import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.init.ModParticles;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class ChickenPanicTrigger extends Behavior<EnhancedChicken> {
    public ChickenPanicTrigger() {
@@ -42,14 +40,9 @@ public class ChickenPanicTrigger extends Behavior<EnhancedChicken> {
 
       //random chance to space the tick and gene check to ensure not scaleless
       if (chicken.invulnerable <= 0 && p_24702_ % 3L == 0L && !(gene[108] == 2 && gene[109] == 2)) {
-         ItemStack featherStack = new ItemStack(Items.FEATHER, 1);
-
-         ItemEntity itementity = new ItemEntity(chicken.level, chicken.getX(), chicken.getY() + 0.0d, chicken.getZ(), featherStack);
-         itementity.setDefaultPickUpDelay();
-         itementity.setNeverPickUp();
-         itementity.lifespan = 20;
-
-         chicken.level.addFreshEntity(itementity);
+         server.sendParticles(ModParticles.FEATHER.get(),
+                 chicken.getX(), chicken.getY(), chicken.getZ(), 0,
+                 (chicken.getRandom().nextDouble() - 0.5D) * 0.2D, 0.2D, (chicken.getRandom().nextDouble() - 0.5D) * 0.2D, 1.0D);
       }
    }
 

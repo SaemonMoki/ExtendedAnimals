@@ -12,8 +12,40 @@ import static mokiyoki.enhancedanimals.renderer.texture.TexturingUtils.*;
 
 public class TextureGrouping {
 
-    private List<TextureGrouping> textureGroupings = new ArrayList<>();
-    private List<TextureLayer> textureLayers = new ArrayList<>();
+    private interface Child {
+        NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y);
+    }
+
+    private static final class GroupChild implements Child {
+        private final TextureGrouping group;
+
+        private GroupChild(TextureGrouping group) {
+            this.group = group;
+        }
+
+        @Override
+        public NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y) {
+            return group.processGrouping(modLocation, manager, colouration, x, y);
+        }
+    }
+
+    private static final class LayerChild implements Child {
+        private final TextureLayer layer;
+
+        private LayerChild(TextureLayer layer) {
+            this.layer = layer;
+        }
+
+        @Override
+        public NativeImage resolve(TextureGrouping parent, String modLocation, ResourceManager manager, Colouration colouration, int x, int y) {
+            if (layer.getTexture().isEmpty()) return null;
+            createTexture(layer, modLocation, manager, x, y);
+            parent.applyLayerSpecifics(layer, colouration);
+            return layer.getTextureImage();
+        }
+    }
+
+    private final List<Child> children = new ArrayList<>();
 
     private TexturingType texturingType;
 
@@ -25,23 +57,15 @@ public class TextureGrouping {
         try {
             List<NativeImage> groupImages = new ArrayList<>();
 
-            for (TextureGrouping group : textureGroupings) {
-                NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration, x, y);
-                if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
-            }
-
-            for (TextureLayer layer : textureLayers) {
-                if (!layer.getTexture().isEmpty()) {
-                    createTexture(layer, modLocation, manager, x, y);
-                    applyLayerSpecifics(layer, colouration);
-                    groupImages.add(layer.getTextureImage());
-                }
+            for (Child child : children) {
+                NativeImage childImage = child.resolve(this, modLocation, manager, colouration, x, y);
+                if (childImage != null) groupImages.add(childImage);
             }
 
             return applyGroupMerging(groupImages, colouration);
         } catch (Exception e) {
             throw new IllegalStateException(
-                    "Exception occurred in Texturing Grouping" + textureGroupings.toString(), e);
+                    "Exception occurred in Texturing Grouping" + children.toString(), e);
         }
     }
 
@@ -155,11 +179,11 @@ public class TextureGrouping {
     }
 
     public void addGrouping(TextureGrouping textureGrouping) {
-            this.textureGroupings.add(textureGrouping);
+        this.children.add(new GroupChild(textureGrouping));
     }
 
     public void addTextureLayers(TextureLayer textureLayer) {
-        this.textureLayers.add(textureLayer);
+        this.children.add(new LayerChild(textureLayer));
     }
 
     public void setTexturingType(TexturingType texturingType) {
@@ -167,9 +191,6 @@ public class TextureGrouping {
     }
 
     public boolean isPopulated() {
-        if (this.textureGroupings.size() > 0 || this.textureLayers.size() > 0) {
-            return true;
-        }
-        return false;
+        return !this.children.isEmpty();
     }
 }

@@ -16,8 +16,6 @@ import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -445,11 +443,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         }
     }
 
-    @Override
-    protected void setAlphaTexturePaths() {
-        this.enhancedAnimalAlphaTextures.add("alpha_mask.png");
-    }
-
     @OnlyIn(Dist.CLIENT)
     private float[] calculateEyeColor(int[] gene, int eyeType) {
         //NormalEyes
@@ -686,6 +679,7 @@ NBT read/write
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
+            EnhancedAxolotlBucket.setVariation(stack, this.getVariationSeed(), this.getOrSetIsFemale());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
         }
     }

@@ -16,14 +16,14 @@
     "background": "eanimod:textures/gui/advancements/backgrounds/geneticanimals.png"
   },
   "criteria": {
-    "consumed_item": {
-      "trigger": "minecraft:consume_item",
-      "conditions": {}
+    "tick": {
+      "conditions": {},
+      "trigger": "minecraft:tick"
     }
   },
   "requirements": [
     [
-      "consumed_item"
+      "tick"
     ]
   ]
 }

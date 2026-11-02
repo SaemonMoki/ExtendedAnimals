@@ -864,12 +864,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getVariation());
         }
-    }
-
-    @Override
-    protected void setAlphaTexturePaths() {
     }
 
     @Override

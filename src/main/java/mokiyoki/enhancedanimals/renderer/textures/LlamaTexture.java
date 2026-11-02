@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class LlamaTexture {
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
@@ -44,7 +47,7 @@ public class LlamaTexture {
             "skin_black.png", "skin_pink.png"
     };
 
-    public static void calculateLlamaTextures(EnhancedLlama llama, int[] gene, char[] uuid) {
+    public static void calculateLlamaTextures(EnhancedLlama llama, int[] gene, Variation variation) {
         int ground;
         int pattern = 0;
         int roan = 0;
@@ -96,13 +99,12 @@ public class LlamaTexture {
         if ( gene[6] == 1 || gene[7] == 1){
             //dominant white   0 1 2 3 4 5 6 7 8 9 a b c d e f
 
-            if ( Character.isDigit(uuid[1]) ){
-                if ((uuid[1]-48) < 5 ){
-                    domwhite = 1;
-                } else {
-                    domwhite = 2;
-                }
-            }else{
+            int d = variation.hex(LLAMA_DOMINANT_WHITE);
+            if (d < 5) {
+                domwhite = 1;
+            } else if (d < 10) {
+                domwhite = 2;
+            } else {
                 domwhite = 3;
             }
 
@@ -111,101 +113,19 @@ public class LlamaTexture {
         if ( gene[8] == 1 || gene[9] == 1){
             //roan
 
-            if (Character.isDigit(uuid[2])){
-                roan = 1 + (uuid[2]-48);
-            } else {
-                char d = uuid[2];
-
-                switch (d){
-                    case 'a':
-                        roan = 11;
-                        break;
-                    case 'b':
-                        roan = 12;
-                        break;
-                    case 'c':
-                        roan = 13;
-                        break;
-                    case 'd':
-                        roan = 14;
-                        break;
-                    case 'e':
-                        roan = 15;
-                        break;
-                    case 'f':
-                        roan = 16;
-                        break;
-                    //TODO add debugging default option
-                }
-            }
+            roan = 1 + variation.hex(LLAMA_ROAN);
         }
 
         if ( gene[10] == 2 && gene[11] == 2){
             //piebald
 
-            if ( Character.isDigit(uuid[4]) ){
-                piebald = 1 + (uuid[4] - 48);
-            } else {
-                char d = uuid[4];
-
-                switch (d){
-                    case 'a':
-                        piebald = 11;
-                        break;
-                    case 'b':
-                        piebald = 12;
-                        break;
-                    case 'c':
-                        piebald = 13;
-                        break;
-                    case 'd':
-                        piebald = 14;
-                        break;
-                    case 'e':
-                        piebald = 15;
-                        break;
-                    case 'f':
-                        piebald = 16;
-                        break;
-                    //TODO add debugging default option
-                }
-            }
+            piebald = 1 + variation.hex(LLAMA_PIEBALD);
         }
 
         if ( gene[12] == 1 || gene[13] == 1){
             //tuxedo
 
-            if ( Character.isDigit(uuid[6]) ){
-                tux = 1 + (uuid[6]-48);
-            } else {
-                char d = uuid[6];
-
-                switch (d){
-                    case 'a':
-                        tux = 11;
-                        break;
-                    case 'b':
-                        tux = 12;
-                        break;
-                    case 'c':
-                        tux = 13;
-                        break;
-                    case 'd':
-                        tux = 14;
-                        break;
-                    case 'e':
-                        tux = 15;
-                        break;
-                    case 'f':
-                        tux = 16;
-                        break;
-                    default:
-                        ground = 0;
-                        pattern = 0;
-                        tux = 0;
-                        //TODO add debugging default option
-                }
-            }
+            tux = 1 + variation.hex(LLAMA_TUXEDO);
         }
 
         if (domwhite > 0){
@@ -224,11 +144,11 @@ public class LlamaTexture {
 
         addGroundTexture(llama, parentGroup, ground);
 
-        if (addPatternTexture(llama, parentGroup, pattern)) llama.addDelimiter("np");
+        addPatternTexture(llama, parentGroup, pattern);
 
         createWhiteSpots(llama, parentGroup, roan, tux, piebald, domwhite);
 
-        if (addFurTexture(llama, parentGroup, fur)) llama.addDelimiter("sf");
+        addFurTexture(llama, parentGroup, fur);
 
         addDetails(llama, parentGroup, eyes, skin);
 
@@ -238,86 +158,54 @@ public class LlamaTexture {
     private static void createWhiteSpots(EnhancedLlama llama, TextureGrouping parentGroup, int roan, int tux, int piebald, int domwhite) {
         TextureGrouping spots = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        if (addRoanTexture(llama, spots, roan)) llama.addDelimiter("nr");
-        if (addTuxTexture(llama, spots, tux)) llama.addDelimiter("nt");
-        if (addPiebaldTexture(llama, spots, piebald)) llama.addDelimiter("np");
-        if (addDomWhiteTexture(llama, spots, domwhite)) llama.addDelimiter("nw");
+        addRoanTexture(llama, spots, roan);
+        addTuxTexture(llama, spots, tux);
+        addPiebaldTexture(llama, spots, piebald);
+        addDomWhiteTexture(llama, spots, domwhite);
 
         if (spots.isPopulated()) {
             TextureGrouping grouping = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping color = new TextureGrouping(TexturingType.MERGE_GROUP);
-            llama.addTextureToAnimalTextureGrouping(color, "domwhite_solid.png");
-            grouping.addGrouping(color);
+            llama.layer(grouping).texture("domwhite_solid.png").add();
             grouping.addGrouping(spots);
             parentGroup.addGrouping(grouping);
+        } else {
+            llama.addSkippedSlot();
         }
     }
 
     private static void addDetails(EnhancedLlama llama, TextureGrouping parentGroup, int eyes, int skin) {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_EYES[eyes], String.valueOf(eyes));
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_SKIN[skin], String.valueOf(skin));
+        llama.layer(grouping).textureTableSelector(LLAMA_TEXTURES_EYES, eyes).add();
+        llama.layer(grouping).textureTableSelector(LLAMA_TEXTURES_SKIN, skin).add();
         parentGroup.addGrouping(grouping);
     }
 
 
-    private static boolean addFurTexture(EnhancedLlama llama, TextureGrouping parentGroup, int fur) {
-        if (fur==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_FUR[fur], String.valueOf(fur));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addFurTexture(EnhancedLlama llama, TextureGrouping parentGroup, int fur) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_FUR, fur).onlyIf(f -> f != 0).orKey("sf").add();
     }
 
-    private static boolean addDomWhiteTexture(EnhancedLlama llama, TextureGrouping parentGroup, int domwhite) {
-        if (domwhite==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_DOMWHITE[domwhite], String.valueOf(domwhite));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addDomWhiteTexture(EnhancedLlama llama, TextureGrouping parentGroup, int domwhite) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_DOMWHITE, domwhite).onlyIf(d -> d != 0).orKey("nw").add();
     }
 
-    private static boolean addPiebaldTexture(EnhancedLlama llama, TextureGrouping parentGroup, int piebald) {
-        if (piebald==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_PIEBALD[piebald], String.valueOf(piebald));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addPiebaldTexture(EnhancedLlama llama, TextureGrouping parentGroup, int piebald) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_PIEBALD, piebald).onlyIf(p -> p != 0).orKey("np").add();
     }
 
-    private static boolean addTuxTexture(EnhancedLlama llama, TextureGrouping parentGroup, int tux) {
-        if (tux==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_TUXEDO[tux], String.valueOf(tux));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addTuxTexture(EnhancedLlama llama, TextureGrouping parentGroup, int tux) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_TUXEDO, tux).onlyIf(t -> t != 0).orKey("nt").add();
     }
 
-    private static boolean addRoanTexture(EnhancedLlama llama, TextureGrouping parentGroup, int roan) {
-        if (roan==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_ROAN[roan], String.valueOf(roan));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addRoanTexture(EnhancedLlama llama, TextureGrouping parentGroup, int roan) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_ROAN, roan).onlyIf(r -> r != 0).orKey("nr").add();
     }
 
-    private static boolean addPatternTexture(EnhancedLlama llama, TextureGrouping parentGroup, int pattern) {
-        if (pattern==0) return true;
-
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_PATTERN[pattern], String.valueOf(pattern));
-        parentGroup.addGrouping(grouping);
-        return false;
+    private static void addPatternTexture(EnhancedLlama llama, TextureGrouping parentGroup, int pattern) {
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_PATTERN, pattern).onlyIf(p -> p != 0).orKey("np").add();
     }
 
     private static void addGroundTexture(EnhancedLlama llama, TextureGrouping parentGroup, int ground) {
-        TextureGrouping grouping = new TextureGrouping(TexturingType.MERGE_GROUP);
-        llama.addTextureToAnimalTextureGrouping(grouping, LLAMA_TEXTURES_GROUND[ground], String.valueOf(ground));
-        parentGroup.addGrouping(grouping);
+        llama.layer(parentGroup).textureTableSelector(LLAMA_TEXTURES_GROUND, ground).add();
     }
 }

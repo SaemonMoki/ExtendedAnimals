@@ -1,0 +1,29 @@
+  name: Add version subtasks
+  on:
+    issues:
+      types: [opened]
+
+  permissions:
+    issues: write
+  
+  jobs:
+    subtasks:
+      if: ${{ !contains(github.event.issue.labels.*.name, 'VersionSpecific') }}
+      runs-on: ubuntu-latest
+      steps:
+        - name: Create sub-issues
+          env:
+            GH_TOKEN: ${{ github.token }}
+            REPO: ${{ github.repository }}
+            PARENT: ${{ github.event.issue.number }}
+            PARENT_TITLE: ${{ github.event.issue.title }}
+            LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          run: |
+            for version in 1.18 1.20 1.21; do
+              id=$(jq -n \
+                    --arg title "Create for $version: $PARENT_TITLE" \
+                    --argjson labels "$LABELS" \
+                    '{title: $title, labels: $labels}' \
+                  | gh api "repos/$REPO/issues" --input - --jq .id)
+              gh api "repos/$REPO/issues/$PARENT/sub_issues" -F sub_issue_id="$id"
+            done

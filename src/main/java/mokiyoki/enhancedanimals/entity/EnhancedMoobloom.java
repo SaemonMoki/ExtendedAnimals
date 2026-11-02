@@ -53,9 +53,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.neoforged.neofo
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get().longValue();
         return this.adultAge;
     }
 

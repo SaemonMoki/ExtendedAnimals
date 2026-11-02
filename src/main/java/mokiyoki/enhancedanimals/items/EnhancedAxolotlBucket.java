@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.items;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -140,8 +141,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return CustomDataHelper.getTagElementOrEmpty(stack, "MateGenetics").getBoolean("MateIsFemale");
     }
 
-    public static void setBirthTime(ItemStack stack, String birthTime) {
-        CustomDataHelper.updateTagElement(stack, "display", element -> element.putString("BirthTime", birthTime));
+    public static void setBirthTime(ItemStack stack, long birthTime) {
+        CustomDataHelper.updateTagElement(stack, "display", element -> element.putLong("BirthTime", birthTime));
     }
 
     public static void setImage(ItemStack stack, int[] imageArray) {
@@ -289,7 +290,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         if (stack.has(DataComponents.CUSTOM_NAME)) {
             axolotl.setCustomName(stack.getHoverName());
         }
-        axolotl.setBirthTime(data.getString("BirthTime"));
+        //buckets filled before birth times became longs hold a string
+        if (data.contains("BirthTime", 4)) {
+            axolotl.setBirthTime(data.getLong("BirthTime"));
+        } else {
+            axolotl.setBirthTime(EnhancedAnimalAbstract.parseBirthTime(data.getString("BirthTime")));
+        }
         axolotl.initilizeAnimalSize();
         CompoundTag bucketTag = stack.getOrDefault(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY).copyTag();
         bucketTag.merge(CustomDataHelper.getTagOrEmpty(stack));

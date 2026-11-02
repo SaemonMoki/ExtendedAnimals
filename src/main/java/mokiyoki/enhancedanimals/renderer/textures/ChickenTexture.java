@@ -3,15 +3,20 @@ package mokiyoki.enhancedanimals.renderer.textures;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
+import mokiyoki.enhancedanimals.entity.util.VariationKey;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_SPLASH;
 
 public class ChickenTexture {
     // - Chicken Ears, Comb, Wattles, Face, Legs, Skin, Eyes needs to be RGB
@@ -274,9 +279,15 @@ public class ChickenTexture {
                     if (gene[158] == gene[159]) earColour++;
                 }
 
-                if (sGene[12] <= 3 && (isFemale || sGene[13] <= 3)) {
-                    earColour += isFemale || sGene[12] == sGene[13] ? 2 : 1;
-                    facefeathers = 3 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
+                int f12 = sGene[12] <= 6 ? sGene[12] : 12-sGene[12];
+                int f13 = sGene[13] <= 6 ? sGene[13] : 12-sGene[13];
+
+
+                if (f12 <= 3 && (isFemale || f13 <= 3)) {
+                    if (sGene[12] <= 3 && (isFemale || sGene[13] <= 3)) {
+                        earColour += isFemale || sGene[12] == sGene[13] ? 2 : 1;
+                    }
+                    facefeathers = 3 - (isFemale ? f12 : Math.max(f12, f13));
                 }
 
                 if (gene[222] == 2 && gene[223] == 2) facefeathers++;
@@ -324,7 +335,7 @@ public class ChickenTexture {
             earColour = calculateEarRGB(sGene, gene, isFemale);
             chicken.layer(detailGroup).texture("skin/" + ear + ".png").tinted(TexturingType.APPLY_RGB, earColour).keyedAs(ear).add();
 
-            int face = 6 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
+            int face = 6 - (isFemale ? Math.min(sGene[12], 6) : Math.max(Math.min(sGene[12], 6), Math.min(sGene[13], 6)));
 
             if (face != 0) {
                 if (gene[218] != 1 && gene[219] != 1) {
@@ -526,8 +537,6 @@ public class ChickenTexture {
                 case 13, 14, 15 -> earTexture = "xlarge.png";
             }
 
-            String earKey = String.valueOf(earTexture.charAt(0));
-
             earSize = 0;
             for (int i = 152; i < 163; i++) {
                 if (i < 158 || i > 159) earSize += gene[i] % 2 == 0 ? 1 : -1;
@@ -535,13 +544,11 @@ public class ChickenTexture {
 
             if (earSize>0) {
                 earTexture = "round_" + earTexture;
-                earKey += "r";
             } else {
                 earTexture = "long_" + earTexture;
-                earKey += "l";
             }
 
-            chicken.layer(parentGroup).texture("ear/" + earTexture).keyedAs(earKey).add();
+            chicken.layer(parentGroup).texture("ear/" + earTexture).keyedAs(earTexture).add();
         } else {
             chicken.addSkippedSlot();
         }
@@ -920,15 +927,13 @@ public class ChickenTexture {
         }
 
             if (splash) {
-                char[] uuid = chicken.getStringUUID().toCharArray();
+                Variation variation = chicken.getVariation();
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
-                int spotVal = Integer.parseInt(String.valueOf(uuid[1]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[2]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[3]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                for (VariationKey splashKey : CHICKEN_SPLASH) {
+                    int spotVal = variation.hex(splashKey);
+                    chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                }
 
                 spots.addGrouping(spotsCutout);
                 chicken.layer(spots).texture("feather_colour/spots/splash_base.png").add();

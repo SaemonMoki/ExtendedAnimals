@@ -1,34 +1,28 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
+
 public class TurtleTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every turtle writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
     private static final int BASE_COLOUR_SLOTS      = 2;
-    /** the two countershading masks, then the base colour under them. */
+    // 2 masks + base colour
     private static final int COUNTERSHADING_SLOTS   = 2 + BASE_COLOUR_SLOTS;
     private static final int PATTERN_CUTOUT_SLOTS   = 2;
-    /** the pigment, its melanin overlay, and the charcoal overlay. */
+    // pigment, melanin, charcoal
     private static final int PATTERN_COLOUR_SLOTS   = 3;
-    /** the widest of the two brindle colour paths: a base colour plus a two layer tint. */
+    // base colour + 2 tint layers
     private static final int TORTISHELL_COLOUR_SLOTS = BASE_COLOUR_SLOTS + 2;
     private static final int TORTISHELL_SLOTS       = 1 + TORTISHELL_COLOUR_SLOTS;
-    /** everything a non albino turtle writes, including the eye marker and albino overlay. */
     private static final int COLOURED_SLOTS         = BASE_COLOUR_SLOTS + COUNTERSHADING_SLOTS
             + PATTERN_CUTOUT_SLOTS + PATTERN_COLOUR_SLOTS + TORTISHELL_SLOTS + 2;
     private static final int PIEBALD_SLOTS          = 2;
 
-    public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, char[] uuid) {
+    public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene, Variation variation) {
         boolean tortishell = gene[10]==2 || gene[11]==2;
         boolean nonaxanthic = gene[2] == 1 || gene[3] == 1;
         String axanthic = nonaxanthic ? "nonaxanthic/" : "axanthic/";
@@ -156,7 +150,7 @@ public class TurtleTexture {
         }
 
         if (gene[6] == 2 && gene[7] == 2) {
-            piebald(turtle, gene, uuid, parentGroup);
+            piebald(turtle, gene, variation, parentGroup);
         } else {
             turtle.addSkippedSlots(PIEBALD_SLOTS);
         }
@@ -172,38 +166,11 @@ public class TurtleTexture {
         turtle.setTextureGrouping(parentGroup);
     }
 
-    private static void piebald(EnhancedTurtle turtle, int[] gene, char[] uuid, TextureGrouping parentGroup) {
+    private static void piebald(EnhancedTurtle turtle, int[] gene, Variation variation, TextureGrouping parentGroup) {
         int piebald;
         TextureGrouping spots = new TextureGrouping(TexturingType.MASK_GROUP);
 
-        if ( Character.isDigit(uuid[5]) ){
-            piebald = 1 + (uuid[5]-48);
-        } else {
-            char d = uuid[5];
-
-            switch (d) {
-                case 'a':
-                    piebald = 11;
-                    break;
-                case 'b':
-                    piebald = 12;
-                    break;
-                case 'c':
-                    piebald = 13;
-                    break;
-                case 'd':
-                    piebald = 14;
-                    break;
-                case 'e':
-                    piebald = 15;
-                    break;
-                case 'f':
-                    piebald = 16;
-                    break;
-                default:
-                    piebald = 0;
-            }
-        }
+        piebald = 1 + variation.hex(TURTLE_PIEBALD);
 
         if (gene[8] == 2 && gene[9] == 2) {
             piebald = 1;
@@ -223,7 +190,6 @@ public class TurtleTexture {
         TextureGrouping mask = new TextureGrouping(TexturingType.MERGE_GROUP);
         TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        //scale and crisp used to share the key "r" while loading different textures
         switch (gene[72]) {
             case 3 -> turtle.layer(mask).texture("base/countershaded.png").keyedAs("c").add();
             case 4 -> turtle.layer(mask).texture("base/scalecountershaded.png").keyedAs("s").add();

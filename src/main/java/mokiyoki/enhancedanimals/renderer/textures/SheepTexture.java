@@ -1,22 +1,14 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class SheepTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every sheep writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
-    /** the two pattern layers that get averaged together. */
     private static final int PATTERN_SLOTS     = 2;
-    /** ticked, mealy, roan, blaze, spots, pigmented head. */
+    // ticked, mealy, roan, blaze, spots, pigmented head
     private static final int WHITE_SPOT_SLOTS  = 6;
 
     private static final String[] SHEEP_TEXTURES_MEALY = new String[] {
@@ -74,7 +66,7 @@ public class SheepTexture {
             "eyes_black.png"
     };
 
-    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene, char[] uuid) {
+    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene, Variation variation) {
         boolean mealy = false;
         int pattern1 = 0;
         int pattern2 = 0;

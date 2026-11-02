@@ -25,6 +25,10 @@ public final class VariationKeys {
     public static final VariationKey COW_SPECKLED = VariationKey.legacy("cow.speckled", 8);
     //uuid[20-35]
     public static final VariationKey[] COW_MUSHROOMS = VariationKey.legacySeries("cow.mushroom", 16, 20);
+    //brockling was random per texture build before this upgrade, so no legacy reads to keep
+    public static final VariationKey COW_BROCKLING_COUNT = VariationKey.of("cow.brockling_count");
+    public static final VariationKey[] COW_BROCKLING_PATCHES = VariationKey.series("cow.brockling_patch", 4);
+    public static final VariationKey[] COW_BROCKLING_FLIPS = VariationKey.series("cow.brockling_flip", 4);
 
     //Pig
     //uuid[1]

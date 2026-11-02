@@ -7,7 +7,6 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 
-import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
@@ -396,12 +395,11 @@ public class CowTexture {
                 colour.setTexturingType(TexturingType.CUTOUT_GROUP);
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-                // Random patch count, so they all share one key field
-                //TODO move this to the new variationKey methods
-                int t = ThreadLocalRandom.current().nextInt(1, 5);
+                //1-4 patches
+                int t = 1 + variation.get(COW_BROCKLING_COUNT, 4);
                 for (int i = 0; i < t; i++) {
-                    int rand = ThreadLocalRandom.current().nextInt(0, 13);
-                    boolean flip = ThreadLocalRandom.current().nextBoolean();
+                    int rand = variation.get(COW_BROCKLING_PATCHES[i], 13);
+                    boolean flip = variation.get(COW_BROCKLING_FLIPS[i], 2) == 1;
                     cow.layer(brockling).texture("spots/brockling/"+rand+".png").flipped(flip, headCubes).keyedAs(String.valueOf(rand)).add();
                 }
                 colour.addGrouping(brockling);

@@ -32,7 +32,6 @@
 //    public ResourceLocation getEntityTexture(EnhancedBee entity) {
 //        String s = entity.getBeeTexture();
 //
-//        //TODO add colouration
 //
 //        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 //

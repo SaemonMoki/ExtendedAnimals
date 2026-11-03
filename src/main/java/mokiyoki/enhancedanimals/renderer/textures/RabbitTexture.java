@@ -184,7 +184,7 @@ public class RabbitTexture {
                     //spotty harlequin
                     top = 97 + ( 16 * shade);
                 }
-                //TODO add harlequin variations here
+                // TODO add harlequin variations here
                 if (genesForText[4] == 1 || genesForText[5] == 1){
                     middle = 1;
                 }else{
@@ -349,7 +349,6 @@ public class RabbitTexture {
             }
             if (genesForText[12] == 2 && genesForText[13] == 2) {
                 //dutch patterned
-                //TODO add dutch textures with 16 variations
                 dutch = 1 + variation.hex(RABBIT_DUTCH);
             }
 

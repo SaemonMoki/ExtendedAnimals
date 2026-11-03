@@ -10,6 +10,22 @@ public class AxolotlTexture {
 
     private static final int CHEEK_SLOTS = 2;
 
+    private static final int[] headCubes = new int[] {
+            0, 0, 0, 8, 6, 5,
+            0, 39, 0, 10, 5, 0,
+            1, 36, 0, 47, 0, 0, 8, 5
+    };
+    private static final int[] bodyCubes = new int[] {
+            0, 0, 12, 8, 6, 4,
+            0, 0, 22, 8, 8, 4,
+            1, 55, 2, 55, 9, 3, 5, 0,
+            1, 55, 16, 55, 23, 3, 5, 0,
+            1, 26, 9, 26, 36, 0, 9, 5
+    };
+    private static final int[] tailCubes = new int[] {
+            1, 26, -5, 26, 20, 0, 16, 5
+    };
+
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
             "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };

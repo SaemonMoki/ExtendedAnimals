@@ -694,9 +694,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    //TODO put item interactable stuff here like saddling pigs
-
-
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 

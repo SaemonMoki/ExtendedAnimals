@@ -91,8 +91,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.neofor
 
     private static final EntityDataAccessor<Integer> COAT_LENGTH = SynchedEntityData.defineId(EnhancedRabbit.class, EntityDataSerializers.INT);
 
-    //TODO find broken texture spawns in desert
-
     private int jumpTicks;
     private int jumpDuration;
     public int[] noseTwitch = {0,0,0,0}; //how long to twitch/not twitch, how fast to twitch, count up or down, twitch cycle

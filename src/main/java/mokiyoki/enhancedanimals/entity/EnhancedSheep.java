@@ -158,7 +158,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void registerGoals() {
-        //Todo add the temperamants
         int napmod = this.random.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -175,8 +174,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
         this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
-
-    //TODO put new sheep behaviour here
 
     @Override
     public boolean canHaveBlanket() {

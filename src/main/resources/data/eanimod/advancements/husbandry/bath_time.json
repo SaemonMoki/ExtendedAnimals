@@ -16,192 +16,21 @@
     "hidden": false
   },
   "criteria": {
-    "wash_an_orange_sheep": {
+    "wash_a_sheep": {
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
         "item": {
           "items": ["minecraft:water_bucket"]
         },
         "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:1b}"
-        }
-      }
-    },
-    "wash_a_magenta_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:2b}"
-        }
-      }
-    },
-    "wash_a_light_blue_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:3b}"
-        }
-      }
-    },
-    "wash_a_yellow_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:4b}"
-        }
-      }
-    },
-    "wash_a_lime_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:5b}"
-        }
-      }
-    },
-    "wash_a_pink_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:6b}"
-        }
-      }
-    },
-    "wash_a_gray_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:7b}"
-        }
-      }
-    },
-    "wash_a_light_gray_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:8b}"
-        }
-      }
-    },
-    "wash_a_cyan_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:9b}"
-        }
-      }
-    },
-    "wash_a_purple_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:10b}"
-        }
-      }
-    },
-    "wash_a_blue_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:11b}"
-        }
-      }
-    },
-    "wash_a_brown_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:12b}"
-        }
-      }
-    },
-    "wash_a_green_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:13b}"
-        }
-      }
-    },
-    "wash_a_red_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": ["minecraft:water_bucket"]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:14b}"
-        }
-      }
-    },
-    "wash_a_black_sheep": {
-      "trigger": "minecraft:player_interacted_with_entity",
-      "conditions": {
-        "item": {
-          "items": [
-            "minecraft:water_bucket"
-          ]
-        },
-        "entity": {
-          "type": "eanimod:enhanced_sheep",
-          "nbt": "{Colour:15b}"
+          "type": "eanimod:enhanced_sheep"
         }
       }
     }
   },
   "requirements": [
     [
-      "wash_an_orange_sheep","wash_a_magenta_sheep","wash_a_light_blue_sheep","wash_a_yellow_sheep","wash_a_lime_sheep","wash_a_pink_sheep","wash_a_gray_sheep", "wash_a_light_gray_sheep","wash_a_cyan_sheep","wash_a_purple_sheep","wash_a_blue_sheep", "wash_a_brown_sheep", "wash_a_green_sheep","wash_a_red_sheep","wash_a_black_sheep"
+      "wash_a_sheep"
     ]
   ]
 }

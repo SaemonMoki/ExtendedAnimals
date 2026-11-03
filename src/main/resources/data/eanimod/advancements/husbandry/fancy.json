@@ -1,1 +1,20 @@
-{}
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "item": "eanimod:collar_basic_cloth_goldring",
+      "nbt": "{display:{color:2664379}}"
+    },
+    "title": { "translate": "advancements.eanimod.dye_leather_armor.title" },
+    "description": { "translate": "advancements.eanimod.dye_leather_armor.description" },
+    "description": { "translate": "advancements.eanimod.dye_leather_armor.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "dyed_armor": {
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

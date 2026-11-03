@@ -168,7 +168,7 @@ public class EventRegistry {
             });
         });
 
-        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
+        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block - add to things to do after the mod_tag update
     }
 
     @SubscribeEvent

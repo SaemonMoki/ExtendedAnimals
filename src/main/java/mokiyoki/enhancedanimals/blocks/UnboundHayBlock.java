@@ -288,7 +288,7 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
             worldIn.removeBlock(pos, false);
         }
 
-        //TODO add way to pass bites up on block update
+        // TODO add way to pass bites up on block update: I'm pretty sure this is already working
 
         return super.updateShape(state, facing, facingState, worldIn, pos, facingPos);
     }
@@ -305,11 +305,6 @@ public class UnboundHayBlock extends FallingBlock implements SimpleWaterloggedBl
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
-
-//    @Override
-//    public BlockState rotate(BlockState state, Rotation rot) {
-//        return state.with(FACING, rot.rotate(state.get(FACING)));
-//    }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BITES, WATERLOGGED, AXIS);

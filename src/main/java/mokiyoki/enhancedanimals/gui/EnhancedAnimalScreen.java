@@ -999,7 +999,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         if (!this.photoModeEnabled) {
             String name = getAnimalName();
             this.font.draw(matrixStack, name, 8.0F, (float)(this.imageHeight - 160), 4210752);
-            //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
+            // TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
             this.font.draw(matrixStack, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752);
         }
     }

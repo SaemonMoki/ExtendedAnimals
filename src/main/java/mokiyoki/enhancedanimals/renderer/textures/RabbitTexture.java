@@ -184,7 +184,7 @@ public class RabbitTexture {
                     //spotty harlequin
                     top = 97 + ( 16 * shade);
                 }
-                // TODO add harlequin variations here
+                // TODO add better and more diverse harlequin variations
                 if (genesForText[4] == 1 || genesForText[5] == 1){
                     middle = 1;
                 }else{
@@ -442,7 +442,7 @@ public class RabbitTexture {
     }
 
     private static void addSpotting(EnhancedRabbit rabbit, TextureGrouping parentGroup, int dutch, int broken) {
-        //TODO Hotot Spotting if dutch and homozygous broken
+        //TODO Add better Hotot Spotting if dutch and homozygous broken
 
         if (dutch != 0) {
             rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, dutch).add();
@@ -450,8 +450,6 @@ public class RabbitTexture {
             rabbit.addDelimiter();
         }
         if (broken != 0) {
-            //TODO split out broken spots from charlie spots
-            //TODO make broken/charlie genetics
             rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_BROKEN, broken).add();
         } else {
             rabbit.addDelimiter();

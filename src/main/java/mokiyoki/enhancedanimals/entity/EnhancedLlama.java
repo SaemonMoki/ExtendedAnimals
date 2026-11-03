@@ -154,7 +154,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     protected void registerGoals() {
         int napmod = this.random.nextInt(1000);
-        //Todo add the temperamants
         this.grazingGoal = new GrazingGoal(this, 1.0D);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));

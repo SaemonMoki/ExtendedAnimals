@@ -547,22 +547,23 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
         if (!this.isOnFire()) {
 
+            int adultAge = this.getAdultAge();
             int i = random.nextInt(100);
-            if ((age/1200) > i) {
+            if ((age * 100 / adultAge) > i) {
 
                 if (genes[20] != 1 && genes[21] != 1) {
                     woolDrop = true;
                     lootCount = 1;
-                    if (currentCoatLength > 2 && age > 80000) {
+                    if (currentCoatLength > 2 && age > adultAge * 2 / 3) {
                         if (random.nextBoolean()) {
                             lootCount++;
                         }
                     }
                 } else {
                     lootCount = random.nextInt(3);
-                    if (lootCount !=0 && age < 120000) {
+                    if (lootCount !=0 && age < adultAge) {
                         lootCount--;
-                        if (lootCount !=0 && age < 80000) {
+                        if (lootCount !=0 && age < adultAge * 2 / 3) {
                             lootCount--;
                         }
                     }

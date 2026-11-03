@@ -8,7 +8,6 @@
 //
 //public class EnhancedDonkey extends EnhancedHorse{
 //
-//    //TODO add texture layers
 //
 //    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
 //    private static final int GENES_LENGTH = 32;
@@ -28,7 +27,6 @@
 //    //Jump 0.4–1.0
 //
 //
-//    //TODO draw the rest of the horse
 //
 //
 //    private int[] createInitialGenes() {

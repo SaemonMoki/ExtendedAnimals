@@ -40,7 +40,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     private static final String CHEST_TEXTURE = "chest.png";
 
     private static final String[] BLANKET_TEXTURE = new String[] {
-            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
+            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png", "moss.png"
     };
 
     private static final String BRIDLE_TEXTURE = "d_bridle.png";
@@ -382,6 +382,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     blanketTextures.add(BLANKET_TEXTURE[15]);
                 } else if (blanket == Items.YELLOW_CARPET) {
                     blanketTextures.add(BLANKET_TEXTURE[16]);
+                } else if (blanket == Items.MOSS_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[17]);
                 }
 
             }
@@ -476,6 +478,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             return true;
         }
         if (item == Items.YELLOW_CARPET) {
+            return true;
+        }
+        if (item == Items.MOSS_CARPET) {
             return true;
         }
         return false;

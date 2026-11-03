@@ -2390,8 +2390,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     /**
      *      Legs
      *
-     *      TODO legs can be articulated better to feel more realistic. Do better pls
      */
+    // TODO legs can be articulated better to feel more realistic. Do better pls Something that has better tiny dinosaur vibes...
     private boolean legsDefault() {
         if (theLegRight.getXRot() == 0.0F && theLegLeft.getXRot() == 0.0F) return true;
         if (Mth.abs(theLegLeft.getXRot())<0.001F) {
@@ -2482,10 +2482,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     }
 
-    /**
-     * TODO
-     *  ask about testing out my map animations on a branch
-     */
     private boolean preenWing(float ticks) {
         theNeck.setY(this.lerpTo(theNeck.getY(), -4.01F));
         float neckYRot = theNeck.getYRot();
@@ -2580,11 +2576,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theNeck.setYRot(this.lerpTo(h, Mth.HALF_PI * -1.75F));
         }
         if (Math.abs(theNeck.getYRot()) > (Mth.HALF_PI)*0.75F) {
-            //TODO saddle should be lifted with the rest of the tail staying in place.
-//            this.theSaddle.setXRot(Mth.HALF_PI*0.1F);
-//            this.theSaddle.setZ(1.0F);
-//            this.theTailCoverts.setXRot(-Mth.HALF_PI*1.3F);
-//            this.theTailCoverts.setY(2.5F);
+            //TODO chicken feather saddle should be lifted with the rest of the tail staying in place for a more realistic grooming animation.
             theNeck.setXRot(this.lerpTo(theNeck.getXRot(), Mth.HALF_PI*0.75F));
             theNeck.setZ(this.lerpTo(theNeck.getZ(), -3.75F));
             theHead.setXRot(this.lerpTo(theHead.getXRot(), 0.0F));
@@ -2831,7 +2823,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     @Override
     protected ChickenPhenotype createPhenotype(T enhancedAnimal) {
-        return new ChickenPhenotype(enhancedAnimal.getGenes(), enhancedAnimal.getOrSetIsFemale());
+        return new ChickenPhenotype(enhancedAnimal.getGenes(), enhancedAnimal.getOrSetIsFemale(), enhancedAnimal.getVariation());
     }
 
     protected float getExtraGrowth(float age) {

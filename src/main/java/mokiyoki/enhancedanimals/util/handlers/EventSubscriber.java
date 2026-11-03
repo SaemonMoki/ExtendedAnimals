@@ -765,11 +765,6 @@ public class EventSubscriber {
                             CompoundTag tag = stack.getOrCreateTag();
                             tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200) == 0 ? 4 : ThreadLocalRandom.current().nextInt(4));
                             //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
-//                        CompoundTag entityTags = new CompoundTag();
-//                        ListTag listtag = new ListTag();
-//                        listtag.add(StringTag.valueOf("WanderingTrader"));
-//                        entityTags.put("Tags", listtag);
-//                        tag.put("EntityTags",entityTags);
                             ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
                         } else {
                             for (int i = 1; i <= 2; i++) {

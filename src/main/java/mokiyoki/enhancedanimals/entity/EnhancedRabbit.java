@@ -872,7 +872,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.neofor
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getVariation());
         }
     }
 

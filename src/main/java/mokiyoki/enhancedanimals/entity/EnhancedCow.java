@@ -70,18 +70,7 @@ import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
-    /** avalible UUID spaces : [ S X X X X X X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-     *  1,2 -> piebald
-     *  3 -> blaze
-     *  4 -> horns
-     *  5 -> belt
-     *  6 -> coloursided
-     *  7 -> roan
-     *  8 -> speckled
-     *  20-35 -> mushrooms/flowers
-     */
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<String> MOOSHROOM_UUID = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.STRING);
 
     protected boolean resetTexture = true;
     protected String cacheTexture;
@@ -89,8 +78,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected boolean aiConfigured = false;
-
-    private String mooshroomUUID = "0";
 
     protected GrazingGoal grazingGoal;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
@@ -150,7 +137,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(RESET_TEXTURE, false);
-        builder.define(MOOSHROOM_UUID, "0");
     }
 
     @Override
@@ -179,19 +165,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     protected int gestationConfig() {
         return GeneticAnimalsConfig.COMMON.gestationDaysCow.get();
-    }
-
-    protected void setMooshroomUUID(String uuid) {
-        if (!uuid.equals("")) {
-            this.entityData.set(MOOSHROOM_UUID, uuid);
-            this.mooshroomUUID = uuid;
-        }
-    }
-
-    public String getMooshroomUUID() { return this.mooshroomUUID; }
-
-    public EntityDataAccessor<String> getMooshroomEntityData() {
-        return MOOSHROOM_UUID;
     }
 
     @Override
@@ -328,12 +301,20 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void setIsFemale(CompoundTag compound) {
-        if (compound.contains("IsFemale")) {
-            this.isFemale = compound.getBoolean("IsFemale");
-        } else {
-            this.isFemale = (this.mooshroomUUID.equals("0") ? this.getStringUUID() : this.mooshroomUUID).toCharArray()[0] - 48 < 8;
+    protected String getLegacyVariationUUID(CompoundTag compound) {
+        String ownUUID = super.getLegacyVariationUUID(compound);
+        String mooshroomUUID = compound.getString("MooshroomID");
+        if (mooshroomUUID.length() != ownUUID.length()) {
+            return ownUUID;
         }
+        //cows converted from mooshrooms took their textures from "MooshroomID", but the model
+        //only ever saw their own uuid (horns at 4, mushrooms at 20-35), so mix the two
+        char[] legacy = mooshroomUUID.toCharArray();
+        legacy[4] = ownUUID.charAt(4);
+        for (int i = 20; i <= 35; i++) {
+            legacy[i] = ownUUID.charAt(i);
+        }
+        return new String(legacy);
     }
 
     public void aiStep() {
@@ -873,8 +854,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
-        compound.putString("MooshroomID", getMooshroomUUID());
-
 //        compound.putBoolean("Saddle", this.getSaddled());
 
     }
@@ -884,8 +863,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
      */
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-
-        setMooshroomUUID(compound.getString("MooshroomID"));
 
         //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
         float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));

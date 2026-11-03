@@ -15,6 +15,14 @@
     "announce_to_chat": true,
     "hidden": false
   },
+  "rewards": {
+    "recipes": [
+      "eanimod:collar_basic_cloth",
+      "eanimod:collar_basic_leather",
+      "eanimod:bridle_basic_cloth",
+      "eanimod:bridle_basic_leather"
+    ]
+  },
   "criteria": {
     "opened_gui": {
       "trigger": "minecraft:player_interacted_with_entity",

@@ -428,8 +428,12 @@
   "eanimod.advancements.husbandry.opened_gui.description": "Open a Genetic Animals GUI for the first time.",
   "eanimod.advancements.husbandry.colours_to_dye_for.title": "Colours to DYE for",
   "eanimod.advancements.husbandry.colours_to_dye_for.description": "Dye a sheep a new colour",
-  "eanimod.advancements.husbandry.bath_time.title": "Ctrl+Z",
+  "eanimod.advancements.husbandry.bleach.title": "Ctrl+Z",
+  "eanimod.advancements.husbandry.bleach.description": "Bleach a sheep white",
+  "eanimod.advancements.husbandry.bath_time.title": "Bath Time",
   "eanimod.advancements.husbandry.bath_time.description": "Give a sheep a bath to remove its dye",
+  "eanimod.advancements.husbandry.dream_of_rainbow_sheep.title": "Dream of Rainbow Sheep",
+  "eanimod.advancements.husbandry.dream_of_rainbow_sheep.description": "Dye a sheep of every colour",
   "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.title": "Tacked Up",
   "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.description": "Put a Bridle and Saddle on a Genetic Animal and ride it"
 }

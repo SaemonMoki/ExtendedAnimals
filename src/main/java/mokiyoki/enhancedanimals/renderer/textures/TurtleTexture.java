@@ -9,24 +9,15 @@ import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class TurtleTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every turtle writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
     private static final int BASE_COLOUR_SLOTS      = 2;
-    /** the two countershading masks, then the base colour under them. */
+    // 2 masks + base colour
     private static final int COUNTERSHADING_SLOTS   = 2 + BASE_COLOUR_SLOTS;
     private static final int PATTERN_CUTOUT_SLOTS   = 2;
-    /** the pigment, its melanin overlay, and the charcoal overlay. */
+    // pigment, melanin, charcoal
     private static final int PATTERN_COLOUR_SLOTS   = 3;
-    /** the widest of the two brindle colour paths: a base colour plus a two layer tint. */
+    // base colour + 2 tint layers
     private static final int TORTISHELL_COLOUR_SLOTS = BASE_COLOUR_SLOTS + 2;
     private static final int TORTISHELL_SLOTS       = 1 + TORTISHELL_COLOUR_SLOTS;
-    /** everything a non albino turtle writes, including the eye marker and albino overlay. */
     private static final int COLOURED_SLOTS         = BASE_COLOUR_SLOTS + COUNTERSHADING_SLOTS
             + PATTERN_CUTOUT_SLOTS + PATTERN_COLOUR_SLOTS + TORTISHELL_SLOTS + 2;
     private static final int PIEBALD_SLOTS          = 2;
@@ -199,7 +190,6 @@ public class TurtleTexture {
         TextureGrouping mask = new TextureGrouping(TexturingType.MERGE_GROUP);
         TextureGrouping colour = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        //scale and crisp used to share the key "r" while loading different textures
         switch (gene[72]) {
             case 3 -> turtle.layer(mask).texture("base/countershaded.png").keyedAs("c").add();
             case 4 -> turtle.layer(mask).texture("base/scalecountershaded.png").keyedAs("s").add();

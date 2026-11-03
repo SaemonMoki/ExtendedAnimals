@@ -12,16 +12,8 @@ import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class CowTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every cow writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
     private static final int COUNTER_SHADING_SLOTS = 2;
-    /** the brockling patches and the white they are cut out of. */
+    // brockling + the white it's cut out of
     private static final int SPOT_COLOUR_SLOTS     = 2;
     private static final int LEGACY_BROCKLING_SLOTS = 1;
 
@@ -255,8 +247,7 @@ public class CowTexture {
             if (!whiteface && (gene[16]!=3 || gene[17]!=3)) whiteface = true;
 
             if (whiteface || (gene[20] == 1 || gene[21] == 1) || (gene[252] == 2 || gene[253] == 2) || (gene[18]<=2 || gene[19]<=2)) {
-                //the two variants share a texture and differ only in tinting, so the key has to
-                //carry the tint -- it used to record "0" for both and rely on the black slot
+                // Same texture, different tint, so the tint has to be in the key
                 boolean shaded = black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12;
                 cow.layer(parentGroup).texture("spots/brockling/0.png")
                         .asType(shaded ? TexturingType.APPLY_SHADE_MELANIN : TexturingType.APPLY_RED)
@@ -282,9 +273,7 @@ public class CowTexture {
         TextureGrouping grouping = new TextureGrouping(TexturingType.MASK_GROUP);
         TextureGrouping spotShape = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-        //eight spot slots: roan, speckled, colour sided, face, piebald head, belt, blaze, legacy.
-        //each holds its own slot whether or not it contributes a texture; this used to be a
-        //trailing "nos" field listing the traits that were absent
+        // 8 slots: roan, speckled, colour sided, face, piebald head, belt, blaze, legacy
 
         //roan
         if (gene[8] == 2 || gene[9] == 2) {
@@ -326,8 +315,7 @@ public class CowTexture {
             cow.addSkippedSlot();
         }
 
-        //the face traits are mutually exclusive and share one slot; the piebald head is a
-        //second slot, reserved by the branches that cannot produce one
+        // Face traits share one slot, piebald head gets its own
         if (gene[16] == 1 || gene[17] == 1) {
             if (gene[16] == 2 || gene[17] == 2) {
                 //white face with border spots(Pinzgauer)
@@ -529,9 +517,7 @@ public class CowTexture {
                 }
             }
 
-            /**
-             *  Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
-             */
+            // Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
             if (gene[128] == 2 || gene[129] == 2) {
                 if (gene[128] == 2 && gene[129] == 2) {
                     //homo dun
@@ -547,18 +533,14 @@ public class CowTexture {
                 }
             }
 
-            /**
-             *  Dexter Dun - chocolate
-             */
+            // Dexter Dun - chocolate
             if (gene[10] == 2 && gene[11] == 2) {
                 blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
                 blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
                 blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
             }
 
-            /**
-             *  Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
-             */
+            // Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
             if (gene[2] == 2 || gene[3] == 2) {
                 // simmental or highland dilution
                 if (gene[2] == 2 && gene[3] == 2) {

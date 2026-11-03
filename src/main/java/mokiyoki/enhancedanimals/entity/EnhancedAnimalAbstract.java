@@ -1816,6 +1816,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //------------
 
+    //TODO replace this when personalities is finished
     public boolean setTamedBy(Player player) {
         //TODO save player's name to be displayed in GUI
 //        this.setOwnerUniqueId(player.getUniqueID());

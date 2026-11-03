@@ -59,7 +59,7 @@ public class SeekShelter extends Behavior<EnhancedAnimalAbstract> {
     }
 
     private boolean isHot(ServerLevel serverLevel, EnhancedAnimalAbstract geneticAnimal) {
-        // TODO 18: Biome.getTemperature() is now private and deprecated
+        // TODO 18: Biome.getTemperature() is now private and deprecated we will have to make it public again with an accessor mixin
         float temperature = 0.3f;
         int start = 5723; //Start and end of the hot period
         int end = 7000;

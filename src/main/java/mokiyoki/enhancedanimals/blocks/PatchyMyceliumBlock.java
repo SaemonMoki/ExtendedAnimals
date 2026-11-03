@@ -74,7 +74,7 @@ public class PatchyMyceliumBlock extends SpreadingSnowyDirtBlock {
         return TriState.FALSE;
     }
 
-    //TODO find out what the new way is
+    //TODO find out what the new way is in 1.18+
 //    @Nullable
 //    @Override
 //    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {

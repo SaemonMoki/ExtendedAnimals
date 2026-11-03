@@ -40,6 +40,7 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         int[] autosomalGenes = new int[Reference.LLAMA_AUTOSOMAL_GENES_LENGTH];
         Biome biome = biomeHolder.value();
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
+        //This functionality was lost due to getTemperature being private
 
         //Endurance genes [ wildtype, stronger1, stronger2]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){

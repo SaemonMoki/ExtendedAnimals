@@ -160,7 +160,6 @@ public class EnhancedAxolotlEgg extends Entity {
     public void tick() {
         super.tick();
 
-        //TODO put axolotlEggAttachableToo here
         if (!onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level())) {
             fall();
         }

@@ -463,7 +463,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public void travel(Vec3 p_213352_1_) {
         //TODO bareback and blankets need to be options for riding with a drawback for how long you can ride.
         //TODO maybe create some different effects on speed, jump height and ride time based on the saddle.
-        //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal
+        //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal this should be linked to personalities
         if (this.isAlive()) {
             if (this.isVehicle() && this.canBeControlledByRider()) {
                 this.allowStandSliding = true;

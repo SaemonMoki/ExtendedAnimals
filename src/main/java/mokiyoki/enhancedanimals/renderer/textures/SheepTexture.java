@@ -7,17 +7,8 @@ import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class SheepTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every sheep writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
-    /** the two pattern layers that get averaged together. */
     private static final int PATTERN_SLOTS     = 2;
-    /** ticked, mealy, roan, blaze, spots, pigmented head. */
+    // ticked, mealy, roan, blaze, spots, pigmented head
     private static final int WHITE_SPOT_SLOTS  = 6;
 
     private static final String[] SHEEP_TEXTURES_MEALY = new String[] {

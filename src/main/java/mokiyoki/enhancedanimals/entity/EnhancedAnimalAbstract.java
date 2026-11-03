@@ -1835,10 +1835,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.genesSplitForClient;
     }
 
-    /**
-     * Starts a texture slot: one layer added to {@code textureGroup}, plus the cache key
-     * field recording what it resolved to. Finish with {@link TextureSlotBuilder#add()}.
-     */
     public TextureSlotBuilder layer(TextureGrouping textureGroup) {
         return new TextureSlotBuilder(this, textureGroup);
     }

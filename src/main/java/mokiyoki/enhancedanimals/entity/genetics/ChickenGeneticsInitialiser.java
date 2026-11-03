@@ -89,6 +89,14 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.SILVER_DARK_BRAHMA);
         this.breeds.add(ChickenBreeds.GOLD_DARK_BRAHMA);
         this.breeds.add(ChickenBreeds.BUFF_BRAHMA);
+        this.breeds.add(ChickenBreeds.SERAMA);
+        this.breeds.add(ChickenBreeds.BLACK_TAILED_WHITE_CHABO);
+        this.breeds.add(ChickenBreeds.MOTTLED_CHABO);
+        this.breeds.add(ChickenBreeds.WHITE_CHABO);
+        this.breeds.add(ChickenBreeds.SILVER_BIRCHEN_MODERN_GAME);
+        this.breeds.add(ChickenBreeds.WHEATEN_MODERN_GAME);
+        this.breeds.add(ChickenBreeds.SILVER_BIRCHEN_MODERN_GAME_BANTAM);
+        this.breeds.add(ChickenBreeds.WHEATEN_MODERN_GAME_BANTAM);
 
         this.types.add(ChickenBreeds.GOLD_LEGS);
         this.types.add(ChickenBreeds.YELLOW_LEGS);
@@ -239,9 +247,9 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             sexlinkedGenes[11] = 1;
         }
 
-        //white face
+        //white bald face (bald face) red bald face
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            sexlinkedGenes[12] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            sexlinkedGenes[12] = (ThreadLocalRandom.current().nextInt(11) + 1);
         } else {
             sexlinkedGenes[12] = 6;
         }
@@ -1647,6 +1655,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[226] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[227] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
 
+        // Fluffiness
         for (int i = 228; i < 248; i++) {
             autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         }
@@ -1687,6 +1696,21 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //pearl eye
         autosomalGenes[296] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
         autosomalGenes[297] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+
+        //tail pinch
+        for (int i = 298; i < 310; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
+        //comb flop
+        for (int i = 310; i < 318; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
+
+        //male comb flop susceptibility
+        for (int i = 318; i < 324; i++) {
+            autosomalGenes[i] = ThreadLocalRandom.current().nextInt(100) > WTC ? (ThreadLocalRandom.current().nextInt(2) + 1) : 1;
+        }
 
         return new Genes(sexlinkedGenes, autosomalGenes);
     }

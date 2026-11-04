@@ -1,10 +1,13 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class AxolotlTexture {
 
@@ -130,12 +133,8 @@ public class AxolotlTexture {
             "cheek_spots/natural.png", "cheek_spots/white.png", "cheek_spots/lightgrey.png", "cheek_spots/grey.png", "cheek_spots/black.png", "cheek_spots/brown.png", "cheek_spots/pink.png", "cheek_spots/red.png", "cheek_spots/orange.png", "cheek_spots/yellow.png", "cheek_spots/lime.png", "cheek_spots/green.png", "cheek_spots/cyan.png", "cheek_spots/lightblue.png", "cheek_spots/blue.png", "cheek_spots/purple.png", "cheek_spots/magenta.png"
     };
 
-    private static final String[] AXOLOTL_TEXTURES_BRINDLE = new String[] {
-            "brindle/0.png", "brindle/1.png", "brindle/2.png",  "brindle/3.png"
-    };
-
     public static void calculateAxolotlTextures(EnhancedAxolotl axolotl, int[] gene) {
-        char[] uuidArry = axolotl.getStringUUID().toCharArray();
+        Variation variation = axolotl.getVariation();
         int gills = 0;
         int gillsColour = 0;
         int gillsColour2 = 0;
@@ -143,7 +142,6 @@ public class AxolotlTexture {
         int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
         int pattern = 0;
         int blaze = -1;
-        int brindle = -1;
 
         if (gene[34] == 2 && gene[35] == 2) {
             gills += 1;
@@ -188,26 +186,7 @@ public class AxolotlTexture {
         }
 
         if (gene[18] + gene[19] != 2) {
-            switch (uuidArry[1]) {
-                case 0,8 -> blaze = 0;
-                case 1,9 -> blaze = 1;
-                case 2,'a' -> blaze = 2;
-                case 3,'b' -> blaze = 3;
-                case 4,'c' -> blaze = 4;
-                case 5,'d' -> blaze = 5;
-                case 6,'e' -> blaze = 6;
-                case 7 -> blaze = 7;
-                case 'f' -> blaze = 8;
-            }
-        }
-
-        if (gene[42] + gene[43] != 2) {
-            switch (uuidArry[2]) {
-                case 0,4,8,'c' -> brindle = 0;
-                case 1,5,9,'d' -> brindle = 1;
-                case 2,6,'a','e' -> brindle = 2;
-                case 3,7,'b','f' -> brindle = 3;
-            }
+            blaze = variation.get(AXOLOTL_BLAZE[0], 9)+1;
         }
 
         TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
@@ -230,9 +209,11 @@ public class AxolotlTexture {
 
         if (gene[0] == 1 || gene[1] == 1) {
             TextureGrouping brindleGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-                TextureGrouping brindleCutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                axolotl.layer(brindleCutoutGroup).textureTableSelector(AXOLOTL_TEXTURES_BRINDLE, brindle).onlyIf(brindle!=-1);
-            brindleGroup.addGrouping(brindleCutoutGroup);
+            if (gene[42] + gene[43] != 2) {
+                makeBrindleTexture(axolotl, piedStrength, brindleGroup, variation);
+            } else {
+                axolotl.addSkippedSlots(1);
+            }
             TextureGrouping melaninGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
                 axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
             brindleGroup.addGrouping(melaninGroup);
@@ -242,8 +223,10 @@ public class AxolotlTexture {
 
         TextureGrouping piedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         if (pied < 0) pied = 0;
-        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).add();
-        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).onlyIf(blaze>0);
+        boolean pieFlip = variation.get(AXOLOTL_PIED, 2) == 0;
+        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).flipped(pieFlip, headCubes, bodyCubes, tailCubes).add();
+        boolean blazeFlip = variation.get(AXOLOTL_BLAZE[1], 2) == 0;
+        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).flipped(blazeFlip, headCubes).onlyIf(blaze>0);
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {
@@ -261,5 +244,23 @@ public class AxolotlTexture {
         parentGroup.addGrouping(detailsGroup);
 
         axolotl.setTextureGrouping(parentGroup);
+    }
+
+    private static void makeBrindleTexture(EnhancedAxolotl axolotl, int piedStrength, TextureGrouping brindleGroup, Variation variation) {
+        TextureGrouping brindleCutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+        int brindle = 0;
+
+        /**
+         *   head left
+         *   head right
+         *   body left
+         *   body right
+         *   tail
+         */
+
+        // TODO make brindle texture groups which isolate the brindle texture to the head, body, tail for the texture to be selected and flipped at random
+
+        brindleGroup.addGrouping(brindleCutoutGroup);
     }
 }

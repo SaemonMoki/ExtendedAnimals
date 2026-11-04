@@ -27,7 +27,7 @@ public class AxolotlTexture {
             1, 26, 9, 26, 36, 0, 9, 5
     };
     private static final int[] tailCubes = new int[] {
-            1, 26, -5, 26, 20, 0, 16, 5
+            2, 26, -5, 26, 20, 0, 16, 5
     };
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
@@ -132,10 +132,6 @@ public class AxolotlTexture {
 
     private static final String[] CHEEK_SPOTS = new String[] {
             "cheek_spots/natural.png", "cheek_spots/white.png", "cheek_spots/lightgrey.png", "cheek_spots/grey.png", "cheek_spots/black.png", "cheek_spots/brown.png", "cheek_spots/pink.png", "cheek_spots/red.png", "cheek_spots/orange.png", "cheek_spots/yellow.png", "cheek_spots/lime.png", "cheek_spots/green.png", "cheek_spots/cyan.png", "cheek_spots/lightblue.png", "cheek_spots/blue.png", "cheek_spots/purple.png", "cheek_spots/magenta.png"
-    };
-
-    private static final String[] AXOLOTL_BRINDLE = new String[] {
-            "brindle/0.png", "brindle/0/0.png", "brindle/2/0.png" ,"brindle/4/0.png", "brindle/body.png", "brindle/half.png", "brindle/head.png", "brindle/tail.png"
     };
 
     public static void calculateAxolotlTextures(EnhancedAxolotl axolotl, int[] gene) {
@@ -260,27 +256,57 @@ public class AxolotlTexture {
          *   body right
          *   tail
          */
-        //Head
-        TextureGrouping cutoutHeadGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[0], 4);
-        axolotl.layer(cutoutHeadGroup).textureTableSelector(AXOLOTL_BRINDLE, 0).add();
-        axolotl.layer(cutoutHeadGroup).texture(AXOLOTL_BRINDLE[6]).add();
 
-        brindleCutoutGroup.addGrouping(cutoutHeadGroup);
+        if (piedStrength == 1) piedStrength = 2;
+        if (piedStrength == 3) piedStrength = 4;
 
-        //Body
-        TextureGrouping cutoutBodyGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        int brindleVariation2 = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4);
-        axolotl.layer(cutoutBodyGroup).textureTableSelector(AXOLOTL_BRINDLE, 1).add();
-        axolotl.layer(cutoutBodyGroup).texture(AXOLOTL_BRINDLE[4]).add();
+        //Head Left
+        TextureGrouping cutoutHeadLeftGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+        int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[0], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4)+1;
+        boolean mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 2) == 0;
+        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation).add();
+        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/head_left.png").add();
 
-        brindleCutoutGroup.addGrouping(cutoutBodyGroup);
+        brindleCutoutGroup.addGrouping(cutoutHeadLeftGroup);
+
+        //Head Right
+        TextureGrouping cutoutHeadRightGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4)+1;
+        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[3], 2) == 0;
+        axolotl.layer(cutoutHeadRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutHeadRightGroup).texture("brindle/head_right.png").add();
+
+        brindleCutoutGroup.addGrouping(cutoutHeadRightGroup);
+
+        //Body Left
+        TextureGrouping cutoutBodyLeftGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[4], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4)+1;
+        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[5], 2) == 0;
+        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/body_left.png").add();
+
+        brindleCutoutGroup.addGrouping(cutoutBodyLeftGroup);
+
+        //Body Right
+        TextureGrouping cutoutBodyRightGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
+        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[6], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4)+1;
+        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[7], 2) == 0;
+        axolotl.layer(cutoutBodyRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutBodyRightGroup).texture("brindle/body_right.png").add();
+
+        brindleCutoutGroup.addGrouping(cutoutBodyRightGroup);
 
         //Tail
         TextureGrouping cutoutTailGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        int brindleVariation3 = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 4);
-        axolotl.layer(cutoutTailGroup).textureTableSelector(AXOLOTL_BRINDLE, 2).add();
-        axolotl.layer(cutoutTailGroup).texture(AXOLOTL_BRINDLE[7]).add();
+        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[8], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 4)+1;
+        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[9], 2) == 0;
+        axolotl.layer(cutoutTailGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutTailGroup).texture("brindle/tail.png").add();
 
         brindleCutoutGroup.addGrouping(cutoutTailGroup);
 

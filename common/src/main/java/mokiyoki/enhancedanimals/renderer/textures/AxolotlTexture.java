@@ -265,7 +265,7 @@ public class AxolotlTexture {
         int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[0], 2);
         if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[0], 4)+1;
         boolean mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 2) == 0;
-        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation).add();
+        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation).add();
         axolotl.layer(cutoutHeadLeftGroup).texture("brindle/head_left.png").add();
 
         brindleCutoutGroup.addGrouping(cutoutHeadLeftGroup);
@@ -275,7 +275,7 @@ public class AxolotlTexture {
         brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 2);
         if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 4)+1;
         mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[3], 2) == 0;
-        axolotl.layer(cutoutHeadRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutHeadRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
         axolotl.layer(cutoutHeadRightGroup).texture("brindle/head_right.png").add();
 
         brindleCutoutGroup.addGrouping(cutoutHeadRightGroup);
@@ -285,7 +285,7 @@ public class AxolotlTexture {
         brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[4], 2);
         if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[4], 4)+1;
         mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[5], 2) == 0;
-        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, bodyCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
         axolotl.layer(cutoutBodyLeftGroup).texture("brindle/body_left.png").add();
 
         brindleCutoutGroup.addGrouping(cutoutBodyLeftGroup);
@@ -295,7 +295,7 @@ public class AxolotlTexture {
         brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[6], 2);
         if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[6], 4)+1;
         mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[7], 2) == 0;
-        axolotl.layer(cutoutBodyRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
+        axolotl.layer(cutoutBodyRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, bodyCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
         axolotl.layer(cutoutBodyRightGroup).texture("brindle/body_right.png").add();
 
         brindleCutoutGroup.addGrouping(cutoutBodyRightGroup);

@@ -108,4 +108,6 @@ public class AxolotlBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0,"2","1").add(8, "1")));
     public static final Breed CYANVARIENT = new Breed(new Breed.Properties().setData("cyanvarient", 0.5F, 0.5F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0,"1","2").add(8, "2")));
+    public static final Breed BRINDLE = new Breed(new Breed.Properties().setData("brindle", Biomes.LUSH_CAVES, Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(42,"2")));
 }

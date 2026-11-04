@@ -195,12 +195,13 @@ public class TexturingUtils {
                 switch (cubes[i]) {
                     default -> {
                         // mirror cube across the x axis
-                        // t u v x y z
+                        // t = type
+                        // t u v size:x size:y size:z
                         mirrorCube(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5]);
                     }
                     case 1 -> {
                         // mirror cube with another cube
-                        // t u1 v1 u2 v2 x y z
+                        // t u1 v1 u2 v2 size:x size:y size:z
                         mirrorCubes(image, cubes[i+1], cubes[i+2], cubes[i+3], cubes[i+4], cubes[i+5], cubes[i+6], cubes[i+7]);
 
                         i+=2; // add two to bump index to next cube instruction

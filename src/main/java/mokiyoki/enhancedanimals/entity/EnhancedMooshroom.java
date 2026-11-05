@@ -101,9 +101,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get().longValue();
         return this.adultAge;
     }
 
@@ -171,7 +171,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (itemstack.getItem() == Items.BOWL && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
-                //TODO commented version might be better, pls test
+                // TODO commented version might be better, pls test
                 //getHurtSound(DamageSource.playerAttack(entityPlayer));
                 entityPlayer.playSound(SoundEvents.COW_HURT, 1.0F, 1.0F);
             } else {

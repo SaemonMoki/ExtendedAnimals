@@ -52,9 +52,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get().longValue();
         return this.adultAge;
     }
 
@@ -92,15 +92,6 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
     }
-
-    //TODO do I want to add more flower types?
-//    private void setMoobloomType(EnhancedMoobloom.Type typeIn) {
-//        this.dataManager.set(MOOBLOOM_TYPE, typeIn.name);
-//    }
-
-//    public EnhancedMoobloom.Type getMoobloomType() {
-//        return EnhancedMoobloom.Type.getTypeByName(this.dataManager.get(MOOBLOOM_TYPE));
-//    }
 
     @Override
     public EnhancedMoobloom getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {

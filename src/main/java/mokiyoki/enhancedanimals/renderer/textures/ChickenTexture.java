@@ -3,57 +3,44 @@ package mokiyoki.enhancedanimals.renderer.textures;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
+import mokiyoki.enhancedanimals.entity.util.VariationKey;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChickenTexture {
-    /**
-     *          - Chicken Ears, Comb, Wattles, Face, Legs, Skin, Eyes needs to be RGB
-     *          - Autosomal red/gold/silver needs to be redone from scratch
-     *          - All chicken pattern textures, model textures, and base textures need to be redone
-     *          - Patterns need to be RGB shaded
-     *          - Base Feather colour needs to be RGB shaded
-     *
-     */
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_SPLASH;
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every chicken must write the same number of fields regardless of its genes: the key is a
-     * flat string whose only structure is the delimiter positions, so a section that writes
-     * fewer fields shifts every later section left and lets two different genetics compile to
-     * the same key. Each branch that skips a section reserves its slots instead.
-     *
-     * If you add a texture inside one of these sections, bump its constant and add the matching
-     * reservation to the branch that skips it.
-     */
+public class ChickenTexture {
+    // - Chicken Ears, Comb, Wattles, Face, Legs, Skin, Eyes needs to be RGB
+    // - Autosomal red/gold/silver needs to be redone from scratch
+    // - All chicken pattern textures, model textures, and base textures need to be redone
+    // - Patterns need to be RGB shaded
+    // - Base Feather colour needs to be RGB shaded
+
     private static final int EAR_SHAPE_SLOTS      = 1;
     private static final int EAR_COLOUR_SLOTS     = 2;
     private static final int FEATHER_COVER_SLOTS  = 4;
     private static final int BASE_COLOUR_SLOTS    = 4;
-    /** three uuid-driven splash spots plus the splash base. */
+
     private static final int SPLASH_SLOTS         = 4;
     private static final int PAINT_SPOT_SLOTS     = 5;
-    /** the paint spots plus the feather base under them. */
+
     private static final int PAINT_SLOTS          = PAINT_SPOT_SLOTS + 1;
-    /** patterned blue, base melanin, iridescence, splash, paint. */
     private static final int PATTERN_RGB_SLOTS    = 3 + SPLASH_SLOTS + PAINT_SLOTS;
 
-    /** mottles + pattern + charcoal, then the RGB pattern section. */
     private static final int PATTERN_BODY_SLOTS   = 3 + PATTERN_RGB_SLOTS;
-    /** the above, plus the two mottle slots and barred. */
+
     private static final int PATTERN_COLOUR_SLOTS = PATTERN_BODY_SLOTS + 3;
 
-    /** chick pattern texture, then the RGB pattern section. */
     private static final int CHICK_PATTERN_SLOTS  = 1 + PATTERN_RGB_SLOTS;
-    /** the above, plus mottles and barred. */
     private static final int CHICK_FEATHER_SLOTS  = CHICK_PATTERN_SLOTS + 2;
 
     private static final int CHICK_BRANCH_SLOTS   = EAR_SHAPE_SLOTS + FEATHER_COVER_SLOTS + 2 + CHICK_FEATHER_SLOTS + 1;
@@ -130,8 +117,7 @@ public class ChickenTexture {
                 chicken.layer(featherGroup).texture("feather_colour/feather_noise.png").add();
                 parentGroup.addGrouping(featherGroup);
 
-                //the chick branch has no base feather colour and a shorter pattern section than
-                //the adult branch, so it reserves the difference to keep both at ADULT_FEATHER_SLOTS
+                // Pad chicks out to the adult slot count
                 chicken.addSkippedSlots(ADULT_FEATHER_SLOTS - CHICK_BRANCH_SLOTS);
             } else {
                 boolean femFeathers = isFemale || (gene[196] == 2 || gene[197] == 2); //TODO roosters can be het for henny feather and express an intermediate form.
@@ -293,9 +279,15 @@ public class ChickenTexture {
                     if (gene[158] == gene[159]) earColour++;
                 }
 
-                if (sGene[12] <= 3 && (isFemale || sGene[13] <= 3)) {
-                    earColour += isFemale || sGene[12] == sGene[13] ? 2 : 1;
-                    facefeathers = 3 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
+                int f12 = sGene[12] <= 6 ? sGene[12] : 12-sGene[12];
+                int f13 = sGene[13] <= 6 ? sGene[13] : 12-sGene[13];
+
+
+                if (f12 <= 3 && (isFemale || f13 <= 3)) {
+                    if (sGene[12] <= 3 && (isFemale || sGene[13] <= 3)) {
+                        earColour += isFemale || sGene[12] == sGene[13] ? 2 : 1;
+                    }
+                    facefeathers = 3 - (isFemale ? f12 : Math.max(f12, f13));
                 }
 
                 if (gene[222] == 2 && gene[223] == 2) facefeathers++;
@@ -343,7 +335,7 @@ public class ChickenTexture {
             earColour = calculateEarRGB(sGene, gene, isFemale);
             chicken.layer(detailGroup).texture("skin/" + ear + ".png").tinted(TexturingType.APPLY_RGB, earColour).keyedAs(ear).add();
 
-            int face = 6 - (isFemale ? sGene[12] : Math.max(sGene[12], sGene[13]));
+            int face = 6 - (isFemale ? Math.min(sGene[12], 6) : Math.max(Math.min(sGene[12], 6), Math.min(sGene[13], 6)));
 
             if (face != 0) {
                 if (gene[218] != 1 && gene[219] != 1) {
@@ -439,8 +431,7 @@ public class ChickenTexture {
                         pattern_locations.replaceAll(s -> s + "/" + patterns[4]);
                     }
 
-                    //a het pattern expands into 2..32 locations, so the layers share one slot:
-                    //one field per location would make the slot count depend on the genes
+                    // Het patterns can expand to lots of textures, so they share one key field
                     for (String loc : pattern_locations) {
                         chicken.layer(patternAverageGroup).texture(loc + "/" + patterns[5] + ".png").noKey().add();
                     }
@@ -468,8 +459,6 @@ public class ChickenTexture {
             } else {
                 chicken.addSkippedSlots(PATTERN_BODY_SLOTS);
             }
-            //two independent traits: an unpatterned chicken must still reserve both slots,
-            //and a chicken with only one of them must reserve the other
             if (mottled) {
                 chicken.layer(featherGroup).texture("feather_colour/mottles/mottles.png").onlyIf(gene[22]==2 || gene[23]==2).add();
                 chicken.layer(featherGroup).texture("feather_colour/mottles/whitehead.png").onlyIf(gene[22]==3 || gene[23]==3).add();
@@ -549,14 +538,11 @@ public class ChickenTexture {
             if (gene[282]==2&&gene[283]==2) tailLength -=1;
 
             int tailNumber = gene[278]==1||gene[279]==1?5:(gene[278]==2||gene[279]==2?6:7);
-            //tailNumber is gene driven, so the feathers share one slot rather than writing
-            //one field each -- otherwise the slot count would vary between 6 and 8
+            // Tail feather count depends on genes, so they share one key field
             StringBuilder tailKey = new StringBuilder();
             for (int i = 0; i <= tailNumber; i++) {
                 if (i == 0) {
-                    /**
-                     *      This one controls the sickle feather
-                     */
+                    // This one controls the sickle feather
                     chicken.layer(featherMask).texture("tail/"+tailLength+"/" + (isFemale ? "female" : "male") + "/" + i + ".png").noKey().add();
                     tailKey.append("0").append(tailLength).append(tailType).append(tailNumber);
                 } else {
@@ -584,8 +570,6 @@ public class ChickenTexture {
                 case 13, 14, 15 -> earTexture = "xlarge.png";
             }
 
-            String earKey = String.valueOf(earTexture.charAt(0));
-
             earSize = 0;
             for (int i = 152; i < 163; i++) {
                 if (i < 158 || i > 159) earSize += gene[i] % 2 == 0 ? 1 : -1;
@@ -593,13 +577,11 @@ public class ChickenTexture {
 
             if (earSize>0) {
                 earTexture = "round_" + earTexture;
-                earKey += "r";
             } else {
                 earTexture = "long_" + earTexture;
-                earKey += "l";
             }
 
-            chicken.layer(parentGroup).texture("ear/" + earTexture).keyedAs(earKey).add();
+            chicken.layer(parentGroup).texture("ear/" + earTexture).keyedAs(earTexture).add();
         } else {
             chicken.addSkippedSlot();
         }
@@ -978,15 +960,13 @@ public class ChickenTexture {
         }
 
             if (splash) {
-                char[] uuid = chicken.getStringUUID().toCharArray();
+                Variation variation = chicken.getVariation();
                 TextureGrouping spots = new TextureGrouping(TexturingType.CUTOUT_GROUP);
                 TextureGrouping spotsCutout = new TextureGrouping(TexturingType.MERGE_GROUP);
-                int spotVal = Integer.parseInt(String.valueOf(uuid[1]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[2]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
-                spotVal = Integer.parseInt(String.valueOf(uuid[3]),16);
-                chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                for (VariationKey splashKey : CHICKEN_SPLASH) {
+                    int spotVal = variation.hex(splashKey);
+                    chicken.layer(spotsCutout).texture("feather_colour/spots/splash" + spotVal + ".png").keyedAs(String.valueOf(spotVal)).add();
+                }
 
                 spots.addGrouping(spotsCutout);
                 chicken.layer(spots).texture("feather_colour/spots/splash_base.png").add();

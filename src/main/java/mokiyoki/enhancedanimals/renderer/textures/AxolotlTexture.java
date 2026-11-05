@@ -6,15 +6,6 @@ import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
 public class AxolotlTexture {
 
-    /*
-     * Slot counts per section of the cache key.
-     *
-     * Every axolotl writes the same number of fields regardless of its genes: the key is a flat
-     * string whose only structure is the delimiter positions, so a section that writes fewer
-     * fields shifts every later section left and lets two different genetics compile to the same
-     * key. A branch that skips a section reserves its slots instead.
-     */
-    /** one per gill colour, averaged together. */
     private static final int CHEEK_SLOTS = 2;
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
@@ -63,55 +54,55 @@ public class AxolotlTexture {
             {
                     //white belly
                     {
-                            /*weak*/
+                            // weak
                             "spot/whitebelly/weak_splotch.png","spot/whitebelly/weak_hardspeckle.png","spot/whitebelly/weak_softspeckle.png"
                     }, {
-                    /*medium-weak*/
+                    // medium-weak
                     "spot/whitebelly/mediumweak_splotch.png","spot/whitebelly/mediumweak_hardspeckle.png","spot/whitebelly/mediumweak_softspeckle.png"
             }, {
-                    /*medium*/
+                    // medium
                     "spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png"
             }, {
-                    /*medium-high*/
+                    // medium-high
                     "spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png"
             },{
-                    /*high*/
+                    // high
                     "spot/whitebelly/high_splotch.png","spot/whitebelly/high_hardspeckle.png","spot/whitebelly/high_softspeckle.png"
             }
             },{
             //pied belly
             {
-                    /*weak*/
+                    // weak
                     "spot/piedbelly/weak_splotch.png","spot/piedbelly/weak_hardspeckle.png","spot/piedbelly/weak_softspeckle.png"
             }, {
-            /*medium-weak*/
+            // medium-weak
             "spot/piedbelly/mediumweak_splotch.png","spot/piedbelly/mediumweak_hardspeckle.png","spot/piedbelly/mediumweak_softspeckle.png"
     }, {
-            /*medium*/
+            // medium
             "spot/piedbelly/medium_splotch.png","spot/piedbelly/medium_hardspeckle.png","spot/piedbelly/medium_softspeckle.png"
     }, {
-            /*medium-high*/
+            // medium-high
             "spot/piedbelly/mediumhigh_splotch.png","spot/piedbelly/mediumhigh_hardspeckle.png","spot/piedbelly/mediumhigh_softspeckle.png"
     }, {
-            /*high*/
+            // high
             "spot/piedbelly/high_splotch.png","spot/piedbelly/high_hardspeckle.png","spot/piedbelly/high_softspeckle.png"
     }
     },{
             //pied
             {
-                    /*weak*/
+                    // weak
                     "spot/pied/weak_splotch.png","spot/pied/weak_hardspeckle.png","spot/pied/weak_softspeckle.png"
             }, {
-            /*medium-weak*/
+            // medium-weak
             "spot/pied/mediumweak_splotch.png","spot/pied/mediumweak_hardspeckle.png","spot/pied/mediumweak_softspeckle.png"
     }, {
-            /*medium*/
+            // medium
             "spot/pied/medium_splotch.png","spot/pied/medium_hardspeckle.png","spot/pied/medium_softspeckle.png"
     }, {
-            /*medium-high*/
+            // medium-high
             "spot/pied/mediumhigh_splotch.png","spot/pied/mediumhigh_hardspeckle.png","spot/pied/mediumhigh_softspeckle.png"
     }, {
-            /*high*/
+            // high
             "spot/pied/high_splotch.png","spot/pied/high_hardspeckle.png","spot/pied/high_softspeckle.png"
     }
     }

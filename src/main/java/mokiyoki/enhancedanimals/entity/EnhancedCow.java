@@ -120,7 +120,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
 //    @Override
 //    protected void registerGoals() {
-//        //Todo add the temperamants
 ////        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
 //        this.goalSelector.addGoal(0, new SwimGoal(this));
 ////        this.goalSelector.addGoal(5, this.eatGrassGoal);

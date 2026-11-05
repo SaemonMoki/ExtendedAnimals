@@ -469,7 +469,6 @@
 //                    }
 //                }
 //
-//                //TODO add a limiter to time for growth if the animal is extremely hungry
 //                if (hunger <= 36000) {
 //                    timeForGrowth++;
 //                }
@@ -595,7 +594,6 @@
 //            } else if (getCatStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
 //                setCatStatus(EntityState.ADULT.toString());
 //
-//                //TODO remove the child follow mother ai
 //
 //            }
 //            lethalGenes();
@@ -778,7 +776,6 @@
 //    }
 //
 //    public boolean isBreedingItem(ItemStack stack) {
-//        //TODO set this to a separate item or type of item for force breeding
 //        return BREED_ITEMS.test(stack);
 //    }
 //
@@ -874,7 +871,6 @@
 //
 //        hemizygote = compound.getBoolean("Zygosity");
 //
-//        //TODO add a proper calculation for this
 //        for (int i = 0; i < genes.length; i++) {
 //            if (genes[i] == 0) {
 //                genes[i] = 1;
@@ -914,22 +910,6 @@
 //        }
 //
 //        return this.catTextures.stream().toArray(String[]::new);
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public String[] getVariantAlphaTexturePaths()
-//    {
-//        if (this.catAlphaTextures.isEmpty()) {
-//            this.setAlphaTexturePaths();
-//        }
-//
-//
-//        //todo this is only temporarity until we have alpha textures
-//        if (this.catAlphaTextures.isEmpty()) {
-//            return null;
-//        }
-//
-//        return this.catAlphaTextures.stream().toArray(String[]::new);
 //    }
 //
 //    @OnlyIn(Dist.CLIENT)
@@ -1103,9 +1083,6 @@
 //            int coat = 0;
 //            int tortie = 0;
 //
-//            //TODO genes for sphynx, Lykoi, and other fur distribution genes go here including stuff that just makes the fur thin
-//
-//            //TODO put the logic for figuring out what the tortie/calico spots should look like
 //
 //            if (coat != 0) {
 //                this.catAlphaTextures.add(CAT_COATTYPE[coat]);
@@ -1157,7 +1134,6 @@
 //                }
 //            }
 //
-//            //TODO TEMP AF
 //            //black
 //            catColouration[0] = blackR;
 //            catColouration[1] = blackG;
@@ -1366,7 +1342,6 @@
 //            initialGenes[1] = (1);
 //        }
 //
-//        //TODO research Tabby Spotted genes
 //        //Tabby Type [ Mackerel, classic ]
 //        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
 //            initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);

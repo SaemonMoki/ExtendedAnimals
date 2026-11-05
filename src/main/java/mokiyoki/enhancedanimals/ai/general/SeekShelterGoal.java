@@ -57,7 +57,7 @@ public class SeekShelterGoal extends FleeSunGoal {
             this.isBeingRainedOn = animal.isInWaterOrRain() && !animal.isInWater();
             if (this.world.isDay() && !this.isBeingRainedOn) {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 6000;
-                // TODO 18: Biome.getTemperature() is now private and deprecated
+                // TODO 18: Biome.getTemperature() is now private and deprecated we will have to make it public again with an accessor mixin
                 float temperature = 0.3f;
                 //float temperature = this.world.getBiome(animal.blockPosition()).getTemperature(animal.blockPosition());
                 this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));

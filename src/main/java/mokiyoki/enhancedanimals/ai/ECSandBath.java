@@ -17,7 +17,7 @@ public class ECSandBath  extends Goal
     private final Level entityWorld;
     /** Number of ticks since the entity started to bathe */
     int sandBathTimer;
-    //TODO needs to tell what kind of sand they are bathing on
+    // TODO needs to tell what kind of sand they are bathing on
 
     public void getSandType() {
 

@@ -546,7 +546,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
         if (!this.isOnFire()) {
 
-            int adultAge = this.getAdultAge();
+            int adultAge = (int) this.getAdultAge();
             int i = random.nextInt(100);
             if ((age * 100 / adultAge) > i) {
 

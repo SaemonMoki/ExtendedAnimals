@@ -815,7 +815,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        int adultAge = this.getAdultAge();
+        int adultAge = (int)this.getAdultAge();
         int tier = adultAge / 4;
         if (age < adultAge) {
             if (age >= tier * 3) {

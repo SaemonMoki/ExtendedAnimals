@@ -600,7 +600,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             meatDrop = 1;
         }
 
-        int adultAge = this.getAdultAge();
+        int adultAge = (int) this.getAdultAge();
         int tier = adultAge * 3 / 10;
         if (age < tier * 6) {
             if (age >= tier * 5) {

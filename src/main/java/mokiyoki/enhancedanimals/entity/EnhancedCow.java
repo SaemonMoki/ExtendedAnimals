@@ -503,7 +503,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             leatherDrop++;
         }
 
-        int adultAge = this.getAdultAge();
+        int adultAge = (int) this.getAdultAge();
         int tier = adultAge / 6;
         if (age < adultAge) {
             if (age > tier * 5) {

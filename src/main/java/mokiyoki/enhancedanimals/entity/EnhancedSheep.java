@@ -215,16 +215,16 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
@@ -298,7 +298,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             this.timeForGrowth++;
         }
 
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
@@ -747,11 +747,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(level, source, recentlyHitIn);
         float size = this.getAnimalSize();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int meatDrop = this.random.nextInt(4)+1;
         boolean woolDrop = false;
         boolean leatherDrop = false;
-        int meatChanceMod;
+        long meatChanceMod;
 
         if (this.currentCoatLength >= 5) {
             woolDrop = true;
@@ -817,8 +817,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        int adultAge = this.getAdultAge();
-        int tier = adultAge / 4;
+        long adultAge = this.getAdultAge();
+        long tier = adultAge / 4;
         if (age < adultAge) {
             if (age >= tier * 3) {
                 meatDrop = meatDrop - 1;
@@ -1254,7 +1254,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         this.currentCoatLength = (int)(this.maxCoatLength*(age >= this.getAdultAge() ? 1 : ((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

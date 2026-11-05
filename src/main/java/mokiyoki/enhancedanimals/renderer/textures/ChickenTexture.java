@@ -826,8 +826,23 @@ public class ChickenTexture {
 
         if (gene[34]==1 || gene[35]==1) {
             if (autosomalRed[0].equals("wheaten")) {
-                h*=0.4F;
-                s*=0.8F;
+                if (autosomalRed[2].equals("darkbrown")) {
+                    if (sGene[0] == 1) {
+                        if (isFemale || sGene[1] == 1) {
+                            h*=0.5F;
+                            b*=0.6F;
+                        } else {
+                            h*=0.45F;
+                            s*=0.7F;
+                        }
+                    } else {
+                        h*=0.4F;
+                        s*=0.8F;
+                    }
+                } else {
+                    h*=0.4F;
+                    s*=0.8F;
+                }
             } else {
                 h*=0.5F;
                 b*=0.6F;

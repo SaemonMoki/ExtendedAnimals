@@ -280,7 +280,7 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         String name = getAnimalName();
         guiGraphics.drawString(this.font, name, 8.0F, (float)(this.imageHeight - 160), 4210752, false);
-        //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
+        // TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
         guiGraphics.drawString(this.font, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752, false);
     }
 

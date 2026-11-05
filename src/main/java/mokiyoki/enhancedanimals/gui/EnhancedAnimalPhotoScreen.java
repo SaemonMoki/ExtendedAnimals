@@ -211,6 +211,9 @@ public class EnhancedAnimalPhotoScreen extends Screen {
 
         // the container screen left depth testing on before photo mode drew, keep that the same here
         RenderSystem.enableDepthTest();
+        // the screen's darkened background is drawn as a gui fill which writes depth at z 0 in 1.21, so clear it or
+        // everything photo mode puts behind that, like the backgrounds at BACKGROUND_DEPTH, gets hidden
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
 
         // drawn before the tabs so they sit on top of its top edge
         renderPhotoFrameBorder(guiGraphics, photoLeft, photoTop);

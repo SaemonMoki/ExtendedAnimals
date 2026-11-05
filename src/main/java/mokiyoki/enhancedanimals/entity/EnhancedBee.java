@@ -308,7 +308,6 @@
 //        }
 //
 //
-//        //todo this is only temporarity until we have alpha textures
 //        if (this.beeAlphaTextures.isEmpty()) {
 //            return null;
 //        }
@@ -354,9 +353,6 @@
 //            float eyerG = 0.0F;
 //            float eyerB = 255.0F;
 //
-//
-//
-//            //TODO TEMP AF
 //            //black
 //            beeColouration[0] = blackR;
 //            beeColouration[1] = blackG;
@@ -402,7 +398,6 @@
 //    }
 //
 //    public boolean isBreedingItem(ItemStack stack) {
-//        //TODO set this to a separate item or type of item for force breeding
 //        return BREED_ITEMS.test(stack);
 //    }
 //
@@ -456,7 +451,7 @@
 //    public int[] getLarvaGenes(int[] gameteGenes, int[] mateGameteGenes) {
 //        Random rand = new Random();
 //        int[] larvaGenes = new int[GENES_LENGTH];
-//        boolean isFemale = rand.nextBoolean();  //TODO this needs to be collected from create child instead
+//        boolean isFemale = rand.nextBoolean();
 //
 //        if (isFemale) {
 //            for (int i = 0; i < genes.length; i = (i + 2)) {

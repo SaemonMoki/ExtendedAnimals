@@ -211,7 +211,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
         this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
             public boolean mayPlace(ItemStack stack) {
-                //TODO add option for item to be in forge:chests/wooden
+                // TODO add option for item to use item tag forge:chests/wooden instead
                 return stack.getItem() == Items.CHEST;
             }
 

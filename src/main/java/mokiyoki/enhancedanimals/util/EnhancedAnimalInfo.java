@@ -11,7 +11,7 @@ public class EnhancedAnimalInfo {
     public int pregnant = 0;
     public String name = "Animal";
     public String agePrefix = "ADULT";
-    public Integer age = 0;
+    public Long age = 0L;
     public String sire = "???";
     public String dam = "???";
     public boolean hasName = false;
@@ -27,7 +27,7 @@ public class EnhancedAnimalInfo {
         pregnant = buf.readVarInt();
         name = buf.readUtf();
         agePrefix = buf.readUtf();
-        age = buf.readVarInt();
+        age = buf.readVarLong();
         sire = buf.readUtf();
         dam = buf.readUtf();
         tameness = buf.readVarInt();
@@ -42,7 +42,7 @@ public class EnhancedAnimalInfo {
         buf.writeVarInt(pregnant);
         buf.writeUtf(name);
         buf.writeUtf(agePrefix);
-        buf.writeVarInt(age);
+        buf.writeVarLong(age);
         buf.writeUtf(sire);
         buf.writeUtf(dam);
         buf.writeVarInt(tameness);

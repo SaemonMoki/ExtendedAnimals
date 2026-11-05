@@ -101,9 +101,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get().longValue();
         return this.adultAge;
     }
 

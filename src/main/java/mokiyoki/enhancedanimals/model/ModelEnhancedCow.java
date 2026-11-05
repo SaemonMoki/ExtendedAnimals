@@ -1230,6 +1230,12 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.theLegBottomBackLeft.setY(cow.dwarf ? 4.0F : 5.0F);
             this.theLegBottomBackRight.setY(cow.dwarf ? 4.0F : 5.0F);
 
+            this.theLegFrontLeft.setRotation(0.0F, 0.0F, 0.0F);
+            this.theLegFrontRight.setRotation(0.0F, 0.0F, 0.0F);
+            this.theLegBackLeft.setRotation(0.0F, 0.0F, 0.0F);
+            this.theLegBackRight.setRotation(0.0F, 0.0F, 0.0F);
+            articulateLegs(true);
+
             this.tailBase.setXRot(0.4F);
             this.tailMiddle.setXRot(-0.2F);
             this.tailEnd.setXRot(-0.2F);

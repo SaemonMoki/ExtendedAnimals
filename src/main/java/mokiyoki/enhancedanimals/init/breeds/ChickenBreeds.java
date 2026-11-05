@@ -101,8 +101,8 @@ public final class ChickenBreeds {
             .setGeneSketch(GeneSet.MOTTLED.get()));
 
     public static final Breed RHODEISLANDRED = new Breed(new Breed.Properties().setData("RhodeIslandRedRIR", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(GeneSet.YELLOWLEGS.get(),
-                    new GeneSketch().add(0, "1").add(4, "4-6").add(8, "2", "2", "6").add(18, "1").add(20, "1"),
+            .setGeneSketch(new NewGeneSet(GeneSet.YELLOWLEGS, GeneSet.GOLD, GeneSet.MAHOGANY).get(),
+                    new GeneSketch().add(4, "4-6").add(8, "2", "2", "6").add(18, "1").add(20, "1"),
                     new GeneSketch().add(20, "1", "1").add(38, "2")
                             .add(24, "3", "2", "2", "2").add(98, "1", "1")
                             .add(32, "3", "1").add(170, "1")

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.EarType;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.NakedNeckType;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -8,6 +9,8 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Crested;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.FootFeathers;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_COMB_FLOP;
 
 public class ChickenPhenotype implements Phenotype {
     public final float combFlop;
@@ -45,7 +48,7 @@ public class ChickenPhenotype implements Phenotype {
     public final float neckPoof;
     public float meatiness;
 
-    public ChickenPhenotype(Genes genes, boolean isFemale) {
+    public ChickenPhenotype(Genes genes, boolean isFemale, Variation variation) {
         int[] gene = genes.getAutosomalGenes();
         this.isScaleless = gene[108] == 2 && gene[109] == 2;
         this.nakedNeckType = gene[52] == 1 || gene[53] == 1 ? (gene[52]==gene[53]?NakedNeckType.NAKED_NECK:NakedNeckType.BOWTIE_NECK):NakedNeckType.NONE;
@@ -288,10 +291,10 @@ public class ChickenPhenotype implements Phenotype {
 
         this.tailPinch = getTailPinch(gene);
 
-        this.combFlop = getCombFloppiness(gene, isFemale);
+        this.combFlop = getCombFloppiness(gene, isFemale, variation);
     }
 
-    private float getCombFloppiness(int[] gene, boolean isFemale) {
+    private float getCombFloppiness(int[] gene, boolean isFemale, Variation variation) {
         float floppiness = 0.0F;
         if (gene[310] == 2 && gene[311]==2) {
             floppiness += 0.2F;
@@ -326,7 +329,9 @@ public class ChickenPhenotype implements Phenotype {
             if (floppiness < 0.0F) floppiness = 0.0F;
         }
 
-        //TODO give floppy direction a random side
+        if (variation.get(CHICKEN_COMB_FLOP, 2) == 0) {
+            floppiness = -floppiness;
+        }
 
         return floppiness;
     }

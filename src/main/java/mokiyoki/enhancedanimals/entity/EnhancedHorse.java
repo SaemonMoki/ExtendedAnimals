@@ -156,7 +156,6 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected void registerGoals() {
-        //Todo add the temperamants
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
@@ -164,7 +163,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     protected void customServerAiStep()
     {
-        //TODO move this up
+        // TODO move this up
         this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
         super.customServerAiStep();
     }

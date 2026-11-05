@@ -6,8 +6,6 @@ import mokiyoki.enhancedanimals.entity.util.VariationKeys;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class AxolotlTexture {
@@ -226,7 +224,7 @@ public class AxolotlTexture {
         boolean pieFlip = variation.get(AXOLOTL_PIED, 2) == 0;
         axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).flipped(pieFlip, headCubes, bodyCubes, tailCubes).add();
         boolean blazeFlip = variation.get(AXOLOTL_BLAZE[1], 2) == 0;
-        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).flipped(blazeFlip, headCubes).onlyIf(blaze>0);
+        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).flipped(blazeFlip, headCubes).onlyIf(blaze>0).add();
         parentGroup.addGrouping(bodyGroup);
 
         if (gene[44] == 2 || gene[45] == 2) {
@@ -260,58 +258,68 @@ public class AxolotlTexture {
         if (piedStrength == 1) piedStrength = 2;
         if (piedStrength == 3) piedStrength = 4;
 
-        //Head Left
+        int result;
+        boolean flipSolidParts = variation.get(AXOLOTL_BRINDLE[0], 2) == 0;
+
+        // TODO axolotls need to maintain which side the dark/light part is on
+
+        if (variation.get(AXOLOTL_BRINDLE[1], 2) == 0) {
+            //Head Left
+            result = makeBrindleComponent(axolotl, piedStrength, variation, 3, brindleCutoutGroup, "head_left", headCubes, 0, flipSolidParts);
+
+            //Head Right
+            makeBrindleComponent(axolotl, piedStrength, variation, 6, brindleCutoutGroup, "head_right", headCubes, result, flipSolidParts);
+        } else {
+            //Head Right
+            result = makeBrindleComponent(axolotl, piedStrength, variation, 6, brindleCutoutGroup, "head_right", headCubes, 0, flipSolidParts);
+
+            //Head Left
+            makeBrindleComponent(axolotl, piedStrength, variation, 3, brindleCutoutGroup, "head_left", headCubes, result, flipSolidParts);
+        }
+
+        if (variation.get(AXOLOTL_BRINDLE[2], 2) == 0) {
+            //Body Left
+            result = makeBrindleComponent(axolotl, piedStrength, variation, 9, brindleCutoutGroup, "body_left", bodyCubes, 0, flipSolidParts);
+
+            //Body Right
+            makeBrindleComponent(axolotl, piedStrength, variation, 12, brindleCutoutGroup, "body_right", bodyCubes, result, flipSolidParts);
+        } else {
+            //Body Right
+            result = makeBrindleComponent(axolotl, piedStrength, variation, 12, brindleCutoutGroup, "body_right", bodyCubes, 0, flipSolidParts);
+
+            //Body Left
+            makeBrindleComponent(axolotl, piedStrength, variation, 9, brindleCutoutGroup, "body_left", bodyCubes, result, flipSolidParts);
+        }
+
+        //Tail
+        makeBrindleComponent(axolotl, piedStrength, variation, 15, brindleCutoutGroup, "tail", tailCubes, 0, flipSolidParts);
+
+        brindleGroup.addGrouping(brindleCutoutGroup);
+    }
+
+    private static int makeBrindleComponent(EnhancedAxolotl axolotl, int piedStrength, Variation variation, int variationIndex, TextureGrouping brindleCutoutGroup, String location, int[] headCubes, int test, boolean sidedness) {
         TextureGrouping cutoutHeadLeftGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[0], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[1], 4)+1;
-        boolean mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[2], 2) == 0;
-        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation).add();
-        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/head_left.png").add();
+        int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex], 2);
+        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex +1], 4)+1;
+        boolean mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex +2], 2) == 0;
+
+        if (brindleVariation == 0) {
+            axolotl.layer(cutoutHeadLeftGroup).texture("brindle/" + piedStrength + "/0.png").flipped(sidedness, headCubes).keyedAs(String.valueOf(0)+sidedness).add();
+        } else {
+            if (test != 0) {
+                if ((mirror ? (brindleVariation + 1) : -(brindleVariation + 1)) == test) {
+                    mirror = !mirror;
+                }
+            }
+
+            axolotl.layer(cutoutHeadLeftGroup).texture("brindle/" + piedStrength + "/" + brindleVariation + ".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength) + brindleVariation + mirror).add();
+        }
+
+        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+location+".png").add();
 
         brindleCutoutGroup.addGrouping(cutoutHeadLeftGroup);
 
-        //Head Right
-        TextureGrouping cutoutHeadRightGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[3], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[4], 4)+1;
-        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[5], 2) == 0;
-        axolotl.layer(cutoutHeadRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
-        axolotl.layer(cutoutHeadRightGroup).texture("brindle/head_right.png").add();
-
-        brindleCutoutGroup.addGrouping(cutoutHeadRightGroup);
-
-        //Body Left
-        TextureGrouping cutoutBodyLeftGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[6], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[7], 4)+1;
-        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[8], 2) == 0;
-        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, bodyCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
-        axolotl.layer(cutoutBodyLeftGroup).texture("brindle/body_left.png").add();
-
-        brindleCutoutGroup.addGrouping(cutoutBodyLeftGroup);
-
-        //Body Right
-        TextureGrouping cutoutBodyRightGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[9], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[10], 4)+1;
-        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[11], 2) == 0;
-        axolotl.layer(cutoutBodyRightGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, bodyCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
-        axolotl.layer(cutoutBodyRightGroup).texture("brindle/body_right.png").add();
-
-        brindleCutoutGroup.addGrouping(cutoutBodyRightGroup);
-
-        //Tail
-        TextureGrouping cutoutTailGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[12], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[13], 4)+1;
-        mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[14], 2) == 0;
-        axolotl.layer(cutoutTailGroup).texture("brindle/"+piedStrength+"/"+brindleVariation+".png").flipped(mirror, tailCubes).keyedAs(String.valueOf(piedStrength)+brindleVariation+mirror).add();
-        axolotl.layer(cutoutTailGroup).texture("brindle/tail.png").add();
-
-        brindleCutoutGroup.addGrouping(cutoutTailGroup);
-
-        // TODO make brindle texture groups which isolate the brindle texture to the head, body, tail for the texture to be selected and flipped at random
-
-        brindleGroup.addGrouping(brindleCutoutGroup);
+        brindleVariation++;
+        return mirror ? -brindleVariation : brindleVariation;
     }
 }

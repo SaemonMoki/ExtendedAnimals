@@ -84,7 +84,8 @@ public final class VariationKeys {
     //Axolotl
     public static final VariationKey AXOLOTL_PIED = VariationKey.of("axolotl.pied");
     public static final VariationKey[] AXOLOTL_BLAZE = VariationKey.series("axolotl.blaze", 2);
-    public static final VariationKey[] AXOLOTL_BRINDLE = VariationKey.series("axolotl.brindle", 15);
+    public static final VariationKey[] AXOLOTL_BRINDLE = VariationKey.series("axolotl.brindle", 18);
+    public static final VariationKey AXOLOTL_PATTERNING = VariationKey.of("axolotl.patterning");
 
 }
 

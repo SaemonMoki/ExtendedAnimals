@@ -197,9 +197,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get().longValue();
         return this.adultAge;
     }
 
@@ -332,7 +332,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         if (timeForGrowth >= woolRegenTimer) {
             timeForGrowth = 0;
 
-            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+            long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
 
             int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*this.growthAmount());
 
@@ -365,7 +365,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         enhancedllama.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
         enhancedllama.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
         enhancedllama.setParent(this.getUUID().toString());
-        enhancedllama.setAge(-enhancedllama.getAdultAge());
+        enhancedllama.setAge(clampToInt(-enhancedllama.getAdultAge()));
         enhancedllama.setBirthTime();
         enhancedllama.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedllama.setInitialDefaults();
@@ -547,13 +547,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+        long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         boolean woolDrop = false;
         int lootCount = 0;
 
         if (!this.isOnFire()) {
 
-            int adultAge = this.getAdultAge();
+            long adultAge = this.getAdultAge();
             int i = random.nextInt(100);
             if ((age * 100 / adultAge) > i) {
 
@@ -714,7 +714,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+            long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
@@ -913,7 +913,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+        long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

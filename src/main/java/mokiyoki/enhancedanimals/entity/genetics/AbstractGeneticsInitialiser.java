@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -64,33 +65,41 @@ public abstract class AbstractGeneticsInitialiser {
 
         Registry<Biome> biomeRegistry = ((ServerLevel) world).registryAccess().registry(Registries.BIOME).get();
 
+        ResourceKey<Biome> biomekey = Biomes.THE_VOID;
+
         if (biome.contains("darkwoods") || biome.equals("darkforest")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.DARK_FOREST).get(), pos, false);
+            biomekey = Biomes.DARK_FOREST;
         } else if (biome.contains("savanna")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SAVANNA).get(), pos, false);
+            biomekey = Biomes.SAVANNA;
         } else if (biome.contains("desert")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.DESERT).get(), pos, false);
+            biomekey = Biomes.DESERT;
+        } else if (biome.contains("grove") && !biome.contains("cherry")) {
+            biomekey = Biomes.GROVE;
+        } else if (biome.contains("slopes") || biome.contains("powder")) {
+            biomekey = Biomes.SNOWY_SLOPES;
         } else if (biome.contains("tundra") || biome.contains("snow")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SNOWY_PLAINS).get(), pos, false);
-        } else if (biome.contains("mountains")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.WINDSWEPT_HILLS).get(), pos, false);
+            biomekey = Biomes.SNOWY_PLAINS;
+        } else if (biome.contains("mountain") || biome.contains("wind")) {
+            biomekey = Biomes.WINDSWEPT_HILLS;
         } else if (biome.contains("sunflower")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SUNFLOWER_PLAINS).get(), pos, false);
+            biomekey = Biomes.SUNFLOWER_PLAINS;
         } else if (biome.contains("marsh") || biome.equals("swamp")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.SWAMP).get(), pos, false);
+            biomekey = Biomes.SWAMP;
         } else if (biome.contains("jungle")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.JUNGLE).get(), pos, false);
+            biomekey = Biomes.JUNGLE;
         } else if (biome.contains("mushroom")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.MUSHROOM_FIELDS).get(), pos, false);
+            biomekey = Biomes.MUSHROOM_FIELDS;
         } else if (biome.contains("plains")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.PLAINS).get(), pos, false);
+            biomekey = Biomes.PLAINS;
         } else if (biome.contains("flower")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.FLOWER_FOREST).get(), pos, false);
+            biomekey = Biomes.FLOWER_FOREST;
         } else if (biome.contains("woods") || biome.contains("forest")) {
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.FOREST).get(), pos,false);
+            biomekey = Biomes.FOREST;
         }
 
-            return generateLocalWildGenetics(biomeRegistry.getHolder(Biomes.THE_VOID).get(), pos, true);
+            return generateLocalWildGenetics(biomeRegistry.getHolder(biomekey).get(), pos, biomekey == Biomes.THE_VOID);
+
+
     }
 
     protected abstract Genes generateLocalWildGenetics(Holder<Biome> biome, BlockPos blockpos, boolean isFlat);

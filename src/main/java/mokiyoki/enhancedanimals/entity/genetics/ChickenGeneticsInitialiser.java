@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.Tags;
@@ -142,6 +143,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         } else if (biome.getBaseTemperature() >= 0.8F && biome.getModifiedClimateSettings().downfall() > 0.8F) {
             wildType = 4;
         }
+
+        boolean hasPowderedSnow = wildType == 3 && biomeHolder.containsTag(BiomeTags.IS_MOUNTAIN);
 
         if (isFlat) {
             int randomizeWT = ThreadLocalRandom.current().nextInt(10);
@@ -668,24 +671,27 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
             autosomalGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
-            autosomalGenes[58] = 3;
+            autosomalGenes[58] = hasPowderedSnow ? 1 : 3;
         }
         if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
             autosomalGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
-            autosomalGenes[59] = 3;
+            autosomalGenes[59] = hasPowderedSnow ? 1 : 3;
         }
+
 
         //Foot feather enhancer [ enhancer, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
             autosomalGenes[60] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             autosomalGenes[60] = 2;
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
-            autosomalGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
+            if (wildType == 3 && biomeHolder.containsTag(BiomeTags.IS_MOUNTAIN)) {
+                autosomalGenes[61] = 1;
+            } else {
+                autosomalGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            }
         } else {
             autosomalGenes[61] = 2;
         }

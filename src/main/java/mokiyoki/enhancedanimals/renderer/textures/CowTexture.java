@@ -333,9 +333,9 @@ public class CowTexture {
             int pingauzer = 1;
             if (gene[22] == gene[23]) {
                 if (gene[22] == 1) {
-                    pingauzer = 0;
-                } else if (gene[22] == 3) {
                     pingauzer = 2;
+                } else if (gene[22] == 3) {
+                    pingauzer = 0;
                 }
             }
             cow.layer(spotShape).texture("spots/pingauzer/" + pingauzer + ".png").keyedAs("pg"+pingauzer).add();

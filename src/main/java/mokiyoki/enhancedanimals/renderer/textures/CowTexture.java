@@ -345,12 +345,12 @@ public class CowTexture {
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
 
                 //1-4 patches
-                int t = 1 + variation.get(COW_BROCKLING_COUNT, 4);
-                for (int i = 0; i < t; i++) {
-                    int rand = variation.get(COW_BROCKLING_PATCHES[i], 13);
-                    boolean flip = variation.get(COW_BROCKLING_FLIPS[i], 2) == 1;
-                    cow.layer(brockling).texture("spots/brockling/"+rand+".png").flipped(flip, headCubes).keyedAs(String.valueOf(rand)).add();
-                }
+//                int t = 1 + variation.get(COW_BROCKLING_COUNT, 4);
+//                for (int i = 0; i < t; i++) {
+//                    int rand = variation.get(COW_BROCKLING_PATCHES[i], 13);
+//                    boolean flip = variation.get(COW_BROCKLING_FLIPS[i], 2) == 1;
+                    cow.layer(brockling).texture("spots/brockling/"+0+".png")/*.flipped(flip, headCubes)*/.keyedAs(String.valueOf(0)).add();
+//                }
                 colour.addGrouping(brockling);
             } else {
                 cow.addSkippedSlot();

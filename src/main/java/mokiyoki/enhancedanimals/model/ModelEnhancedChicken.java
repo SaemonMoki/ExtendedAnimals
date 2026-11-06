@@ -1946,7 +1946,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theFootRight.setY(theFootLeft.getY());
 
             bootsLeft.setY(17.5F-chicken.height);
-            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.collar);
+            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.growthAmount);
 
             if (chicken.ear != EarType.NONE) {
                 if (chicken.earSize == 13 && chicken.ear == EarType.ROUND) {
@@ -1992,13 +1992,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             thighLeft.setPos(map.get("thighPos"));
             beak.setXRot(map.get("beak").x());
             jaw.setXRot(map.get("jaw").x());
+
+            if (data.extraGrowth < 1.0F) {
+                setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.extraGrowth);
+            }
         }
         bootsRight.setY(bootsLeft.getY());
         thighRight.setPos(-thighLeft.getX(),thighLeft.getY(), thighLeft.getZ());
         tailNub.setY((theSaddle.getZ()-1.0F)*0.4F);
     }
 
-    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed, float combFlop, boolean collar) {
+    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed, float combFlop, float age) {
         theComb.setRotation(0.0F, 0.0F, 0.0F);
         theComb.setPos(0.0F, -2.0F, -2.5F);
         comb.setRotation(0.0F, 0.0F, 0.0F);
@@ -2021,6 +2025,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
             } else {
                 if (combFlop != 0.0F) {
+
+                    combFlop *= age;
+
                     float y = combFlop > 0? -0.5F : 0.5F;
                     switch (combType) {
                         case WALNUT,PEA -> {

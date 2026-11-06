@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.items;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -140,12 +141,18 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         stack.getOrCreateTagElement("display").putString("UUID", uuid);
     }
 
+    //kept separately from the uuid, which can't always be restored
+    public static void setVariation(ItemStack stack, int variationSeed, boolean isFemale) {
+        stack.getOrCreateTagElement("display").putInt("VariationSeed", variationSeed);
+        stack.getOrCreateTagElement("Genetics").putBoolean("IsFemale", isFemale);
+    }
+
     private boolean getMateIsFemale(ItemStack stack) {
         return stack.getOrCreateTagElement("MateGenetics").getBoolean("MateIsFemale");
     }
 
-    public static void setBirthTime(ItemStack stack, String birthTime) {
-        stack.getOrCreateTagElement("display").putString("BirthTime", birthTime);
+    public static void setBirthTime(ItemStack stack, long birthTime) {
+        stack.getOrCreateTagElement("display").putLong("BirthTime", birthTime);
     }
 
     public static void setImage(ItemStack stack, int[] imageArray) {
@@ -266,6 +273,9 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         if (level.getEntity(UUID.fromString(data.getString("UUID"))) == null) {
             axolotl.setUUID(UUID.fromString(data.getString("UUID")));
         }
+        if (data.contains("VariationSeed")) {
+            axolotl.setVariationSeed(data.getInt("VariationSeed"));
+        }
         axolotl.setSireName(data.getString("SireName"));
         axolotl.setDamName(data.getString("DamName"));
         if (this.getGenes(stack) != null) {
@@ -290,7 +300,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         if (stack.hasCustomHoverName()) {
             axolotl.setCustomName(stack.getHoverName());
         }
-        axolotl.setBirthTime(data.getString("BirthTime"));
+        //buckets filled before birth times became longs hold a string
+        if (data.contains("BirthTime", 4)) {
+            axolotl.setBirthTime(data.getLong("BirthTime"));
+        } else {
+            axolotl.setBirthTime(EnhancedAnimalAbstract.parseBirthTime(data.getString("BirthTime")));
+        }
         axolotl.initilizeAnimalSize();
         axolotl.loadFromBucketTag(stack.getOrCreateTag());
         axolotl.moveTo((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);

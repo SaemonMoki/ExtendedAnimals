@@ -83,8 +83,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     private static final EntityDataAccessor<Integer> COAT_LENGTH = SynchedEntityData.defineId(EnhancedRabbit.class, EntityDataSerializers.INT);
 
-    //TODO find broken texture spawns in desert
-
     private int jumpTicks;
     private int jumpDuration;
     public int[] noseTwitch = {0,0,0,0}; //how long to twitch/not twitch, how fast to twitch, count up or down, twitch cycle
@@ -269,9 +267,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeRabbit.get().longValue();
         return this.adultAge;
     }
 
@@ -441,7 +439,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             timeForGrowth++;
         }
 
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
@@ -656,12 +654,12 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         float size = getAnimalSize();
 
         if ((((size-0.3F) * 71.4286F) + 25) > random.nextInt(100)) {
             ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
-            if (size <= 0.65F || age < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
+            if (size <= 0.65F || age < this.getAdultAge() || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
                 //small meat
                 if (isOnFire()) {
                     meatStack = new ItemStack(ModItems.COOKEDRABBIT_SMALL.get(), 1 + looting);
@@ -700,7 +698,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             this.spawnAtLocation(coatStack);
         }
 
-        if (age > 48000 && random.nextInt(20) >= 18-looting) {
+        if (age > this.getAdultAge() && random.nextInt(20) >= 18-looting) {
             this.spawnAtLocation(Items.RABBIT_FOOT, 1);
         }
     }
@@ -710,7 +708,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected ResourceLocation getDefaultLootTable() {
 
         if (!this.level.isClientSide) {
-            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < 48000) {
+            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < this.getAdultAge()) {
                 dropMeatType = "rawrabbit_small";
             } else {
                 dropMeatType = "rawrabbit";
@@ -819,7 +817,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            int age = this.getEnhancedAnimalAge();
+            long age = this.getEnhancedAnimalAge();
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
@@ -864,12 +862,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getVariation());
         }
-    }
-
-    @Override
-    protected void setAlphaTexturePaths() {
     }
 
     @Override
@@ -979,7 +973,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

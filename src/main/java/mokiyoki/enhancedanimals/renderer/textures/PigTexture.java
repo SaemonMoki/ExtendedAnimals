@@ -2,11 +2,22 @@ package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
-import mokiyoki.enhancedanimals.util.Genes;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class PigTexture {
+    private static final int BLACK_SKIN_SLOTS    = 2;
+    private static final int WHITE_SKIN_SLOTS    = 7;
+    private static final int SWALLOWBELLY_SLOTS  = 3;
+    private static final int AGOUTI_DETAIL_SLOTS = 2;
+    private static final int BLACK_HAIR_SLOTS    = 3 + AGOUTI_DETAIL_SLOTS;
+    private static final int WHITE_HAIR_SLOTS    = 7;
+    // red, swallowbelly, whitebelly, black, white, coat, coat alpha
+    private static final int HAIR_SLOTS          = 3 + SWALLOWBELLY_SLOTS + 1 + BLACK_HAIR_SLOTS + WHITE_HAIR_SLOTS + 2;
+
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
             "", "skin_pink.png", "skin_grey.png", "skin_black.png", "skin_brown.png", "skin_chocolate.png"
     };
@@ -182,7 +193,7 @@ public class PigTexture {
             "", "pattern_whitebelly.png", "pattern_whitebelly.png",
     };
     
-    public static void calculatePigTexture(EnhancedPig pig, int[] gene, char[] uuidArry) {
+    public static void calculatePigTexture(EnhancedPig pig, int[] gene, Variation variation) {
 
         int eyes = 0;
         int red = 1;
@@ -675,7 +686,25 @@ public class PigTexture {
             white = idx_lethal;
         } else if (gene[12] == 11 || gene[13] == 11) {
             //patch
-            if (whiteSplash != 0) {
+            //patch seems to override the partial extension spotting pattern when present
+            if (black == idx_brindle_berkshire) {
+                // i dont think allspots patch does anything different
+            }
+            else if (black == idx_brindle_med) {
+                //het allspots patch
+                black = 1;
+                white = idx_brindlepatch_med;
+            }
+            else if (black == idx_brindle) {
+                //plain partial extension/patch aka pietrain
+                black = 1;
+                if (whiteExtension >= 2) {
+                    white = idx_brindlepatch_ext;
+                } else {
+                    white = idx_brindlepatch;
+                }
+            }
+            else if (whiteSplash != 0) {
                 //patch + splash/hereford
                 white = idx_patch_hereford;
                 whiteSplash = 0;
@@ -689,34 +718,14 @@ public class PigTexture {
                 //het tuxedo with white points - produces solid white
                 //if white points is not present, assume patch takes priority due to higher white
                 white = 1;
-            } else {
-                //patch seems to override the brindle spotting pattern
-
-                // i dont think allspots patch does anything different
-                if (black == idx_brindle_berkshire) {
-                }
-                //het allspots patch
-                else if (black == idx_brindle_med) {
-                    black = 1;
-                    white = idx_brindlepatch_med;
-                }
-                //plain brindle patch
-                else if (black == idx_brindle) {
-                    black = 1;
-                    if (whiteExtension >= 2) {
-                        white = idx_brindlepatch_ext;
-                    } else {
-                        white = idx_brindlepatch;
-                    }
-                } else if (whitePoints) {
-                    if (whiteExtension == 2) {
-                        white = 1;
-                    } else {
-                        white = idx_spottedpatch;
-                    }
+            } else if (whitePoints) {
+                if (whiteExtension == 2) {
+                    white = 1;
                 } else {
-                    white = idx_patch;
+                    white = idx_spottedpatch;
                 }
+            } else {
+                white = idx_patch;
             }
         } else if (gene[12] == 9 || gene[13] == 9) {
             //irregular belted
@@ -778,75 +787,75 @@ public class PigTexture {
 
         //random brindle
         if (black == idx_brindle) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             black = idx_brindle + d;
         }
         //random big brindle
         else if (black == idx_brindle_med) {
-            int d = uuidArry[3] % 4;
+            int d = variation.get(PIG_PATTERN, 4);
             black = idx_brindle_med + d;
         }
         //random big brindle
         else if (black == idx_brindle_berkshire) {
-            int d = uuidArry[3] % 8;
+            int d = variation.get(PIG_PATTERN, 8);
             black = idx_brindle_berkshire + d;
         }
         //random het brindle
         else if (black == idx_brindle_het) {
-            int d = uuidArry[3] % 6;
+            int d = variation.get(PIG_PATTERN, 6);
             black = idx_brindle_het + d;
         }
         //random big het brindle
         else if (black == idx_brindle_het_med) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             black = idx_brindle_het_med + d;
         }
         //random patch + white points aka spotted
         else if (white == idx_spottedpatch) {
             whiteFace = 0;
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_spottedpatch + d;
         }
         //random patch
         else if (white == idx_patch) {
-            int d = uuidArry[3] % 11;
+            int d = variation.get(PIG_PATTERN, 11);
             white = idx_patch + d;
         }
         //random patch brindle (pietrain)
         else if (white == idx_brindlepatch) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_brindlepatch + d;
         }
         //random patch brindle (oldspot aka extended white)
         else if (white == idx_brindlepatch_ext) {
-            int d = uuidArry[3] % 6;
+            int d = variation.get(PIG_PATTERN, 6);
             white = idx_brindlepatch_ext + d;
         }
         //random patch big brindle
         else if (white == idx_brindlepatch_med) {
-            int d = uuidArry[3] % 4;
+            int d = variation.get(PIG_PATTERN, 4);
             white = idx_brindlepatch_med + d;
         }
         //random big/irregular belt
         else if (white == idx_hugebelt) {
-            int d = uuidArry[3] % 7;
+            int d = variation.get(PIG_PATTERN, 7);
             white = idx_hugebelt + d;
         }
         //random lethal
         else if (white == idx_lethal) {
-            int d = uuidArry[3] % 5;
+            int d = variation.get(PIG_PATTERN, 5);
             white = idx_lethal + d;
         }
         //random min tux
         else if (white == idx_tuxmin) {
             if (whiteExtension == 2) {
-                int d3 = uuidArry[3] % 6;
-                int d2 = uuidArry[2] % 6;
+                int d3 = variation.get(PIG_PATTERN, 6);
+                int d2 = variation.get(PIG_WHITE_FACE, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             } else {
-                int d3 = uuidArry[3] % 3;
-                int d2 = uuidArry[2] % 3;
+                int d3 = variation.get(PIG_PATTERN, 3);
+                int d2 = variation.get(PIG_WHITE_FACE, 3);
                 white = idx_tuxmin + d3;
                 whiteFace = idx_tuxface_min + d2;
             }
@@ -854,65 +863,65 @@ public class PigTexture {
         // random med-high tux
         else if (white == idx_tuxmed) {
             if (whiteExtension == 2) {
-                int d3 = uuidArry[3] % 4;
-                int d2 = uuidArry[2] % 4;
+                int d3 = variation.get(PIG_PATTERN, 4);
+                int d2 = variation.get(PIG_WHITE_FACE, 4);
                 white = idx_tuxhigh + d3;
                 whiteFace = idx_tuxface_high + d2;
             } else {
-                int d3 = uuidArry[3] % 6;
-                int d2 = uuidArry[2] % 6;
+                int d3 = variation.get(PIG_PATTERN, 6);
+                int d2 = variation.get(PIG_WHITE_FACE, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             }
         } else if (white == idx_belt) {
             //random belt
             if (whiteExtension == 2) {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + 3 + d;
             } else if (whiteExtension == 1) {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + 2 + d;
             } else {
-                int d = uuidArry[3] % 3;
+                int d = variation.get(PIG_PATTERN, 3);
                 white = idx_belt + d;
             }
         } else if (white == idx_patch_belt) {
             //random patch belt
-            int d3 = uuidArry[3] % 2;
+            int d3 = variation.get(PIG_PATTERN, 2);
             white = idx_patch_belt + d3;
         } else if (white == idx_patch_bigbelt) {
             //random patch bigbelt
-            int d3 = uuidArry[3] % 4;
+            int d3 = variation.get(PIG_PATTERN, 4);
             white = idx_patch_bigbelt + d3;
         } else if (white == idx_patch_hereford) {
             //random patch hereford
-            int d3 = uuidArry[3] % 5;
+            int d3 = variation.get(PIG_PATTERN, 5);
             white = idx_patch_hereford + d3;
         }
 
         if (whiteSplash == idx_hereford_belly_min) {
             //random min hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 4;
-            int d2 = uuidArry[2] % 4;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 4);
+            int d2 = variation.get(PIG_WHITE_FACE, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_min + d3;
             whiteLeg = 2 + d4;
             whiteTail = 1 + d4;
         } else if (whiteSplash == idx_hereford_belly_med) {
             //random med hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 3;
-            int d2 = uuidArry[2] % 4;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 3);
+            int d2 = variation.get(PIG_WHITE_FACE, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_med + d3;
             whiteLeg = 5;
             whiteTail = 1 + d4;
         } else if (whiteSplash == idx_hereford_belly_high) {
             //random high hereford
-            int d4 = uuidArry[5] % 2;
-            int d3 = uuidArry[3] % 5;
-            int d2 = uuidArry[2] % 6;
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
+            int d3 = variation.get(PIG_PATTERN, 5);
+            int d2 = variation.get(PIG_WHITE_FACE, 6);
             whiteFace = idx_whitehead_high + d2;
             whiteSplash = idx_hereford_belly_high + d3;
             whiteLeg = 5;
@@ -920,23 +929,21 @@ public class PigTexture {
         }
         //random white points
         if (whiteFace == 1) {
-            int d2 = uuidArry[2];
-            int d4 = uuidArry[5] % 2;
-            //int d2 = uuidArry[3];
+            int d4 = variation.get(PIG_WHITE_POINTS, 2);
             switch (whiteExtension) {
                 case 0 -> {
-                    whiteFace = 1 + (d2 % 4);
-                    whiteLeg = 1 + (d2 % 2);
+                    whiteFace = 1 + variation.get(PIG_WHITE_FACE, 4);
+                    whiteLeg = 1 + variation.get(PIG_WHITE_FACE, 2);
                     whiteTail = 1;
                 }
                 case 1 -> {
-                    whiteFace = 5 + (d2 % 5);
-                    whiteLeg = 2 + (d2 % 2);
+                    whiteFace = 5 + variation.get(PIG_WHITE_FACE, 5);
+                    whiteLeg = 2 + variation.get(PIG_WHITE_FACE, 2);
                     whiteTail = 1 + d4;
                 }
                 case 2 -> {
-                    whiteFace = 7 + (d2 % 5);
-                    whiteLeg = 2 + (d2 % 3);
+                    whiteFace = 7 + variation.get(PIG_WHITE_FACE, 5);
+                    whiteLeg = 2 + variation.get(PIG_WHITE_FACE, 3);
                     whiteTail = 1 + d4;
                 }
             }
@@ -953,12 +960,12 @@ public class PigTexture {
         if (heterochromia == 2 || white == 1 || gene[12] == 1 || gene[13] == 1) {
             eyes = 2;
         } else if (heterochromia == 1) {
-            int d4 = uuidArry[4] % 2;
+            int d4 = variation.get(PIG_HETEROCHROMIA, 2);
             eyes = (d4 == 1) ? 3 : 4;
         }
 
         if (!pig.isBaby()) {
-            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+            if (pig.getSexVariation() >= 8) {
                 //tusks if "male"
                 tusks = true;
             }
@@ -975,8 +982,8 @@ public class PigTexture {
         TextureGrouping skinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
         TextureGrouping hairGroup = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
 
-        pig.addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINBASE, skin, true);
-        pig.addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_SPOTS, spot, (spot == 1));
+        pig.layer(skinGroup).textureTableSelector(PIG_TEXTURES_SKINBASE, skin).add();
+        pig.layer(skinGroup).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_SPOTS, spot).onlyIf(spot == 1).add();
 
         //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKIN_BRINDLEPATCH, white, p -> p > 1);
 
@@ -991,28 +998,30 @@ public class PigTexture {
         if (black != 0) {
             TextureGrouping blackSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping blackSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP);
-            pig.addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBRINDLE_SPOTS, black, black != 0);
-            pig.addTextureToAnimalTextureGrouping(blackSkinAlpha, PIG_TEXTURES_SKINBASE, skinBlack, black != 0);
+            pig.layer(blackSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBRINDLE_SPOTS, black).add();
+            pig.layer(blackSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBASE, skinBlack).add();
             blackSkinGroup.addGrouping(blackSkinAlpha);
             parentGroup.addGrouping(blackSkinGroup);
+        } else {
+            pig.addSkippedSlots(BLACK_SKIN_SLOTS);
         }
 
         if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
             TextureGrouping whiteSkinGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping whiteSkinAlpha = new TextureGrouping(TexturingType.MASK_GROUP); //MASK_GROUP
             TextureGrouping whiteSkinMask = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_FACE, whiteFace, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_LEG, whiteLeg, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_WHITE_TAIL, whiteTail, b -> b != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_WHITE, whiteSplash, whiteSplash != 0);
-            pig.addTextureToAnimalTextureGrouping(whiteSkinMask, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, berk != 0);
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_FACE, whiteFace).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_LEG, whiteLeg).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_WHITE_TAIL, whiteTail).onlyIf(b -> b != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_WHITE, white).onlyIf(white != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_WHITE, whiteSplash).onlyIf(whiteSplash != 0).add();
+            pig.layer(whiteSkinMask).textureTableSelector(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk).onlyIf(berk != 0).add();
             whiteSkinAlpha.addGrouping(whiteSkinMask);
-            TextureGrouping whSkinTex = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(whSkinTex, PIG_TEXTURES_SKINBASE, 1, true);
-            whiteSkinAlpha.addGrouping(whSkinTex);
+            pig.layer(whiteSkinAlpha).textureTableSelector(PIG_TEXTURES_SKINBASE, 1).add();
             whiteSkinGroup.addGrouping(whiteSkinAlpha);
             parentGroup.addGrouping(whiteSkinGroup);
+        } else {
+            pig.addSkippedSlots(WHITE_SKIN_SLOTS);
         }
 
         if (gene[36] != 1 || gene[37] != 1) {
@@ -1039,105 +1048,109 @@ public class PigTexture {
             boolean baby = pig.isBaby();
             int darkAgouti = baby ? 2 : 1;
 
-            TextureGrouping hairAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(hairAlphaGroup, PIG_TEXTURES_ALPHA, coat_alpha, coat_alpha != 0);
             TextureGrouping hairTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             TextureGrouping redGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RED, PIG_TEXTURES_AGOUTI, red, l -> true);
+            pig.layer(redGroup).textureTableSelector(PIG_TEXTURES_AGOUTI, red).asType(TexturingType.APPLY_RED).add();
             if ((baby && agouti && black == 0)) {
-                pig.addTextureToAnimalTextureGrouping(redGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-rd", darkAgoutiRedRGB);
+                pig.layer(redGroup).texture(PIG_TEXTURES_AGOUTI_DARK[darkAgouti]).tinted(TexturingType.APPLY_RGB, darkAgoutiRedRGB).keyedAs("agrd").add();
+            } else {
+                pig.addSkippedSlot();
             }
-            pig.addTextureToAnimalTextureGrouping(redGroup, PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan, roan != 0);
+            pig.layer(redGroup).textureTableSelector(PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan).onlyIf(roan != 0).add();
             hairTexGroup.addGrouping(redGroup);
 
             TextureGrouping swallowbellyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-            TextureGrouping whitebellyGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            if (whitebelly != 0) {
-                pig.addTextureToAnimalTextureGrouping(whitebellyGroup, PIG_TEXTURES_WHITEBELLY, whitebelly, l -> true);
-            } else if (swallowbelly != 0) {
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_SWALLOWBELLY, swallowbelly, l -> true);
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI[0], "sb", swallowbellyRGB);
-                pig.addTextureToAnimalTextureGrouping(swallowbellyGroup, PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan, roan != 0);
+            if (whitebelly == 0 && swallowbelly != 0) {
+                pig.layer(swallowbellyGroup).textureTableSelector(PIG_TEXTURES_SWALLOWBELLY, swallowbelly).add();
+                pig.layer(swallowbellyGroup).texture(PIG_TEXTURES_AGOUTI[0]).tinted(TexturingType.APPLY_RGB, swallowbellyRGB).keyedAs("sb").add();
+                pig.layer(swallowbellyGroup).textureTableSelector(PIG_TEXTURES_ROAN_RED, baby ? roan + 1 : roan).onlyIf(roan != 0).add();
+            } else {
+                pig.addSkippedSlots(SWALLOWBELLY_SLOTS);
             }
 
             int agoutiTex = 0;
             if (!agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_WHITEBELLY, whitebelly).onlyIf(whitebelly != 0).noKey().add();
                 if (brindle && agouti) {
                     agoutiTex = wideband ? 2 : 1;
                 }
             } else {
                 agoutiTex = wideband ? 2 : 1;
             }
+            // Whitebelly can land before or after black, so its key is written here to keep its position fixed
+            pig.addDelimiter(whitebelly != 0 ? String.valueOf(whitebelly) : "");
 
             if (black != 0) {
                 TextureGrouping blackGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-                TextureGrouping blackAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(blackAlphaGroup, PIG_TEXTURES_COATBLACK, black, l -> l != 0);
                 TextureGrouping blackTexGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_BLACK, PIG_TEXTURES_AGOUTI, agoutiTex, l -> true);
+                pig.layer(blackTexGroup).textureTableSelector(PIG_TEXTURES_AGOUTI, agoutiTex).asType(TexturingType.APPLY_BLACK).add();
                 if (agoutiBlack && (swallowbelly == 0 || baby)) {
                     if (!wideband || baby) { // Dark agouti
                         int camoColor = (wideband && swallowbelly == 0) ? darkAgoutiRedRGB : darkAgoutiRGB;
-                        pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_DARK[darkAgouti], "ag-d", camoColor);
+                        pig.layer(blackTexGroup).texture(PIG_TEXTURES_AGOUTI_DARK[darkAgouti]).tinted(TexturingType.APPLY_RGB, camoColor).keyedAs("agd").add();
+                    } else {
+                        pig.addSkippedSlot();
                     }
                     if (!baby) { // Light agouti layer
-                        pig.addTextureToAnimalTextureGrouping(blackTexGroup, TexturingType.APPLY_RGB, PIG_TEXTURES_AGOUTI_LIGHT[1], "ag-l", lightAgoutiRGB);
+                        pig.layer(blackTexGroup).texture(PIG_TEXTURES_AGOUTI_LIGHT[1]).tinted(TexturingType.APPLY_RGB, lightAgoutiRGB).keyedAs("agl").add();
+                    } else {
+                        pig.addSkippedSlot();
                     }
+                } else {
+                    pig.addSkippedSlots(AGOUTI_DETAIL_SLOTS);
                 }
-                pig.addTextureToAnimalTextureGrouping(blackTexGroup, PIG_TEXTURES_ROAN_BLACK, baby ? roan + 1 : roan, roan != 0 && !brindle);
-                blackGroup.addGrouping(blackAlphaGroup);
+                pig.layer(blackTexGroup).textureTableSelector(PIG_TEXTURES_ROAN_BLACK, baby ? roan + 1 : roan).onlyIf(roan != 0 && !brindle).add();
+                pig.layer(blackGroup).textureTableSelector(PIG_TEXTURES_COATBLACK, black).onlyIf(l -> l != 0).add();
                 blackGroup.addGrouping(blackTexGroup);
                 hairTexGroup.addGrouping(blackGroup);
+            } else {
+                pig.addSkippedSlots(BLACK_HAIR_SLOTS);
             }
 
             if (agoutiBlack) {
                 hairTexGroup.addGrouping(swallowbellyGroup);
-                hairTexGroup.addGrouping(whitebellyGroup);
+                pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_WHITEBELLY, whitebelly).onlyIf(whitebelly != 0).noKey().add();
             }
 
             if (whiteFace != 0 || white != 0 || berk != 0 || whiteSplash != 0) {
                 TextureGrouping whiteGroup = new TextureGrouping(TexturingType.MASK_GROUP);
                 TextureGrouping whiteAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, white, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_FACE, whiteFace, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_LEG, whiteLeg, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_WHITE_TAIL, whiteTail, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_COATWHITE, whiteSplash, p -> p != 0);
-                pig.addTextureToAnimalTextureGrouping(whiteAlphaGroup, PIG_TEXTURES_SPOT_BERKSHIRE, berk, p -> p != 0);
-                TextureGrouping whiteTextureGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-                pig.addTextureToAnimalTextureGrouping(whiteTextureGroup, PIG_TEXTURES_COATWHITE, 1, p -> p != 0);
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, white).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_FACE, whiteFace).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_LEG, whiteLeg).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_WHITE_TAIL, whiteTail).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, whiteSplash).onlyIf(p -> p != 0).add();
+                pig.layer(whiteAlphaGroup).textureTableSelector(PIG_TEXTURES_SPOT_BERKSHIRE, berk).onlyIf(p -> p != 0).add();
                 whiteGroup.addGrouping(whiteAlphaGroup);
-                whiteGroup.addGrouping(whiteTextureGroup);
+                pig.layer(whiteGroup).textureTableSelector(PIG_TEXTURES_COATWHITE, 1).onlyIf(p -> p != 0).add();
                 hairTexGroup.addGrouping(whiteGroup);
+            } else {
+                pig.addSkippedSlots(WHITE_HAIR_SLOTS);
             }
-            TextureGrouping overlayGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            pig.addTextureToAnimalTextureGrouping(overlayGroup, PIG_TEXTURES_COAT, coat_texture, true);
-
-            hairTexGroup.addGrouping(overlayGroup);
+            pig.layer(hairTexGroup).textureTableSelector(PIG_TEXTURES_COAT, coat_texture).add();
 
             //addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_SPOT_SPOTS, spot, (spot != 0));
-            hairGroup.addGrouping(hairAlphaGroup);
+            pig.layer(hairGroup).textureTableSelector(PIG_TEXTURES_ALPHA, coat_alpha).onlyIf(coat_alpha != 0).add();
             hairGroup.addGrouping(hairTexGroup);
 
-                /*if (belt != 0) {
-                    if (genesForText[12] == 1 || genesForText[13] == 1) {
-                        belt = 1;
-                    }
-                    addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BELTED, belt, true);
-                }*/
+                //if (belt != 0) {
+                //    if (genesForText[12] == 1 || genesForText[13] == 1) {
+                //        belt = 1;
+                //    }
+                //    addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BELTED, belt, true);
+                //}
 
             //addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
 
             parentGroup.addGrouping(hairGroup);
+        } else {
+            pig.addSkippedSlots(HAIR_SLOTS);
         }
 
-        pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_EYES, eyes, true);
-        pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_HOOVES, hooves, true);
-        if (tusks) {
-            pig.addTextureToAnimalTextureGrouping(parentGroup, PIG_TEXTURES_TUSKS, tusks ? 1 : 0, tusks);
-        }
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_EYES, eyes).add();
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_HOOVES, hooves).add();
+        pig.layer(parentGroup).textureTableSelector(PIG_TEXTURES_TUSKS, tusks ? 1 : 0).onlyIf(tusks).add();
 //            addTextureToAnimal("pigbase.png");
         pig.setTextureGrouping(parentGroup);
     }

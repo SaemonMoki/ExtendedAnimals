@@ -97,7 +97,7 @@ public class EventRegistry {
     public static final MenuType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeMenuType.create(EggCartonContainer::new);
     public static final MenuType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeMenuType.create((windowId, inv, data) -> {
         Entity entity = inv.player.level.getEntity(data.readInt());
-        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readUtf());
+        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data);
         if(entity instanceof EnhancedAnimalAbstract) {
             return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimalAbstract) entity, animalInfo);
         } else {
@@ -155,7 +155,7 @@ public class EventRegistry {
             }
         });
 
-        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
+        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block - add to things to do after the mod_tag update
     }
 
     @SubscribeEvent

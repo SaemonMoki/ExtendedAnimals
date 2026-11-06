@@ -20,8 +20,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelEnhancedCow<EnhancedMoobloom>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
+    private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entity/cow/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entity/cow/cowbase.png");
     public static final ModelLayerLocation MOOBLOOM_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "moobloom"), "moobloom_layer");
 
     public RenderEnhancedMoobloom(EntityRendererProvider.Context renderManager) {

@@ -19,8 +19,6 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.SheepModelData;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -162,7 +160,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void registerGoals() {
-        //Todo add the temperamants
         int napmod = this.random.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -179,8 +176,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
         this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
-
-    //TODO put new sheep behaviour here
 
     @Override
     public boolean canHaveBlanket() {
@@ -218,16 +213,16 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
@@ -301,7 +296,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             this.timeForGrowth++;
         }
 
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
@@ -750,11 +745,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         float size = this.getAnimalSize();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int meatDrop = this.random.nextInt(4)+1;
         boolean woolDrop = false;
         boolean leatherDrop = false;
-        int meatChanceMod;
+        long meatChanceMod;
 
         if (this.currentCoatLength >= 5) {
             woolDrop = true;
@@ -820,19 +815,21 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        if (age < 72000) {
-            if (age >= 54000) {
+        int adultAge = (int)this.getAdultAge();
+        int tier = adultAge / 4;
+        if (age < adultAge) {
+            if (age >= tier * 3) {
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-54000)/180;
-            } else if (age >= 36000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age >= tier * 2) {
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-36000)/180;
-            } else if (age >= 18000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age >= tier) {
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-18000)/180;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 meatDrop = meatDrop - 4;
-                meatChanceMod = age/180;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);
@@ -842,7 +839,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             if (woolDrop || leatherDrop) {
                 i = this.random.nextInt(100);
-                if (age/720 > i) {
+                if (age * 100 / adultAge > i) {
                     woolDrop = false;
                     leatherDrop = false;
                 }
@@ -913,12 +910,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getVariation());
         }
     }
-
-    @Override
-    protected void setAlphaTexturePaths() {}
 
     @Override
     public Colouration getRgb() {
@@ -1258,7 +1252,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         this.currentCoatLength = (int)(this.maxCoatLength*(age >= this.getAdultAge() ? 1 : ((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

@@ -101,9 +101,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMooshroom.get().longValue();
         return this.adultAge;
     }
 
@@ -122,9 +122,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
 
         TextureGrouping parent = this.getTextureGrouping();
-        TextureGrouping mushroom = new TextureGrouping(TexturingType.MERGE_GROUP);
-        this.addTextureToAnimalTextureGrouping(mushroom, MOOSHROOM_MUSHROOM, mushroomType, null);
-        parent.addGrouping(mushroom);
+        this.layer(parent).texture(MOOSHROOM_MUSHROOM[mushroomType]).add();
         this.setTextureGrouping(parent);
     }
 
@@ -173,7 +171,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (itemstack.getItem() == Items.BOWL && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
-                //TODO commented version might be better, pls test
+                // TODO commented version might be better, pls test
                 //getHurtSound(DamageSource.playerAttack(entityPlayer));
                 entityPlayer.playSound(SoundEvents.COW_HURT, 1.0F, 1.0F);
             } else {
@@ -332,6 +330,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.remove(RemovalReason.DISCARDED);
             EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
             enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
+            enhancedcow.copyVariationFrom(this);
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());

@@ -188,12 +188,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose poseIn) {
-        EntityDimensions dimensions = EntityDimensions.scalable(0.8F, 1.2F).scale(this.getAgeScale());
+        EntityDimensions dimensions = EntityDimensions.scalable(0.8F, 1.2F).scale(this.getBodyScale());
         return dimensions.withEyeHeight(0.95F * dimensions.height());
     }
 
-    @Override
-    public float getScale() {
+    public float getBodyScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float newbornSize = 0.325F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;

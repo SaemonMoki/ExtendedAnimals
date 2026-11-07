@@ -164,12 +164,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose poseIn) {
-        EntityDimensions dimensions = EntityDimensions.scalable(0.4F, 0.7F).scale(this.getAgeScale());
+        EntityDimensions dimensions = EntityDimensions.scalable(0.4F, 0.7F).scale(this.getBodyScale());
         return dimensions.withEyeHeight(this.isBaby() ? dimensions.height() * 0.85F : dimensions.height() * 0.92F);
     }
 
-    @Override
-    public float getScale() {
+    public float getBodyScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float nbSize = 0.2F;
         return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;

@@ -285,11 +285,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(1.0F, 1.25F).scale(this.getAgeScale());
+        return EntityDimensions.scalable(1.0F, 1.25F).scale(this.getBodyScale());
     }
 
-    @Override
-    public float getScale() {
+    public float getBodyScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         size = this.getOrSetIsFemale() ? size : size * 1.1F;
         float newbornSize = 0.65F;

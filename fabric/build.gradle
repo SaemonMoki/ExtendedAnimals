@@ -1,0 +1,77 @@
+plugins {
+    id 'fabric-loom'
+}
+
+configurations {
+    commonJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft_version}:${parchment_mappings_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+    compileOnly project(':common')
+    commonJava project(path: ':common', configuration: 'commonJava')
+    commonResources project(path: ':common', configuration: 'commonResources')
+}
+
+loom {
+    accessWidenerPath = file('src/main/resources/eanimod.accesswidener')
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('../run-fabric')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('../run-fabric-server')
+        }
+    }
+}
+
+tasks.named('compileJava', JavaCompile).configure {
+    dependsOn configurations.commonJava
+    source configurations.commonJava
+}
+tasks.named('sourcesJar', Jar).configure {
+    dependsOn configurations.commonJava
+    from configurations.commonJava
+}
+tasks.named('processResources', ProcessResources).configure {
+    dependsOn configurations.commonResources
+    from(configurations.commonResources) {
+        exclude 'META-INF/accesstransformer.cfg'
+        exclude 'mcmod.info'
+    }
+
+    var replaceProperties = [
+            minecraft_version          : minecraft_version,
+            fabric_loader_version_range: fabric_loader_version_range,
+            mod_id                     : mod_id,
+            mod_name                   : mod_name,
+            mod_license                : mod_license,
+            mod_version                : mod_version.replaceAll("_", "."),
+            mod_authors                : mod_authors,
+            mod_description            : mod_description,
+    ]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}

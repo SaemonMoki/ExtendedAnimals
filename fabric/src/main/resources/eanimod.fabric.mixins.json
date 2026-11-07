@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mokiyoki.enhancedanimals.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AnimalMixin",
+    "BushBlockMixin",
+    "EntityMixin",
+    "ItemMixin",
+    "MobMixin",
+    "PersistentEntitySectionManagerMixin",
+    "ServerLevelMixin"
+  ],
+  "client": [
+    "client.ClientLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

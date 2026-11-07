@@ -17,6 +17,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
 
     public AxolotlGeneticsInitialiser() {
+        this.breeds.add(AxolotlBreeds.BRINDLE);
         this.breeds.add(AxolotlBreeds.RIBBON);
         this.breeds.add(AxolotlBreeds.DARK_EYES);
         this.breeds.add(AxolotlBreeds.LIGHT_EYES);

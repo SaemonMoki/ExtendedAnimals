@@ -35,6 +35,17 @@ run-data
 repo/
 .run/
 **/src/generated/**/.cache/
+/run-fabric/
+/run-fabric-server/
+
+run-fabric/
+run-fabric-server/
+
+# NeoForge MDK
+run-data
+repo/
+.run/
+**/src/generated/**/.cache/
 
 run-fabric/
 run-fabric-server/

@@ -136,7 +136,7 @@ public class AxolotlTexture {
 
     static void buildAxolotlTexture(TextureBuilder axolotlTexture) {
         int gills = (axolotlTexture.isHomoFor(34, 2) ? 1 : 0) + (axolotlTexture.isHomoFor(36, 2) ? 1 : 0);
-        int base = axolotlTexture.has(8, 1) && axolotlTexture.eitherAllelesHave(2, 1) ? 1 : 0;
+        int base = axolotlTexture.eitherAllelesHave(8, 1) && axolotlTexture.eitherAllelesHave(2, 1) ? 1 : 0;
         int pattern = !axolotlTexture.eitherAllelesHave(8, 1) && axolotlTexture.eitherAllelesHave(0, 1) ? 1 : 0;
         int copper = axolotlTexture.eitherAllelesHave(6, 1) ? 0 : 1;
         int melanoid = axolotlTexture.isHomoFor(4, 2) ? 1 : 0;
@@ -202,7 +202,7 @@ public class AxolotlTexture {
     }
 
     private static int addBrindlePart(TextureBuilder axolotlTexture, TextureGroup parts, int strength, int key, String location, int[] cubes, int previous, boolean flipSolidParts) {
-        int texture = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key], 50) ? 0 : axolotlTexture.randomInt(AXOLOTL_BRINDLE[key + 1], 4) + 1;
+        int texture = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key], 50) ? 0 : axolotlTexture.randomBoundedInt(AXOLOTL_BRINDLE[key + 1], 4) + 1;
         boolean mirror = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key + 2], 50);
         if (texture != 0 && previous != 0 && (mirror ? texture + 1 : -(texture + 1)) == previous) {
             mirror = !mirror;

@@ -136,12 +136,12 @@ public class AxolotlTexture {
 
     static void buildAxolotlTexture(TextureBuilder axolotlTexture) {
         int gills = (axolotlTexture.isHomoFor(34, 2) ? 1 : 0) + (axolotlTexture.isHomoFor(36, 2) ? 1 : 0);
-        int base = axolotlTexture.has(8, 1) && axolotlTexture.has(2, 1) ? 1 : 0;
-        int pattern = !axolotlTexture.has(8, 1) && axolotlTexture.has(0, 1) ? 1 : 0;
-        int copper = axolotlTexture.has(6, 1) ? 0 : 1;
+        int base = axolotlTexture.has(8, 1) && axolotlTexture.eitherAllelesHave(2, 1) ? 1 : 0;
+        int pattern = !axolotlTexture.eitherAllelesHave(8, 1) && axolotlTexture.eitherAllelesHave(0, 1) ? 1 : 0;
+        int copper = axolotlTexture.eitherAllelesHave(6, 1) ? 0 : 1;
         int melanoid = axolotlTexture.isHomoFor(4, 2) ? 1 : 0;
 
-        boolean hasPied = !axolotlTexture.has(12, 1);
+        boolean hasPied = !axolotlTexture.eitherAllelesHave(12, 1);
         int pied = hasPied ? Math.max(0, axolotlTexture.sum(12) - 3) : 0;
         int piedStrength = hasPied ? Math.min(4, (int) ((axolotlTexture.sum(14) - 2) * 0.3)) : 0;
         int piedSplotchy = !hasPied ? 0 : axolotlTexture.max(16) >= 5 ? 2 : axolotlTexture.max(16) >= 3 ? 1 : 0;
@@ -155,7 +155,7 @@ public class AxolotlTexture {
         Mask body = rootTextureGroup.addMaskGroup();
         body.maskTexture().addTexture("alpha_mask.png");
         body.content().addTexture(AXOLOTL_TEXTURES_BASE[base]).dye();
-        if (axolotlTexture.has(0, 1)) {
+        if (axolotlTexture.eitherAllelesHave(0, 1)) {
             Cutout brindle = body.content().addCutoutGroup();
             if (!axolotlTexture.isHomoFor(42, 1)) addBrindle(axolotlTexture, piedStrength, brindle.cutoutTexture());
             brindle.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
@@ -167,7 +167,7 @@ public class AxolotlTexture {
             body.content().pickRandomTexture(AXOLOTL_TEXTURES_BLAZE, AXOLOTL_BLAZE[0]).flipIf(axolotlTexture.randomChance(AXOLOTL_BLAZE[1], 50), headCubes);
         }
 
-        if (axolotlTexture.has(44, 2)) rootTextureGroup.addAverageGroup(CHEEK_SPOTS[gillsColour], CHEEK_SPOTS[gillsColour2]);
+        if (axolotlTexture.eitherAllelesHave(44, 2)) rootTextureGroup.addAverageGroup(CHEEK_SPOTS[gillsColour], CHEEK_SPOTS[gillsColour2]);
 
         TextureGroup eyes = rootTextureGroup.addMergeGroup();
         eyes.addTexture("eye_left.png").leftEyeColour();

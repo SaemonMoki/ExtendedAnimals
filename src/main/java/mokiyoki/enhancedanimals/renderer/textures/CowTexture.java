@@ -333,9 +333,9 @@ public class CowTexture {
             int pingauzer = 1;
             if (gene[22] == gene[23]) {
                 if (gene[22] == 1) {
-                    pingauzer = 0;
-                } else if (gene[22] == 3) {
                     pingauzer = 2;
+                } else if (gene[22] == 3) {
+                    pingauzer = 0;
                 }
             }
             cow.layer(spotShape).texture("spots/pingauzer/" + pingauzer + ".png").keyedAs("pg"+pingauzer).add();
@@ -396,12 +396,12 @@ public class CowTexture {
                 TextureGrouping brockling = new TextureGrouping(TexturingType.MERGE_GROUP);
 
                 //1-4 patches
-                int t = 1 + variation.get(COW_BROCKLING_COUNT, 4);
-                for (int i = 0; i < t; i++) {
-                    int rand = variation.get(COW_BROCKLING_PATCHES[i], 13);
-                    boolean flip = variation.get(COW_BROCKLING_FLIPS[i], 2) == 1;
-                    cow.layer(brockling).texture("spots/brockling/"+rand+".png").flipped(flip, headCubes).keyedAs(String.valueOf(rand)).add();
-                }
+//                int t = 1 + variation.get(COW_BROCKLING_COUNT, 4);
+//                for (int i = 0; i < t; i++) {
+//                    int rand = variation.get(COW_BROCKLING_PATCHES[i], 13);
+//                    boolean flip = variation.get(COW_BROCKLING_FLIPS[i], 2) == 1;
+                    cow.layer(brockling).texture("spots/brockling/"+0+".png")/*.flipped(flip, headCubes)*/.keyedAs(String.valueOf(0)).add();
+//                }
                 colour.addGrouping(brockling);
             } else {
                 cow.addSkippedSlot();

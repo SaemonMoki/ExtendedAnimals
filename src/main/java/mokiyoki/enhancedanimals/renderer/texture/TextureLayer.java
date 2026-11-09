@@ -2,6 +2,9 @@ package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextureLayer {
 
     private TexturingType texturingType = TexturingType.NONE;
@@ -13,6 +16,8 @@ public class TextureLayer {
     private String texture;
 
     private NativeImage textureImage;
+
+    private final List<Effect> effects = new ArrayList<>();
 
     public TextureLayer(String texture) {
         this.texture = texture;
@@ -53,5 +58,13 @@ public class TextureLayer {
 
     public NativeImage getTextureImage() {
         return textureImage;
+    }
+
+    public void addEffect(Effect effect) {
+        this.effects.add(effect);
+    }
+
+    public List<Effect> getEffects() {
+        return effects;
     }
 }

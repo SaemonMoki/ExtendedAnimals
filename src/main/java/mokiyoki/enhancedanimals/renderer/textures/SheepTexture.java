@@ -1,15 +1,12 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-import mokiyoki.enhancedanimals.entity.util.Variation;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import mokiyoki.enhancedanimals.renderer.texture.Mask;
+import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 
 public class SheepTexture {
 
-    private static final int PATTERN_SLOTS     = 2;
-    // ticked, mealy, roan, blaze, spots, pigmented head
-    private static final int WHITE_SPOT_SLOTS  = 6;
 
     private static final String[] SHEEP_TEXTURES_MEALY = new String[] {
             "", "c_mealy.png", "c_mealy_male.png", "c_mealy_female.png"
@@ -66,7 +63,11 @@ public class SheepTexture {
             "eyes_black.png"
     };
 
-    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene, Variation variation) {
+    public static void calculateSheepTexture(EnhancedSheep sheep, int[] gene) {
+        buildSheepTexture(TextureBuilder.of(sheep, gene));
+    }
+
+    static void buildSheepTexture(TextureBuilder sheepTexture) {
         boolean mealy = false;
         int pattern1 = 0;
         int pattern2 = 0;
@@ -81,117 +82,117 @@ public class SheepTexture {
         int fur = 0;
         int eyes = 0;
 
-        if (gene[4] == 1 || gene[5] == 1){
+        if (sheepTexture.eitherAllelesHave(4, 1)){
             //black sheep
             pattern1 = 14;
-        } else if (gene[0] != 1 && gene[1] != 1) {
-            if (gene[0] == 6 && gene[1] == 6) {
+        } else if (!sheepTexture.eitherAllelesHave(0, 1)) {
+            if (sheepTexture.isHomoFor(0, 6)) {
                 pattern1 = 14;
             } else {
-                if (gene[0] == 2 || gene[1] == 2) {
+                if (sheepTexture.eitherAllelesHave(0, 2)) {
                     int maxCoatLength = 0;
 
-                    if (gene[20] == 2) {
+                    if (sheepTexture.gene(20) == 2) {
                         maxCoatLength = 1;
                     }
-                    if (gene[21] == 2) {
+                    if (sheepTexture.gene(21) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[22] == 2) {
+                    if (sheepTexture.gene(22) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[23] == 2) {
+                    if (sheepTexture.gene(23) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[24] == 2) {
+                    if (sheepTexture.gene(24) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[25] == 2) {
+                    if (sheepTexture.gene(25) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[26] == 2) {
+                    if (sheepTexture.gene(26) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[27] == 2) {
+                    if (sheepTexture.gene(27) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[28] == 2) {
+                    if (sheepTexture.gene(28) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[29] == 2) {
+                    if (sheepTexture.gene(29) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[30] == 2) {
+                    if (sheepTexture.gene(30) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[31] == 2) {
+                    if (sheepTexture.gene(31) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[32] == 2) {
+                    if (sheepTexture.gene(32) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[33] == 2) {
+                    if (sheepTexture.gene(33) == 2) {
                         maxCoatLength = maxCoatLength + 1;
                     }
-                    if (gene[34] == 2 && gene[35] == 2) {
+                    if (sheepTexture.isHomoFor(34, 2)) {
                         maxCoatLength = maxCoatLength + 1;
                     }
 
                     int faceWool = 0;
-                    if (gene[42] == 1 || gene[43] == 1) {
-                        if (gene[40] == 1) {
+                    if (sheepTexture.eitherAllelesHave(42, 1)) {
+                        if (sheepTexture.gene(40) == 1) {
                             faceWool++;
                         }
-                        if (gene[41] == 1) {
+                        if (sheepTexture.gene(41) == 1) {
                             faceWool++;
                         }
-                        if (gene[38] == 1 || gene[39] == 1) {
+                        if (sheepTexture.eitherAllelesHave(38, 1)) {
                             faceWool++;
-                        } else if (gene[38] == 3 && gene[39] == 3) {
+                        } else if (sheepTexture.isHomoFor(38, 3)) {
                             faceWool--;
                         }
                     }
 
                     grey = maxCoatLength < 3 ? 0 : 1+faceWool;
-                    pattern1 = gene[0] == 2 ? 14 : 0;
-                    pattern2 = gene[1] == 2 ? 14 : 0;
+                    pattern1 = sheepTexture.gene(0) == 2 ? 14 : 0;
+                    pattern2 = sheepTexture.gene(1) == 2 ? 14 : 0;
                 }
 
-                if (gene[0] == 6) {
+                if (sheepTexture.gene(0) == 6) {
                     pattern1 = 14;
-                } else if (gene[1] == 6) {
+                } else if (sheepTexture.gene(1) == 6) {
                     pattern2 = 14;
                 }
 
                 if (pattern1 == 0 || pattern2 == 0) {
                     if (pattern1 == 0) {
-                        pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
+                        pattern1 = sheepTexture.gene(0) <= 2 ? 0 : sheepTexture.gene(0) - 2;
                         if (pattern1 > 3) {
                             pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
                         }
                     }
                     if (pattern2 == 0) {
-                        pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
+                        pattern2 = sheepTexture.gene(1) <= 2 ? 0 : sheepTexture.gene(1) - 2;
                         if (pattern2 > 3) {
                             pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
                         }
                     }
 
-                    if (gene[90] == 1 || gene[91] == 1) {
+                    if (sheepTexture.eitherAllelesHave(90, 1)) {
                         mealy = (pattern1 == 3 || (pattern1 < 14 && pattern1 > 6)) || (pattern2 == 3 || (pattern2 < 14 && pattern2 > 6));
                     }
                 }
 
-                if (gene[0] == 6) {
+                if (sheepTexture.gene(0) == 6) {
                     pattern1 = 0;
-                } else if (gene[1] == 6) {
+                } else if (sheepTexture.gene(1) == 6) {
                     pattern2 = 0;
                 }
             }
         }
 
         //basic spots
-        if (gene[8] == 2 && gene[9] == 2){
+        if (sheepTexture.isHomoFor(8, 2)){
 //                if (Character.isDigit(uuid[1])){
 //                    spots = 2;
 //                }else {
@@ -200,87 +201,79 @@ public class SheepTexture {
         }
 
         //pigmented head
-        if (gene[68] == 2 || gene[69] == 2) {
-            if (gene[68] == 1 || gene[69] == 1) {
+        if (sheepTexture.eitherAllelesHave(68, 2)) {
+            if (sheepTexture.eitherAllelesHave(68, 1)) {
                 //het afghan
                 pigmentedHeadCategory = 2;
             } else {
                 //white afghan
                 pigmentedHeadCategory = 1;
             }
-        } else if (gene[68] == 3 || gene[69] == 3) {
-            if (gene[68] == gene[69]) {
+        } else if (sheepTexture.eitherAllelesHave(68, 3)) {
+            if (sheepTexture.gene(68) == sheepTexture.gene(69)) {
                 //homozygous turkish
                 pigmentedHeadCategory = 3;
-            } else if (gene[68] == 4 || gene[69] == 4) {
+            } else if (sheepTexture.eitherAllelesHave(68, 4)) {
                 //het turkish/pigmented head
                 pigmentedHeadCategory = 5;
             } else {
                 //het turkish (speckled)
                 pigmentedHeadCategory = 4;
             }
-        } else if (gene[68] == 4 && gene[69] == 4) {
+        } else if (sheepTexture.isHomoFor(68, 4)) {
             // pigmented head
             pigmentedHeadCategory = 6;
         }
 
         if (pigmentedHeadCategory==6) {
-            pigmentedHead = Math.max(gene[18]-1, gene[19]-1);
+            pigmentedHead = sheepTexture.max(18) - 1;
         }
 
-        if (gene[100] == 2 || gene[101] == 2) {
+        if (sheepTexture.eitherAllelesHave(100, 2)) {
             roan = 1;
         }
 
-        if (gene[102] != 1 && gene[103] != 1) {
-            if (gene[102] == 2 || gene[103] == 2) {
+        if (!sheepTexture.eitherAllelesHave(102, 1)) {
+            if (sheepTexture.eitherAllelesHave(102, 2)) {
                 blaze = 1;
             } else {
-                blaze = gene[102] == 3 || gene[103] == 3 ? 2 : 3;
+                blaze = sheepTexture.eitherAllelesHave(102, 3) ? 2 : 3;
             }
         }
 
-        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        TextureGroup root = sheepTexture.root();
 
-        TextureGrouping hairGroup = new TextureGrouping(TexturingType.DYE_GROUP);
-        TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        sheep.layer(foundationGroup).texture("r_solid_white.png").asType(TexturingType.APPLY_RED).add();
-        sheep.layer(foundationGroup).textureTableSelector(SHEEP_TEXTURES_MEALY, mealy ? 1 : 0).onlyIf(l -> l != 0).add();
-        hairGroup.addGrouping(foundationGroup);
+        TextureGroup hairGroup = root.addDyeGroup();
+        TextureGroup foundationGroup = hairGroup.addMergeGroup();
+        foundationGroup.addTexture("r_solid_white.png").tintRed();
+        foundationGroup.addTextureIf(mealy, SHEEP_TEXTURES_MEALY[1]);
 
-        if (pattern1 == 14 || (gene[0] != 1 && gene[1] != 1 && (pattern1!=0 || pattern2!=0)) ) {
-            TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            sheep.layer(patternAverageGroup).textureTableSelector(SHEEP_TEXTURES_PATTERN, pattern1).asType(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
-            sheep.layer(patternAverageGroup).textureTableSelector(SHEEP_TEXTURES_PATTERN, pattern2).asType(TexturingType.APPLY_BLACK).onlyIf(l -> l != 0).add();
-            hairGroup.addGrouping(patternAverageGroup);
-        } else {
-            sheep.addSkippedSlots(PATTERN_SLOTS);
+        if (pattern1 == 14 || (!sheepTexture.eitherAllelesHave(0, 1) && (pattern1 != 0 || pattern2 != 0))) {
+            TextureGroup patternAverageGroup = hairGroup.addAverageGroup();
+            patternAverageGroup.addTexture(SHEEP_TEXTURES_PATTERN[pattern1]).tintBlack();
+            patternAverageGroup.addTexture(SHEEP_TEXTURES_PATTERN[pattern2]).tintBlack();
         }
 
-        if (mealy || roan!=0 || blaze!=0 || pigmentedHeadCategory!=0 || spots!=0) {
-            boolean ticked = !sheep.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
-            TextureGrouping whiteSpotGroup = new TextureGrouping(ticked ? TexturingType.MASK_GROUP : TexturingType.MERGE_GROUP);
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_TICKED, ticked ? 1 : 0).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_MEALY, mealy ? (sheep.getOrSetIsFemale() ? 3 : 2) : 0).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_ROAN, roan).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_BLAZE, blaze).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_SPOTS, spots).onlyIf(l -> l != 0).add();
-            sheep.layer(whiteSpotGroup).textureTableSelector(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead).onlyIf(pigmentedHeadCategory != 0).add();
-            hairGroup.addGrouping(whiteSpotGroup);
-        } else {
-            sheep.addSkippedSlots(WHITE_SPOT_SLOTS);
+        if (mealy || roan != 0 || blaze != 0 || pigmentedHeadCategory != 0 || spots != 0) {
+            boolean ticked = !sheepTexture.ifIsBaby() && sheepTexture.eitherAllelesHave(70, 2) && (spots != 0 || pigmentedHeadCategory != 0);
+            TextureGroup whiteSpotGroup;
+            if (ticked) {
+                Mask tickedGroup = hairGroup.addMaskGroup();
+                tickedGroup.maskTexture().addTexture(SHEEP_TEXTURES_TICKED[1]);
+                whiteSpotGroup = tickedGroup.content();
+            } else {
+                whiteSpotGroup = hairGroup.addMergeGroup();
+            }
+            if (mealy) whiteSpotGroup.addTexture(SHEEP_TEXTURES_MEALY[sheepTexture.ifIsFemale() ? 3 : 2]);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_ROAN[roan]);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_BLAZE[blaze]);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_SPOTS[spots]);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_PIGMENTEDHEAD[pigmentedHeadCategory][pigmentedHead]);
         }
-        sheep.layer(hairGroup).textureTableSelector(SHEEP_TEXTURES_GREY, grey).onlyIf(l -> l != 0).add();
-        parentGroup.addGrouping(hairGroup);
+        hairGroup.addTexture(SHEEP_TEXTURES_GREY[grey]);
 
-        TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        sheep.layer(detailGroup).textureTableSelector(SHEEP_TEXTURES_FUR, fur).add();
-        sheep.layer(detailGroup).textureTableSelector(SHEEP_TEXTURES_SKIN, skin).add();
-        sheep.layer(detailGroup).texture("hooves_black.png").add();
-        sheep.layer(detailGroup).texture("eyes_black.png").add();
-        sheep.layer(detailGroup).texture("chests.png").add();
-        parentGroup.addGrouping(detailGroup);
+        root.addMergeGroup(SHEEP_TEXTURES_FUR[fur], SHEEP_TEXTURES_SKIN[skin], "hooves_black.png", "eyes_black.png", "chests.png");
 
-        sheep.setTextureGrouping(parentGroup);
+        sheepTexture.finishTexture();
     }
 }

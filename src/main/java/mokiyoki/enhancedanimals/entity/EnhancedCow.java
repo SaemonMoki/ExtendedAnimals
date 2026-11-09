@@ -603,8 +603,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateCowTextures(this, this.getGenes().getAutosomalGenes());
+            calculateCowTextures(this, this.getGenes().getAutosomalGenes(), this.getVariantTexture());
         }
+    }
+
+    protected String getVariantTexture() {
+        return "";
     }
 
     @OnlyIn(Dist.CLIENT)

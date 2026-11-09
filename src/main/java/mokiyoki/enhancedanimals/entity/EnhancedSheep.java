@@ -910,7 +910,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getVariation());
+            calculateSheepTexture(this, getGenes().getAutosomalGenes());
         }
     }
 

@@ -1,16 +1,14 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.entity.util.Variation;
-import mokiyoki.enhancedanimals.entity.util.VariationKeys;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import mokiyoki.enhancedanimals.renderer.texture.Cutout;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
+import mokiyoki.enhancedanimals.renderer.texture.Mask;
+import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
 
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class AxolotlTexture {
-
-    private static final int CHEEK_SLOTS = 2;
 
     private static final int[] headCubes = new int[] {
             0, 0, 0, 8, 6, 5,
@@ -133,193 +131,87 @@ public class AxolotlTexture {
     };
 
     public static void calculateAxolotlTextures(EnhancedAxolotl axolotl, int[] gene) {
-        Variation variation = axolotl.getVariation();
-        int gills = 0;
-        int gillsColour = 0;
-        int gillsColour2 = 0;
-        int base = 0;
-        int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
-        int pattern = 0;
-        int blaze = -1;
-
-        if (gene[34] == 2 && gene[35] == 2) {
-            gills += 1;
-        }
-
-        if (gene[36] == 2 && gene[37] == 2) {
-            gills += 1;
-        }
-
-        if (gene[8] == 1 || gene[9] == 1) {
-            //Non-Leucistic (wildtype)
-            base = gene[2] == 1 || gene[3] == 1 ? 1 : 0;
-        } else if (gene[0] == 1 || gene[1] == 1) {
-            //Leucistic
-            pattern = 1;
-        }
-
-        int melanoid = 0;
-        if (gene[4] == 2 && gene[5] == 2) {
-            melanoid = 1;
-        }
-
-        int pied = 0;
-        int piedStrength = 0;
-        int piedSplotchy = 0;
-        if (gene[12] !=1 && gene[13] != 1) {
-            pied = (gene[12] + gene[13])-3;
-            piedStrength = (int)((gene[14] + gene[15] - 2) * 0.3);
-            if (piedStrength >= 5) {
-                piedStrength = 4;
-            }
-            if (gene[16] >= 5 || gene[17] >= 5) {
-                piedSplotchy = 2;
-            } else if (gene[16] >= 3 || gene[17] >= 3) {
-                piedSplotchy = 1;
-            }
-        }
-
-        if (gene[38] != 1 || gene[39] != 1) {
-            gillsColour = gene[40] - 1;
-            gillsColour2 = gene[41] - 1;
-        }
-
-        if (gene[18] + gene[19] != 2) {
-            blaze = variation.get(AXOLOTL_BLAZE[0], 9)+1;
-        }
-
-        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-
-        if (gillsColour < 0) gillsColour = 0;
-        if (gillsColour2 < 0) gillsColour2 = 0;
-        TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour, gills).add();
-        axolotl.layer(gillsGroup).textureTableSelector(AXOLOTL_TEXTURES_GILLS, gillsColour2, gills).add();
-        parentGroup.addGrouping(gillsGroup);
-
-        TextureGrouping bodyGroup = new TextureGrouping(TexturingType.MASK_GROUP);
-        TextureGrouping baseAlphaGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.layer(bodyGroup).texture("alpha_mask.png").add();
-        bodyGroup.addGrouping(baseAlphaGroup);
-
-        TextureGrouping baseDyeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_BASE, base).asType(TexturingType.APPLY_DYE).add();
-        bodyGroup.addGrouping(baseDyeGroup);
-
-        if (gene[0] == 1 || gene[1] == 1) {
-            TextureGrouping brindleGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-            if (gene[42] + gene[43] != 2) {
-                makeBrindleTexture(axolotl, piedStrength, brindleGroup, variation);
-            } else {
-                axolotl.addSkippedSlots(1);
-            }
-
-            axolotl.layer(brindleGroup).textureTableSelector(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid).onlyIf(gene[0] == 1 || gene[1] == 1).add();
-
-            bodyGroup.addGrouping(brindleGroup);
-        }
-
-        TextureGrouping piedGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        if (pied < 0) pied = 0;
-        boolean pieFlip = variation.get(AXOLOTL_PIED, 2) == 0;
-        axolotl.layer(bodyGroup).textureTableSelector(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy).onlyIf(pied != 0).flipped(pieFlip, headCubes, bodyCubes, tailCubes).add();
-        boolean blazeFlip = variation.get(AXOLOTL_BLAZE[1], 2) == 0;
-        axolotl.layer(piedGroup).textureTableSelector(AXOLOTL_TEXTURES_BLAZE, blaze-1).flipped(blazeFlip, headCubes).onlyIf(blaze>0).add();
-        parentGroup.addGrouping(bodyGroup);
-
-        if (gene[44] == 2 || gene[45] == 2) {
-            TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
-            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour).add();
-            axolotl.layer(cheekGroup).textureTableSelector(CHEEK_SPOTS, gillsColour2).add();
-            parentGroup.addGrouping(cheekGroup);
-        } else {
-            axolotl.addSkippedSlots(CHEEK_SLOTS);
-        }
-
-        TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        axolotl.layer(detailsGroup).texture("eye_left.png").asType(TexturingType.APPLY_EYE_LEFT_COLOUR).add();
-        axolotl.layer(detailsGroup).texture("eye_right.png").asType(TexturingType.APPLY_EYE_RIGHT_COLOUR).add();
-        parentGroup.addGrouping(detailsGroup);
-
-        axolotl.setTextureGrouping(parentGroup);
+        buildAxolotlTexture(TextureBuilder.of(axolotl, gene));
     }
 
-    private static void makeBrindleTexture(EnhancedAxolotl axolotl, int piedStrength, TextureGrouping brindleGroup, Variation variation) {
-        TextureGrouping brindleCutoutGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+    static void buildAxolotlTexture(TextureBuilder axolotlTexture) {
+        int gills = (axolotlTexture.isHomoFor(34, 2) ? 1 : 0) + (axolotlTexture.isHomoFor(36, 2) ? 1 : 0);
+        int base = axolotlTexture.has(8, 1) && axolotlTexture.has(2, 1) ? 1 : 0;
+        int pattern = !axolotlTexture.has(8, 1) && axolotlTexture.has(0, 1) ? 1 : 0;
+        int copper = axolotlTexture.has(6, 1) ? 0 : 1;
+        int melanoid = axolotlTexture.isHomoFor(4, 2) ? 1 : 0;
 
-        /**
-         *   head left
-         *   head right
-         *   body left
-         *   body right
-         *   tail
-         */
+        boolean hasPied = !axolotlTexture.has(12, 1);
+        int pied = hasPied ? Math.max(0, axolotlTexture.sum(12) - 3) : 0;
+        int piedStrength = hasPied ? Math.min(4, (int) ((axolotlTexture.sum(14) - 2) * 0.3)) : 0;
+        int piedSplotchy = !hasPied ? 0 : axolotlTexture.max(16) >= 5 ? 2 : axolotlTexture.max(16) >= 3 ? 1 : 0;
 
-        if (piedStrength == 1) piedStrength = 2;
-        if (piedStrength == 3) piedStrength = 4;
+        int gillsColour = axolotlTexture.isHomoFor(38, 1) ? 0 : Math.max(0, axolotlTexture.gene(40) - 1);
+        int gillsColour2 = axolotlTexture.isHomoFor(38, 1) ? 0 : Math.max(0, axolotlTexture.gene(41) - 1);
 
-        int result;
-        boolean flipSolidParts = variation.get(AXOLOTL_BRINDLE[0], 2) == 0;
+        TextureGroup rootTextureGroup = axolotlTexture.root();
+        rootTextureGroup.addAverageGroup(AXOLOTL_TEXTURES_GILLS[gillsColour][gills], AXOLOTL_TEXTURES_GILLS[gillsColour2][gills]);
+
+        Mask body = rootTextureGroup.addMaskGroup();
+        body.maskTexture().addTexture("alpha_mask.png");
+        body.content().addTexture(AXOLOTL_TEXTURES_BASE[base]).dye();
+        if (axolotlTexture.has(0, 1)) {
+            Cutout brindle = body.content().addCutoutGroup();
+            if (!axolotlTexture.isHomoFor(42, 1)) addBrindle(axolotlTexture, piedStrength, brindle.cutoutTexture());
+            brindle.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
+        }
+        if (pied != 0) {
+            body.content().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]).flipIf(axolotlTexture.randomChance(AXOLOTL_PIED, 50), headCubes, bodyCubes, tailCubes);
+        }
+        if (!axolotlTexture.isHomoFor(18, 1)) {
+            body.content().pickRandomTexture(AXOLOTL_TEXTURES_BLAZE, AXOLOTL_BLAZE[0]).flipIf(axolotlTexture.randomChance(AXOLOTL_BLAZE[1], 50), headCubes);
+        }
+
+        if (axolotlTexture.has(44, 2)) rootTextureGroup.addAverageGroup(CHEEK_SPOTS[gillsColour], CHEEK_SPOTS[gillsColour2]);
+
+        TextureGroup eyes = rootTextureGroup.addMergeGroup();
+        eyes.addTexture("eye_left.png").leftEyeColour();
+        eyes.addTexture("eye_right.png").rightEyeColour();
+
+        axolotlTexture.finishTexture();
+    }
+
+    private static void addBrindle(TextureBuilder axolotlTexture, int piedStrength, TextureGroup parts) {
+        int strength = piedStrength == 1 ? 2 : piedStrength == 3 ? 4 : piedStrength;
+        boolean flipSolidParts = axolotlTexture.randomChance(AXOLOTL_BRINDLE[0], 50);
 
         // TODO axolotls need to maintain which side the dark/light part is on
 
-        if (variation.get(AXOLOTL_BRINDLE[1], 2) == 0) {
-            //Head Left
-            result = makeBrindleComponent(axolotl, piedStrength, variation, 3, brindleCutoutGroup, "head_left", headCubes, 0, flipSolidParts);
-
-            //Head Right
-            makeBrindleComponent(axolotl, piedStrength, variation, 6, brindleCutoutGroup, "head_right", headCubes, result, flipSolidParts);
+        if (axolotlTexture.randomChance(AXOLOTL_BRINDLE[1], 50)) {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 3, "head_left", headCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 6, "head_right", headCubes, first, flipSolidParts);
         } else {
-            //Head Right
-            result = makeBrindleComponent(axolotl, piedStrength, variation, 6, brindleCutoutGroup, "head_right", headCubes, 0, flipSolidParts);
-
-            //Head Left
-            makeBrindleComponent(axolotl, piedStrength, variation, 3, brindleCutoutGroup, "head_left", headCubes, result, flipSolidParts);
+            int first = addBrindlePart(axolotlTexture, parts, strength, 6, "head_right", headCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 3, "head_left", headCubes, first, flipSolidParts);
         }
 
-        if (variation.get(AXOLOTL_BRINDLE[2], 2) == 0) {
-            //Body Left
-            result = makeBrindleComponent(axolotl, piedStrength, variation, 9, brindleCutoutGroup, "body_left", bodyCubes, 0, flipSolidParts);
-
-            //Body Right
-            makeBrindleComponent(axolotl, piedStrength, variation, 12, brindleCutoutGroup, "body_right", bodyCubes, result, flipSolidParts);
+        if (axolotlTexture.randomChance(AXOLOTL_BRINDLE[2], 50)) {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 9, "body_left", bodyCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 12, "body_right", bodyCubes, first, flipSolidParts);
         } else {
-            //Body Right
-            result = makeBrindleComponent(axolotl, piedStrength, variation, 12, brindleCutoutGroup, "body_right", bodyCubes, 0, flipSolidParts);
-
-            //Body Left
-            makeBrindleComponent(axolotl, piedStrength, variation, 9, brindleCutoutGroup, "body_left", bodyCubes, result, flipSolidParts);
+            int first = addBrindlePart(axolotlTexture, parts, strength, 12, "body_right", bodyCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 9, "body_left", bodyCubes, first, flipSolidParts);
         }
 
-        //Tail
-        makeBrindleComponent(axolotl, piedStrength, variation, 15, brindleCutoutGroup, "tail", tailCubes, 0, flipSolidParts);
-
-        brindleGroup.addGrouping(brindleCutoutGroup);
+        addBrindlePart(axolotlTexture, parts, strength, 15, "tail", tailCubes, 0, flipSolidParts);
     }
 
-    private static int makeBrindleComponent(EnhancedAxolotl axolotl, int piedStrength, Variation variation, int variationIndex, TextureGrouping brindleCutoutGroup, String location, int[] headCubes, int test, boolean sidedness) {
-        TextureGrouping cutoutHeadLeftGroup = new TextureGrouping(TexturingType.CUTOUT_GROUP);
-        int brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex], 2);
-        if (brindleVariation != 0) brindleVariation = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex +1], 4)+1;
-        boolean mirror = variation.get(VariationKeys.AXOLOTL_BRINDLE[variationIndex +2], 2) == 0;
-
-        if (brindleVariation == 0) {
-            axolotl.layer(cutoutHeadLeftGroup).texture("brindle/" + piedStrength + "/0.png").flipped(sidedness, headCubes).keyedAs(String.valueOf(0)+sidedness).add();
-        } else {
-            if (test != 0) {
-                if ((mirror ? (brindleVariation + 1) : -(brindleVariation + 1)) == test) {
-                    mirror = !mirror;
-                }
-            }
-
-            axolotl.layer(cutoutHeadLeftGroup).texture("brindle/" + piedStrength + "/" + brindleVariation + ".png").flipped(mirror, headCubes).keyedAs(String.valueOf(piedStrength) + brindleVariation + mirror).add();
+    private static int addBrindlePart(TextureBuilder axolotlTexture, TextureGroup parts, int strength, int key, String location, int[] cubes, int previous, boolean flipSolidParts) {
+        int texture = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key], 50) ? 0 : axolotlTexture.randomInt(AXOLOTL_BRINDLE[key + 1], 4) + 1;
+        boolean mirror = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key + 2], 50);
+        if (texture != 0 && previous != 0 && (mirror ? texture + 1 : -(texture + 1)) == previous) {
+            mirror = !mirror;
         }
 
-        axolotl.layer(cutoutHeadLeftGroup).texture("brindle/"+location+".png").add();
+        Cutout part = parts.addCutoutGroup();
+        part.cutoutTexture().addTexture("brindle/" + strength + "/" + texture + ".png").flipIf(texture == 0 ? flipSolidParts : mirror, cubes);
+        part.content().addTexture("brindle/" + location + ".png");
 
-        brindleCutoutGroup.addGrouping(cutoutHeadLeftGroup);
-
-        brindleVariation++;
-        return mirror ? -brindleVariation : brindleVariation;
+        return mirror ? -(texture + 1) : texture + 1;
     }
 }

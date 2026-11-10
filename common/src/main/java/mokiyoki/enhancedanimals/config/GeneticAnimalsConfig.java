@@ -147,6 +147,26 @@ public class GeneticAnimalsConfig {
         public final ConfigValue<Integer> passageOfTimeChickenStages;
         public final ConfigValue<Boolean> passageOfTimeChickenNoHatch;
 
+        public final ConfigValue<Double> maxCarryVolume;
+        public final ConfigValue<Boolean> pigCanBeCarried;
+        public final ConfigValue<Boolean> pigCarryBabiesOnly;
+        public final ConfigValue<Boolean> cowCanBeCarried;
+        public final ConfigValue<Boolean> cowCarryBabiesOnly;
+        public final ConfigValue<Boolean> llamaCanBeCarried;
+        public final ConfigValue<Boolean> llamaCarryBabiesOnly;
+        public final ConfigValue<Boolean> sheepCanBeCarried;
+        public final ConfigValue<Boolean> sheepCarryBabiesOnly;
+        public final ConfigValue<Boolean> chickenCanBeCarried;
+        public final ConfigValue<Boolean> chickenCarryBabiesOnly;
+        public final ConfigValue<Boolean> rabbitCanBeCarried;
+        public final ConfigValue<Boolean> rabbitCarryBabiesOnly;
+        public final ConfigValue<Boolean> turtleCanBeCarried;
+        public final ConfigValue<Boolean> turtleCarryBabiesOnly;
+        public final ConfigValue<Boolean> horseCanBeCarried;
+        public final ConfigValue<Boolean> horseCarryBabiesOnly;
+        public final ConfigValue<Boolean> axolotlCanBeCarried;
+        public final ConfigValue<Boolean> axolotlCarryBabiesOnly;
+
 
         public CommonConfig(ConfigBuilder builder) {
             builder.push("general");
@@ -171,6 +191,9 @@ public class GeneticAnimalsConfig {
                     .define("Genetic animals are immune to all damage unless attacked with an axe by a player", false);
             force16x = builder
                     .define("Force Genetic Animals to use a 16x base texture", false);
+            maxCarryVolume = builder
+                    .comment("Maximum bounding box volume (width*width*height) of an animal that can be picked up and carried")
+                    .defineInRange("Max Carry Volume:", 4.0D, 0.0D, 1000.0D);
             builder.pop();
 
             builder.push("Trading");
@@ -233,6 +256,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of pigs you want to find in a group at spawn, Default is 2", 2, 1, 60);
             maximumPigGroup = builder
                     .defineInRange("The maximum number of pigs you want to find in a group at spawn, Default is 3", 3, 1, 60);
+            pigCanBeCarried = builder
+                    .define("Allow Pigs to be picked up and carried:", true);
+            pigCarryBabiesOnly = builder
+                    .define("Only baby Pigs can be picked up and carried:", false);
             builder.pop();
 
             builder.push("cow");
@@ -252,6 +279,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of cows you want to find in a group at spawn, Default is 4", 4, 1, 60);
             milkMultiplier = builder
                     .defineInRange("This number multiplies how fast a cow regains milk, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            cowCanBeCarried = builder
+                    .define("Allow Cows to be picked up and carried:", true);
+            cowCarryBabiesOnly = builder
+                    .define("Only baby Cows can be picked up and carried:", false);
             builder.pop();
 
             builder.push("mooshroom");
@@ -300,6 +331,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of llamas you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierLlama = builder
                     .defineInRange("This number multiplies how fast a llama regains its wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            llamaCanBeCarried = builder
+                    .define("Allow Llamas to be picked up and carried:", true);
+            llamaCarryBabiesOnly = builder
+                    .define("Only baby Llamas can be picked up and carried:", false);
             builder.pop();
 
             builder.push("sheep");
@@ -319,6 +354,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of Sheep you want to find in a group at spawn, Default is 4", 4, 1, 60);
             woolMultiplierSheep = builder
                     .defineInRange("This number multiplies how fast a llama regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            sheepCanBeCarried = builder
+                    .define("Allow Sheep to be picked up and carried:", true);
+            sheepCarryBabiesOnly = builder
+                    .define("Only baby Sheep can be picked up and carried:", false);
             builder.pop();
 
             builder.push("chicken");
@@ -354,6 +393,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("This number multiplies how fast a chicken prepares to lay an egg, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
             eggThrowHatchChance = builder
                     .defineInRange("This number is a percentage chance for thrown eggs to hatch into chicks, Default is 15%", 15, 0, 100);
+            chickenCanBeCarried = builder
+                    .define("Allow Chickens to be picked up and carried:", true);
+            chickenCarryBabiesOnly = builder
+                    .define("Only baby Chickens can be picked up and carried:", false);
             builder.pop();
 
             builder.push("rabbit");
@@ -373,6 +416,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The maximum number of Rabbit you want to find in a group at spawn, Default is 3", 3, 1, 60);
             woolMultiplierRabbit = builder
                     .defineInRange("This number multiplies how fast a rabbit with wool regains it's wool, Default is 1 for 1x speed", 1.0, 0.0001, 1000.0);
+            rabbitCanBeCarried = builder
+                    .define("Allow Rabbits to be picked up and carried:", true);
+            rabbitCarryBabiesOnly = builder
+                    .define("Only baby Rabbits can be picked up and carried:", false);
             builder.pop();
 
             builder.push("turtle");
@@ -418,6 +465,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("    turtleDaytimeChanceToNotHatch", 500, 0, Integer.MAX_VALUE);
 
             builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
+            turtleCanBeCarried = builder
+                    .define("Allow Turtles to be picked up and carried:", true);
+            turtleCarryBabiesOnly = builder
+                    .define("Only baby Turtles can be picked up and carried:", false);
             builder.pop();
 
             builder.push("horse");
@@ -429,6 +480,10 @@ public class GeneticAnimalsConfig {
                     .define("Allow vanilla minecraft Horses to spawn/exist:", false);
             spawnGeneticHorses = builder
                     .define("Allow Genetic Horse to continue to spawn/exist:", true);
+            horseCanBeCarried = builder
+                    .define("Allow Horses to be picked up and carried:", true);
+            horseCarryBabiesOnly = builder
+                    .define("Only baby Horses can be picked up and carried:", false);
             builder.pop();
             
             builder.push("axolotl");
@@ -448,6 +503,10 @@ public class GeneticAnimalsConfig {
                     .defineInRange("The minimum number of Axolotls you want to find in a group at spawn, Default is 4", 4, 1, 60);
             maximumAxolotlGroup = builder
                     .defineInRange("The maximum number of Axolotls you want to find in a group at spawn, Default is 6", 6, 1, 60);
+            axolotlCanBeCarried = builder
+                    .define("Allow Axolotls to be picked up and carried:", true);
+            axolotlCarryBabiesOnly = builder
+                    .define("Only baby Axolotls can be picked up and carried:", false);
             builder.pop();
 
             builder.push("passageOfTime");

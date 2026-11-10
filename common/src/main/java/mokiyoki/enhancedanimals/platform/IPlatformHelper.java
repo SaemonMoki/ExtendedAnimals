@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.platform;
 
+import com.mojang.serialization.Codec;
 import mokiyoki.enhancedanimals.platform.attachment.LevelAttachment;
 import mokiyoki.enhancedanimals.platform.attachment.LevelSerializable;
+import mokiyoki.enhancedanimals.platform.attachment.PlayerAttachment;
 import mokiyoki.enhancedanimals.platform.config.ConfigBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -67,6 +69,8 @@ public interface IPlatformHelper {
     boolean isRestoringBlockSnapshots(Level level);
 
     <T extends LevelSerializable> LevelAttachment<T> createLevelAttachment(String name, Supplier<T> factory);
+
+    <T> PlayerAttachment<T> createPlayerAttachment(String name, Codec<T> codec, Supplier<T> defaultValue);
 
     <T> T registerConfig(String fileName, Function<ConfigBuilder, T> factory);
 

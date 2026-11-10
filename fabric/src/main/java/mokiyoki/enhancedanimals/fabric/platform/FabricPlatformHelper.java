@@ -1,11 +1,16 @@
 package mokiyoki.enhancedanimals.fabric.platform;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import mokiyoki.enhancedanimals.platform.IPlatformHelper;
 import mokiyoki.enhancedanimals.platform.attachment.LevelAttachment;
 import mokiyoki.enhancedanimals.platform.attachment.LevelSerializable;
+import mokiyoki.enhancedanimals.platform.attachment.PlayerAttachment;
 import mokiyoki.enhancedanimals.platform.config.ConfigBuilder;
 import mokiyoki.enhancedanimals.platform.config.TomlFileConfigBuilder;
+import mokiyoki.enhancedanimals.util.Reference;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
@@ -15,6 +20,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -153,6 +159,22 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public boolean isRestoringBlockSnapshots(Level level) {
         return false;
+    }
+
+    @Override
+    public <T> PlayerAttachment<T> createPlayerAttachment(String name, Codec<T> codec, Supplier<T> defaultValue) {
+        AttachmentType<T> type = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), builder -> builder.initializer(defaultValue).persistent(codec));
+        return new PlayerAttachment<>() {
+            @Override
+            public T get(Player player) {
+                return player.getAttachedOrCreate(type);
+            }
+
+            @Override
+            public void set(Player player, T value) {
+                player.setAttached(type, value);
+            }
+        };
     }
 
     @Override

@@ -1,5 +1,8 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import mokiyoki.enhancedanimals.init.ModAttachments;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -689,7 +692,34 @@ public class EventSubscriber {
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
                 Services.NETWORK.sendToPlayer(trackingPlayer, equipmentPacket);
             }
+        } else if (targetEntity instanceof Player carryingPlayer) {
+            //always send the true current state, even empty otherwise a newly-tracking client can be left with
+            //a stale "carrying" render from a previous tracking session if the item was dropped while untracked
+            Services.NETWORK.sendToPlayer(trackingPlayer, new CarrySyncPacket(carryingPlayer.getId(), ModAttachments.CARRIED.get(carryingPlayer)));
         }
+    }
+
+    public void onPlayerLoggedOut(ServerPlayer serverPlayer) {
+        EAPacketHandler.handleCarryToggle(serverPlayer, -1);
+    }
+
+    //the logout-time sync above can fail to reach a disconnecting client this self-corrects on (re)join
+    //regardless of how the previous session ended, since the server's own capability state is always correct
+    public void onPlayerLoggedIn(ServerPlayer serverPlayer) {
+        Services.NETWORK.sendToPlayer(serverPlayer, new CarrySyncPacket(serverPlayer.getId(), ModAttachments.CARRIED.get(serverPlayer)));
+    }
+
+    public void onPlayerDeath(ServerPlayer serverPlayer) {
+        EAPacketHandler.dropCarriedOnDeath(serverPlayer);
+    }
+
+    //the client clears its carry state on every level switch, these fire after the respawn packet so the resync lands after the clear
+    public void onPlayerRespawn(ServerPlayer serverPlayer) {
+        EAPacketHandler.syncCarryToSelf(serverPlayer);
+    }
+
+    public void onPlayerChangedDimension(ServerPlayer serverPlayer) {
+        EAPacketHandler.syncCarryToSelf(serverPlayer);
     }
 
     public void onFinalizeSpawn(Mob entity, LevelAccessor world) {

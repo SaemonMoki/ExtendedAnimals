@@ -25,7 +25,7 @@ public class ModCreativeTabs {
             .title(Component.translatable("itemGroup." + MODID))
             .icon(() -> new ItemStack(ModItems.EGG_BLUE.get()))
             .displayItems((itemDisplayParameters, output) -> {
-                Set<RegistryEntry<Item, ? extends Item>> hiddenItems = Set.of(ENHANCED_AXOLOTL_BUCKET, ENHANCED_AXOLOTL_EGG_BUCKET,
+                Set<RegistryEntry<Item, ? extends Item>> hiddenItems = Set.of(ENHANCED_AXOLOTL_BUCKET, ENHANCED_AXOLOTL_EGG_BUCKET, CARRIED_ANIMAL,
                         GROWABLE_ALLIUM_ITEM, GROWABLE_AZURE_BLUET_ITEM, GROWABLE_BLUE_ORCHID_ITEM, GROWABLE_CORNFLOWER_ITEM,
                         GROWABLE_DANDELION_ITEM, GROWABLE_OXEYE_DAISY_ITEM, GROWABLE_GRASS_ITEM, GROWABLE_FERN_ITEM,
                         GROWABLE_ROSE_BUSH_ITEM, GROWABLE_SUNFLOWER_ITEM, GROWABLE_TALL_GRASS_ITEM, GROWABLE_LARGE_FERN_ITEM);

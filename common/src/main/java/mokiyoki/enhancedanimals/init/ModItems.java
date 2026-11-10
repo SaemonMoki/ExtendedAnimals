@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.init;
 
+import mokiyoki.enhancedanimals.items.CarriedAnimalItem;
 import mokiyoki.enhancedanimals.platform.Services;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.PostBlock;
@@ -458,6 +459,8 @@ public class ModItems {
     public static final RegistryEntry<Item, SpawnEggItem> ENHANCED_COW_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_cow_spawn_egg", () -> Services.PLATFORM.createSpawnEgg(ModEntities.ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()));
     public static final RegistryEntry<Item, SpawnEggItem> ENHANCED_MOOSHROOM_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_mooshroom_spawn_egg", () -> Services.PLATFORM.createSpawnEgg(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()));
     public static final RegistryEntry<Item, SpawnEggItem> ENHANCED_PIG_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_pig_spawn_egg", () -> Services.PLATFORM.createSpawnEgg(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()));
+
+    public static final RegistryEntry<Item, Item> CARRIED_ANIMAL = ITEMS_DEFERRED_REGISTRY.register("carried_animal", () -> new CarriedAnimalItem(new Item.Properties().stacksTo(1)));
 
     public static void init() {
     }

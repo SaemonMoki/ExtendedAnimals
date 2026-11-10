@@ -193,12 +193,17 @@ public class CowTexture {
         else brockling.tintRed();
     }
 
-    private static TextureGroup addWhiteMask(TextureBuilder cowTexture, TextureGroup body, boolean brockling) {
+    private static TextureGroup addWhiteMaskwithBrocklHandling(TextureBuilder cowTexture, TextureGroup body, boolean addNewBrockling) {
         Mask spots = body.addMaskGroup();
         Cutout white = spots.maskTexture().addCutoutGroup();
-        if (brockling) white.cutoutTexture().addTexture("spots/brockling/0.png");
+        if (addNewBrockling) addBrockles(cowTexture, white);
         white.content().addTexture("spots/white.png");
         return spots.content();
+    }
+
+    private static void addBrockles(TextureBuilder cowTexture, Cutout white) {
+        // TODO new brockle stuff here
+        white.cutoutTexture().addTexture("spots/brockling/0.png").flipIf(cowTexture.randomChance(COW_BROCKLING_FLIPS[0], 50), headCubes);
     }
 
     private static void addWhiteSpots(TextureBuilder cowTexture, TextureGroup body, int black) {

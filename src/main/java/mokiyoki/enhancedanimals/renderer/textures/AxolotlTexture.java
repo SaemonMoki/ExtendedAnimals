@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.Cutout;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 import mokiyoki.enhancedanimals.renderer.texture.Mask;
@@ -156,13 +157,19 @@ public class AxolotlTexture {
         body.maskTexture().addTexture("alpha_mask.png");
 
         body.content().addTexture(AXOLOTL_TEXTURES_BASE[base]).dye();
+
+        int eyeColour = calculateEyeColour(axolotlTexture, 2);
+        body.content().addTexture("eye_left.png").rgb(eyeColour);
+        body.content().addTexture("eye_right.png").rgb(eyeColour);
+
         if (axolotlTexture.eitherAllelesHave(0, 1)) {
             Cutout brindle = body.content().addCutoutGroup();
             if (!axolotlTexture.isHomoFor(42, 1)) addBrindle(axolotlTexture, piedStrength, brindle.cutoutTexture(), true);
             brindle.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
+            eyeColour = calculateEyeColour(axolotlTexture, 3);
+            brindle.content().addTexture("eye_left.png").rgb(eyeColour);
+            brindle.content().addTexture("eye_right.png").rgb(eyeColour);
         }
-        if (pied != 0) {
-            body.content().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]).flipIf(axolotlTexture.randomChance(AXOLOTL_PIED, 50), headCubes, bodyCubes, tailCubes);
 
         if (pied != 0 || !axolotlTexture.isHomoFor(18, 1) || axolotlTexture.eitherAllelesHave(42, 3)) {
             Mask spots = body.content().addMaskGroup();
@@ -184,13 +191,12 @@ public class AxolotlTexture {
 
             spots.content().addTexture("natural.png");
 
+            eyeColour = calculateEyeColour(axolotlTexture, 1);
+            spots.content().addTexture("eye_left.png").rgb(eyeColour);
+            spots.content().addTexture("eye_right.png").rgb(eyeColour);
         }
 
         if (axolotlTexture.eitherAllelesHave(44, 2)) rootTextureGroup.addAverageGroup(CHEEK_SPOTS[gillsColour], CHEEK_SPOTS[gillsColour2]);
-
-        TextureGroup eyes = rootTextureGroup.addMergeGroup();
-        eyes.addTexture("eye_left.png").leftEyeColour();
-        eyes.addTexture("eye_right.png").rightEyeColour();
 
         axolotlTexture.finishTexture();
     }
@@ -232,5 +238,79 @@ public class AxolotlTexture {
         }
 
         return mirror ? -(texture + 1) : texture + 1;
+    }
+
+    private static int calculateEyeColour(TextureBuilder textureBuilder, int layer) {
+        return Colouration.getAxolotlEyes(calculateEyeColorPart(textureBuilder, 20, layer), calculateEyeColorPart(textureBuilder,21, layer));
+    }
+
+    private static float[] calculateEyeColorPart(TextureBuilder textureBuilder, int eyeVersion, int layer) {
+        /**
+         *      0 -> albino
+         *      1 -> white spots
+         *      2 -> yellow
+         *      3 -> full colour
+         */
+
+        eyeVersion = textureBuilder.gene(eyeVersion);
+        int colourA = textureBuilder.gene(22);
+        int colourB = textureBuilder.gene(23);
+        boolean isAxanthic = textureBuilder.isHomoFor(2, 2);
+
+        //NormalEyes
+        float[] eyeHSB = {0.75F, 0.5F, 0.25F};
+
+        if (layer <= 2) {
+            if (isAxanthic || layer == 0) {
+                //Axanthic Albino (pinkish white)
+                eyeHSB[0] = 0.95F;
+                eyeHSB[2] = 0.8F;
+            } else {
+                if (layer<2) {
+                    //Blue
+                    eyeHSB[0] = 0.55F;
+                    eyeHSB[1] = 0.75F;
+                    eyeHSB[2] = 0.8F;
+                } else {
+                    //Gold Albino
+                    eyeHSB[0] = 0.09F;
+                    eyeHSB[1] = 0.75F;
+                    eyeHSB[2] = 0.8F;
+                }
+            }
+
+            return eyeHSB;
+        }
+
+        switch (eyeVersion) {
+            case 2 -> {
+                //DarkEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (colourA-1) / 255, (float) (colourB-1) / 255);
+                eyeHSB[2] *= 0.5F;
+            }
+            case 3 -> {
+                //PigmentedEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (colourA-1) / 255, (float) (colourB-1) / 255);
+            }
+            case 4 -> {
+                //LightEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (colourA-1) / 255, (float) (colourB-1) / 255);
+                eyeHSB[2] = 1.0F;
+            }
+            case 5 -> {
+                //PastelEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (colourA-1) / 255, (float) (colourB-1) / 255);
+                eyeHSB[1] *= 0.5F;
+                eyeHSB[2] = 1.0F;
+            }
+            case 6 -> {
+                //GlowEyes
+                eyeHSB = Colouration.mixAxolotlHue((float) (colourA-1) / 255, (float) (colourB-1) / 255);
+            }
+            default -> {}
+
+
+        }
+        return eyeHSB;
     }
 }

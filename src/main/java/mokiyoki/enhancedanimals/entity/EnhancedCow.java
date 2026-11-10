@@ -579,7 +579,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.getReloadTexture() ^ this.reload) {
             this.reload = !this.reload;
@@ -594,10 +594,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
-        this.setTexturePaths();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
     }
 
     @OnlyIn(Dist.CLIENT)

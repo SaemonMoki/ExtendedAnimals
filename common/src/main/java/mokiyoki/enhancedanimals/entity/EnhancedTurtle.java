@@ -427,7 +427,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateTurtleTextures(this, this.getGenes().getAutosomalGenes(), getVariation());
+            calculateTurtleTextures(this, this.getGenes().getAutosomalGenes());
         }
     }
 

@@ -20,7 +20,6 @@ import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.tags.BlockTags;
@@ -117,17 +116,14 @@ public class EnhancedMooshroom extends EnhancedCow implements GeneticShearable {
     }
 
     @Override
-    protected void setTexturePaths() {
-        super.setTexturePaths();
+    protected String getVariantTexture() {
         int mushroomType = 0;
 
         if (getMooshroomType().name.equals("brown")) {
             mushroomType = 1;
         }
 
-        TextureGrouping parent = this.getTextureGrouping();
-        this.layer(parent).texture(MOOSHROOM_MUSHROOM[mushroomType]).add();
-        this.setTextureGrouping(parent);
+        return MOOSHROOM_MUSHROOM[mushroomType];
     }
 
     @Override

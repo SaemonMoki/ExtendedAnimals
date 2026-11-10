@@ -683,7 +683,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculatePigTexture(this, this.getGenes().getAutosomalGenes(), getVariation());
+            calculatePigTexture(this, this.getGenes().getAutosomalGenes());
         }
     }
 

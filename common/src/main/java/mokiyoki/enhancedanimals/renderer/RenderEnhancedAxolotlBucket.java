@@ -88,9 +88,10 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
         axolotlBucketModel.renderToBuffer(matrix, builder, light, overlayLight, -1);
 
-        if (CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("gfp")) {
-            multiBufferSource.getBuffer(RenderType.eyes(getGlowingTexture(stack)));
-            axolotlBucketModel.renderToBuffer(matrix, builder, light, overlayLight, -1);
+        ResourceLocation glowingTexture = getGlowingTexture(stack);
+        if (glowingTexture != null) {
+            VertexConsumer glowBuilder = multiBufferSource.getBuffer(RenderType.eyes(glowingTexture));
+            axolotlBucketModel.renderToBuffer(matrix, glowBuilder, light, OverlayTexture.NO_OVERLAY, -1);
         }
 
         matrix.popPose();
@@ -127,18 +128,17 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
     public ResourceLocation getGlowingTexture(ItemStack stack) {
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
-            String s = EnhancedAxolotlBucket.getTexture(stack);
-            s="g"+s;
+            int[] image = EnhancedAxolotlBucket.getGlowingImage(stack);
+
+            if (image.length == 0) {
+                return null;
+            }
+
+            String s = EnhancedAxolotlBucket.getGlowingTexture(image);
 
             ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
             if (resourcelocation == null) {
-                int[] image = EnhancedAxolotlBucket.getGlowingImage(stack);
-
-                if (image.length == 1) {
-                    return ERROR_TEXTURE_LOCATION;
-                }
-
                 try {
                     resourcelocation = ResourceLocation.parse(s);
                     DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/item/axolotl_glow_bucket_base.png");
@@ -146,12 +146,12 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);
                 } catch (IllegalStateException e) {
-                    return ERROR_TEXTURE_LOCATION;
+                    return null;
                 }
             }
 
             return resourcelocation;
         }
-        return ERROR_TEXTURE_LOCATION;
+        return null;
     }
 }

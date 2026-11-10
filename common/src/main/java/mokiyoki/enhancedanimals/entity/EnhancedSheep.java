@@ -899,7 +899,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements Gene
     @Override
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getVariation());
+            calculateSheepTexture(this, getGenes().getAutosomalGenes());
         }
     }
 

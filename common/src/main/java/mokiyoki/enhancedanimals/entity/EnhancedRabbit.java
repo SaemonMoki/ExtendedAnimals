@@ -859,7 +859,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements GeneticShe
 
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes(), getVariation());
+            calculateRabbitTextures(this, this.getGenes().getAutosomalGenes());
         }
     }
 

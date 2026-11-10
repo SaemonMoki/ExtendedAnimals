@@ -381,21 +381,41 @@ public class GeneticAnimalsConfig {
             spawnGeneticTurtles = builder
                     .define("Allow Genetic Turtles to continue to spawn/exist:", true);
             adultAgeTurtle = builder
-                    .defineInRange("How many ticks it takes for a Turtle to become an adult, 24000 = 1 Minecraft Day:", 120000, 1, Integer.MAX_VALUE);
+                    .comment("\n" +
+                            "How many ticks it takes for a Turtle to become an adult, 24000 = 1 Minecraft Day:")
+                    .defineInRange("    Turtle Adult Age", 120000, 1, Integer.MAX_VALUE);
             turtleScuteDropAge = builder
-                    .defineInRange("How many ticks it takes for a Turtle to drop its scute, 24000 = 1 Minecraft Day:", 24000, 1, Integer.MAX_VALUE);
+                    .comment("\n" +
+                            "How many ticks it takes for a Turtle to drop its scute, 24000 = 1 Minecraft Day:")
+                    .defineInRange("    Turtle Scute Drop Age", 24000, 1, Integer.MAX_VALUE);
             spawnWeightTurtles = builder
-                    .defineInRange("How highly Turtle spawning is weighted, larger numbers spawn more, Default is 6", 6, 1, 20);
+                    .comment("\n" +
+                            "How highly Turtle spawning is weighted, larger numbers spawn more, Default is 6")
+                    .defineInRange("    Turtle Spawn Weight", 6, 1, 20);
             minimumTurtleGroup = builder
-                    .defineInRange("The minimum number of Turtle you want to find in a group at spawn, Default is 1", 1, 1, 60);
+                    .comment("\n" +
+                            "The minimum number of Turtle you want to find in a group at spawn, Default is 1")
+                    .defineInRange("    Minimum Turtle Group Size", 1, 1, 60);
             maximumTurtleGroup = builder
-                    .defineInRange("The maximum number of Turtle you want to find in a group at spawn, Default is 5", 5, 1, 60);
+                    .comment("\n" +
+                            "The maximum number of Turtle you want to find in a group at spawn, Default is 5")
+                    .defineInRange("    Maximum Turtle Group Size", 5, 1, 60);
             turtleHatchingWindowStart = builder
-                    .defineInRange("If the eggs are randomly ticked and the time is after this but before hatchingWindowEnd their hatch level will increase", 21600, 0, 24000);
+                    .comment(
+                            "\n" +
+                            "--------------------------" +
+                            "\n" +
+                            "\n" +
+                            "If the eggs are randomly ticked and the time is after the time  but before turtleHatchingWindowEnd their hatch level will increase")
+                    .defineInRange("    turtleHatchingWindowStart", 21600, 0, 24000);
             turtleHatchingWindowEnd = builder
-                    .defineInRange("If the eggs are randomly ticked and the time is after hatchingWindowStart but before this their hatch level will increase", 22550, 0, 24000);
+                    .comment("\n"+
+                            "If the eggs are randomly ticked and the time is after hatchingWindowStart but before this their hatch level will increase")
+                    .defineInRange("    turtleHatchingWindowEnd", 22550, 0, 24000);
             turtleDaytimeChanceToNotHatch = builder
-                    .defineInRange("The chance that eggs won't hatch if their block is ticked, default is 500, use 1 to guarantee they increment hatching", 500, 0, Integer.MAX_VALUE);
+                    .comment("\n"+
+                            "If a block tick happens on a turtle egg block that isn't during the hatching window, this is the chance that eggs will hatch if their block is ticked, default is 500 (one out of 500), use 1 to guarantee they increment hatching (gain a new crack). This can let you basically ignore time of day for hatching turtles.")
+                    .defineInRange("    turtleDaytimeChanceToNotHatch", 500, 0, Integer.MAX_VALUE);
 
             builder.comment("Turtles only hatch on blocks in the sand tag by default, If you wish to change that you can do so by using a datapack to modify the sand block tag");
             builder.pop();

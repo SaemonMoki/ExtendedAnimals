@@ -22,11 +22,9 @@ import java.util.function.Predicate;
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_SPLASH;
 
 public class ChickenTexture {
-    // - Chicken Ears, Comb, Wattles, Face, Legs, Skin, Eyes needs to be RGB
     // - Autosomal red/gold/silver needs to be redone from scratch
-    // - All chicken pattern textures, model textures, and base textures need to be redone
-    // - Patterns need to be RGB shaded
-    // - Base Feather colour needs to be RGB shaded
+
+
 
     public static void calculateChickenTextures(EnhancedChicken chicken, Genes genetics) {
         int[] gene = genetics.getAutosomalGenes();

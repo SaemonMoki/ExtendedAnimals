@@ -53,11 +53,11 @@ public final class VariationKeys {
 
     //Rabbit
     //uuid[1]
-    public static final VariationKey RABBIT_VIENNA_EYES = VariationKey.legacy("rabbit.vienna_eyes", 1);
+    public static final VariationKey RABBIT_VIENNA_EYES = VariationKey.legacy("rabbit.vienna.eyes", 1);
     //uuid[2]
-    public static final VariationKey RABBIT_VIENNA_SPOTTED = VariationKey.legacy("rabbit.vienna_spotted", 2);
+    public static final VariationKey RABBIT_VIENNA_SPOTTED = VariationKey.legacy("rabbit.vienna.spotted", 2);
     //uuid[3]
-    public static final VariationKey RABBIT_VIENNA_SPOTS = VariationKey.legacy("rabbit.vienna_spots", 3);
+    public static final VariationKey RABBIT_VIENNA_SPOTS = VariationKey.legacy("rabbit.vienna.spots", 3);
     //uuid[4]
     public static final VariationKey RABBIT_BROKEN = VariationKey.legacy("rabbit.broken", 4);
     //uuid[5]

@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -87,9 +88,10 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
         axolotlBucketModel.renderToBuffer(matrix, builder, light, overlayLight, 1, 1, 1, 1);
 
-        if (stack.getOrCreateTagElement("display").contains("gfp")) {
-            multiBufferSource.getBuffer(RenderType.eyes(getGlowingTexture(stack)));
-            axolotlBucketModel.renderToBuffer(matrix, builder, light, overlayLight, 1, 1, 1, 1);
+        ResourceLocation glowingTexture = getGlowingTexture(stack);
+        if (glowingTexture != null) {
+            VertexConsumer glowBuilder = multiBufferSource.getBuffer(RenderType.eyes(glowingTexture));
+            axolotlBucketModel.renderToBuffer(matrix, glowBuilder, light, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         }
 
         matrix.popPose();
@@ -128,18 +130,17 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
     @OnlyIn(Dist.CLIENT)
     public ResourceLocation getGlowingTexture(ItemStack stack) {
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
-            String s = EnhancedAxolotlBucket.getTexture(stack);
-            s="g"+s;
+            int[] image = EnhancedAxolotlBucket.getGlowingImage(stack);
+
+            if (image.length == 0) {
+                return null;
+            }
+
+            String s = EnhancedAxolotlBucket.getGlowingTexture(image);
 
             ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
             if (resourcelocation == null) {
-                int[] image = EnhancedAxolotlBucket.getGlowingImage(stack);
-
-                if (image.length == 1) {
-                    return ERROR_TEXTURE_LOCATION;
-                }
-
                 try {
                     resourcelocation = new ResourceLocation(s);
                     DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/items/axolotl_glow_bucket_base.png");
@@ -147,12 +148,12 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);
                 } catch (IllegalStateException e) {
-                    return ERROR_TEXTURE_LOCATION;
+                    return null;
                 }
             }
 
             return resourcelocation;
         }
-        return ERROR_TEXTURE_LOCATION;
+        return null;
     }
 }

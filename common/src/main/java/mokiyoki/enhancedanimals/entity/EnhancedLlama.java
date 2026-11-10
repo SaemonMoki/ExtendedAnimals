@@ -627,7 +627,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.resetTexture) {
             this.resetTexture = false;

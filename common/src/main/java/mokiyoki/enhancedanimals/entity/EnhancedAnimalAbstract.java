@@ -173,7 +173,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected TextureGrouping enhancedAnimalTextureGrouping;
     protected Map<Equipment, TextureGrouping> enhancedAnimalEquipmentGrouping = new HashMap<>();
 
-    protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
     protected String compiledTexture;
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
@@ -323,7 +322,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
         this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.setTexturePaths();

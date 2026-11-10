@@ -828,7 +828,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
         this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);

@@ -392,7 +392,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.reload) {
             this.reload = false;
@@ -406,10 +406,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     @Override
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
-        this.setTexturePaths();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
     }
 
     protected void setTexturePaths() {

@@ -191,7 +191,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[41] = ThreadLocalRandom.current().nextInt(17)+1;
 
         /**
-         *      [42,43] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+gfp)
+         *      [42,43] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+white)
          */
         autosomalGenes[42] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
         autosomalGenes[43] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;

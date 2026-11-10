@@ -16,7 +16,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -132,9 +131,6 @@ public class CarryClientHandler {
         }
 
         while (CARRY_KEY.consumeClick()) {
-            if (!Screen.hasShiftDown()) {
-                continue;
-            }
             if (!carrying) {
                 if (minecraft.hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof EnhancedAnimalAbstract target) {
                     EnhancedAnimals.channel.send(PacketDistributor.SERVER.noArg(), new CarryTogglePacket(target.getId()));

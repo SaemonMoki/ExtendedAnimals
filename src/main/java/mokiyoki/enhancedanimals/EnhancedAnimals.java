@@ -135,7 +135,9 @@ public class EnhancedAnimals {
         ModSensorTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModActivities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModSounds.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModParticles.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModMemoryModuleTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModDataSerializers.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCauldronInteractions);
     }

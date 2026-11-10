@@ -228,15 +228,15 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgePig.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgePig.get().longValue();
         return this.adultAge;
     }
 
     @Override
-    protected int getFullSizeAge() {
-        return (int)(getAdultAge() * 1.25);
+    protected long getFullSizeAge() {
+        return (long)(getAdultAge() * 1.25);
     }
 
     @Override
@@ -327,7 +327,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         int pigletAverage = 11;
         int pigletRange = 4;
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         if (genes[58] == 1 || genes[59] == 1) {
             pigletAverage = 4;
@@ -519,9 +519,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.getGenes().getAutosomalGenes();
         float size = (this.getAnimalSize()-0.7F)*1.25F; // 0 to 1
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int meatDrop;
-        int meatChanceMod;
+        long meatChanceMod;
         float muscle = 0.0F; // 0 to 1
         float fat = 0.0F; // 0 to 1
         float length = 0.0F; // 0 to 1
@@ -600,25 +600,27 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             meatDrop = 1;
         }
 
-        if (age < 108000) {
-            if (age >= 90000) {
+        int adultAge = (int) this.getAdultAge();
+        int tier = adultAge * 3 / 10;
+        if (age < tier * 6) {
+            if (age >= tier * 5) {
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-90000)/180;
-            } else if (age >= 72000) {
+                meatChanceMod = (age - tier * 5) * 100 / tier;
+            } else if (age >= tier * 4) {
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-72000)/180;
-            } else if (age >= 54000) {
+                meatChanceMod = (age - tier * 4) * 100 / tier;
+            } else if (age >= tier * 3) {
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-54000)/180;
-            } else if (age >= 36000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age >= tier * 2) {
                 meatDrop = meatDrop - 4;
-                meatChanceMod = (age-36000)/180;
-            } else if (age >= 18000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age >= tier) {
                 meatDrop = meatDrop - 5;
-                meatChanceMod = (age-18000)/180;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 meatDrop = meatDrop - 6;
-                meatChanceMod = age/180;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);
@@ -683,12 +685,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculatePigTexture(this, this.getGenes().getAutosomalGenes(), getStringUUID().toCharArray());
+            calculatePigTexture(this, this.getGenes().getAutosomalGenes());
         }
     }
-
-    //TODO put item interactable stuff here like saddling pigs
-
 
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);

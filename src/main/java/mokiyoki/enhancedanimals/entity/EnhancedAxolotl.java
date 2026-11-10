@@ -223,9 +223,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get().longValue();
         return this.adultAge;
     }
 
@@ -679,6 +679,7 @@ NBT read/write
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
+            EnhancedAxolotlBucket.setVariation(stack, this.getVariationSeed(), this.getOrSetIsFemale());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
         }
     }

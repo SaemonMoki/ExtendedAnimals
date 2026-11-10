@@ -69,18 +69,7 @@ import static mokiyoki.enhancedanimals.util.Reference.COW_AUTOSOMAL_GENES_LENGTH
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
-    /** avalible UUID spaces : [ S X X X X X X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-     *  1,2 -> piebald
-     *  3 -> blaze
-     *  4 -> horns
-     *  5 -> belt
-     *  6 -> coloursided
-     *  7 -> roan
-     *  8 -> speckled
-     *  20-35 -> mushrooms/flowers
-     */
     protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<String> MOOSHROOM_UUID = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.STRING);
 
     protected boolean resetTexture = true;
     protected String cacheTexture;
@@ -88,8 +77,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected boolean aiConfigured = false;
-
-    private String mooshroomUUID = "0";
 
     protected GrazingGoal grazingGoal;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
@@ -133,7 +120,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
 //    @Override
 //    protected void registerGoals() {
-//        //Todo add the temperamants
 //        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
 //        this.goalSelector.addGoal(0, new SwimGoal(this));
 //        this.goalSelector.addGoal(5, this.eatGrassGoal);
@@ -149,7 +135,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(RESET_TEXTURE, false);
-        this.entityData.define(MOOSHROOM_UUID, "0");
     }
 
     @Override
@@ -162,35 +147,22 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
     @Override
     protected int gestationConfig() {
         return GeneticAnimalsConfig.COMMON.gestationDaysCow.get();
-    }
-
-    protected void setMooshroomUUID(String uuid) {
-        if (!uuid.equals("")) {
-            this.entityData.set(MOOSHROOM_UUID, uuid);
-            this.mooshroomUUID = uuid;
-        }
-    }
-
-    public String getMooshroomUUID() { return this.mooshroomUUID; }
-
-    public EntityDataAccessor<String> getMooshroomEntityData() {
-        return MOOSHROOM_UUID;
     }
 
     @Override
@@ -327,12 +299,20 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void setIsFemale(CompoundTag compound) {
-        if (compound.contains("IsFemale")) {
-            this.isFemale = compound.getBoolean("IsFemale");
-        } else {
-            this.isFemale = (this.mooshroomUUID.equals("0") ? this.getStringUUID() : this.mooshroomUUID).toCharArray()[0] - 48 < 8;
+    protected String getLegacyVariationUUID(CompoundTag compound) {
+        String ownUUID = super.getLegacyVariationUUID(compound);
+        String mooshroomUUID = compound.getString("MooshroomID");
+        if (mooshroomUUID.length() != ownUUID.length()) {
+            return ownUUID;
         }
+        //cows converted from mooshrooms took their textures from "MooshroomID", but the model
+        //only ever saw their own uuid (horns at 4, mushrooms at 20-35), so mix the two
+        char[] legacy = mooshroomUUID.toCharArray();
+        legacy[4] = ownUUID.charAt(4);
+        for (int i = 20; i <= 35; i++) {
+            legacy[i] = ownUUID.charAt(i);
+        }
+        return new String(legacy);
     }
 
     public void aiStep() {
@@ -523,31 +503,33 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             leatherDrop++;
         }
 
-        if (age < 84000) {
-            if (age > 70000) {
+        int adultAge = (int) this.getAdultAge();
+        int tier = adultAge / 6;
+        if (age < adultAge) {
+            if (age > tier * 5) {
                 leatherDrop = leatherDrop - 1;
                 meatDrop = meatDrop - 1;
-                meatChanceMod = (age-70000)/140;
-            } else if (age > 56000) {
+                meatChanceMod = (age - tier * 5) * 100 / tier;
+            } else if (age > tier * 4) {
                 leatherDrop = leatherDrop - 2;
                 meatDrop = meatDrop - 2;
-                meatChanceMod = (age-56000)/140;
-            } else if (age > 42000) {
+                meatChanceMod = (age - tier * 4) * 100 / tier;
+            } else if (age > tier * 3) {
                 leatherDrop = leatherDrop - 3;
                 meatDrop = meatDrop - 3;
-                meatChanceMod = (age-42000)/140;
-            } else if (age > 28000) {
+                meatChanceMod = (age - tier * 3) * 100 / tier;
+            } else if (age > tier * 2) {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 4;
-                meatChanceMod = (age-28000)/140;
-            } else if (age > 14000) {
+                meatChanceMod = (age - tier * 2) * 100 / tier;
+            } else if (age > tier) {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 5;
-                meatChanceMod = (age-14000)/140;
+                meatChanceMod = (age - tier) * 100 / tier;
             } else {
                 leatherDrop = 0;
                 meatDrop = meatDrop - 6;
-                meatChanceMod = age/140;
+                meatChanceMod = age * 100 / tier;
             }
 
             int i = this.random.nextInt(100);
@@ -621,8 +603,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateCowTextures(this, this.getGenes().getAutosomalGenes());
+            calculateCowTextures(this, this.getGenes().getAutosomalGenes(), this.getVariantTexture());
         }
+    }
+
+    protected String getVariantTexture() {
+        return "";
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -870,8 +856,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
-        compound.putString("MooshroomID", getMooshroomUUID());
-
 //        compound.putBoolean("Saddle", this.getSaddled());
 
     }
@@ -881,8 +865,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
      */
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-
-        setMooshroomUUID(compound.getString("MooshroomID"));
 
         //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
         float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));

@@ -1,0 +1,1705 @@
+package mokiyoki.enhancedanimals.entity;
+
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Dynamic;
+import mokiyoki.enhancedanimals.ai.brain.chicken.ChickenBrain;
+import mokiyoki.enhancedanimals.ai.general.*;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
+import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
+import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.*;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
+import mokiyoki.enhancedanimals.model.modeldata.ChickenModelData;
+import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
+import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.Nullable;
+
+import static mokiyoki.enhancedanimals.ai.brain.ValidatePath.isValidPath;
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.renderer.textures.ChickenTexture.calculateChickenTextures;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH;
+import static mokiyoki.enhancedanimals.util.Reference.CHICKEN_SEXLINKED_GENES_LENGTH;
+import static mokiyoki.enhancedanimals.util.scheduling.Schedules.*;
+
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * Created by saemon and moki on 30/08/2018.
+ */
+public class EnhancedChicken extends EnhancedAnimalAbstract {
+
+    //avalible UUID spaces : [ S X X X 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    // 1,2,3 -> splash spots
+
+    private static final EntityDataAccessor<Boolean> ROOSTING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> BROODING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> BROODY = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> NEST_POS = SynchedEntityData.defineId(EnhancedChicken.class, EntityDataSerializers.BLOCK_POS);
+
+
+    //Brain Modules
+
+    protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedChicken>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, ModSensorTypes.CHICKEN_HOSTILES_SENSOR.get(), ModSensorTypes.CHICKEN_FOOD_TEMPTATIONS.get());
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.SLEEPING.get(), ModMemoryModuleTypes.BROODY.get(), ModMemoryModuleTypes.EGG_LAYING.get(), ModMemoryModuleTypes.ROOSTING.get(), ModMemoryModuleTypes.SEEKING_NEST.get(), ModMemoryModuleTypes.PAUSE_BRAIN.get(), ModMemoryModuleTypes.PAUSE_WALKING.get(), ModMemoryModuleTypes.FOCUS_BRAIN.get(), ModMemoryModuleTypes.PAUSE_BETWEEN_EATING.get(), ModMemoryModuleTypes.HUNGRY.get(), ModMemoryModuleTypes.SEEKING_SHELTER.get(),ModMemoryModuleTypes.SEEKING_FOOD.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.NEAREST_HOSTILE, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED);
+
+    //--------------
+
+    public float wingRotation;
+    public float destPos;
+    public float oFlapSpeed;
+    public float oFlap;
+    private float wingRotDelta = 1.0F;
+    public int timeUntilNextEgg;
+    public float currentNestScore;
+
+    public EnhancedFollowParentGoal followParentGoal;
+    public boolean chickenJockey;
+
+    public int crowTick = 0;
+    public boolean preening = false;
+
+    private ChickenModelData chickenModelData;
+
+    public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
+        super(entityType, worldIn, CHICKEN_SEXLINKED_GENES_LENGTH, CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
+//        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
+        this.timeUntilNextEgg = eggLayingTime();
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.createNewHungerLimit();
+    }
+    protected void customServerAiStep() {
+        this.getBrain().tick((ServerLevel)this.level(), this);
+//        ChickenBrain.updateActivity(this);
+        if (!this.isNoAi()) {
+            if (this.isAnimalSleeping()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.SLEEPING.get(), true);
+                this.getBrain().setMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get(), true);
+            } else if (this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SLEEPING.get()) && !this.getBrain().hasMemoryValue(ModMemoryModuleTypes.PAUSE_BRAIN.get())) {
+                this.brain.eraseMemory(ModMemoryModuleTypes.SLEEPING.get());
+            }
+            if (this.isBroody() && this.getNest() != BlockPos.ZERO) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.BROODY.get(), true);
+            } else {
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.BROODY.get());
+            }
+
+            if (this.isInWaterOrRain() && !this.isInWater()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.SEEKING_SHELTER.get(), true);
+                this.scheduledToRun.put(CHECK_RAIN_STOPPED_SCHEDULE.funcName, CHECK_RAIN_STOPPED_SCHEDULE.function.apply(300));
+            }
+            if (this.getHunger() > hungerLimit) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.HUNGRY.get(), true);
+            }
+            if ((this.isRoosting() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.ROOSTING.get())) && this.level().getDayTime()%24000 < 10500) {
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.ROOSTING.get());
+                this.setRoosting(false);
+            }
+
+        }
+
+        super.customServerAiStep();
+    }
+
+    protected Brain.Provider<EnhancedChicken> brainProvider() {
+        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+    }
+
+    protected Brain<?> makeBrain(Dynamic<?> p_149138_) {
+        return ChickenBrain.makeBrain(this.brainProvider().makeBrain(p_149138_));
+    }
+
+    public Brain<EnhancedChicken> getBrain() {
+        return (Brain<EnhancedChicken>)super.getBrain();
+    }
+    
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return chickenFoodMap();
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+        EntityDimensions dimensions = EntityDimensions.scalable(0.4F, 0.7F).scale(this.getBodyScale());
+        return dimensions.withEyeHeight(this.isBaby() ? dimensions.height() * 0.85F : dimensions.height() * 0.92F);
+    }
+
+    public float getBodyScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float nbSize = 0.2F;
+        return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
+    }
+
+    @Override
+    protected int getPregnancyProgression() {
+        return gestationTimer>0 ? 11 : -1;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ROOSTING, Boolean.FALSE);
+        builder.define(BROODING, Boolean.FALSE);
+        builder.define(BROODY, Boolean.FALSE);
+        builder.define(NEST_POS, BlockPos.ZERO);
+    }
+
+    public void scheduleDespawn(int ticksToWait) {
+        this.scheduledToRun.put(DESPAWN_NO_PASSENGER_SCHEDULE.funcName, DESPAWN_NO_PASSENGER_SCHEDULE.function.apply(ticksToWait));
+    }
+
+    public void scheduleLookForNest(int ticksToWait) {
+        this.scheduledToRun.put(LOOK_FOR_NEST_SCHEDULE.funcName, LOOK_FOR_NEST_SCHEDULE.function.apply(ticksToWait));
+    }
+
+    @Override
+    public void despawn() {
+        if (this.getPassengers().isEmpty()) {
+            if (this.isChickenJockey()) {
+                if (!(this.hasCustomName() || this.isLeashed() || this.isTame())) {
+                    this.discard();
+                }
+            } else {
+                super.despawn();
+            }
+        }
+    }
+
+    @Override
+    protected String getSpecies() {
+        return "entity.eanimod.enhanced_chicken";
+    }
+
+    @Override
+    protected long getAdultAge() {
+        if (this.adultAge != null) return this.adultAge;
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get().longValue();
+        return this.adultAge;
+    }
+
+    @Override
+    protected int gestationConfig() {
+        return GeneticAnimalsConfig.COMMON.incubationDaysChicken.get();
+    }
+
+    //TODO make some genes to alter these numbers
+    protected int eggLayingTime() {
+        if (this.gestationTimer > 0) {
+            return (int)((int)(6000/ GeneticAnimalsConfig.COMMON.eggMultiplier.get())/2.5);
+        }
+        return (int)(6000/ GeneticAnimalsConfig.COMMON.eggMultiplier.get());
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
+        Item item = itemStack.getItem();
+
+        if (item == ModItems.ENHANCED_CHICKEN_EGG.get()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (this.isChickenJockey() && this.getPassengers().isEmpty()) {
+            if (hunger >= 6000 && (isFoodItem(itemStack) || item instanceof EnhancedEgg)) {
+                this.setChickenJockey(false);
+                this.setTame(true);
+            }
+        }
+
+        if (item instanceof EnhancedEgg && hunger >= 6000) {
+            //enhancedegg egg eating
+            decreaseHunger(200);
+            if (!entityPlayer.getAbilities().instabuild) {
+                itemStack.shrink(1);
+            } else {
+                if (itemStack.getCount() > 1) {
+                    itemStack.shrink(1);
+                }
+            }
+        }
+
+        return super.mobInteract(entityPlayer, hand);
+    }
+
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot equipmentSlot) {
+        if (equipmentSlot == EquipmentSlot.FEET) {
+            int[] gene = this.genetics.getAutosomalGenes(); //TODO make sure this is dedicated server safe
+            if (gene[108] == 1 || gene[109] == 1) {
+                if (gene[58] < 3 || gene[59] < 3) {
+                    if (gene[60] == 1 || gene[61] == 1 || (gene[58] < 3 && gene[59] < 3)) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    } else if (gene[58] == 2 || gene[59] == 2) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    }
+                }
+            }
+        }
+        return super.getItemBySlot(equipmentSlot);
+    }
+
+    public void setSharedGenesFromEntityEgg(String genes) {
+        this.entityData.set(SHARED_GENES, genes);
+    }
+
+    public boolean isRoosting() {
+        return this.entityData.get(ROOSTING);
+    }
+
+    public void setRoosting(boolean isRoosting) {
+        this.entityData.set(ROOSTING, isRoosting);
+    }
+
+    public boolean isBrooding() {
+        return this.entityData.get(BROODING);
+    }
+
+    public void setBrooding(boolean isBrooding) {
+        this.entityData.set(BROODING, isBrooding);
+    }
+
+    public boolean isBroody() {
+        return this.entityData.get(BROODY);
+    }
+
+    public void setBroody(boolean isBroody) {
+        this.entityData.set(BROODY, isBroody);
+    }
+
+    public void setNest(BlockPos position) {
+        this.entityData.set(NEST_POS, position);
+    }
+
+    public void setNest(int x, int y, int z) {
+        setNest(new BlockPos(x, y, z));
+    }
+
+    public BlockPos getNest() {
+        return this.entityData.get(NEST_POS);
+    }
+
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 3.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D);
+    }
+
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        super.positionRider(passenger, callback);
+        float f = Mth.sin(this.yBodyRot * ((float)Math.PI / 180F));
+        float f1 = Mth.cos(this.yBodyRot * ((float)Math.PI / 180F));
+        float f2 = 0.1F;
+        float f3 = 0.0F;
+        callback.accept(passenger, this.getX() + (double)(0.1F * f), this.getY(0.5D) - passenger.getVehicleAttachmentPoint(this).y + 0.0D, this.getZ() - (double)(0.1F * f1));
+        if (passenger instanceof LivingEntity) {
+            ((LivingEntity)passenger).yBodyRot = this.yBodyRot;
+        }
+
+    }
+
+    /**
+     * Determines if this chicken is a jokey with a zombie riding it.
+     */
+    public boolean isChickenJockey() {
+        return this.chickenJockey;
+    }
+
+    /**
+     * Sets whether this chicken is a jockey or not.
+     */
+    public void setChickenJockey(boolean jockey) {
+        this.chickenJockey = jockey;
+    }
+
+    public void handleEntityEvent(byte p_29814_) {
+        if (p_29814_ == 11) { //crow event broadcasted
+            this.crowTick = 120;
+        } else if (p_29814_ == 12) { //preening start event broadcasted
+            this.preening = true;
+        } else if (p_29814_ == 13) { //preening stop event broadcasted
+            this.preening = false;
+        } else {
+            super.handleEntityEvent(p_29814_);
+        }
+    }
+
+    @Override
+    protected void fixGeneLengths() {
+        if (this.genetics.getNumberOfAutosomalGenes() < CHICKEN_AUTOSOMAL_GENES_LENGTH) {
+            this.genetics.setAutosomalGenes(Arrays.copyOf(this.genetics.getAutosomalGenes(), CHICKEN_AUTOSOMAL_GENES_LENGTH));
+        }
+
+        if (this.genetics.getNumberOfSexlinkedGenes() < CHICKEN_SEXLINKED_GENES_LENGTH) {
+            this.genetics.setSexlinkedGenes(Arrays.copyOf(this.genetics.getSexlinkedGenes(), CHICKEN_SEXLINKED_GENES_LENGTH));
+        }
+    }
+
+    /*
+    On Load / Unload
+    */
+
+    @Override
+    public void checkActionsForPassageOfTime(long loadTime) {
+        if (this.unloadTime != null && this.unloadTime > 0 && loadTime > (this.unloadTime + 4000) && GeneticAnimalsConfig.COMMON.passageOfTimeChickenEnabled.get()) {
+            if (this.getOrSetIsFemale() && !this.isBaby()) {
+                if (this.isBrooding()) {
+                    long difference = loadTime - unloadTime;
+                    double iterations = difference / (GeneticAnimalsConfig.COMMON.incubationDaysChicken.get());
+                    broodingForPassageOfTime(iterations);
+                } else {
+                    calculateActionsForPassageOfTime(loadTime);
+                }
+            }
+        }
+    }
+
+    private void broodingForPassageOfTime(double iterations) {
+        if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity && !GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+            if (nestEntity.incubateByAmount((int)iterations * GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) {
+                nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
+                this.setBroody(false);
+                this.setBrooding(false);
+                this.gestationTimer = this.gestationTimer - (int)iterations*4000;
+            }
+        } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
+            this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(50, 150)));
+            if (!GeneticAnimalsConfig.COMMON.passageOfTimeChickenNoHatch.get()) {
+                this.setNest(BlockPos.ZERO);
+            }
+        }
+    }
+
+    private void calculateActionsForPassageOfTime(long loadTime) {
+        int stagesPossibleToAdvance = GeneticAnimalsConfig.COMMON.passageOfTimeChickenStages.get();
+        int totalStagesAdvanced = 0;
+
+        long difference = loadTime - unloadTime;
+        long iterations = difference / eggLayingTime();
+        if (iterations > 0) {
+            if (this.getNest() == null || this.getNest() == BlockPos.ZERO) {
+                findNestAroundSelf(false, false);
+            }
+
+            if (this.getNest() != null && this.getNest() != BlockPos.ZERO) {
+                for (int i = 0; i < iterations; i++) {
+                    if (this.isBrooding() && totalStagesAdvanced < stagesPossibleToAdvance) { //made brooding via this loop but has iterations left
+                        double broodingIterations = (difference / (GeneticAnimalsConfig.COMMON.incubationDaysChicken.get())) * (100-(((double) i / iterations)*100))/100;
+                        broodingForPassageOfTime(broodingIterations);
+                        break; //Even if we have iterations left we stop here
+                    } else {
+                        if (!(this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity)) {
+                            createNest();
+                            stagesPossibleToAdvance++;
+                        }
+                        if (this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity nestEntity && totalStagesAdvanced < stagesPossibleToAdvance) {
+                            if (!nestEntity.isFull()) {
+                                ItemStack eggItem = createEgg();
+                                nestEntity.addEggToNest(this.level(), eggItem);
+                            }
+                            if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
+                                this.setPos(new Vec3(this.getNest().getX()+0.5D, this.getNest().getY()+0.0625D, this.getNest().getZ()+0.5D));
+                                this.setBroody(true);
+                                this.setBrooding(true);
+                                stagesPossibleToAdvance++;
+                            }
+                        } else {
+                            ItemStack eggItem = createEgg();
+                            this.spawnAtLocation(eggItem, 1);
+                            if (iterations == 12) {
+                                this.gestationTimer = 0;
+                                break; //break at 6 eggs as a limit
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void createNest() {
+        if (this.level() instanceof ServerLevel) {
+            this.level().setBlock(this.getNest(), ModBlocks.CHICKEN_NEST.get().defaultBlockState(), 3);
+
+            AABB aabb = AABB.unitCubeFromLowerCorner(this.position()).inflate(12, 3.0, 12);
+            this.level().getEntitiesOfClass(EnhancedChicken.class, aabb, EntitySelector.NO_SPECTATORS).forEach((chicken) -> {
+                if (chicken.getNest() == null || chicken.getNest() == BlockPos.ZERO) {
+                    chicken.setNest(new BlockPos(this.getNest()));
+                }
+            });
+        }
+    }
+
+    public void findNestAroundSelf(boolean findBest, boolean validate) {
+        int horizontalRange = 10;
+        int verticalRange = 2;
+
+        if (this.getLeashHolder() != null) {
+            horizontalRange = 2;
+            verticalRange = 1;
+        }
+
+        BlockPos baseBlockPos = new BlockPos(this.blockPosition());
+        BlockPos.MutableBlockPos mutableblockpos = new BlockPos.MutableBlockPos();
+
+        for(int k = 0; k <= verticalRange; k = k > 0 ? -k : 1 - k) {
+            for(int l = 0; l < horizontalRange; ++l) {
+                for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
+                    for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
+                        mutableblockpos.set(baseBlockPos).move(i1, k, j1);
+                        if (this.isGoodNestSite(mutableblockpos)) {
+                            if (validate) {
+                                if (isValidPath(this, new BlockPos(mutableblockpos), 16)) {
+                                    if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
+                                        this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                                        if (!findBest && !(this.getNest() == null) && !(this.getNest() == BlockPos.ZERO)){
+                                            return; //leave when found, otherwise it still loops and validates paths, too inefficient
+                                        }
+
+                                    }
+                                }
+                            } else {
+                                if ((this.getNest() == null || this.getNest() == BlockPos.ZERO) || findBest) {
+                                    this.rateAndSetBetterNest(new BlockPos(mutableblockpos));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    //--------//
+
+    @Override
+    protected void runLivingTickClient() {
+        super.runLivingTickClient();
+
+        if (this.isBrooding() && this.isBroody()) {
+            int d0 = 1;
+            int d1 = 1;
+            if (this.tickCount % 300 == 0) {
+                int particles = this.random.nextInt(4, 6);
+                for(int i = 0; i < particles; ++i) {
+                    double d2 = random.nextGaussian() * 0.02;
+                    double d3 = random.nextGaussian() * 0.02;
+                    double d4 = random.nextGaussian() * 0.02;
+                    double d5 = 0.5 - d0;
+                    double d6 = this.position().x + d5 + random.nextDouble() * d0;
+                    double d7 = this.position().y + random.nextDouble() * d1;
+                    double d8 = this.position().z + d5 + random.nextDouble() * d0;
+                    if (!this.level().getBlockState((BlockPos.containing(d6, d7, d8)).below()).isAir()) {
+                        this.level().addParticle(ParticleTypes.HAPPY_VILLAGER, d6, d7, d8, d2, d3, d4);
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        this.oFlap = this.wingRotation;
+        this.oFlapSpeed = this.destPos;
+        this.destPos = (float)((double)this.destPos + (double)(this.onGround() ? -1 : 4) * 0.3D);
+        this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
+
+        if (!this.onGround() && this.wingRotDelta < 1.0F) {
+            this.wingRotDelta = 1.0F;
+        }
+
+        this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
+        Vec3 vec3d = this.getDeltaMovement();
+        if (!this.onGround() && vec3d.y < 0.0D) {
+            this.setDeltaMovement(vec3d.multiply(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
+        }
+
+        this.wingRotation += this.wingRotDelta * 2.0F;
+       //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
+
+        //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
+
+        if (!this.getOrSetIsFemale() && !this.isBaby() && GeneticAnimalsConfig.COMMON.allowRoostersToCrow.get()) {
+            if (this.crowTick > 0) {
+                this.crowTick = Math.max(0, this.crowTick - 1);
+                if (!this.level().isClientSide) {
+                    if (this.crowTick == 60 && !this.isAnimalSleeping()) {
+                        this.level().playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
+                    }
+                    if (this.crowTick <= 5) {
+                        this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_WALKING.get());
+                    }
+                }
+            } else {
+                if (!this.level().isClientSide && !this.scheduledToRun.containsKey("CrowSchedule")) {
+                    //TODO the lower and upper bounds of the random int, can be used to create a wait period of when to crow
+                    //we can add extra code here that has a different value if say we have detected another rooster crow or maybe early mornings ect
+                    this.scheduledToRun.put(CROW_SCHEDULE.funcName, CROW_SCHEDULE.function.apply(this.random.nextInt(GeneticAnimalsConfig.COMMON.minimumWaitForCrowTime.get(), GeneticAnimalsConfig.COMMON.maximumWaitForCrowTime.get())));
+                }
+            }
+        }
+
+        if (!this.level().isClientSide && !this.sleeping && !this.scheduledToRun.containsKey("StopPreenSchedule")) {
+            int startPreenTime = this.random.nextInt(1000, 6000);
+            int preenDuration = this.random.nextInt(100, 500);
+            this.scheduledToRun.put(START_PREEN_SCHEDULE.funcName, START_PREEN_SCHEDULE.function.apply(startPreenTime));
+            this.scheduledToRun.put(STOP_PREEN_SCHEDULE.funcName, STOP_PREEN_SCHEDULE.function.apply(startPreenTime+preenDuration));
+        }
+    }
+
+    protected void incrementHunger() {
+        if (GeneticAnimalsConfig.COMMON.chickensRemainOnNest.get() && (this.isBrooding() || this.isBroody())) return;
+        if (this.sleeping) {
+            hunger = hunger + (0.25F*getHungerModifier());
+        } else {
+            hunger = hunger + (0.5F*getHungerModifier());
+        }
+    }
+
+//    @Override
+//    public boolean sleepingConditional() {
+//        return (((this.level.getDayTime()%24000 >= 11000 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
+//    }
+
+    @Override
+    protected void runExtraIdleTimeTick() {
+        if (!this.isBaby() && (GeneticAnimalsConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale())) {
+            if (this.gestationTimer > 0) {
+                --this.gestationTimer;
+                if (this.gestationTimer == 0) {
+                    this.mateGenetics = new Genes(new int[CHICKEN_SEXLINKED_GENES_LENGTH], new int[CHICKEN_AUTOSOMAL_GENES_LENGTH]); //Empty them out
+                    this.mateName = "???";
+                }
+            }
+
+            if (hunger <= 24000 && !isAnimalSleeping() && !isBroody() && !isRoosting() && !(this.isBroody() && this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()))) {
+                --this.timeUntilNextEgg;
+            } else if (hunger >= 48000) {
+                this.timeUntilNextEgg = eggLayingTime();
+            }
+        }
+    }
+
+    @Override
+    protected void runPregnancyTick() {
+        if (!this.isBaby() && this.timeUntilNextEgg <= 0 && !this.isAnimalSleeping()) {
+            this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            ItemStack eggItem = createEgg();
+            if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity ) {
+                if (!this.blockPosition().equals(this.getNest())) {
+                    this.rateAndSetBetterNest(this.blockPosition());
+                    this.setNest(this.blockPosition());
+                } else if (this.currentNestScore<0.0F) {
+                    this.currentNestScore = -this.currentNestScore + 0.1F;
+                }
+                if (!nestEntity.isFull()) { nestEntity.addEggToNest(this.level(), eggItem); }
+                if (nestEntity.isFull() || (nestEntity.getEggCount()>=3 && ThreadLocalRandom.current().nextInt(5)==0)) {
+                    this.setBroody(true);
+                }
+            } else {
+                this.spawnAtLocation(eggItem, 1);
+                if (this.getNest()!=BlockPos.ZERO) {
+                    this.setNest(BlockPos.ZERO);
+                }
+            }
+            if (this.isBrooding() && !this.isBroody()) {
+                this.setBrooding(false);
+            }
+            this.getBrain().eraseMemory(ModMemoryModuleTypes.EGG_LAYING.get());
+            this.timeUntilNextEgg = eggLayingTime();
+        }
+
+        if (this.isBroody()) {
+            if (this.level().getBlockEntity(this.blockPosition()) instanceof ChickenNestTileEntity nestEntity) {
+                if (nestEntity.incubate(this.level())) {
+                    nestEntity.hatchEggs(this.level(), this.getNest(), this.getRandom());
+                    this.setBroody(false);
+                    this.setBrooding(false);
+                }
+            } else if (!this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_FOOD.get()) && !this.brain.isActive(Activity.PANIC) && !this.scheduledToRun.containsKey("StopBroodingSchedule")) {
+                this.scheduledToRun.put(STOP_BROODING_SCHEDULE.funcName, STOP_BROODING_SCHEDULE.function.apply(this.random.nextInt(250, 500)));
+            }
+        }
+    }
+
+    private ItemStack createEgg() {
+        ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1);
+        ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
+        if (this.gestationTimer > 0) {
+            String damName = "???";
+            if (this.getCustomName()!=null) {
+                damName = this.getCustomName().getString();
+            }
+            EggCapabilityProvider.of(eggItem).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                int i = 1;
+                while (i > 0) {
+                    int j = ExperienceOrb.getExperienceValue(i);
+                    i -= j;
+                    this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), j));
+                }
+            }
+        }
+        return eggItem;
+    }
+
+    @Override
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource damageSource) {
+        if (this.genetics.isHomozygousFor(106, 2)) {
+            return super.causeFallDamage(distance, damageMultiplier, damageSource);
+        }
+            return false;
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (this.level() instanceof ServerLevel) {
+            if (source.getMsgId().equals("inWall")) {
+                if (this.suffocationTimer > 50) {
+                    if (this.getNavigation().getPath() != null && this.getNavigation().getPath().getNextNodeIndex() > 0) {
+                        BlockPos previousPos = this.getNavigation().getPath().getPreviousNode().asBlockPos();
+                        this.setPos(previousPos.getX() + 0.5D, previousPos.getY(), previousPos.getZ() + 0.5D);
+                        return false;
+                    }
+                    if (!((this.level().getBlockEntity(this.getNest()) instanceof ChickenNestTileEntity) || (this.level().getBlockEntity(this.getNest().below()) instanceof ChickenNestTileEntity))) {
+                        this.setNest(BlockPos.ZERO);
+                    }
+                    if (this.getNest() != BlockPos.ZERO && ((this.isBrooding() || this.isBroody() || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.SEEKING_NEST.get()) || this.getBrain().hasMemoryValue(ModMemoryModuleTypes.EGG_LAYING.get())))) {
+                        this.setPos(this.getNest().getX() + 0.5D, this.getNest().getY() + 0.0625D, this.getNest().getZ() + 0.5D);
+                    }
+                }
+                this.suffocationTimer++;
+                return false;
+            }
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
+    protected void lethalGenes() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[70] == 2 && genes[71] == 2) {
+                this.remove(RemovalReason.DISCARDED);
+        } else if(genes[72] == 2 && genes[73] == 2){
+                this.remove(RemovalReason.DISCARDED);
+        } else if(genes[104] == 2 && genes[105] == 2){
+                this.remove(RemovalReason.DISCARDED);
+        } else if (genes[150] == 2 && genes[151] == 2){
+                this.remove(RemovalReason.DISCARDED);
+        }
+    }
+
+    @Override
+    public boolean sleepingConditional() {
+        boolean notReturningToNest = false;
+        if (this.isBroody()) {
+            if (this.getNest() == BlockPos.ZERO || (this.getNest().closerToCenterThan(this.position(), 0.75D))) {
+                notReturningToNest = true;
+            }
+        } else {
+            notReturningToNest = true;
+        }
+
+        return (!this.level().isDay() && this.awokenTimer == 0 && !this.sleeping && notReturningToNest);
+    }
+
+    @Override
+    public void playAmbientSound() {
+//        if (!this.getOrSetIsFemale() && this.growthAmount()==1.0F && this.soundOffset <= 0) {
+//            this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
+//            this.soundOffset = this.random.nextInt(10);
+//        } else {
+//            if (this.soundOffset>0 && !this.sleeping) this.soundOffset--;
+            super.playAmbientSound();
+//        }
+    }
+
+    @Override
+    public float getVoicePitch() {
+        float pitch = 1.0F + (1.0F-this.getAnimalSize());
+        if (this.isGrowing()) pitch*=(1.0F+((1.0F-this.growthAmount())*0.5F));
+        return this.getOrSetIsFemale()?pitch*0.95F:pitch*1.05F;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
+        return SoundEvents.CHICKEN_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return SoundEvents.CHICKEN_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.CHICKEN_DEATH;
+    }
+
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1.5F, 2.0F);
+        }
+    }
+
+    public void crow() {
+        this.playSound(ModSounds.ROOSTER_CROW.get(), 3.0F, 1.5F - (((this.getAnimalSize() - 0.5076F) / 0.4924F) * 0.85F));
+    }
+
+    /**
+     * Chicken grass eating and sand bathing
+    */
+    //TODO make the sand bathing actions
+
+    //also provides sand bath bonus
+    public void ate() {
+//        if (this.isChild())
+//        {
+//            this.addGrowth(60);
+//        }
+    }
+
+    @Override
+    protected void handlePartnerBreeding(AgeableMob ageable) {
+        if (GeneticAnimalsConfig.COMMON.omnigenders.get()) {
+            this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
+            this.setFertile();
+            this.setMateGender(((EnhancedChicken)ageable).getOrSetIsFemale());
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            }
+            ((EnhancedChicken)ageable).setMateGenes(this.genetics);
+            ((EnhancedChicken)ageable).setFertile();
+            ((EnhancedChicken)ageable).setMateGender(this.getOrSetIsFemale());
+            if (this.hasCustomName()) {
+                ((EnhancedChicken)ageable).setMateName(this.getCustomName().getString());
+            }
+        } else if (this.getOrSetIsFemale()) {
+            this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
+            this.setFertile();
+            this.setMateGender(false);
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            } else {
+                this.setMateName("???"); //Reset mate name
+            }
+        } else {
+            ((EnhancedChicken)ageable).setMateGenes(this.genetics);
+            ((EnhancedChicken)ageable).setFertile();
+            ((EnhancedChicken)ageable).setMateGender(false);
+            if (this.hasCustomName()) {
+                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            } else {
+                ((EnhancedAnimalAbstract)ageable).setMateName("???"); //Reset mate name
+            }
+        }
+    }
+
+
+    private int resolveEggColour(){
+        int eggColour = 0;
+
+        if (this.genetics!=null) {
+            int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
+            int[] genes = this.genetics.getAutosomalGenes();
+
+        if(sexlinkedGenes[10] == 1 || (!this.getOrSetIsFemale() && sexlinkedGenes[11] == 1)) {
+
+            if (genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1) {
+                //egg is brown
+                eggColour = 13;
+            } else if ((genes[64] == 2 || genes[65] == 2) && (genes[66] == 2 || genes[67] == 2)) {
+                //egg is brown
+                eggColour = 13;
+            } else if (genes[66] == 2 || genes[67] == 2) {
+                //egg is cream
+                eggColour = 1;
+            } else if (genes[64] == 2 || genes[65] == 2) {
+                //egg is pink
+                eggColour = 7;
+            } else if (genes[64] == 3 || genes[65] == 3 || genes[66] == 3 || genes[67] == 3) {
+                //egg is white
+                eggColour = 0;
+            }
+
+            int shade = 0;
+            int markings = 0;
+
+            //darkens egg if already brown shade
+            if (genes[68] == 1 || genes[69] == 1) {
+                if (eggColour != 0) {
+                    shade +=1;
+                }
+            }
+
+            if (genes[172] == 2 || genes[173] == 2) {
+                //darkens egg by 1
+                shade +=1;
+            }
+
+            if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
+                //darkens egg by 1
+                shade +=1;
+            }
+
+            if (genes[176] == 3 || genes[177] == 3) {
+                //darkens egg by 1
+                shade += 1;
+            } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
+                //darkens egg by 1
+                shade += 1;
+            }
+
+            if (genes[178] == 2 || genes[179] == 2) {
+                //has speckles
+                shade = -1;
+                markings = 1;
+            } else if (genes[178] == 3 || genes[179] == 3) {
+                markings = 1;
+            }
+
+            if (genes[180] == 2 && genes[181] == 2) {
+                if (markings == 1) {
+                    markings = 2;
+                } else {
+                    shade += 1;
+                }
+            }
+
+            if (genes[182] == 2 || genes[183] == 2) {
+                if (markings == 1) {
+                    markings = 3;
+                } else if (markings == 2) {
+                    shade += 1;
+                }
+            }
+
+            if (shade > 6) {
+                shade = 6;
+            } else if (shade < 0) {
+                shade = 0;
+            }
+
+            if (eggColour == 0 && shade != 0) {
+                //gives egg a brown tint if its white
+                eggColour = shade + 13 - 1;
+            } else {
+                eggColour = eggColour + shade;
+            }
+
+            if (markings == 1) {
+                eggColour = eggColour + 76;
+            } else if (markings == 2) {
+                eggColour = eggColour + 152;
+            } else if (markings == 3) {
+                eggColour = eggColour + 228;
+            }
+
+        }
+
+        //toggles blue egg version
+        if(genes[62] == 4 || genes[63] == 4){
+            //paleblue range
+            eggColour = eggColour + 57;
+        } else if (genes[62] == 3 || genes[63] == 3) {
+            //powderblue range
+            eggColour = eggColour + 38;
+        } else if(genes[62] == 1 || genes[63] == 1){
+            //blue range
+            eggColour = eggColour + 19;
+        }
+
+        }
+
+        return eggColour;
+    }
+
+    @Override
+    public ChickenModelData getModelData() {
+        return this.chickenModelData;
+    }
+
+    @Override
+    public void setModelData(AnimalModelData animalModelData) {
+        this.chickenModelData = (ChickenModelData) animalModelData;
+    }
+
+    @Override
+    public String getTexture() {
+        if (this.enhancedAnimalTextureGrouping == null) {
+            this.setTexturePaths();
+        } else if (this.reload && this.getEnhancedAnimalAge() >= this.getFullSizeAge()*0.25F) {
+            this.reload = false;
+            this.reloadTextures();
+        }
+
+        return getCompiledTextures("enhanced_chicken");
+    }
+
+    @Override
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
+    }
+
+    protected void setTexturePaths() {
+        if (this.getGenes() != null) {
+            calculateChickenTextures(this, this.getGenes());
+        }
+    }
+
+    @Override
+    public boolean shouldDropExperience() {
+        if (this.getEnhancedAnimalAge() > 10000) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHitIn) {
+        int looting = source.getEntity() instanceof LivingEntity killer ? EnchantmentHelper.getEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING), killer) : 0;
+        super.dropCustomDeathLoot(level, source, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
+        long age = this.getEnhancedAnimalAge();
+        int bodyType = 0;
+        int meatSize;
+        int featherCount = (genes[108]==2&&genes[109]==2)||(genes[106]==2&&genes[107]==2) ? 0 : random.nextInt(4+looting)-1;
+
+        if (genes[146] == 2 && genes[147] == 2) {
+            if (genes[148] != 2 || genes[149] != 2) {
+                //big body
+                bodyType = 1;
+            }
+        } else if (genes[148] == 2 && genes[149] == 2) {
+            if (genes[146] != 2 && genes[147] != 2) {
+                //small body
+                bodyType = -1;
+            }
+        }
+
+        if (age < 60000) {
+            if (age > 40000) {
+                bodyType = bodyType - 1;
+                if (featherCount>0) featherCount = featherCount - 1;
+            } else if (age > 20000) {
+                bodyType = bodyType - (random.nextInt(2) + 1);
+                if (featherCount>0) featherCount = featherCount - 2;
+            } else {
+                bodyType = bodyType - 2;
+                if (featherCount>0) featherCount = featherCount - 3;
+            }
+        }
+
+        if (featherCount>0) {
+            if (genes[52]==1 || genes[53]==1) {
+                featherCount = (int) (featherCount * (genes[52] == genes[53] ? 0.5 : 0.8));
+            }
+        }
+
+        // size is [ 0.5076 - 1.0F]
+        if (this.getAnimalSize() < 0.67) {
+            meatSize = bodyType + 1;
+        } else if (this.getAnimalSize() < 0.89) {
+            meatSize = bodyType + 2;
+        } else {
+            meatSize = bodyType + 3;
+        }
+
+        if (meatSize > 0) {
+            ItemStack meatStack = new ItemStack(Items.CHICKEN, 1 + looting);
+
+            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
+                if (meatSize == 1) {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKSMALL.get(), 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKSMALL.get(), 1 + looting);
+                    }
+                } else if (meatSize == 2) {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG.get(), 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKBIG.get(), 1 + looting);
+                    }
+                } else {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARK.get(), 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARK.get(), 1 + looting);
+                    }
+                }
+            } else {
+                if (meatSize == 1) {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL.get(), 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_PALESMALL.get(), 1 + looting);
+                    }
+                } else if (meatSize == 2) {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALE.get(), 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_PALE.get(), 1 + looting);
+                    }
+                } else {
+                    if (this.isOnFire()) {
+                        meatStack = new ItemStack(Items.COOKED_CHICKEN, 1 + looting);
+                    }
+                }
+            }
+
+            this.spawnAtLocation(meatStack);
+        }
+
+        if (featherCount > 0) {
+            ItemStack featherStack = new ItemStack(Items.FEATHER, featherCount);
+            this.spawnAtLocation(featherStack);
+        }
+    }
+
+    @Override
+    protected void readLegacyGenes(ListTag geneList, Genes genetics) {
+        if (geneList.getCompound(0).contains("Sgene")) {
+            super.readLegacyGenes(geneList, genetics);
+        } else {
+            for (int i = 0; i < 10; ++i) {
+                int gene = geneList.getCompound(i).getInt("Gene");
+                genetics.setSexlinkedGene(i * 2, gene);
+                genetics.setSexlinkedGene((i * 2) + 1, gene);
+            }
+
+            for (int i = 0; i < geneList.size(); ++i) {
+                if (i < 20) {
+                    genetics.setAutosomalGene(i, 1);
+                } else {
+                    genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+                }
+            }
+        }
+    }
+
+    @Override
+    protected EnhancedAnimalAbstract createEnhancedChild(Level level, EnhancedAnimalAbstract otherParent) {
+        EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level());
+        if (enhancedchicken != null) {
+            Genes genes = new Genes(this.genetics).makeChild(!this.getOrSetIsFemale(), otherParent.getGenes(), !otherParent.getOrSetIsFemale(), Genes.Species.CHICKEN);
+            enhancedchicken.setGenes(genes);
+            enhancedchicken.setSharedGenes(genes);
+            enhancedchicken.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
+            enhancedchicken.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
+            enhancedchicken.setParent(this.getUUID().toString());
+            enhancedchicken.setGrowingAge();
+            enhancedchicken.setBirthTime();
+            enhancedchicken.initilizeAnimalSize();
+            enhancedchicken.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
+            enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+            }
+        return enhancedchicken;
+    }
+
+    @Override
+    protected void createAndSpawnEnhancedChild(Level level) {}
+
+    @Override
+    protected void resetMateName() {}
+
+    @Override
+    protected boolean canBePregnant() {
+        return false;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
+    }
+
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+
+        compound.putBoolean("IsChickenJockey", this.isChickenJockey());
+        compound.putFloat("NestQuality", this.currentNestScore);
+        compound.putInt("NestPosX", this.getNest().getX());
+        compound.putInt("NestPosY", this.getNest().getY());
+        compound.putInt("NestPosZ", this.getNest().getZ());
+        compound.putBoolean("Broody", this.isBroody());
+        compound.putBoolean("Brooding", this.isBrooding());
+        compound.putInt("NextEggTime", this.timeUntilNextEgg);
+
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity assets from NBT.
+     */
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+
+        setChickenJockey(compound.getBoolean("IsChickenJockey"));
+        this.currentNestScore = compound.getFloat("NestQuality");
+        this.setNest(compound.getInt("NestPosX"), compound.getInt("NestPosY"), compound.getInt("NestPosZ"));
+        this.setBroody(compound.getBoolean("Broody"));
+        this.setBrooding(compound.getBoolean("Brooding"));
+        this.getBrain().eraseMemory(ModMemoryModuleTypes.PAUSE_BRAIN.get());
+        this.getBrain().eraseMemory(ModMemoryModuleTypes.FOCUS_BRAIN.get());
+        this.timeUntilNextEgg = compound.getInt("NextEggTime");
+        if (this.timeUntilNextEgg == 0) { this.timeUntilNextEgg = eggLayingTime(); }
+
+    }
+
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
+        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0 && this.getOrSetIsFemale() && !this.isBaby()) {
+            this.setFertile();
+        }
+        return livingdata;
+    }
+
+    @Override
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
+        return new ChickenGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+    }
+
+    @Override
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
+        return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        int[] genes = animal.genetics.getAutosomalGenes();
+        if (genes[54] != 3 && genes[55] != 3 && genes[184] == 2 && genes[185] == 2) {
+            health = 0.5F;
+        } else {
+            health = (2.0F * animal.getAnimalSize()) + 2.0F;
+        }
+
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize(){
+        float size = 1.0F;
+
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[74] == 1){
+            size = size - 0.05F;
+        }else if(genes[74] == 2){
+            size = size - 0.025F;
+        }
+        if(genes[75] == 1){
+            size = size - 0.05F;
+        }else if(genes[75] == 2){
+            size = size - 0.025F;
+        }
+
+        if(genes[76] == 1 || genes[77] == 1){
+            size = size - 0.05F;
+        }else if(genes[76] == 3 && genes[77] == 3){
+            size = size - 0.1F;
+        }
+
+        if(genes[78] == 1 || genes[79] == 1){
+            size = size * 0.94F;
+        }
+
+
+        genes = this.genetics.getSexlinkedGenes();
+        if (this.getOrSetIsFemale()) {
+            if(genes[14] == 2){
+                size = size * 0.9F;
+            }
+
+            if(genes[16] == 2){
+                size = size * 0.75F;
+            }
+        } else {
+            if (genes[14] == 2 || genes[15] == 2) {
+                if (genes[14] == 2 && genes[15] == 2) {
+                    size = size * 0.9F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+
+            if (genes[16] == 2 || genes[17] == 2) {
+                if (genes[16] == 2 && genes[17] == 2) {
+                    size = size * 0.75F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+        }
+
+
+        // size is [ 0.5076 - 1.0F]
+        this.setAnimalSize(size);
+    }
+
+    private Item getEggColour(int eggColourGene){
+
+        return switch (eggColourGene) {
+            case 0 -> ModItems.EGG_WHITE.get();
+            case 1 -> ModItems.EGG_CREAMLIGHT.get();
+            case 2 -> ModItems.EGG_CREAM.get();
+            case 3 -> ModItems.EGG_CREAMDARK.get();
+            case 4 -> ModItems.EGG_CREAMDARKEST.get();
+            case 5 -> ModItems.EGG_CARMELDARK.get();
+            case 6 -> ModItems.EGG_GARNET.get();
+            case 7 -> ModItems.EGG_PINKLIGHT.get();
+            case 8 -> ModItems.EGG_PINK.get();
+            case 9 -> ModItems.EGG_PINKDARK.get();
+            case 10 -> ModItems.EGG_PINKDARKEST.get();
+            case 11 -> ModItems.EGG_CHERRYDARK.get();
+            case 12 -> ModItems.EGG_PLUM.get();
+            case 13 -> ModItems.EGG_BROWNLIGHT.get();
+            case 14 -> ModItems.EGG_BROWN.get();
+            case 15 -> ModItems.EGG_BROWNDARK.get();
+            case 16 -> ModItems.EGG_CHOCOLATE.get();
+            case 17 -> ModItems.EGG_CHOCOLATEDARK.get();
+            case 18 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 19 -> ModItems.EGG_BLUE.get();
+            case 20 -> ModItems.EGG_GREENLIGHT.get();
+            case 21 -> ModItems.EGG_GREENYELLOW.get();
+            case 22 -> ModItems.EGG_OLIVELIGHT.get();
+            case 23 -> ModItems.EGG_OLIVE.get();
+            case 24 -> ModItems.EGG_OLIVEDARK.get();
+            case 25 -> ModItems.EGG_ARMY.get();
+            case 26 -> ModItems.EGG_BLUEGREY.get();
+            case 27 -> ModItems.EGG_GREY.get();
+            case 28 -> ModItems.EGG_GREYGREEN.get();
+            case 29 -> ModItems.EGG_AVOCADO.get();
+            case 30 -> ModItems.EGG_AVOCADODARK.get();
+            case 31 -> ModItems.EGG_FELDGRAU.get();
+            case 32 -> ModItems.EGG_MINT.get();
+            case 33 -> ModItems.EGG_GREEN.get();
+            case 34 -> ModItems.EGG_GREENDARK.get();
+            case 35 -> ModItems.EGG_PINE.get();
+            case 36 -> ModItems.EGG_PINEDARK.get();
+            case 37 -> ModItems.EGG_PINEBLACK.get();
+            case 38 -> ModItems.EGG_POWDERBLUE.get();
+            case 39 -> ModItems.EGG_TEA.get();
+            case 40 -> ModItems.EGG_MATCHA.get();
+            case 41 -> ModItems.EGG_MATCHADARK.get();
+            case 42 -> ModItems.EGG_MOSS.get();
+            case 43 -> ModItems.EGG_MOSSDARK.get();
+            case 44 -> ModItems.EGG_GREENUMBER.get();
+            case 45 -> ModItems.EGG_GREYBLUE.get();
+            case 46 -> ModItems.EGG_GREYNEUTRAL.get();
+            case 47 -> ModItems.EGG_LAUREL.get();
+            case 48 -> ModItems.EGG_RESEDA.get();
+            case 49 -> ModItems.EGG_GREENPEWTER.get();
+            case 50 -> ModItems.EGG_GREYDARK.get();
+            case 51 -> ModItems.EGG_CELADON.get();
+            case 52 -> ModItems.EGG_FERN.get();
+            case 53 -> ModItems.EGG_ASPARAGUS.get();
+            case 54 -> ModItems.EGG_HUNTER.get();
+            case 55 -> ModItems.EGG_HUNTERDARK.get();
+            case 56 -> ModItems.EGG_TREEDARK.get();
+            case 57 -> ModItems.EGG_PALEBLUE.get();
+            case 58 -> ModItems.EGG_HONEYDEW.get();
+            case 59 -> ModItems.EGG_EARTH.get();
+            case 60 -> ModItems.EGG_KHAKI.get();
+            case 61 -> ModItems.EGG_GRULLO.get();
+            case 62 -> ModItems.EGG_KHAKIDARK.get();
+            case 63 -> ModItems.EGG_CAROB.get();
+            case 64 -> ModItems.EGG_COOLGREY.get();
+            case 65 -> ModItems.EGG_PINKGREY.get();
+            case 66 -> ModItems.EGG_WARMGREY.get();
+            case 67 -> ModItems.EGG_ARTICHOKE.get();
+            case 68 -> ModItems.EGG_MYRTLEGREY.get();
+            case 69 -> ModItems.EGG_RIFLE.get();
+            case 70 -> ModItems.EGG_JADE.get();
+            case 71 -> ModItems.EGG_PISTACHIO.get();
+            case 72 -> ModItems.EGG_SAGE.get();
+            case 73 -> ModItems.EGG_ROSEMARY.get();
+            case 74 -> ModItems.EGG_GREENBROWN.get();
+            case 75 -> ModItems.EGG_UMBER.get();
+            case 76 -> ModItems.EGG_WHITE.get();
+            case 77 -> ModItems.EGG_CREAMLIGHT.get();
+            case 78 -> ModItems.EGG_CREAM_SPECKLE.get();
+            case 79 -> ModItems.EGG_CREAMDARK_SPECKLE.get();
+            case 80 -> ModItems.EGG_CARMEL_SPECKLE.get();
+            case 81 -> ModItems.EGG_CARMELDARK_SPECKLE.get();
+            case 82 -> ModItems.EGG_GARNET_SPECKLE.get();
+            case 83 -> ModItems.EGG_PINKLIGHT.get();
+            case 84 -> ModItems.EGG_PINK_SPECKLE.get();
+            case 85 -> ModItems.EGG_PINKDARK_SPECKLE.get();
+            case 86 -> ModItems.EGG_CHERRY_SPECKLE.get();
+            case 87 -> ModItems.EGG_CHERRYDARK_SPECKLE.get();
+            case 88 -> ModItems.EGG_PLUM_SPECKLE.get();
+            case 89 -> ModItems.EGG_BROWNLIGHT_SPECKLE.get();
+            case 90 -> ModItems.EGG_BROWN_SPECKLE.get();
+            case 91 -> ModItems.EGG_BROWNDARK_SPECKLE.get();
+            case 92 -> ModItems.EGG_CHOCOLATE_SPECKLE.get();
+            case 93 -> ModItems.EGG_CHOCOLATEDARK_SPECKLE.get();
+            case 94 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 95 -> ModItems.EGG_BLUE.get();
+            case 96 -> ModItems.EGG_GREENLIGHT.get();
+            case 97 -> ModItems.EGG_GREENYELLOW_SPECKLE.get();
+            case 98 -> ModItems.EGG_OLIVELIGHT_SPECKLE.get();
+            case 99 -> ModItems.EGG_OLIVE_SPECKLE.get();
+            case 100 -> ModItems.EGG_OLIVEDARK_SPECKLE.get();
+            case 101 -> ModItems.EGG_ARMY_SPECKLE.get();
+            case 102 -> ModItems.EGG_BLUEGREY.get();
+            case 103 -> ModItems.EGG_GREY_SPECKLE.get();
+            case 104 -> ModItems.EGG_GREYGREEN_SPECKLE.get();
+            case 105 -> ModItems.EGG_AVOCADO_SPECKLE.get();
+            case 106 -> ModItems.EGG_AVOCADODARK_SPECKLE.get();
+            case 107 -> ModItems.EGG_FELDGRAU_SPECKLE.get();
+            case 108 -> ModItems.EGG_MINT_SPECKLE.get();
+            case 109 -> ModItems.EGG_GREEN_SPECKLE.get();
+            case 110 -> ModItems.EGG_GREENDARK_SPECKLE.get();
+            case 111 -> ModItems.EGG_PINE_SPECKLE.get();
+            case 112 -> ModItems.EGG_PINEDARK_SPECKLE.get();
+            case 113 -> ModItems.EGG_PINEBLACK_SPECKLE.get();
+            case 114 -> ModItems.EGG_POWDERBLUE.get();
+            case 115 -> ModItems.EGG_TEA.get();
+            case 116 -> ModItems.EGG_MATCHA_SPECKLE.get();
+            case 117 -> ModItems.EGG_MATCHADARK_SPECKLE.get();
+            case 118 -> ModItems.EGG_MOSS_SPECKLE.get();
+            case 119 -> ModItems.EGG_MOSSDARK_SPECKLE.get();
+            case 120 -> ModItems.EGG_GREENUMBER_SPECKLE.get();
+            case 121 -> ModItems.EGG_GREYBLUE.get();
+            case 122 -> ModItems.EGG_GREYNEUTRAL_SPECKLE.get();
+            case 123 -> ModItems.EGG_LAUREL_SPECKLE.get();
+            case 124 -> ModItems.EGG_RESEDA_SPECKLE.get();
+            case 125 -> ModItems.EGG_GREENPEWTER_SPECKLE.get();
+            case 126 -> ModItems.EGG_GREYDARK_SPECKLE.get();
+            case 127 -> ModItems.EGG_CELADON_SPECKLE.get();
+            case 128 -> ModItems.EGG_FERN_SPECKLE.get();
+            case 129 -> ModItems.EGG_ASPARAGUS_SPECKLE.get();
+            case 130 -> ModItems.EGG_HUNTER_SPECKLE.get();
+            case 131 -> ModItems.EGG_HUNTERDARK_SPECKLE.get();
+            case 132 -> ModItems.EGG_TREEDARK_SPECKLE.get();
+            case 133 -> ModItems.EGG_PALEBLUE.get();
+            case 134 -> ModItems.EGG_HONEYDEW.get();
+            case 135 -> ModItems.EGG_EARTH_SPECKLE.get();
+            case 136 -> ModItems.EGG_KHAKI_SPECKLE.get();
+            case 137 -> ModItems.EGG_GRULLO_SPECKLE.get();
+            case 138 -> ModItems.EGG_KHAKIDARK_SPECKLE.get();
+            case 139 -> ModItems.EGG_CAROB_SPECKLE.get();
+            case 140 -> ModItems.EGG_COOLGREY.get();
+            case 141 -> ModItems.EGG_PINKGREY_SPECKLE.get();
+            case 142 -> ModItems.EGG_WARMGREY_SPECKLE.get();
+            case 143 -> ModItems.EGG_ARTICHOKE_SPECKLE.get();
+            case 144 -> ModItems.EGG_MYRTLEGREY_SPECKLE.get();
+            case 145 -> ModItems.EGG_RIFLE_SPECKLE.get();
+            case 146 -> ModItems.EGG_JADE_SPECKLE.get();
+            case 147 -> ModItems.EGG_PISTACHIO_SPECKLE.get();
+            case 148 -> ModItems.EGG_SAGE_SPECKLE.get();
+            case 149 -> ModItems.EGG_ROSEMARY_SPECKLE.get();
+            case 150 -> ModItems.EGG_GREENBROWN_SPECKLE.get();
+            case 151 -> ModItems.EGG_UMBER_SPECKLE.get();
+            case 152 -> ModItems.EGG_WHITE.get();
+            case 153 -> ModItems.EGG_CREAMLIGHT.get();
+            case 154 -> ModItems.EGG_CREAM_SPATTER.get();
+            case 155 -> ModItems.EGG_CREAMDARK_SPATTER.get();
+            case 156 -> ModItems.EGG_CARMEL_SPATTER.get();
+            case 157 -> ModItems.EGG_CARMELDARK_SPATTER.get();
+            case 158 -> ModItems.EGG_GARNET_SPATTER.get();
+            case 159 -> ModItems.EGG_PINKLIGHT.get();
+            case 160 -> ModItems.EGG_PINK_SPATTER.get();
+            case 161 -> ModItems.EGG_PINKDARK_SPATTER.get();
+            case 162 -> ModItems.EGG_CHERRY_SPATTER.get();
+            case 163 -> ModItems.EGG_CHERRYDARK_SPATTER.get();
+            case 164 -> ModItems.EGG_PLUM_SPATTER.get();
+            case 165 -> ModItems.EGG_BROWNLIGHT_SPATTER.get();
+            case 166 -> ModItems.EGG_BROWN_SPATTER.get();
+            case 167 -> ModItems.EGG_BROWNDARK_SPATTER.get();
+            case 168 -> ModItems.EGG_CHOCOLATE_SPATTER.get();
+            case 169 -> ModItems.EGG_CHOCOLATEDARK_SPATTER.get();
+            case 170 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 171 -> ModItems.EGG_BLUE.get();
+            case 172 -> ModItems.EGG_GREENLIGHT.get();
+            case 173 -> ModItems.EGG_GREENYELLOW_SPATTER.get();
+            case 174 -> ModItems.EGG_OLIVELIGHT_SPATTER.get();
+            case 175 -> ModItems.EGG_OLIVE_SPATTER.get();
+            case 176 -> ModItems.EGG_OLIVEDARK_SPATTER.get();
+            case 177 -> ModItems.EGG_ARMY_SPATTER.get();
+            case 178 -> ModItems.EGG_BLUEGREY.get();
+            case 179 -> ModItems.EGG_GREY_SPATTER.get();
+            case 180 -> ModItems.EGG_GREYGREEN_SPATTER.get();
+            case 181 -> ModItems.EGG_AVOCADO_SPATTER.get();
+            case 182 -> ModItems.EGG_AVOCADODARK_SPATTER.get();
+            case 183 -> ModItems.EGG_FELDGRAU_SPATTER.get();
+            case 184 -> ModItems.EGG_MINT_SPATTER.get();
+            case 185 -> ModItems.EGG_GREEN_SPATTER.get();
+            case 186 -> ModItems.EGG_GREENDARK_SPATTER.get();
+            case 187 -> ModItems.EGG_PINE_SPATTER.get();
+            case 188 -> ModItems.EGG_PINEDARK_SPATTER.get();
+            case 189 -> ModItems.EGG_PINEBLACK_SPATTER.get();
+            case 190 -> ModItems.EGG_POWDERBLUE.get();
+            case 191 -> ModItems.EGG_TEA.get();
+            case 192 -> ModItems.EGG_MATCHA_SPATTER.get();
+            case 193 -> ModItems.EGG_MATCHADARK_SPATTER.get();
+            case 194 -> ModItems.EGG_MOSS_SPATTER.get();
+            case 195 -> ModItems.EGG_MOSSDARK_SPATTER.get();
+            case 196 -> ModItems.EGG_GREENUMBER_SPATTER.get();
+            case 197 -> ModItems.EGG_GREYBLUE.get();
+            case 198 -> ModItems.EGG_GREYNEUTRAL_SPATTER.get();
+            case 199 -> ModItems.EGG_LAUREL_SPATTER.get();
+            case 200 -> ModItems.EGG_RESEDA_SPATTER.get();
+            case 201 -> ModItems.EGG_GREENPEWTER_SPATTER.get();
+            case 202 -> ModItems.EGG_GREYDARK_SPATTER.get();
+            case 203 -> ModItems.EGG_CELADON_SPATTER.get();
+            case 204 -> ModItems.EGG_FERN_SPATTER.get();
+            case 205 -> ModItems.EGG_ASPARAGUS_SPATTER.get();
+            case 206 -> ModItems.EGG_HUNTER_SPATTER.get();
+            case 207 -> ModItems.EGG_HUNTERDARK_SPATTER.get();
+            case 208 -> ModItems.EGG_TREEDARK_SPATTER.get();
+            case 209 -> ModItems.EGG_PALEBLUE.get();
+            case 210 -> ModItems.EGG_HONEYDEW.get();
+            case 211 -> ModItems.EGG_EARTH_SPATTER.get();
+            case 212 -> ModItems.EGG_KHAKI_SPATTER.get();
+            case 213 -> ModItems.EGG_GRULLO_SPATTER.get();
+            case 214 -> ModItems.EGG_KHAKIDARK_SPATTER.get();
+            case 215 -> ModItems.EGG_CAROB_SPATTER.get();
+            case 216 -> ModItems.EGG_COOLGREY.get();
+            case 217 -> ModItems.EGG_PINKGREY_SPATTER.get();
+            case 218 -> ModItems.EGG_WARMGREY_SPATTER.get();
+            case 219 -> ModItems.EGG_ARTICHOKE_SPATTER.get();
+            case 220 -> ModItems.EGG_MYRTLEGREY_SPATTER.get();
+            case 221 -> ModItems.EGG_RIFLE_SPATTER.get();
+            case 222 -> ModItems.EGG_JADE_SPATTER.get();
+            case 223 -> ModItems.EGG_PISTACHIO_SPATTER.get();
+            case 224 -> ModItems.EGG_SAGE_SPATTER.get();
+            case 225 -> ModItems.EGG_ROSEMARY_SPATTER.get();
+            case 226 -> ModItems.EGG_GREENBROWN_SPATTER.get();
+            case 227 -> ModItems.EGG_UMBER_SPATTER.get();
+            case 228 -> ModItems.EGG_WHITE.get();
+            case 229 -> ModItems.EGG_CREAMLIGHT.get();
+            case 230 -> ModItems.EGG_CREAM_SPOT.get();
+            case 231 -> ModItems.EGG_CREAMDARK_SPOT.get();
+            case 232 -> ModItems.EGG_CARMEL_SPOT.get();
+            case 233 -> ModItems.EGG_CARMELDARK_SPOT.get();
+            case 234 -> ModItems.EGG_GARNET_SPOT.get();
+            case 235 -> ModItems.EGG_PINKLIGHT.get();
+            case 236 -> ModItems.EGG_PINK_SPOT.get();
+            case 237 -> ModItems.EGG_PINKDARK_SPOT.get();
+            case 238 -> ModItems.EGG_CHERRY_SPOT.get();
+            case 239 -> ModItems.EGG_CHERRYDARK_SPOT.get();
+            case 240 -> ModItems.EGG_PLUM_SPOT.get();
+            case 241 -> ModItems.EGG_BROWNLIGHT_SPOT.get();
+            case 242 -> ModItems.EGG_BROWN_SPOT.get();
+            case 243 -> ModItems.EGG_BROWNDARK_SPOT.get();
+            case 244 -> ModItems.EGG_CHOCOLATE_SPOT.get();
+            case 245 -> ModItems.EGG_CHOCOLATEDARK_SPOT.get();
+            case 246 -> ModItems.EGG_CHOCOLATECOSMOS.get();
+            case 247 -> ModItems.EGG_BLUE.get();
+            case 248 -> ModItems.EGG_GREENLIGHT.get();
+            case 249 -> ModItems.EGG_GREENYELLOW_SPOT.get();
+            case 250 -> ModItems.EGG_OLIVELIGHT_SPOT.get();
+            case 251 -> ModItems.EGG_OLIVE_SPOT.get();
+            case 252 -> ModItems.EGG_OLIVEDARK_SPOT.get();
+            case 253 -> ModItems.EGG_ARMY_SPOT.get();
+            case 254 -> ModItems.EGG_BLUEGREY.get();
+            case 255 -> ModItems.EGG_GREY_SPOT.get();
+            case 256 -> ModItems.EGG_GREYGREEN_SPOT.get();
+            case 257 -> ModItems.EGG_AVOCADO_SPOT.get();
+            case 258 -> ModItems.EGG_AVOCADODARK_SPOT.get();
+            case 259 -> ModItems.EGG_FELDGRAU_SPOT.get();
+            case 260 -> ModItems.EGG_MINT_SPOT.get();
+            case 261 -> ModItems.EGG_GREEN_SPOT.get();
+            case 262 -> ModItems.EGG_GREENDARK_SPOT.get();
+            case 263 -> ModItems.EGG_PINE_SPOT.get();
+            case 264 -> ModItems.EGG_PINEDARK_SPOT.get();
+            case 265 -> ModItems.EGG_PINEBLACK_SPOT.get();
+            case 266 -> ModItems.EGG_POWDERBLUE.get();
+            case 267 -> ModItems.EGG_TEA.get();
+            case 268 -> ModItems.Egg_Matcha_Spot.get();
+            case 269 -> ModItems.Egg_MatchaDark_Spot.get();
+            case 270 -> ModItems.EGG_MOSS_SPOT.get();
+            case 271 -> ModItems.EGG_MOSSDARK_SPOT.get();
+            case 272 -> ModItems.EGG_GREENUMBER_SPOT.get();
+            case 273 -> ModItems.EGG_GREYBLUE.get();
+            case 274 -> ModItems.EGG_GREYNEUTRAL_SPOT.get();
+            case 275 -> ModItems.EGG_LAUREL_SPOT.get();
+            case 276 -> ModItems.EGG_RESEDA_SPOT.get();
+            case 277 -> ModItems.EGG_GREENPEWTER_SPOT.get();
+            case 278 -> ModItems.EGG_GREYDARK_SPOT.get();
+            case 279 -> ModItems.EGG_CELADON_SPOT.get();
+            case 280 -> ModItems.EGG_FERN_SPOT.get();
+            case 281 -> ModItems.EGG_ASPARAGUS_SPOT.get();
+            case 282 -> ModItems.EGG_HUNTER_SPOT.get();
+            case 283 -> ModItems.EGG_HUNTERDARK_SPOT.get();
+            case 284 -> ModItems.EGG_TREEDARK_SPOT.get();
+            case 285 -> ModItems.EGG_PALEBLUE.get();
+            case 286 -> ModItems.EGG_HONEYDEW.get();
+            case 287 -> ModItems.EGG_EARTH_SPOT.get();
+            case 288 -> ModItems.EGG_KHAKI_SPOT.get();
+            case 289 -> ModItems.EGG_GRULLO_SPOT.get();
+            case 290 -> ModItems.EGG_KHAKIDARK_SPOT.get();
+            case 291 -> ModItems.EGG_CAROB_SPOT.get();
+            case 292 -> ModItems.EGG_COOLGREY.get();
+            case 293 -> ModItems.EGG_PINKGREY_SPOT.get();
+            case 294 -> ModItems.EGG_WARMGREY_SPOT.get();
+            case 295 -> ModItems.EGG_ARTICHOKE_SPOT.get();
+            case 296 -> ModItems.EGG_MYRTLEGREY_SPOT.get();
+            case 297 -> ModItems.EGG_RIFLE_SPOT.get();
+            case 298 -> ModItems.EGG_JADE_SPOT.get();
+            case 299 -> ModItems.EGG_PISTACHIO_SPOT.get();
+            case 300 -> ModItems.EGG_SAGE_SPOT.get();
+            case 301 -> ModItems.EGG_ROSEMARY_SPOT.get();
+            case 302 -> ModItems.EGG_GREENBROWN_SPOT.get();
+            case 303 -> ModItems.EGG_UMBER_SPOT.get();
+            default ->
+
+                //TODO set up exception handling and put an exception here we should NEVER generate here.
+                    null;
+        };
+
+    }
+
+    public void setFertile(){
+        this.gestationTimer = GeneticAnimalsConfig.COMMON.fertilityTicksChicken.get();
+        int firstNewEggTime = eggLayingTime()/2;
+        if (firstNewEggTime < 1000) { firstNewEggTime = 1000; }
+        if (this.timeUntilNextEgg > firstNewEggTime) {
+           this.timeUntilNextEgg = firstNewEggTime;
+        }
+    }
+
+    public boolean isGoodNestSite(BlockPos pos) {
+        if (this.level().getBlockEntity(pos) instanceof ChickenNestTileEntity) {
+           ChickenNestTileEntity nestTileEntity = (ChickenNestTileEntity) this.level().getBlockEntity(pos);
+            if (nestTileEntity!=null ) {
+                if (!(this.isBrooding() || this.isBroody())) {
+                    return !nestTileEntity.isFull();
+                }
+                return true;
+            }
+        }
+        if (this.level().isEmptyBlock(pos.below())) return false;
+        if (this.level().isWaterAt(pos.below())) return false;
+        if (!(this.level().getBlockState(pos.below()).isFaceSturdy(this.level().getChunkForCollisions(this.chunkPosition().x, this.chunkPosition().z), pos.below(), Direction.UP))) return false;
+        if (this.level().isEmptyBlock(pos)) {
+            int blocked = 0;
+            int notblocked = 0;
+            if (this.level().isEmptyBlock(pos.north())) {
+                notblocked++;
+            } else {
+                blocked++;
+            }
+            if (this.level().isEmptyBlock(pos.east())) {
+                notblocked++;
+            } else {
+                blocked++;
+            }
+            if (this.level().isEmptyBlock(pos.south())) {
+                notblocked++;
+            } else {
+                blocked++;
+            }
+            if (this.level().isEmptyBlock(pos.west())) {
+                notblocked++;
+            } else {
+                blocked++;
+            }
+            if (this.level().isEmptyBlock(pos.above())) {
+                return blocked >= 2;
+            } else {
+                return notblocked >= 1 && blocked >= 1;
+            }
+        }
+        return false;
+    }
+
+    public float rateAndSetBetterNest(BlockPos pos) {
+        float score = 0.0F;
+
+        if (this.level().getBlockEntity(pos) instanceof ChickenNestTileEntity nestTileEntity) {
+            if (nestTileEntity.isFull()) return 0.0F;
+            score += 0.1F;
+            if (!nestTileEntity.isEmpty()) score += 0.1F;
+            if (!this.level().canSeeSky(pos)) score += 0.1F;
+        }
+
+        score+=rateWall(pos, Direction.NORTH);
+        score+=rateWall(pos, Direction.SOUTH);
+        score+=rateWall(pos, Direction.EAST);
+        score+=rateWall(pos, Direction.WEST);
+        score+=rateWall(pos, Direction.UP);
+
+        if (this.currentNestScore <= 0.0F) {
+            if (-score < this.currentNestScore) {
+                this.currentNestScore = -score;
+                this.setNest(pos);
+            }
+        } else if (this.currentNestScore < score) {
+            this.currentNestScore = -score;
+            this.setNest(pos);
+        }
+        return score;
+    }
+
+    private float rateWall(BlockPos pos, Direction direction) {
+        BlockPos directionPos = pos.relative(direction);
+        if (this.level().isEmptyBlock(directionPos)) return 0.0F;
+        int x = directionPos.getX()/16;
+        int z = directionPos.getZ()/16;
+        return this.level().getBlockState(directionPos).isSolidRender(this.level().getChunkForCollisions(x, z), directionPos) ? 0.1F : 0.05F;
+    }
+/*
+    static class InteractWithParentGoal extends EnhancedLookAtGoal {
+        InteractWithParentGoal(Mob entityIn, Class<? extends LivingEntity> parentClass, float distance) {
+            super(entityIn, parentClass, distance);
+        }
+    }*/
+}
+

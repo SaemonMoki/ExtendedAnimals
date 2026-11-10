@@ -1,0 +1,63 @@
+package mokiyoki.enhancedanimals.renderer;
+
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
+import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.ResourceLocation;
+
+public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow<EnhancedCow>> {
+    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
+    private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entity/cow/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = ResourceLocation.parse("eanimod:textures/entity/cow/cowbase.png");
+    public static final ModelLayerLocation COW_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, "cow"), "cow_layer");
+
+    public RenderEnhancedCow(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedCow<>(renderManager.bakeLayer(COW_LAYER), false), 0.8F);
+    }
+
+    public ResourceLocation getTextureLocation(EnhancedCow entity) {
+        String s = entity.getTexture();
+        Colouration colourRGB = entity.getRgb();
+
+        if (s == null || s.isEmpty() || colourRGB == null) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
+        s = s + colourRGB.getRGBStrings();
+
+        textureCache.removeFromCache(entity.updateCashe(s));
+
+        ResourceLocation resourcelocation = textureCache.getFromCache(s);
+
+        if (resourcelocation == null) {
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
+
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
+            try {
+                resourcelocation = ResourceLocation.parse(s);
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_COW_TEXTURE_LOCATION, textureGrouping, colourRGB, 256));
+
+                textureCache.putInCache(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+        }
+        return resourcelocation;
+    }
+
+    protected boolean shouldShowName(EnhancedCow entity) {
+        if (entity.isInPhotoMode) return false;
+        return super.shouldShowName(entity);
+    }
+}

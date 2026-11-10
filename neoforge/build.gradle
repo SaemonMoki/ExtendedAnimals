@@ -1,0 +1,152 @@
+plugins {
+    id 'maven-publish'
+    id 'net.neoforged.moddev'
+}
+
+def extraModsDir = rootProject.file("extra-mods")
+
+repositories {
+    flatDir {
+        name = "extra-mods"
+        dir(extraModsDir)
+    }
+}
+
+configurations {
+    commonJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    // Sets up a dependency configuration called 'localRuntime'.
+    // This configuration should be used instead of 'runtimeOnly' to declare
+    // a dependency that will be present for runtime testing but that is
+    // "optional", meaning it will not be pulled by dependents of this mod.
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    compileOnly project(':common')
+    commonJava project(path: ':common', configuration: 'commonJava')
+    commonResources project(path: ':common', configuration: 'commonResources')
+
+    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
+        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
+        def versionSep = basename.lastIndexOf('-')
+        assert versionSep != -1
+        def artifactId = basename.substring(0, versionSep)
+        def version = basename.substring(versionSep + 1)
+        localRuntime "extra-mods:$artifactId:$version"
+    }
+}
+
+tasks.named('compileJava', JavaCompile).configure {
+    dependsOn configurations.commonJava
+    source configurations.commonJava
+}
+tasks.named('sourcesJar', Jar).configure {
+    dependsOn configurations.commonJava
+    from configurations.commonJava
+}
+tasks.named('processResources', ProcessResources).configure {
+    dependsOn configurations.commonResources
+    from configurations.commonResources
+}
+
+neoForge {
+    // Specify the version of NeoForge to use.
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    accessTransformers.from(rootProject.file('common/src/main/resources/META-INF/accesstransformer.cfg'))
+
+    runs {
+        client {
+            client()
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            gameDirectory = rootProject.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', rootProject.file('common/src/generated/resources/').getAbsolutePath(), '--existing', rootProject.file('common/src/main/resources/').getAbsolutePath()
+        }
+
+        // applies to all the run configs above
+        configureEach {
+            gameDirectory = rootProject.file(providers.gradleProperty('neoforge_run_dir').getOrElse('run'))
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        // define mod <-> source bindings
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version.replaceAll("_", "."),
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+// Include the output of "generateModMetadata" as an input directory for the build
+// this works with both building through Gradle and the IDE.
+sourceSets.main.resources.srcDir generateModMetadata
+// To avoid having to run "generateModMetadata" manually, make it run on every project reload
+neoForge.ideSyncTask generateModMetadata
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = "file://${rootProject.projectDir}/repo"
+        }
+    }
+}

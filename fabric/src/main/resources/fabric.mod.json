@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contributors": [
+    "Everyone on the Genetic Animals Patreon!"
+  ],
+  "license": "${mod_license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mokiyoki.enhancedanimals.fabric.EnhancedAnimalsFabric"
+    ],
+    "client": [
+      "mokiyoki.enhancedanimals.fabric.client.EnhancedAnimalsFabricClient"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "accessWidener": "${mod_id}.accesswidener",
+  "depends": {
+    "fabricloader": "${fabric_loader_version_range}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21"
+  }
+}

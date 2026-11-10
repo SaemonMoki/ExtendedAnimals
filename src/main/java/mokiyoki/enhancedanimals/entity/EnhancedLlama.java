@@ -633,7 +633,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.resetTexture) {
             this.resetTexture = false;

@@ -23,9 +23,6 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
         super(renderManager, new ModelEnhancedCow<>(renderManager.bakeLayer(COW_LAYER), false), 0.8F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedCow entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -41,7 +38,6 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            System.out.print("New Texture Cow");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

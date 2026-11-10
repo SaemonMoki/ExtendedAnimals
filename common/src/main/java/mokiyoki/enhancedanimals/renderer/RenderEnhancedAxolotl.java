@@ -26,9 +26,6 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
         addLayer(new ModelEnhancedAxolotlGlowingLayer(this));
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedAxolotl entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -42,7 +39,6 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null || entity.getBucketImage().isEmpty()) {
-            System.out.print("New Texture Axolotl");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

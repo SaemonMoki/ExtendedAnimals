@@ -27,9 +27,6 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         super(renderManager, new ModelEnhancedChicken<>(renderManager.bakeLayer(CHICKEN_LAYER)), 0.5F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedChicken entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -50,7 +47,6 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            System.out.print("New Texture Chicken");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

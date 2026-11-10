@@ -27,9 +27,6 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
         super(renderManager, new ModelEnhancedRabbit<>(renderManager.bakeLayer(RABBIT_LAYER)), 0.3F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedRabbit entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -43,7 +40,6 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            System.out.print("New Texture Rabbit");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

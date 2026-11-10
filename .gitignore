@@ -29,6 +29,12 @@ forge*changelog.txt
 # Locally added mods
 /extra-mods/
 /mod-bk/
+/run-fabric/
+/run-fabric-server/
+
+# Locally added mods
+/extra-mods/
+/mod-bk/
 
 # NeoForge MDK
 run-data

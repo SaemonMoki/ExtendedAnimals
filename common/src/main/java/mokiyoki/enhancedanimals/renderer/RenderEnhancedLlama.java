@@ -26,9 +26,6 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
         super(renderManager, new ModelEnhancedLlama<>(renderManager.bakeLayer(LLAMA_LAYER)), 0.75F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedLlama entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -42,7 +39,6 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            System.out.print("New Texture Llama");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

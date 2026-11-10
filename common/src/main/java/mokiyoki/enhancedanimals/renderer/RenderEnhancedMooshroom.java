@@ -23,9 +23,6 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
         super(renderManager, new ModelEnhancedCow<>(renderManager.bakeLayer(MOOSHROOM_LAYER), true), 0.8F);
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     public ResourceLocation getTextureLocation(EnhancedMooshroom entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
@@ -41,7 +38,6 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            System.out.print("New Texture Mooshroom");
             TextureGrouping textureGrouping = entity.getTextureGrouping();
 
             if (textureGrouping == null || !textureGrouping.isPopulated()) {

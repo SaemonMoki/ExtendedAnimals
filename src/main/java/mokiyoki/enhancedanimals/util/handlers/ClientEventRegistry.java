@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModParticles;
+import mokiyoki.enhancedanimals.renderer.CarriedAnimalLayer;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotlEgg;
@@ -32,6 +33,9 @@ import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.item.BlockItem;
@@ -42,6 +46,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -56,6 +61,11 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIM
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEventRegistry {
+
+    @SubscribeEvent
+    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(CarryClientHandler.CARRY_KEY);
+    }
 
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -118,6 +128,17 @@ public class ClientEventRegistry {
 
         event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntityRenderer::new);
         event.registerBlockEntityRenderer(CHICKEN_NEST_TILE_ENTITY.get(), ChickenNestTileEntityRenderer::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+        for (String skin : event.getSkins()) {
+            LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer = event.getSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new CarriedAnimalLayer<>(renderer));
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

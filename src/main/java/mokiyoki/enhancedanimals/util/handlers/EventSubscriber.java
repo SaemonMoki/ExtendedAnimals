@@ -14,10 +14,13 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.capability.carry.CarryCapabilityProvider;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -90,6 +93,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
@@ -694,6 +698,64 @@ public class EventSubscriber {
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
                 GeneticAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) trackingPlayer), equipmentPacket);
             }
+        } else if (targetEntity instanceof Player carryingPlayer) {
+            ServerPlayer trackingPlayer = (ServerPlayer) event.getEntity();
+            //always send the true current state, even empty otherwise a newly-tracking client can be left with
+            //a stale "carrying" render from a previous tracking session if the item was dropped while untracked
+            carryingPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    GeneticAnimals.channel.send(PacketDistributor.PLAYER.with(() -> trackingPlayer), new CarrySyncPacket(carryingPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.handleCarryToggle(serverPlayer, -1);
+        }
+    }
+
+    //the logout-time sync above can fail to reach a disconnecting client this self-corrects on (re)join
+    //regardless of how the previous session ended, since the server's own capability state is always correct
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    GeneticAnimals.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CarrySyncPacket(serverPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    //LOWEST so any mods cancelling this shit means the animal won't be in a weird state
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.dropCarriedOnDeath(serverPlayer);
+        }
+    }
+
+    //leaving the End replaces the player object, so carry the animal over to the new one.
+    //Again, why do I have safeguard against this crap Mojang? Why is just the End different in how dimensions are handled!
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
+        original.reviveCaps();
+        original.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(oldCap ->
+                event.getEntity().getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(newCap ->
+                        newCap.setCarried(oldCap.getCarried())));
+        original.invalidateCaps();
+    }
+
+    //the client clears its carry state on every level switch, these fire after the respawn packet so the resync lands after the clear
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
         }
     }
 

@@ -158,11 +158,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
 
     public static int[] getGlowingImage(ItemStack stack) {
         if (CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("gfp")) {
-            int[] image = getImage(stack);
             CompoundTag tag = CustomDataHelper.getTagElementOrEmpty(stack, "display").getCompound("gfp");
+            int[] image = getImage(stack);
             boolean body = tag.getBoolean("body");
             boolean eyes = body || tag.getBoolean("eyes");
             boolean gills = body || tag.getBoolean("gills");
+            if (!eyes && !gills) return new int[0];
             boolean hasEquipment = body && CustomDataHelper.getTagElementOrEmpty(stack, "display").contains("collar");
 
             List<Integer> glowImage = new ArrayList();
@@ -206,7 +207,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             for (int i = 0, l=imageArray.length; i < l; i++) imageArray[i] = glowImage.get(i);
             return imageArray;
         }
-            return new int[3];
+            return new int[0];
     }
 
     private static int[] getBlankImage() {
@@ -243,6 +244,14 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         StringBuilder texture = new StringBuilder();
         int[] invImage = getImage(stack);
         for (int i : invImage) {
+            texture.append(i).append("-");
+        }
+        return texture.toString();
+    }
+
+    public static String getGlowingTexture(int[] glowImage) {
+        StringBuilder texture = new StringBuilder("g");
+        for (int i : glowImage) {
             texture.append(i).append("-");
         }
         return texture.toString();

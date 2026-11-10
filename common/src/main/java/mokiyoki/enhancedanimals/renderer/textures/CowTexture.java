@@ -20,9 +20,29 @@ public class CowTexture {
             0, 28, 38, 4, 5, 4,
             0, 16, 51, 5, 4, 3,
             0, 25, 51, 3, 3, 7,
+            0, 38, 51, 3, 1, 6,
             0, 44, 38, 4, 6, 2,
             0, 51, 50, 10, 8, 8,
             1, 0, 51, 8, 51, 3, 7, 1
+    };
+
+    private static final int[] bodyCubes = new int[] {
+            0, 46, 0, 6, 8, 11,
+            0, 24, 72, 5, 5, 5,
+            1, 24, 82, 29, 82, 1, 2, 1,
+            1, 35, 82, 40, 82, 1, 2, 1,
+            0, 0, 8, 4, 8, 6,
+            0, 0, 0, 2, 4, 1,
+            0, 6, 0, 1, 4, 1,
+            0, 10, 0, 1, 3, 1,
+            0, 14, 0, 2, 4, 2
+    };
+
+    private static final int[] legCubes = new int[] {
+            1, 0, 59, 12, 59, 3, 5, 3,
+            1, 0, 64, 12, 64, 3, 5, 3,
+            1, 0, 72, 12, 72, 3, 5, 3,
+            1, 0, 77, 12, 77, 3, 5, 3
     };
 
     public static final String[] COW_TEXTURES_UDDER = new String[] {
@@ -75,6 +95,9 @@ public class CowTexture {
 
         //dominant red
         if (cowTexture.eitherAllelesHave(6, 1)) {
+//            System.out.println(); TODO find out why this isn't spawning in holstein breed preset add(6, "5%1")
+//            System.out.println("THIS COW IS DOMINATE RED");
+//            System.out.println();
             skin = 1;
         } else if (cowTexture.eitherAllelesHave(0, 1)) {
             //dominant black
@@ -140,7 +163,7 @@ public class CowTexture {
 
         body.addMergeGroup("solid.png", COW_TEXTURES_UDDER[skin]);
         body.addTexture(COW_TEXTURES_RED[red]).tintRed();
-        body.addTexture(COW_TEXTURES_BLACK[black]).shadeMelanin();
+        body.addTexture(COW_TEXTURES_BLACK[black]).shadeMelanin().flipIf(black == 6 && cowTexture.randomChance(BRINDLE_FLIP, 50));
 
         TextureGroup counterShading = body.addMergeGroup();
         counterShading.addTexture(COW_TEXTURES_MEALY[mealy]);
@@ -181,43 +204,43 @@ public class CowTexture {
     private static void addWhiteSpots(TextureBuilder cowTexture, TextureGroup body, int black) {
         boolean legacyBrockling = hasLegacyBrockling(cowTexture);
         boolean newBrockling = !legacyBrockling && cowTexture.eitherAllelesHave(254, 2);
-        TextureGroup faceSpots = addWhiteMask(cowTexture, body, newBrockling);
+        TextureGroup faceSpots = addWhiteMaskwithBrocklHandling(cowTexture, body, newBrockling);
         TextureGroup beltSpots = faceSpots;
         TextureGroup roanSpots = faceSpots;
         if (legacyBrockling) {
             addLegacyBrockling(body, black);
-            beltSpots = addWhiteMask(cowTexture, body, false);
+            beltSpots = addWhiteMaskwithBrocklHandling(cowTexture, body, false);
             roanSpots = beltSpots;
         } else if (newBrockling) {
-            roanSpots = addWhiteMask(cowTexture, body, false);
+            roanSpots = addWhiteMaskwithBrocklHandling(cowTexture, body, false);
         }
 
         //roan
         if (cowTexture.isHomoFor(8, 2)) {
             roanSpots.addTexture("spots/roan/solid.png");
         } else if (cowTexture.eitherAllelesHave(8, 2)) {
-            roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN);
+            roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN).flipIf(cowTexture.randomChance(COW_ROAN_FLIP, 50), headCubes, bodyCubes, legCubes);
         }
 
         //speckled
         if (cowTexture.isHomoFor(14, 1)) {
             //pointed white
-            roanSpots.addTexture("spots/speckled/homozygous/0.png");
+            roanSpots.addTexture("spots/speckled/homozygous/0.png").flipIf(cowTexture.randomChance(COW_SPECKLED_FLIP, 50), headCubes, bodyCubes, legCubes);
         } else if (cowTexture.eitherAllelesHave(14, 1)) {
-            roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4);
+            roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4).flipIf(cowTexture.randomChance(COW_SPECKLED_FLIP, 50), headCubes, bodyCubes, legCubes);
         }
 
         //colour sided
-        if (cowTexture.eitherAllelesHave(20, 1)) faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4);
+        if (cowTexture.eitherAllelesHave(20, 1)) faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4).flipIf(cowTexture.randomChance(COW_COLOURSIDED_FLIP, 50), headCubes, bodyCubes, legCubes);
 
         if (cowTexture.eitherAllelesHave(16, 1)) {
             if (cowTexture.eitherAllelesHave(16, 2)) {
                 //white face with border spots(Pinzgauer)
-                faceSpots.addTexture("spots/hereford_coloursided/0.png");
+                faceSpots.addTexture("spots/hereford_coloursided/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
             } else if (cowTexture.isHomoFor(16, 1)) {
-                faceSpots.addTexture("spots/hereford/homozygous/0.png");
+                faceSpots.addTexture("spots/hereford/homozygous/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
             } else {
-                faceSpots.addTexture("spots/hereford/heterozygous/0.png");
+                faceSpots.addTexture("spots/hereford/heterozygous/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
             }
         } else if (cowTexture.eitherAllelesHave(16, 2)) {
             //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
@@ -229,12 +252,12 @@ public class CowTexture {
                     pingauzer = 0;
                 }
             }
-            faceSpots.addTexture("spots/pingauzer/" + pingauzer + ".png");
+            faceSpots.addTexture("spots/pingauzer/" + pingauzer + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
         } else if (cowTexture.isHomoFor(16, 4)) {
             //piebald
-            faceSpots.addTexture("spots/piebald/body/" + spotHex(cowTexture, COW_PIEBALD_BODY) + ".png");
+            faceSpots.addTexture("spots/piebald/body/" + spotHex(cowTexture, COW_PIEBALD_BODY) + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY_FLIP, 50), headCubes, bodyCubes, legCubes);
             if (cowTexture.sexVariation() != cowTexture.randomHex(COW_PIEBALD_BODY)) {
-                faceSpots.addTexture("spots/piebald/head/" + spotHex(cowTexture, COW_PIEBALD_HEAD) + ".png");
+                faceSpots.addTexture("spots/piebald/head/" + spotHex(cowTexture, COW_PIEBALD_HEAD) + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_HEAD_FLIP, 50), headCubes);
             }
         }
 
@@ -242,14 +265,14 @@ public class CowTexture {
         boolean legacyBlaze = !legacyBelt && cowTexture.eitherAllelesHave(18, 2);
 
         if (!legacyBelt && cowTexture.eitherAllelesHave(250, 2)) {
-            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, cowTexture.variation().isLegacy() ? COW_BLAZE : COW_BELT) + ".png");
+            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, cowTexture.variation().isLegacy() ? COW_BLAZE : COW_BELT) + ".png").flipIf(cowTexture.randomChance(COW_BELT_FLIP, 50), headCubes, bodyCubes, legCubes);
         }
 
         if (!legacyBlaze) {
             if (cowTexture.isHomoFor(252, 2)) {
-                beltSpots.addTexture("spots/doubleblaze/" + doubleBlaze(cowTexture) + ".png");
+                beltSpots.addTexture("spots/doubleblaze/" + doubleBlaze(cowTexture) + ".png").flipIf(cowTexture.randomChance(COW_BLAZE_FLIP, 50), headCubes);
             } else if (cowTexture.eitherAllelesHave(252, 2)) {
-                beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png");
+                beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png").flipIf(cowTexture.randomChance(COW_BLAZE_FLIP, 50), headCubes);
             }
         }
 

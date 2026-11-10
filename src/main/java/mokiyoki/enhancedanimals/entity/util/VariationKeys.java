@@ -8,27 +8,36 @@ public final class VariationKeys {
 
     //Cow, mooshroom and moobloom
     //uuid[1]
-    public static final VariationKey COW_PIEBALD_BODY = VariationKey.legacy("cow.piebald_body", 1);
+    public static final VariationKey COW_PIEBALD_BODY = VariationKey.legacy("cow.piebald.body", 1);
+    public static final VariationKey COW_PIEBALD_BODY_FLIP = VariationKey.of("cow.piebald.body.flip");
     //uuid[2]
-    public static final VariationKey COW_PIEBALD_HEAD = VariationKey.legacy("cow.piebald_head", 2);
+    public static final VariationKey COW_PIEBALD_HEAD = VariationKey.legacy("cow.piebald.head", 2);
+    public static final VariationKey COW_PIEBALD_HEAD_FLIP = VariationKey.of("cow.piebald.head.flip");
     //uuid[3]
     public static final VariationKey COW_BLAZE = VariationKey.legacy("cow.blaze", 3);
+    public static final VariationKey COW_BLAZE_FLIP = VariationKey.of("cow.blaze.flip");
     //uuid[4]
     public static final VariationKey COW_HORNS = VariationKey.legacy("cow.horns", 4);
     //uuid[5]
     public static final VariationKey COW_BELT = VariationKey.legacy("cow.belt", 5);
+    public static final VariationKey COW_BELT_FLIP = VariationKey.of("cow.belt.flip");
     //uuid[6]
     public static final VariationKey COW_COLOURSIDED = VariationKey.legacy("cow.coloursided", 6);
+    public static final VariationKey COW_COLOURSIDED_FLIP = VariationKey.of("cow.coloursided.flip");
     //uuid[7]
     public static final VariationKey COW_ROAN = VariationKey.legacy("cow.roan", 7);
+    public static final VariationKey COW_ROAN_FLIP = VariationKey.of("cow.roan.flip");
     //uuid[8]
     public static final VariationKey COW_SPECKLED = VariationKey.legacy("cow.speckled", 8);
+    public static final VariationKey COW_SPECKLED_FLIP = VariationKey.of("cow.speckled.flip");
     //uuid[20-35]
     public static final VariationKey[] COW_MUSHROOMS = VariationKey.legacySeries("cow.mushroom", 16, 20);
     //brockling was random per texture build before this upgrade, so no legacy reads to keep
-    public static final VariationKey COW_BROCKLING_COUNT = VariationKey.of("cow.brockling_count");
-    public static final VariationKey[] COW_BROCKLING_PATCHES = VariationKey.series("cow.brockling_patch", 4);
-    public static final VariationKey[] COW_BROCKLING_FLIPS = VariationKey.series("cow.brockling_flip", 4);
+    public static final VariationKey COW_BROCKLING_COUNT = VariationKey.of("cow.brockling.count");
+    public static final VariationKey[] COW_BROCKLING_PATCHES = VariationKey.series("cow.brockling.patch", 4);
+    public static final VariationKey[] COW_BROCKLING_FLIPS = VariationKey.series("cow.brockling.flip", 4);
+
+    public static final VariationKey BRINDLE_FLIP = VariationKey.of("cow.brindle.flip");
 
     //Pig
     //uuid[1]
@@ -80,5 +89,10 @@ public final class VariationKeys {
     //Turtle
     //uuid[5]
     public static final VariationKey TURTLE_PIEBALD = VariationKey.legacy("turtle.piebald", 5);
+    public static final VariationKey TURTLE_PIEBALD_FLIP = VariationKey.of("turtle.piebald.flip");
+
+    public static final VariationKey TURTLE_PATTERN_FLIP = VariationKey.of("turtle.pattern.flip");
+    public static final VariationKey TURTLE_CLOWN_FLIP = VariationKey.of("turtle.clown.flip");
+    public static final VariationKey TURTLE_TORTI_FLIP = VariationKey.of("turtle.tortie.flip");
 }
 

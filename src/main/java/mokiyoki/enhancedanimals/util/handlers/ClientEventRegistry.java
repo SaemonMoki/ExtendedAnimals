@@ -4,6 +4,8 @@ import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModParticles;
+import mokiyoki.enhancedanimals.renderer.CarriedAnimalLayer;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotlEgg;
@@ -14,6 +16,7 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.model.ModelEnhancedRabbit;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
+import mokiyoki.enhancedanimals.particle.FeatherParticle;
 import mokiyoki.enhancedanimals.renderer.ChickenNestTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
@@ -30,11 +33,15 @@ import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableLeatherItem;
@@ -42,8 +49,10 @@ import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,10 +84,17 @@ public class ClientEventRegistry {
     }
 
     @SubscribeEvent
+    public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particleEngine.register(ModParticles.FEATHER.get(), new FeatherParticle.Provider());
+    }
+
+    @SubscribeEvent
     public static void initClientSetup(FMLClientSetupEvent event) {
 
         MenuScreens.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
         MenuScreens.register(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
+
+        ClientRegistry.registerKeyBinding(CarryClientHandler.CARRY_KEY);
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
@@ -157,6 +173,17 @@ public class ClientEventRegistry {
 
         event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntityRenderer::new);
         event.registerBlockEntityRenderer(CHICKEN_NEST_TILE_ENTITY.get(), ChickenNestTileEntityRenderer::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+        for (String skin : event.getSkins()) {
+            LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer = event.getSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new CarriedAnimalLayer<>(renderer));
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

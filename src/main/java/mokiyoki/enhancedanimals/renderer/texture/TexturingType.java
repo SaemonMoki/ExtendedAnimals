@@ -11,8 +11,6 @@ public enum TexturingType {
     DYE_GROUP,
     APPLY_PHEOMELANIN, //A layer that attempts to generate correct pheomelanin appearance
 
-    /*******/
-
     //Layer texturing types
 
     APPLY_RED, //a layer specific type, used to apply a red blend to an individual texture from global rgb
@@ -30,8 +28,6 @@ public enum TexturingType {
     APPLY_SHADING, //a special case layer used for shading
     APPLY_FLIP,
     SHADE_FEATHERS,
-
-    /*******/
 
     NONE //no special changes
 }

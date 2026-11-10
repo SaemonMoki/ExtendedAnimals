@@ -14,13 +14,17 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.capability.carry.CarryCapabilityProvider;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
@@ -89,6 +93,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -693,6 +698,64 @@ public class EventSubscriber {
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
                 EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) trackingPlayer), equipmentPacket);
             }
+        } else if (targetEntity instanceof Player carryingPlayer) {
+            ServerPlayer trackingPlayer = (ServerPlayer) event.getPlayer();
+            //always send the true current state, even empty otherwise a newly-tracking client can be left with
+            //a stale "carrying" render from a previous tracking session if the item was dropped while untracked
+            carryingPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> trackingPlayer), new CarrySyncPacket(carryingPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.handleCarryToggle(serverPlayer, -1);
+        }
+    }
+
+    //the logout-time sync above can fail to reach a disconnecting client this self-corrects on (re)join
+    //regardless of how the previous session ended, since the server's own capability state is always correct
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CarrySyncPacket(serverPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    //LOWEST so any mods cancelling this shit means the animal won't be in a weird state
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntityLiving() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.dropCarriedOnDeath(serverPlayer);
+        }
+    }
+
+    //leaving the End replaces the player object, so carry the animal over to the new one.
+    //Again, why do I have safeguard against this crap Mojang? Why is just the End different in how dimensions are handled!
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
+        original.reviveCaps();
+        original.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(oldCap ->
+                event.getPlayer().getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(newCap ->
+                        newCap.setCarried(oldCap.getCarried())));
+        original.invalidateCaps();
+    }
+
+    //the client clears its carry state on every level switch, these fire after the respawn packet so the resync lands after the clear
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
         }
     }
 
@@ -755,7 +818,8 @@ public class EventSubscriber {
 
                         Collections.shuffle(animals);
 
-                        int selection = animals.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(animals.size());
+                        int listSize = animals.size();
+                        int selection = listSize == 1 ? 0 : ThreadLocalRandom.current().nextInt(listSize);
 
                         if (animals.get(selection) == ENHANCED_TURTLE.get()) {
                             ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
@@ -765,11 +829,6 @@ public class EventSubscriber {
                             CompoundTag tag = stack.getOrCreateTag();
                             tag.putInt("Variant", ThreadLocalRandom.current().nextInt(5));
                             //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
-//                        CompoundTag entityTags = new CompoundTag();
-//                        ListTag listtag = new ListTag();
-//                        listtag.add(StringTag.valueOf("WanderingTrader"));
-//                        entityTags.put("Tags", listtag);
-//                        tag.put("EntityTags",entityTags);
                             ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
                         } else {
                             for (int i = 1; i <= 2; i++) {

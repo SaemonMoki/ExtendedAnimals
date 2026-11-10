@@ -1,8 +1,10 @@
 package mokiyoki.enhancedanimals.neoforge.platform;
 
+import com.mojang.serialization.Codec;
 import mokiyoki.enhancedanimals.platform.IPlatformHelper;
 import mokiyoki.enhancedanimals.platform.attachment.LevelAttachment;
 import mokiyoki.enhancedanimals.platform.attachment.LevelSerializable;
+import mokiyoki.enhancedanimals.platform.attachment.PlayerAttachment;
 import mokiyoki.enhancedanimals.platform.config.ConfigBuilder;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -136,6 +138,22 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean isRestoringBlockSnapshots(Level level) {
         return level.restoringBlockSnapshots;
+    }
+
+    @Override
+    public <T> PlayerAttachment<T> createPlayerAttachment(String name, Codec<T> codec, Supplier<T> defaultValue) {
+        DeferredHolder<AttachmentType<?>, AttachmentType<T>> type = ATTACHMENT_TYPES.register(name, () -> AttachmentType.builder(defaultValue).serialize(codec).build());
+        return new PlayerAttachment<>() {
+            @Override
+            public T get(Player player) {
+                return player.getData(type);
+            }
+
+            @Override
+            public void set(Player player, T value) {
+                player.setData(type, value);
+            }
+        };
     }
 
     @Override

@@ -13,7 +13,10 @@
     "ServerLevelMixin"
   ],
   "client": [
-    "client.ClientLevelMixin"
+    "client.ClientLevelMixin",
+    "client.ItemInHandRendererMixin",
+    "client.MouseHandlerMixin",
+    "client.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

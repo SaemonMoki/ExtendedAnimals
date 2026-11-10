@@ -1,14 +1,23 @@
 package mokiyoki.enhancedanimals.fabric.client;
 
 import mokiyoki.enhancedanimals.fabric.EnhancedAnimalsFabricAccess;
+import mokiyoki.enhancedanimals.renderer.CarriedAnimalLayer;
+import mokiyoki.enhancedanimals.util.handlers.CarryClientHandler;
 import mokiyoki.enhancedanimals.util.handlers.ClientEventRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -16,6 +25,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
@@ -61,5 +71,17 @@ public class EnhancedAnimalsFabricClient implements ClientModInitializer {
         ClientEventRegistry.registerItemRenderers((item, renderer) -> BuiltinItemRendererRegistry.INSTANCE.register(item,
                 (stack, displayContext, poseStack, bufferSource, light, overlay) ->
                         renderer.get().renderByItem(stack, displayContext, poseStack, bufferSource, light, overlay)));
+
+        KeyBindingHelper.registerKeyBinding(CarryClientHandler.CARRY_KEY);
+        ClientTickEvents.START_CLIENT_TICK.register(client -> CarryClientHandler.onInput());
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+            if (entityRenderer instanceof PlayerRenderer playerRenderer) {
+                registrationHelper.register(new CarriedAnimalLayer<>(playerRenderer));
+            }
+        });
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> CarryClientHandler.onRenderLevelStage());
+        ClientEntityEvents.ENTITY_UNLOAD.register(CarryClientHandler::onEntityLeaveWorld);
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, level) -> CarryClientHandler.onRespawn());
+        ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> CarryClientHandler.onLoggedOut());
     }
 }

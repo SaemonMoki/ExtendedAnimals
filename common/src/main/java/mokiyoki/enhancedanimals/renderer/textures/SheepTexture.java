@@ -9,7 +9,7 @@ import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class SheepTexture {
     private static final int[] headCubes = new int[] {
-        0, 12, 10, 1, 1, 2, //eyes
+        1, 12, 10, 0, 10, 1, 1, 2, //eyes
         0, 0, 0, 5, 4, 4, //head
         0, 0, 9, 5, 3, 4, //nose
         0, 0, 55, 5, 5, 4, //headW

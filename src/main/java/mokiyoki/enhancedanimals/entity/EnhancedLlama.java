@@ -513,7 +513,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
                 }
             }
 
-            if (returnBlocks.equals(Blocks.BLACK_WOOL) && (genes[18] == 1 || genes[19] == 1)) {
+            if (returnBlocks.equals(Blocks.BLACK_WOOL) && (genes[8] == 1 || genes[9] == 1)) {
                 returnBlocks = Blocks.GRAY_WOOL;
             }
 
@@ -627,7 +627,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.resetTexture) {
             this.resetTexture = false;

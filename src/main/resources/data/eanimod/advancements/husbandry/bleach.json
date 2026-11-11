@@ -1,0 +1,38 @@
+{
+  "parent": "eanimod:husbandry/colours_to_dye_for",
+  "display": {
+    "icon": {
+      "item": "minecraft:white_dye"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.bleach.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.bleach.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "bleach_a_sheep": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:white_dye"
+          ]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "bleach_a_sheep"
+    ]
+  ]
+}

@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chicken",
     "eanimod:enhanced_chicken"
   ]
 }

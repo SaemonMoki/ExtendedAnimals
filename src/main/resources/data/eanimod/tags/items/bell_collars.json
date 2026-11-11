@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:collar_basic_cloth_ironbell",
+    "eanimod:collar_basic_cloth_goldbell",
+    "eanimod:collar_basic_cloth_diamondbell",
+    "eanimod:collar_basic_leather_ironbell",
+    "eanimod:collar_basic_leather_goldbell",
+    "eanimod:collar_basic_leather_diamondbell"
+  ]
+}

@@ -16,7 +16,7 @@ public class CowBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch(0, "3")));
 
     public static final Breed HOLSTEIN = new Breed(new Breed.Properties().setData("HolsteinFresian", 0.7F, 0.8F, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1","1","2").add(6, "5%1","2").add(8, "1","1","1","2","4").add(24,"1","2","1","1-5","10-5","1","3","1","4","2|3").add(50, "1","1","1").add(62, "10", "10", "1").add(70, "1","1","2","2","2").add(120, "1").add(252,"15%2","1")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1","1","2").add(6, "1|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2").add(8, "1","1","1","2","4").add(24,"1","2","1","1-5","10-5","1","3","1","4","2|3").add(50, "1","1","1").add(62, "10", "10", "1").add(70, "1","1","2","2","2").add(120, "1").add(252,"15%2","1")));
 
     public static final Breed JERSEY = new Breed(new Breed.Properties().setData("Jersey", 0.7F, 0.8F, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2|5","1","10%2|1|3","5","2","1","1").add(14, "2","3","_","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10","10")

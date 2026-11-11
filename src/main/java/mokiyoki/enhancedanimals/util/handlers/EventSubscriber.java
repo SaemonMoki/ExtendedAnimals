@@ -25,6 +25,7 @@ import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.*;
@@ -873,6 +874,9 @@ public class EventSubscriber {
         if (block.defaultBlockState().is(ModTags.Blocks.HAY_BLOCKS) && (itemStack.is(ModTags.Items.HAY_CUTTING_TOOLS))) {
             Direction.Axis axis = event.getLevel().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
             event.getLevel().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
+            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), itemStack);
+            }
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
             event.getLevel().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {

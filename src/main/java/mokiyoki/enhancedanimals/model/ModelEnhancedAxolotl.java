@@ -3,6 +3,8 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.model.modeldata.*;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlPhenotype;
@@ -23,6 +25,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -407,13 +411,17 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 }
             }
 
-            float size = ((1.0F + (axolotlModelData.growthAmount * 3.0F))/4.0F) * axolotlModelData.size;
+            float size = ((1.0F + (axolotlModelData.growthAmount * 3.0F))*0.25F) * axolotlModelData.size;
+            float headSize = 1.0F + (1.0F-axolotlModelData.growthAmount)*0.5F;
+
+            Map<String, List<Float>> mapOfScale = new HashMap<>();
+            mapOfScale.put("bHead", ModelHelper.createScalings(headSize, headSize, headSize, 0.0F, 0.0F, 0.0F));
 
             poseStack.pushPose();
             poseStack.scale(size, size, size);
             poseStack.translate(0.0F, -1.5F + 1.5F/(size), 0.0F);
 
-            gaRender(this.theAxolotl, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            gaRender(this.theAxolotl, axolotlModelData.growthAmount == 1.0F ? null : mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }

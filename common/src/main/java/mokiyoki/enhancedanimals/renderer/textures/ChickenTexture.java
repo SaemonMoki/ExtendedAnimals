@@ -33,7 +33,6 @@ public class ChickenTexture {
             0, 10, 32, 2, 2, 2,
             0, 0, 34, 4 , 2, 2,
             1, 0, 30, 6, 28, 2, 2, 2,
-            1, 19, 8, 22, 8, 3, 2, 0,
             0, 0, 38, 4, 4, 4,
             0, 0, 15, 1, 5, 1,
             0, 0, 19, 1, 1, 1,
@@ -930,7 +929,7 @@ public class ChickenTexture {
                     }
 
                     for (int i=0; i<spotNumber;i++) {
-                        int spotVal = chickenTexture.randomBoundedInt(CHICKEN_PAINT[i], 29);
+                        int spotVal = chickenTexture.randomBoundedInt(CHICKEN_PAINT[i], 36);
                         paintSpots.cutoutTexture().addTexture("feather_colour/spots/paint/" + spotVal + ".png").flipIf(chickenTexture.randomChance(CHICKEN_PAINT_FLIP[i], 50), chickenHeadCubes, chickenBodyCubes);
                     }
                     spots = paintSpots.content();

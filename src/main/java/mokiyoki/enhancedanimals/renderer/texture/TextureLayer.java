@@ -2,19 +2,27 @@ package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextureLayer {
 
     private TexturingType texturingType = TexturingType.NONE;
 
     private int RGB = -1;
 
+    private int[] cubes = {-1};
+
     private String texture;
 
     private NativeImage textureImage;
 
+    private final List<Effect> effects = new ArrayList<>();
+
     public TextureLayer(String texture) {
         this.texture = texture;
     }
+
     public TextureLayer(TexturingType texturingType, String texture) {
         this.texturingType = texturingType;
         this.texture = texture;
@@ -32,6 +40,14 @@ public class TextureLayer {
         this.RGB = RGB;
     }
 
+    public int[] getCubes() {
+        return cubes;
+    }
+
+    public void setCubes(int ... cube) {
+        this.cubes = cube;
+    }
+
     public String getTexture() {
         return texture;
     }
@@ -42,5 +58,13 @@ public class TextureLayer {
 
     public NativeImage getTextureImage() {
         return textureImage;
+    }
+
+    public void addEffect(Effect effect) {
+        this.effects.add(effect);
+    }
+
+    public List<Effect> getEffects() {
+        return effects;
     }
 }

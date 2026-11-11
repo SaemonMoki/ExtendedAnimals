@@ -22,7 +22,7 @@ public class ECLlamaFollowCaravan extends Goal {
 
     public boolean canUse() {
         if (!this.llama.isLeashed() && !this.llama.inCaravan()) {
-            // TODO 18
+            // TODO Functionality was broken when we moved to 1.18, this will need to be re-written
             List<EnhancedLlama> list = null;
             //List<EnhancedLlama> list = this.llama.level.getEntities(this.llama.getClass(), this.llama.getBoundingBox().inflate(9.0D, 4.0D, 9.0D));
             EnhancedLlama entityllama = null;

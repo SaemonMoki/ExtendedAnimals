@@ -1,4 +1,7 @@
 {
+  "key.categories.eanimod": "Genetic Animals",
+  "key.eanimod.carry": "Carry Animal",
+  "item.eanimod.carried_animal": "Carried Animal",
   "block.eanimod.egg_carton": "Egg Carton",
   "block.eanimod.growable_allium": "Growing Allium",
   "block.eanimod.growable_azure_bluet": "Growing Azure Bluet",
@@ -45,6 +48,7 @@
   "eanimod.animalinfocontainer.photomode.transparent": "Enable Transparent Mode For Photo",
   "eanimod.animalinfocontainer.photomode.stickerstyle": "Add a sticker style edge to the picture",
   "eanimod.animalinfocontainer.photomode.takephoto": "Click this to take photo!",
+  "eanimod.animalinfocontainer.photomode.reset": "Reset the animal's position, rotation and zoom",
   "eanimod.animalinfocontainer.sire": "Sire",
   "eanimod.animalinfocontainer.weeks": "weeks",
   "eanimod.animalinfocontainer.years": "years",

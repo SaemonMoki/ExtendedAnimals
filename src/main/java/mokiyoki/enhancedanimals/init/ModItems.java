@@ -471,6 +471,8 @@ public class ModItems {
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_MOOSHROOM_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_mooshroom_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_PIG_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_pig_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()));
 
+    public static final RegistryObject<Item> CARRIED_ANIMAL = ITEMS_DEFERRED_REGISTRY.register("carried_animal", () -> new CarriedAnimalItem(new Item.Properties().stacksTo(1)));
+
     public static void register(IEventBus modEventBus) {
         ITEMS_DEFERRED_REGISTRY.register(modEventBus);
     }
@@ -524,7 +526,7 @@ public class ModItems {
             }
         });
 
-        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
+        //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block - add to things to do after the mod_tag update
     }
 
     private static class GeneticShearDispenseBehavior extends ShearsDispenseItemBehavior {

@@ -6,7 +6,7 @@ package mokiyoki.enhancedanimals.util;
 public class Reference {
 
     public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 22;
-    public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 298;
+    public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 324;
     public static final int PIG_AUTOSOMAL_GENES_LENGTH = 206;
     public static final int COW_AUTOSOMAL_GENES_LENGTH = 256;
     public static final int LLAMA_AUTOSOMAL_GENES_LENGTH = 40;

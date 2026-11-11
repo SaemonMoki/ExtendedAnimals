@@ -66,9 +66,8 @@ public class ChickenNestTileEntityRenderer<T extends BlockEntity> implements Blo
         if (!nest.isEmpty()) {
             for (int i = 0; i < 12;i++) {
                 ItemStack egg = nest.getItem(i);
-                if (!egg.isEmpty()) {
-                    Item eggItem = egg.getItem();
-                    renderEggs(this.egg[i], getResourceLocation(eggItem), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ((EnhancedEgg)eggItem).getColour());
+                if (!egg.isEmpty() && egg.getItem() instanceof EnhancedEgg eggItem) {
+                    renderEggs(this.egg[i], getResourceLocation(eggItem), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, eggItem.getColour());
                 }
             }
         }

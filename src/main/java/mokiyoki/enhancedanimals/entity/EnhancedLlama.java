@@ -155,7 +155,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Override
     protected void registerGoals() {
         int napmod = this.random.nextInt(1000);
-        //Todo add the temperamants
         this.grazingGoal = new GrazingGoal(this, 1.0D);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -197,9 +196,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeLlama.get().longValue();
         return this.adultAge;
     }
 
@@ -332,7 +331,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         if (timeForGrowth >= woolRegenTimer) {
             timeForGrowth = 0;
 
-            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+            long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
 
             int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*this.growthAmount());
 
@@ -365,7 +364,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         enhancedllama.setSireName(otherParent.getCustomName()==null ? "???" : otherParent.getCustomName().getString());
         enhancedllama.setDamName(this.getCustomName()==null ? "???" : this.getCustomName().getString());
         enhancedllama.setParent(this.getUUID().toString());
-        enhancedllama.setAge(-enhancedllama.getAdultAge());
+        enhancedllama.setAge(clampToInt(-enhancedllama.getAdultAge()));
         enhancedllama.setBirthTime();
         enhancedllama.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedllama.setInitialDefaults();
@@ -520,7 +519,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
                 }
             }
 
-            if (returnBlocks.equals(Blocks.BLACK_WOOL) && (genes[18] == 1 || genes[19] == 1)) {
+            if (returnBlocks.equals(Blocks.BLACK_WOOL) && (genes[8] == 1 || genes[9] == 1)) {
                 returnBlocks = Blocks.GRAY_WOOL;
             }
 
@@ -547,28 +546,29 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+        long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         boolean woolDrop = false;
         int lootCount = 0;
 
         if (!this.isOnFire()) {
 
+            long adultAge = this.getAdultAge();
             int i = random.nextInt(100);
-            if ((age/1200) > i) {
+            if ((age * 100 / adultAge) > i) {
 
                 if (genes[20] != 1 && genes[21] != 1) {
                     woolDrop = true;
                     lootCount = 1;
-                    if (currentCoatLength > 2 && age > 80000) {
+                    if (currentCoatLength > 2 && age > adultAge * 2 / 3) {
                         if (random.nextBoolean()) {
                             lootCount++;
                         }
                     }
                 } else {
                     lootCount = random.nextInt(3);
-                    if (lootCount !=0 && age < 120000) {
+                    if (lootCount !=0 && age < adultAge) {
                         lootCount--;
-                        if (lootCount !=0 && age < 80000) {
+                        if (lootCount !=0 && age < adultAge * 2 / 3) {
                             lootCount--;
                         }
                     }
@@ -633,7 +633,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.resetTexture) {
             this.resetTexture = false;
@@ -646,12 +646,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateLlamaTextures(this, this.getGenes().getAutosomalGenes(), this.getStringUUID().toCharArray());
-            }
-            }
-
-    @Override
-    protected void setAlphaTexturePaths() {
+            calculateLlamaTextures(this, this.getGenes().getAutosomalGenes());
+        }
     }
 
     @Override
@@ -717,7 +713,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+            long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
@@ -916,7 +912,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+        long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

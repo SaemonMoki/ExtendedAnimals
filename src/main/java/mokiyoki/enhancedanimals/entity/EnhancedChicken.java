@@ -214,9 +214,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeChicken.get().longValue();
         return this.adultAge;
     }
 
@@ -262,6 +262,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         return super.mobInteract(entityPlayer, hand);
+    }
+
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot equipmentSlot) {
+        if (equipmentSlot == EquipmentSlot.FEET) {
+            int[] gene = this.genetics.getAutosomalGenes(); //TODO make sure this is dedicated server safe
+            if (gene[108] == 1 || gene[109] == 1) {
+                if (gene[58] < 3 || gene[59] < 3) {
+                    if (gene[60] == 1 || gene[61] == 1 || (gene[58] < 3 && gene[59] < 3)) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    } else if (gene[58] == 2 || gene[59] == 2) {
+                        return new ItemStack(Items.LEATHER_BOOTS);
+                    }
+                }
+            }
+        }
+        return super.getItemBySlot(equipmentSlot);
     }
 
     public void setSharedGenesFromEntityEgg(String genes) {
@@ -554,7 +571,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (this.crowTick > 0) {
                 this.crowTick = Math.max(0, this.crowTick - 1);
                 if (!this.level().isClientSide) {
-                    if (this.crowTick == 60 && !this.isAnimalSleeping()) { //TODO this is the start of the crow, change to whatever is needed to match the animation
+                    if (this.crowTick == 60 && !this.isAnimalSleeping()) {
                         this.level().playSound(null, this, ModSounds.ROOSTER_CROW.get(), this.getSoundSource(), 1.0F, 1.0F);
                     }
                     if (this.crowTick <= 5) {
@@ -968,7 +985,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public String getTexture() {
         if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
-        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.25F)) {
+        } else if (this.reload && this.getEnhancedAnimalAge() >= this.getFullSizeAge()*0.25F) {
             this.reload = false;
             this.reloadTextures();
         }
@@ -980,7 +997,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
         this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
@@ -996,10 +1012,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void setAlphaTexturePaths() {
-    }
-
-    @Override
     public boolean shouldDropExperience() {
         if (this.getEnhancedAnimalAge() > 10000) {
             return true;
@@ -1011,7 +1023,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int bodyType = 0;
         int meatSize;
         int featherCount = (genes[108]==2&&genes[109]==2)||(genes[106]==2&&genes[107]==2) ? 0 : random.nextInt(4+looting)-1;

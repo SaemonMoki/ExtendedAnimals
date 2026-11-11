@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.AgeableMob;
@@ -52,9 +51,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeMoobloom.get().longValue();
         return this.adultAge;
     }
 
@@ -64,13 +63,8 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected void setTexturePaths() {
-        super.setTexturePaths();
-        TextureGrouping parent = this.getTextureGrouping();
-        TextureGrouping flower = new TextureGrouping(TexturingType.MERGE_GROUP);
-        this.addTextureToAnimalTextureGrouping(flower, MOOBLOOM_FLOWER[0]);
-        parent.addGrouping(flower);
-        this.setTextureGrouping(parent);
+    protected String getVariantTexture() {
+        return MOOBLOOM_FLOWER[0];
     }
 
     @Override
@@ -94,15 +88,6 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
     }
-
-    //TODO do I want to add more flower types?
-//    private void setMoobloomType(EnhancedMoobloom.Type typeIn) {
-//        this.dataManager.set(MOOBLOOM_TYPE, typeIn.name);
-//    }
-
-//    public EnhancedMoobloom.Type getMoobloomType() {
-//        return EnhancedMoobloom.Type.getTypeByName(this.dataManager.get(MOOBLOOM_TYPE));
-//    }
 
     @Override
     public EnhancedMoobloom getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
@@ -133,6 +118,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setUUID(UUID.fromString(this.getStringUUID()));
+            enhancedcow.copyVariationFrom(this);
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {

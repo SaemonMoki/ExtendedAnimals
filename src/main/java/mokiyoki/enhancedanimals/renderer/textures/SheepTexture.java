@@ -5,8 +5,39 @@ import mokiyoki.enhancedanimals.renderer.texture.Mask;
 import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 
-public class SheepTexture {
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
+public class SheepTexture {
+    private static final int[] headCubes = new int[] {
+        0, 12, 10, 1, 1, 2, //eyes
+        0, 0, 0, 5, 4, 4, //head
+        0, 0, 9, 5, 3, 4, //nose
+        0, 0, 55, 5, 5, 4, //headW
+        0, 14, 50, 5, 2, 2, //cheekW
+        0, 0, 50, 4, 2, 3, //noseW
+        0, 50, 1, 3, 2, 4, //jaw
+        1, 18, 54, 24, 54, 2, 3, 1, //ear
+        0, 34, 0, 4, 9, 4, //neck
+    };
+
+    private static final int[] bodyCubes = new int[] {
+        0, 2, 0, 8, 16, 16, //bodyWithFluff
+        0, 70, 48, 8, 0, 16, //tummy
+        0, 86, 43, 2, 3, 2, //tail0
+        0, 94, 43, 2, 3, 2, //tail1
+        0, 102, 43, 2, 3, 2, //tail2
+        0, 110, 43, 2, 3, 2, //tail3
+        0, 46, 55, 4, 4, 5, //udder
+        0, 46, 55, 1, 3, 1, //nippleL
+        0, 60, 55, 1, 3, 1, //nippleR
+    };
+
+    private static final int[] legCubes = new int[] {
+        1, 0, 32, 12, 32, 3, 5, 3, //legF
+        1, 24, 32, 36, 32, 3, 5, 3, //legB
+        1, 0, 41, 12, 41, 3, 5, 3, //legBF
+        1, 24, 41, 36, 41, 3, 5, 3, //legBB
+    };
 
     private static final String[] SHEEP_TEXTURES_MEALY = new String[] {
             "", "c_mealy.png", "c_mealy_male.png", "c_mealy_female.png"
@@ -265,10 +296,10 @@ public class SheepTexture {
                 whiteSpotGroup = hairGroup.addMergeGroup();
             }
             if (mealy) whiteSpotGroup.addTexture(SHEEP_TEXTURES_MEALY[sheepTexture.ifIsFemale() ? 3 : 2]);
-            whiteSpotGroup.addTexture(SHEEP_TEXTURES_ROAN[roan]);
-            whiteSpotGroup.addTexture(SHEEP_TEXTURES_BLAZE[blaze]);
-            whiteSpotGroup.addTexture(SHEEP_TEXTURES_SPOTS[spots]);
-            whiteSpotGroup.addTexture(SHEEP_TEXTURES_PIGMENTEDHEAD[pigmentedHeadCategory][pigmentedHead]);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_ROAN[roan]).flipIf(sheepTexture.randomChance(SHEEP_ROAN_FLIP, 50), headCubes, bodyCubes, legCubes);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_BLAZE[blaze]).flipIf(sheepTexture.randomChance(SHEEP_BLAZE_FLIP, 50), headCubes, bodyCubes, legCubes);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_SPOTS[spots]).flipIf(sheepTexture.randomChance(SHEEP_SPOTS_FLIP, 50), headCubes, bodyCubes, legCubes);
+            whiteSpotGroup.addTexture(SHEEP_TEXTURES_PIGMENTEDHEAD[pigmentedHeadCategory][pigmentedHead]).flipIf(sheepTexture.randomChance(SHEEP_PIGMENTEDHEAD_FLIP, 50), headCubes, bodyCubes, legCubes);
         }
         hairGroup.addTexture(SHEEP_TEXTURES_GREY[grey]);
 

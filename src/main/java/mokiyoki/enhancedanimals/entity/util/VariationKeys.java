@@ -64,6 +64,9 @@ public final class VariationKeys {
     public static final VariationKey RABBIT_DUTCH = VariationKey.legacy("rabbit.dutch", 5);
     //uuid[6]
     public static final VariationKey RABBIT_LOP = VariationKey.legacy("rabbit.lop", 6);
+    public static final VariationKey RABBIT_VIENNA_FLIP = VariationKey.of("rabbit.vienna.flip");
+    public static final VariationKey RABBIT_BROKEN_FLIP = VariationKey.of("rabbit.broken.flip");
+    public static final VariationKey RABBIT_DUTCH_FLIP = VariationKey.of("rabbit.dutch.flip");
 
     //Llama
     //uuid[1]
@@ -87,6 +90,10 @@ public final class VariationKeys {
     public static final VariationKey SHEEP_POLY_HORNS = VariationKey.legacy("sheep.poly_horns", 2);
     //uuid[4]
     public static final VariationKey SHEEP_HORNS = VariationKey.legacy("sheep.horns", 4);
+    public static final VariationKey SHEEP_ROAN_FLIP = VariationKey.of("sheep.roan.flip");
+    public static final VariationKey SHEEP_BLAZE_FLIP = VariationKey.of("sheep.blaze.flip");
+    public static final VariationKey SHEEP_SPOTS_FLIP = VariationKey.of("sheep.spots.flip");
+    public static final VariationKey SHEEP_PIGMENTEDHEAD_FLIP = VariationKey.of("sheep.pigmentedhead.flip");
 
     //Chicken
     //uuid[1-3]

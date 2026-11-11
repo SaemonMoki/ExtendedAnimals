@@ -214,7 +214,7 @@ public class AxolotlTexture {
             for (int i = 48; i <= 53; i++) {
                 if (axolotlTexture.gene(i)!= 2) speckleStrength = axolotlTexture.gene(i)== 3 ? speckleStrength - 0.1F : speckleStrength * 0.8F;
             }
-            yellowPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
+            yellowPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 3)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
 
             yellowPigment.content().addTexture("patterning/colour/natural_xanthic.png").dye();
         }
@@ -251,7 +251,7 @@ public class AxolotlTexture {
             String textureB = getPatternShade(axolotlTexture, 47);
             eumelaninPigment.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
         }
-        eumelaninPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes);
+        eumelaninPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 3)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes);
         eumelaninPigment.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
         createDarkSpeckles(axolotlTexture, copper, pattern, brindle);
     }
@@ -270,7 +270,7 @@ public class AxolotlTexture {
         for (int i = 50; i <= 53; i++) {
             if (axolotlTexture.gene(i)!= 2) speckleStrength = axolotlTexture.gene(i)== 1 ? speckleStrength - 0.25F : speckleStrength * 0.5F;
         }
-        speckleMask.content().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
+        speckleMask.content().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 3)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
 
         speckles.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][1]);
     }

@@ -416,8 +416,6 @@ public class ModItems {
     public static final RegistryEntry<Item, Item> GENETICS_ENCYCLOPEDIA = ITEMS_DEFERRED_REGISTRY.register("genetics_encyclopedia", () -> new GeneticsEncyclopedia(new Item.Properties().stacksTo(1)));
     public static final RegistryEntry<Item, Item> DEBUG_GENE_BOOK = ITEMS_DEFERRED_REGISTRY.register("debug_gene_book", () -> new DebugGenesBook(new Item.Properties().stacksTo(1)));
 
-//    public static final DeferredHolder<Item, Item> ENHANCED_AXOLOTL_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_spawn_egg", new DeferredSpawnEggItem(ENHANCED_AXOLOTL, 0xFFFFDD,0x00DDCC, new Item.Properties()));
-
     /*
      * Blocks
      */

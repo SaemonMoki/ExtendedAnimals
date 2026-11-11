@@ -546,24 +546,6 @@ public class PigTexture {
         int darkAgoutiRGB = Colouration.HSBtoARGB(darkAgoutiColor[0], darkAgoutiColor[1], darkAgoutiColor[2]);
         int darkAgoutiRedRGB = Colouration.HSBtoARGB(darkAgoutiRedColor[0], darkAgoutiRedColor[1], darkAgoutiRedColor[2]);
 
-//            //roan
-//            if (pigTexture.has(12, 5)) {
-//                roan = true;
-//                int roanColor = Colouration.HSBtoABGR(0.133F, 0.02F, 0.961F);
-//                melaninRGB = Colouration.mixABGR(melaninRGB, roanColor, 0.6F);
-//                pheomelaninRGB = Colouration.mixABGR(pheomelaninRGB, roanColor, 0.8F);
-//                darkAgoutiRedRGB = Colouration.mixABGR(darkAgoutiRedRGB, roanColor, 0.8F);
-//                darkAgoutiRGB = Colouration.mixABGR(darkAgoutiRGB, roanColor, 0.6F);
-//                swallowbellyRGB = Colouration.mixABGR(swallowbellyRGB, roanColor, 0.75F);
-//                lightAgoutiRGB = Colouration.mixABGR(lightAgoutiRGB, roanColor, 0.75F);
-//            }
-        //switch from ABRG to ARGB
-//            lightAgoutiRGB = Colouration.getABGRFromARGB(lightAgoutiRGB);
-//            swallowbellyRGB = Colouration.getABGRFromARGB(swallowbellyRGB);
-//            darkAgoutiRGB = Colouration.getABGRFromARGB(darkAgoutiRGB);
-//            darkAgoutiRedRGB = Colouration.getABGRFromARGB(darkAgoutiRedRGB);
-
-
         colouration.setMelaninColour(melaninRGB);
         colouration.setPheomelaninColour(pheomelaninRGB);
 
@@ -873,12 +855,12 @@ public class PigTexture {
         else if (white == idx_tuxmin) {
             if (whiteExtension == 2) {
                 int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 6);
-                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 6);
+                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             } else {
                 int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 3);
-                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 3);
+                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 3);
                 white = idx_tuxmin + d3;
                 whiteFace = idx_tuxface_min + d2;
             }
@@ -887,12 +869,12 @@ public class PigTexture {
         else if (white == idx_tuxmed) {
             if (whiteExtension == 2) {
                 int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 4);
-                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 4);
+                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 4);
                 white = idx_tuxhigh + d3;
                 whiteFace = idx_tuxface_high + d2;
             } else {
                 int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 6);
-                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 6);
+                int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 6);
                 white = idx_tuxmed + d3;
                 whiteFace = idx_tuxface_med + d2;
             }
@@ -926,7 +908,7 @@ public class PigTexture {
             //random min hereford
             int d4 = pigTexture.randomBoundedInt(PIG_WHITE_POINTS, 2);
             int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 4);
-            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 4);
+            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_min + d3;
             whiteLeg = 2 + d4;
@@ -935,7 +917,7 @@ public class PigTexture {
             //random med hereford
             int d4 = pigTexture.randomBoundedInt(PIG_WHITE_POINTS, 2);
             int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 3);
-            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 4);
+            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 4);
             whiteFace = idx_whitehead_med + d2;
             whiteSplash = idx_hereford_belly_med + d3;
             whiteLeg = 5;
@@ -944,7 +926,7 @@ public class PigTexture {
             //random high hereford
             int d4 = pigTexture.randomBoundedInt(PIG_WHITE_POINTS, 2);
             int d3 = pigTexture.randomBoundedInt(PIG_PATTERN, 5);
-            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_FACE, 6);
+            int d2 = pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 6);
             whiteFace = idx_whitehead_high + d2;
             whiteSplash = idx_hereford_belly_high + d3;
             whiteLeg = 5;
@@ -955,18 +937,18 @@ public class PigTexture {
             int d4 = pigTexture.randomBoundedInt(PIG_WHITE_POINTS, 2);
             switch (whiteExtension) {
                 case 0 -> {
-                    whiteFace = 1 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 4);
-                    whiteLeg = 1 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 2);
+                    whiteFace = 1 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 4);
+                    whiteLeg = 1 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 2);
                     whiteTail = 1;
                 }
                 case 1 -> {
-                    whiteFace = 5 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 5);
-                    whiteLeg = 2 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 2);
+                    whiteFace = 5 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 5);
+                    whiteLeg = 2 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 2);
                     whiteTail = 1 + d4;
                 }
                 case 2 -> {
-                    whiteFace = 7 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 5);
-                    whiteLeg = 2 + pigTexture.randomBoundedInt(PIG_WHITE_FACE, 3);
+                    whiteFace = 7 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 5);
+                    whiteLeg = 2 + pigTexture.randomBoundedInt(PIG_WHITE_SPOT, 3);
                     whiteTail = 1 + d4;
                 }
             }
@@ -1000,6 +982,8 @@ public class PigTexture {
 
         //black agouti and swallowbelly only show up if there's any agouti
         agoutiBlack = agoutiBlack && agouti;
+
+        boolean flipWhiteSpots = pigTexture.randomChance(PIG_WHITE_SPOT_FLIP, 50);
 
         TextureGroup root = pigTexture.root();
 

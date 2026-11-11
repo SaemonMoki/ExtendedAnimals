@@ -64,7 +64,7 @@ public final class TextureSlotBuilder {
         return this;
     }
 
-    public TextureSlotBuilder flipped(boolean flip, int... cubes) {
+    public TextureSlotBuilder flipped(boolean flip, int[] cubes) {
         if (flip) {
             this.texturingType = TexturingType.APPLY_FLIP;
             this.flip = true;
@@ -75,6 +75,29 @@ public final class TextureSlotBuilder {
         return this;
     }
 
+    public TextureSlotBuilder flipped(boolean flip, int[]... cubes) {
+        if (flip) {
+            int l = 0;
+            for (int[] a : cubes) {
+                l += a.length;
+            }
+            this.cubes = new int[l];
+            l = 0;
+            for (int[] a : cubes) {
+                for (int b : a) {
+                    this.cubes[l] = b;
+                    l++;
+                }
+            }
+
+            this.texturingType = TexturingType.APPLY_FLIP;
+            this.flip = true;
+        } else {
+            this.cubes = cubes[0];
+            this.texturingType = TexturingType.MERGE_GROUP;
+        }
+        return this;
+    }
 
     public TextureSlotBuilder keyedAs(String fragment) {
         if (fragment == null || fragment.isEmpty()) {

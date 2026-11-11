@@ -440,58 +440,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @OnlyIn(Dist.CLIENT)
-    private float[] calculateEyeColor(int[] gene, int eyeType) {
-        //NormalEyes
-        float[] eyeHSB = {0.75F, 0.5F, 0.25F};
-
-        switch (eyeType) {
-            case 2 -> {
-                //DarkEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[2] *= 0.5F;
-            }
-            case 3 -> {
-                //PigmentedEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-            }
-            case 4 -> {
-                //LightEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[2] = 1.0F;
-            }
-            case 5 -> {
-                //PastelEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[1] *= 0.5F;
-                eyeHSB[2] = 1.0F;
-            }
-            case 6 -> {
-                //GlowEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-            }
-            default -> {
-                //NormalEyes
-                if (gene[0] == 2 && gene[1] == 2) {
-                    //Albino
-                    if (gene[2] == 2 && gene[3] == 2) {
-                        //Axanthic Albino
-                        eyeHSB[0] = 0.95F;
-                        eyeHSB[2] = 0.8F;
-                    } else {
-                        eyeHSB[0] = 0.09F;
-                        eyeHSB[1] = 0.75F;
-                        eyeHSB[2] = 0.8F;
-                    }
-                }
-            }
-
-
-        }
-        return eyeHSB;
-    }
-
-
-    @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
         Genes genes = getGenes();
@@ -503,11 +451,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                     float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255);
                     this.colouration.setDyeColour(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
                 }
-
-                int eyeColor = Colouration.getAxolotlEyes(calculateEyeColor(gene, gene[20]), calculateEyeColor(gene, gene[21]));
-
-                this.colouration.setLeftEyeColour(eyeColor);
-                this.colouration.setRightEyeColour(eyeColor);
             }
         }
 

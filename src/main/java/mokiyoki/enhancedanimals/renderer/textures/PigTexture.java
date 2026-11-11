@@ -10,6 +10,32 @@ import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class PigTexture {
     // red, swallowbelly, whitebelly, black, white, coat, coat alpha
+    private static final int[] headCubes = new int[] {
+        1, 69, 15, 49, 15, 1, 1, 1, //eyes
+        0, 49, 0, 7, 6, 7, //head
+        0, 49, 13, 8, 5, 4, //cheeks
+        0, 49, 22, 4, 6, 3, //snout
+        0, 63, 22, 2, 6, 1, //jaw
+        1, 46, 0, 70, 0, 4, 6, 1, //ears
+        0, 0, 0, 9, 8, 9, //neck
+        1, 64, 57, 64, 63, 2, 4, 2, //waddles
+    };
+
+    private static final int[] bodyCubes = new int[] {
+        0, 0, 23, 10, 15, 10, //body
+        0, 0, 53, 9, 8, 9, //butt
+        0, 36, 0, 1, 2, 1, //tail0
+        0, 36, 3, 1, 2, 1, //tail1
+        0, 36, 6, 1, 2, 1, //tail2
+        0, 36, 7, 1, 2, 1, //tail3
+        0, 36, 12, 1, 2, 1, //tail4
+        0, 36, 15, 1, 2, 1, //tail5
+    };
+
+    private static final int[] legCubes = new int[] {
+        1, 49, 32, 61, 32, 3, 8, 3, //legF
+        1, 49, 44, 61, 44, 3, 6, 3, //legB
+    };
 
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
             "", "skin_pink.png", "skin_grey.png", "skin_black.png", "skin_brown.png", "skin_chocolate.png"
@@ -980,13 +1006,6 @@ public class PigTexture {
         TextureGroup skinGroup = root.addMergeGroup(PIG_TEXTURES_SKINBASE[skin]);
         skinGroup.addTextureIf(spot == 1, PIG_TEXTURES_SKINMARKINGS_SPOTS[spot]);
 
-        //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKIN_BRINDLEPATCH, white, p -> p > 1);
-
-        //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_WHITE, white, white != 0);
-
-
-        //addTextureToAnimalTextureGrouping(skinGroup, PIG_TEXTURES_SKINMARKINGS_BERKSHIRE, berk, b -> b != 0);
-
         if (black != 0) {
             Mask blackSkinAlpha = root.addMaskGroup();
             blackSkinAlpha.maskTexture().addTexture(PIG_TEXTURES_SKINBRINDLE_SPOTS[black]);
@@ -1083,23 +1102,11 @@ public class PigTexture {
                 whiteGroup.content().addTexture(PIG_TEXTURES_COATWHITE[1]);
             }
             hairTexGroup.addTexture(PIG_TEXTURES_COAT[coat_texture]);
-
-            //addTextureToAnimalTextureGrouping(hairTexGroup, PIG_TEXTURES_SPOT_SPOTS, spot, (spot != 0));
-
-                //if (belt != 0) {
-                //    if (genesForText[12] == 1 || genesForText[13] == 1) {
-                //        belt = 1;
-                //    }
-                //    addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_SPOT_BELTED, belt, true);
-                //}
-
-            //addTextureToAnimalTextureGrouping(hairGroup, PIG_TEXTURES_WHITEHEAD_BELLY, whitePointsBelly, (whitePointsBelly != 0));
         }
 
         root.addTexture(PIG_TEXTURES_EYES[eyes]);
         root.addTexture(PIG_TEXTURES_HOOVES[hooves]);
         root.addTextureIf(tusks, PIG_TEXTURES_TUSKS[1]);
-//            addTextureToAnimal("pigbase.png");
         pigTexture.finishTexture();
     }
 

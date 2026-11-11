@@ -16,6 +16,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.platform.Services;
 import mokiyoki.enhancedanimals.util.CustomDataHelper;
 import mokiyoki.enhancedanimals.util.handlers.CarryClientHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -79,10 +80,12 @@ public class EAPacketHandler {
         if (!animal.save(tag)) {
             return;
         }
-        animal.discard();
 
         ItemStack stack = new ItemStack(ModItems.CARRIED_ANIMAL.get());
         CustomDataHelper.updateTag(stack, stackTag -> stackTag.put("CarriedEntity", tag));
+        CriteriaTriggers.PLAYER_INTERACTED_WITH_ENTITY.trigger(player, stack, animal);
+        animal.discard();
+
         ModAttachments.CARRIED.set(player, stack);
 
         broadcastCarryState(player, stack);

@@ -84,7 +84,11 @@ public final class VariationKeys {
     //Chicken
     //uuid[1-3]
     public static final VariationKey[] CHICKEN_SPLASH = VariationKey.legacySeries("chicken.splash", 3, 1);
+    public static final VariationKey[] CHICKEN_SPLASH_FLIP = VariationKey.series("chicken.splash.flip", 3);
     public static final VariationKey CHICKEN_COMB_FLOP = VariationKey.of("chicken.flop");
+
+    public static final VariationKey[] CHICKEN_PAINT = VariationKey.series("chicken.paint",17);
+    public static final VariationKey[] CHICKEN_PAINT_FLIP = VariationKey.series("chicken.paint.flip",17);
 
     //Turtle
     //uuid[5]

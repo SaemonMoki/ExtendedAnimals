@@ -308,7 +308,13 @@ public final class ChickenBreeds {
 
     public static final Breed SILKIE = new Breed(new Breed.Properties().setData("BeardlessSilkie", 0.7F, 0.8F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "1", "1", "1", "1", "6", "1-2", "1-2", "1"),
-                    new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "2", "1").add(52, "2","1","2","2","1","2").add(70, "1", "1").add(80, "1","1","1","1").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "1-4","1-4","1-4","6","24","24","5","2","1","2")));
+                    new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "2", "1").add(52, "2","1","2","2","1","2").add(70, "1", "1").add(80, "1","1","1","1").add(102, "1","1","2").add(146, "2", "1").add(152, "1-4","1-4","1-4","6","24","24","5","2","1","2")));
+
+    public static final Breed PAINT_SILKIE = new Breed(SILKIE, new Breed.Properties().setData("PaintSilkie", Biomes.JUNGLE, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.BEARDED, GeneSet.PEA, GeneSet.MELANIZED, GeneSet.SILVER, GeneSet.CHARCOAL, GeneSet.NON_COLUMBIAN, GeneSet.NON_DARKBROWN, GeneSet.NON_PATTERN).get(),
+                    new GeneSketch(),
+                    new GeneSketch().add(20, "1").add(24, "4").add(38, "1,2").add(200, "4","4")
+            ));
 
     public static final Breed BEARDED_SILKIE = new Breed(SILKIE, new Breed.Properties().setData("BeardedSilkie", 0.7F, 0.8F, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.BEARDED, GeneSet.PEA).get()));

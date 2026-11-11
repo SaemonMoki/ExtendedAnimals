@@ -1,9 +1,8 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import mokiyoki.enhancedanimals.entity.util.Variation;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
-import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
@@ -115,7 +114,11 @@ public class RabbitTexture {
             "skin_pink.png", "skin_brown.png", "skin_white.png"
     };
 
-    public static void calculateRabbitTextures(EnhancedRabbit rabbit, int[] genesForText, Variation variation) {
+    public static void calculateRabbitTextures(EnhancedRabbit rabbit, int[] gene) {
+        buildRabbitTexture(TextureBuilder.of(rabbit, gene));
+    }
+
+    static void buildRabbitTexture(TextureBuilder rabbitTexture) {
         int under = 0;
         int lower = 0;
         int middle = 0;
@@ -135,19 +138,19 @@ public class RabbitTexture {
         // i is a random modifier
 
 
-        if (genesForText[4] == 5 && genesForText[5] == 5) {
+        if (rabbitTexture.isHomoFor(4, 5)) {
             //Red Eyed White (albino)
             under = 2;
             eyes = 2;
 
-        } else if(genesForText[14] == 2 && genesForText[15] == 2) {
+        } else if(rabbitTexture.isHomoFor(14, 2)) {
             //Blue Eyed White
             under = 2;
             vieye = 8;
 
         } else {
-            if (genesForText[2] == 2 && genesForText[3] == 2) {
-                if (genesForText[6] == 2 && genesForText[7] == 2) {
+            if (rabbitTexture.isHomoFor(2, 2)) {
+                if (rabbitTexture.isHomoFor(6, 2)) {
                     //lilac
                     shade = 3;
                     eyes = 1;
@@ -156,47 +159,47 @@ public class RabbitTexture {
                     shade = 2;
                 }
             } else {
-                if (genesForText[6] == 2 && genesForText[7] == 2) {
+                if (rabbitTexture.isHomoFor(6, 2)) {
                     //blue
                     shade = 1;
                     eyes = 1;
                 }
             }
 
-            if(genesForText[8] == 1 || genesForText[9] == 1){
+            if(rabbitTexture.eitherAllelesHave(8, 1)){
                 //steal
-                if(genesForText[8] == 1 && genesForText[9] == 1){
+                if(rabbitTexture.isHomoFor(8, 1)){
                     top = 2 + ( TOPS * shade);
                 }else {
                     top = 1 + (TOPS * shade);
                 }
-                if (genesForText[4] == 1 || genesForText[5] == 1){
+                if (rabbitTexture.eitherAllelesHave(4, 1)) {
                     middle = 1;
                 }else{
                     middle = 7;
                 }
-            }else if (genesForText[8] != 2 && genesForText[9] != 2 && (genesForText[8] == 3 || genesForText[9] == 3)){
+            }else if (!rabbitTexture.eitherAllelesHave(8, 2) && rabbitTexture.eitherAllelesHave(8, 3)){
                 //harlequin
-                if (genesForText[10] == 1 && genesForText[11] == 1){
+                if (rabbitTexture.isHomoFor(10, 1)) {
                     //stripy harlequin
                     top = 33 + ( 16 * shade);
                 }else{
                     //spotty harlequin
                     top = 97 + ( 16 * shade);
                 }
-                //TODO add harlequin variations here
-                if (genesForText[4] == 1 || genesForText[5] == 1){
+                // TODO add better and more diverse harlequin variations
+                if (rabbitTexture.eitherAllelesHave(4, 1)) {
                     middle = 1;
                 }else{
                     middle = 7;
                 }
             }else {
 
-                if (genesForText[4] > 2 && genesForText[5] > 2){
-                    if (genesForText[4] == 3 && genesForText[5] == 3){
+                if (rabbitTexture.gene(4) > 2 && rabbitTexture.gene(5) > 2){
+                    if (rabbitTexture.isHomoFor(4, 3)) {
                         //seal
                         c = 13;
-                    }else if (genesForText[4] == 3 || genesForText[5] == 3){
+                    }else if (rabbitTexture.eitherAllelesHave(4, 3)) {
                         //sable
                         c = 26;
                     }else{
@@ -205,13 +208,13 @@ public class RabbitTexture {
                     }
                 }
 
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                if (rabbitTexture.eitherAllelesHave(0, 1)) {
                     //agouti
-                    if (genesForText[8] == 4 && genesForText[9] == 4) {
+                    if (rabbitTexture.isHomoFor(8, 4)) {
                         //orange extension wide band
                         higher = 0;
                         top = 0;
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 1;
                         } else {
@@ -220,7 +223,7 @@ public class RabbitTexture {
                         }
                     } else {
                         higher = 1;
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 3;
                         } else {
@@ -228,12 +231,12 @@ public class RabbitTexture {
                             middle = 9;
                         }
                     }
-                } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                } else if (rabbitTexture.eitherAllelesHave(0, 2)) {
                     //tan
-                    if (genesForText[8] == 4 && genesForText[9] == 4) {
+                    if (rabbitTexture.isHomoFor(8, 4)) {
                         //orange extension wide band
                         top = 3 + (TOPS * shade);
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 1;
                         } else {
@@ -242,7 +245,7 @@ public class RabbitTexture {
                         }
                     } else {
                         higher = 2;
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 2;
                         } else {
@@ -252,10 +255,10 @@ public class RabbitTexture {
                     }
                 } else {
                     //self
-                    if (genesForText[8] == 4 && genesForText[9] == 4) {
+                    if (rabbitTexture.isHomoFor(8, 4)) {
                         //wide band orange rabbits
                         top = 4 + (TOPS * shade);
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 1;
                         } else {
@@ -265,7 +268,7 @@ public class RabbitTexture {
                     } else {
                         //self
                         higher = 3;
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                        if (rabbitTexture.eitherAllelesHave(4, 1)) {
                             //orange
                             middle = 1;
                         } else {
@@ -282,23 +285,23 @@ public class RabbitTexture {
             }
 
             //vieye Eyes and Spots
-            if (genesForText[14] == 2 || genesForText[15] == 2) {
+            if (rabbitTexture.eitherAllelesHave(14, 2)) {
                 //Random variants of vienna marked
                 //eyes
-                if (genesForText[4] < 4 && genesForText[5] < 4) {
-                    vieye = 1 + variation.hex(RABBIT_VIENNA_EYES);
+                if (rabbitTexture.gene(4) < 4 && rabbitTexture.gene(5) < 4) {
+                    vieye = 1 + rabbitTexture.randomHex(RABBIT_VIENNA_EYES);
                 }
 
                 //spots
-                if (variation.hex(RABBIT_VIENNA_SPOTTED) < 10) {
-                    vienna = 1 + variation.hex(RABBIT_VIENNA_SPOTS);
+                if (rabbitTexture.randomHex(RABBIT_VIENNA_SPOTTED) < 10) {
+                    vienna = 1 + rabbitTexture.randomHex(RABBIT_VIENNA_SPOTS);
                 }
             }
 
-            if (genesForText[4] >= 4 && genesForText[5] >= 4){
+            if (rabbitTexture.gene(4) >= 4 && rabbitTexture.gene(5) >= 4){
                 eyes = 2;
                 vieye = 0;
-            }else if (genesForText[20] == 2 && genesForText[21] == 2){
+            }else if (rabbitTexture.isHomoFor(20, 2)) {
                 //lutino variations
                 if (higher != 0){
                     higher = higher + 48;
@@ -314,10 +317,10 @@ public class RabbitTexture {
                     }
                 }
 
-                if(genesForText[4] == 1 || genesForText[5] == 1){
-                    if (genesForText[0] == 1 || genesForText[1] == 1){
+                if(rabbitTexture.eitherAllelesHave(4, 1)){
+                    if (rabbitTexture.eitherAllelesHave(0, 1)) {
                         lower = 2;
-                    }else if (genesForText[0] == 2 || genesForText[1] == 2){
+                    }else if (rabbitTexture.eitherAllelesHave(0, 2)) {
                         lower = 2;
                     }else{
                         lower = 3;
@@ -337,88 +340,77 @@ public class RabbitTexture {
 
             }
 
-            if (genesForText[10] == 2 || genesForText[11] == 2) {
+            if (rabbitTexture.eitherAllelesHave(10, 2)) {
                 //broken patterned
-                broken = 1 + variation.hex(RABBIT_BROKEN);
+                broken = 1 + rabbitTexture.randomHex(RABBIT_BROKEN);
 
-                if (genesForText[10] == 2 && genesForText[11] == 2){
+                if (rabbitTexture.isHomoFor(10, 2)) {
                     //charlie patterned
                     broken = broken +16;
                 }
 
             }
-            if (genesForText[12] == 2 && genesForText[13] == 2) {
+            if (rabbitTexture.isHomoFor(12, 2)) {
                 //dutch patterned
-                //TODO add dutch textures with 16 variations
-                dutch = 1 + variation.hex(RABBIT_DUTCH);
+                dutch = 1 + rabbitTexture.randomHex(RABBIT_DUTCH);
             }
 
         }
 
-        TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        TextureGroup root = rabbitTexture.root();
 
-        createUnderCoat(rabbit, parentGroup, under, lower);
+        TextureGroup underCoat = root.addMergeGroup(RABBIT_TEXTURES_UNDER[under]);
+        underCoat.addTextureIf(lower != 0, RABBIT_TEXTURES_LOWER[lower]);
 
-        createMidCoat(rabbit, parentGroup, middle, higher);
+        TextureGroup midCoat = root.addMergeGroup();
+        midCoat.addTextureIf(middle != 0, RABBIT_TEXTURES_MIDDLE[middle]);
+        midCoat.addTextureIf(higher != 0, RABBIT_TEXTURES_HIGHER[higher]);
 
-        createTopCoat(rabbit, parentGroup, top);
+        root.addTextureIf(top != 0, RABBIT_TEXTURES_TOP[top]);
 
-        addSpotting(rabbit, parentGroup, dutch, broken);
+        //TODO Add better Hotot Spotting if dutch and homozygous broken
+        root.addTextureIf(dutch != 0, RABBIT_TEXTURES_DUTCH[dutch]);
+        root.addTextureIf(broken != 0, RABBIT_TEXTURES_BROKEN[broken]);
+        root.addTextureIf(vienna != 0, RABBIT_TEXTURES_VIENNA[vienna]);
 
-        addVienna(rabbit, parentGroup, vienna);
+        int fur = furTexture(rabbitTexture);
+        root.addTextureIf(fur != 0, RABBIT_TEXTURES_FUR[fur]);
 
-        addFurTexture(rabbit, parentGroup, genesForText);
+        TextureGroup eyeGroup = root.addMergeGroup(RABBIT_TEXTURES_EYES[eyes]);
+        eyeGroup.addTextureIf(vieye > 7 && (vieye <= 17 || vieye >= 25), RABBIT_TEXTURES_VIENNAEYES[vieye]);
 
-        addEyeTexture(rabbit, parentGroup, eyes, vieye);
+        root.addTexture(RABBIT_TEXTURES_SKIN[skin]);
 
-        addSkinDetails(rabbit, parentGroup, skin);
-
-        rabbit.setTextureGrouping(parentGroup);
+        rabbitTexture.finishTexture();
     }
 
-    private static void addSkinDetails(EnhancedRabbit rabbit, TextureGrouping parentGroup, int skin) {
-        rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_SKIN, skin).add();
-    }
-
-    private static void addEyeTexture(EnhancedRabbit rabbit, TextureGrouping parentGroup, int eyes, int vieye) {
-        TextureGrouping eyeGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_EYES, eyes).add();
-        if (vieye > 7 && (vieye <= 17 || vieye >= 25)) {
-            rabbit.layer(eyeGroup).textureTableSelector(RABBIT_TEXTURES_VIENNAEYES, vieye).add();
-        } else {
-            rabbit.addDelimiter("nv");
-        }
-
-        parentGroup.addGrouping(eyeGroup);
-    }
-
-    private static void addFurTexture(EnhancedRabbit rabbit, TextureGrouping parentGroup, int[] gene) {
+    private static int furTexture(TextureBuilder rabbitTexture) {
         int fur = 0;
-        if (gene[26] == 2 && gene[27] == 2) {
+        if (rabbitTexture.isHomoFor(26, 2)) {
             //angora
-            if (gene[50] == 1 && gene[51] == 1 || gene[50] == 3 && gene[51] == 3) {
+            if (rabbitTexture.isHomoFor(50, 1) || rabbitTexture.isHomoFor(50, 3)) {
                 fur = 3;
-            } else if ( gene[50] == 1 || gene[51] == 1 || gene[50] == 3 || gene[51] == 3) {
+            } else if (rabbitTexture.eitherAllelesHave(50, 1) || rabbitTexture.eitherAllelesHave(50, 3)) {
                 fur = 4;
             } else {
                 fur = 5;
             }
 
-            if ( gene[52] >= 2 && gene[53] >= 2) {
+            if ( rabbitTexture.gene(52) >= 2 && rabbitTexture.gene(53) >= 2) {
                 fur = fur + 1;
-                if ( gene[52] == 3 && gene[53] == 3 && fur <= 5) {
+                if ( rabbitTexture.isHomoFor(52, 3) && fur <= 5) {
                     fur = fur + 1;
                 }
             }
 
-            if ( gene[54] == 1 || gene[55] == 1 && fur >= 4) {
+            if ( rabbitTexture.gene(54) == 1 || rabbitTexture.gene(55) == 1 && fur >= 4) {
                 fur = fur - 1;
-                if ( gene[54] == 1 && gene[55] == 1 && fur >= 4) {
+                if ( rabbitTexture.isHomoFor(54, 1) && fur >= 4) {
                     fur = fur - 1;
                 }
             }
-        } else if (gene[28] == 1 || gene[29] == 1) {
-            if (gene[30] == 2 && gene[31] == 2) {
+        } else if (rabbitTexture.eitherAllelesHave(28, 1)) {
+            if (rabbitTexture.isHomoFor(30, 2)) {
                 //satin
                 fur = 2;
             } else {
@@ -427,73 +419,6 @@ public class RabbitTexture {
             }
         }
 
-        if (fur != 0) {
-            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_FUR, fur).add();
-        } else {
-            rabbit.addDelimiter("rex");
-        }
-    }
-
-    private static void addVienna(EnhancedRabbit rabbit, TextureGrouping parentGroup, int vienna) {
-        if (vienna != 0) {
-            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, vienna).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-    }
-
-    private static void addSpotting(EnhancedRabbit rabbit, TextureGrouping parentGroup, int dutch, int broken) {
-        //TODO Hotot Spotting if dutch and homozygous broken
-
-        if (dutch != 0) {
-            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_DUTCH, dutch).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-        if (broken != 0) {
-            //TODO split out broken spots from charlie spots
-            //TODO make broken/charlie genetics
-            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_BROKEN, broken).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-    }
-
-    private static void createTopCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int top) {
-        if (top != 0) {
-            rabbit.layer(parentGroup).textureTableSelector(RABBIT_TEXTURES_TOP, top).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-    }
-
-    private static void createMidCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int middle, int higher) {
-        TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-
-        if (middle != 0) {
-            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_MIDDLE, middle).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-
-        if (higher != 0) {
-            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_HIGHER, higher).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-
-        parentGroup.addGrouping(coat);
-    }
-
-    private static void createUnderCoat(EnhancedRabbit rabbit, TextureGrouping parentGroup, int under, int lower) {
-        TextureGrouping coat = new TextureGrouping(TexturingType.MERGE_GROUP);
-        rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_UNDER, under).add();
-        if (lower != 0) {
-            rabbit.layer(coat).textureTableSelector(RABBIT_TEXTURES_LOWER, lower).add();
-        } else {
-            rabbit.addDelimiter();
-        }
-
-        parentGroup.addGrouping(coat);
+        return fur;
     }
 }

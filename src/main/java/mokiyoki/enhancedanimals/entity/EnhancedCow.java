@@ -120,7 +120,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
 //    @Override
 //    protected void registerGoals() {
-//        //Todo add the temperamants
 //        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
 //        this.goalSelector.addGoal(0, new SwimGoal(this));
 //        this.goalSelector.addGoal(5, this.eatGrassGoal);
@@ -148,16 +147,16 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeCow.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
@@ -504,7 +503,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             leatherDrop++;
         }
 
-        int adultAge = this.getAdultAge();
+        int adultAge = (int) this.getAdultAge();
         int tier = adultAge / 6;
         if (age < adultAge) {
             if (age > tier * 5) {
@@ -580,7 +579,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.getReloadTexture() ^ this.reload) {
             this.reload = !this.reload;
@@ -595,17 +594,22 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
-        this.setTexturePaths();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
     }
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateCowTextures(this, this.getGenes().getAutosomalGenes());
+            calculateCowTextures(this, this.getGenes().getAutosomalGenes(), this.getVariantTexture());
         }
+    }
+
+    protected String getVariantTexture() {
+        return "";
     }
 
     @OnlyIn(Dist.CLIENT)

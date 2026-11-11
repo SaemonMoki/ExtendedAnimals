@@ -1946,7 +1946,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theFootRight.setY(theFootLeft.getY());
 
             bootsLeft.setY(17.5F-chicken.height);
-            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.collar);
+            setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.growthAmount);
 
             if (chicken.ear != EarType.NONE) {
                 if (chicken.earSize == 13 && chicken.ear == EarType.ROUND) {
@@ -1992,13 +1992,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             thighLeft.setPos(map.get("thighPos"));
             beak.setXRot(map.get("beak").x());
             jaw.setXRot(map.get("jaw").x());
+
+            if (data.extraGrowth < 1.0F) {
+                setComb(chicken.duplex, chicken.comb, chicken.combSize, chicken.crestType, chicken.isCombed(), chicken.combFlop, data.extraGrowth);
+            }
         }
         bootsRight.setY(bootsLeft.getY());
         thighRight.setPos(-thighLeft.getX(),thighLeft.getY(), thighLeft.getZ());
         tailNub.setY((theSaddle.getZ()-1.0F)*0.4F);
     }
 
-    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed, float combFlop, boolean collar) {
+    private static void setComb(boolean duplex, Comb combType, int size, Crested crestType, boolean combed, float combFlop, float age) {
         theComb.setRotation(0.0F, 0.0F, 0.0F);
         theComb.setPos(0.0F, -2.0F, -2.5F);
         comb.setRotation(0.0F, 0.0F, 0.0F);
@@ -2021,6 +2025,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 combDuplex.setRotation(comb.getXRot(), -comb.getYRot(), -comb.getZRot());
             } else {
                 if (combFlop != 0.0F) {
+
+                    combFlop *= age;
+
                     float y = combFlop > 0? -0.5F : 0.5F;
                     switch (combType) {
                         case WALNUT,PEA -> {
@@ -2390,8 +2397,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     /**
      *      Legs
      *
-     *      TODO legs can be articulated better to feel more realistic. Do better pls
      */
+    // TODO legs can be articulated better to feel more realistic. Do better pls Something that has better tiny dinosaur vibes...
     private boolean legsDefault() {
         if (theLegRight.getXRot() == 0.0F && theLegLeft.getXRot() == 0.0F) return true;
         if (Mth.abs(theLegLeft.getXRot())<0.001F) {
@@ -2482,10 +2489,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     }
 
-    /**
-     * TODO
-     *  ask about testing out my map animations on a branch
-     */
     private boolean preenWing(float ticks) {
         theNeck.setY(this.lerpTo(theNeck.getY(), -4.01F));
         float neckYRot = theNeck.getYRot();
@@ -2580,11 +2583,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             theNeck.setYRot(this.lerpTo(h, Mth.HALF_PI * -1.75F));
         }
         if (Math.abs(theNeck.getYRot()) > (Mth.HALF_PI)*0.75F) {
-            //TODO saddle should be lifted with the rest of the tail staying in place.
-//            this.theSaddle.setXRot(Mth.HALF_PI*0.1F);
-//            this.theSaddle.setZ(1.0F);
-//            this.theTailCoverts.setXRot(-Mth.HALF_PI*1.3F);
-//            this.theTailCoverts.setY(2.5F);
+            //TODO chicken feather saddle should be lifted with the rest of the tail staying in place for a more realistic grooming animation.
             theNeck.setXRot(this.lerpTo(theNeck.getXRot(), Mth.HALF_PI*0.75F));
             theNeck.setZ(this.lerpTo(theNeck.getZ(), -3.75F));
             theHead.setXRot(this.lerpTo(theHead.getXRot(), 0.0F));
@@ -2831,7 +2830,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     @Override
     protected ChickenPhenotype createPhenotype(T enhancedAnimal) {
-        return new ChickenPhenotype(enhancedAnimal.getGenes(), enhancedAnimal.getOrSetIsFemale());
+        return new ChickenPhenotype(enhancedAnimal.getGenes(), enhancedAnimal.getOrSetIsFemale(), enhancedAnimal.getVariation());
     }
 
     protected float getExtraGrowth(float age) {

@@ -202,9 +202,9 @@ public class CowTexture {
     }
 
     private static void addBrockles(TextureBuilder cowTexture, Cutout white) {
-        int brockleNumber = cowTexture.randomBoundedInt(COW_BROCKLING_COUNT, 4) + 1;
+        int brockleNumber = cowTexture.randomBoundedInt(COW_BROCKLING_COUNT, 4) + 2;
         for (int i = 0; i < brockleNumber; i++) {
-            int brockle = cowTexture.randomBoundedInt(COW_BROCKLING_PATCHES[i], 4);
+            int brockle = cowTexture.randomBoundedInt(COW_BROCKLING_PATCHES[i], 56);
             white.cutoutTexture().addTexture("spots/brockling/"+brockle+".png").flipIf(cowTexture.randomChance(COW_BROCKLING_FLIPS[i], 50), headCubes);
         }
     }

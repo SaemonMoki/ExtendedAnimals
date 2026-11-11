@@ -163,7 +163,7 @@ public class AxolotlTexture {
         if (pied != 0) {
             body.content().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]).flipIf(axolotlTexture.randomChance(AXOLOTL_PIED, 50), headCubes, bodyCubes, tailCubes);
         }
-        if (!axolotlTexture.isHomoFor(18, 1)) {
+        if (!axolotlTexture.eitherAllelesHave(18, 1)) {
             body.content().pickRandomTexture(AXOLOTL_TEXTURES_BLAZE, AXOLOTL_BLAZE[0]).flipIf(axolotlTexture.randomChance(AXOLOTL_BLAZE[1], 50), headCubes);
         }
 

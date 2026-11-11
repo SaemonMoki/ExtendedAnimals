@@ -1,0 +1,216 @@
+{
+  "parent": "eanimod:husbandry/colours_to_dye_for",
+  "display": {
+    "icon": {
+      "id": "minecraft:red_dye"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.dream_of_rainbow_sheep.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.dream_of_rainbow_sheep.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dye_a_sheep_white": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:white_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_orange": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:orange_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_magenta": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:magenta_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_light_blue": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:light_blue_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_yellow": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:yellow_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_lime": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:lime_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_pink": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:pink_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_gray": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:gray_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_light_gray": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:light_gray_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_cyan": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:cyan_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_purple": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:purple_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_blue": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:blue_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_brown": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:brown_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_green": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:green_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_red": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:red_dye"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "dye_a_sheep_black": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:black_dye"
+          ]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    }
+  },
+  "requirements": [
+    ["dye_a_sheep_white"],
+    ["dye_a_sheep_orange"],
+    ["dye_a_sheep_magenta"],
+    ["dye_a_sheep_light_blue"],
+    ["dye_a_sheep_yellow"],
+    ["dye_a_sheep_lime"],
+    ["dye_a_sheep_pink"],
+    ["dye_a_sheep_gray"],
+    ["dye_a_sheep_light_gray"],
+    ["dye_a_sheep_cyan"],
+    ["dye_a_sheep_purple"],
+    ["dye_a_sheep_blue"],
+    ["dye_a_sheep_brown"],
+    ["dye_a_sheep_green"],
+    ["dye_a_sheep_red"],
+    ["dye_a_sheep_black"]
+  ]
+}

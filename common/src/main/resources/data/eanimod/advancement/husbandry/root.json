@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "id": "eanimod:collar_basic_leather_diamondbell"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.root.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "eanimod:textures/gui/advancements/backgrounds/geneticanimals.png"
+  },
+  "criteria": {
+    "tick": {
+      "conditions": {},
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "tick"
+    ]
+  ]
+}

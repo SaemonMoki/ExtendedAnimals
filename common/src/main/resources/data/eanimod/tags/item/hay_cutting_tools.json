@@ -1,0 +1,8 @@
+{
+  "replace": true,
+  "values": [
+    "#minecraft:axes",
+    "#minecraft:swords",
+    "#c:tools/shear"
+  ]
+}

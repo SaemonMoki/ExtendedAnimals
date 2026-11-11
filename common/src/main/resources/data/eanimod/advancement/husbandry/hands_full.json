@@ -1,0 +1,40 @@
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:lead"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.hands_full.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.hands_full.description",
+      "with": [
+        {
+          "keybind": "key.eanimod.carry"
+        }
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "carry_an_animal": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": [
+            "eanimod:carried_animal"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "carry_an_animal"
+    ]
+  ]
+}

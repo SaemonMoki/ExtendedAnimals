@@ -1,0 +1,46 @@
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:bookshelf"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.opened_gui.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.opened_gui.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "recipes": [
+      "eanimod:collar_basic_cloth",
+      "eanimod:collar_basic_leather",
+      "eanimod:bridle_basic_cloth",
+      "eanimod:bridle_basic_leather"
+    ]
+  },
+  "criteria": {
+    "opened_gui": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "player": {
+          "flags": {
+            "is_sneaking": true
+          }
+        },
+        "entity": {
+          "type": "#eanimod:genetic_animals"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "opened_gui"
+    ]
+  ]
+}

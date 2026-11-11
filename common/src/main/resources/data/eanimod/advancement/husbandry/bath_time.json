@@ -1,0 +1,36 @@
+{
+  "parent": "eanimod:husbandry/colours_to_dye_for",
+  "display": {
+    "icon": {
+      "id": "minecraft:water_bucket"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.bath_time.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.bath_time.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "wash_a_sheep": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:water_bucket"]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "wash_a_sheep"
+    ]
+  ]
+}

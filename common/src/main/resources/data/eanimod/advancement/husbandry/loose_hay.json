@@ -1,0 +1,46 @@
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "id": "eanimod:unboundhay_block"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.loose_hay.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.loose_hay.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "cut_hay_bale": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "eanimod:unboundhay_block"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "#eanimod:hay_cutting_tools"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "cut_hay_bale"
+    ]
+  ]
+}

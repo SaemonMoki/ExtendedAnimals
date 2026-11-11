@@ -74,6 +74,13 @@ public final class VariationKeys {
     public static final VariationKey LLAMA_PIEBALD = VariationKey.legacy("llama.piebald", 4);
     //uuid[6]
     public static final VariationKey LLAMA_TUXEDO = VariationKey.legacy("llama.tuxedo", 6);
+    public static final VariationKey LLAMA_TUXEDO_LEGS = VariationKey.legacy("llama.tuxedo.legs", 6);
+    public static final VariationKey LLAMA_ROAN_FLIP = VariationKey.of("llama.roan.flip");
+    public static final VariationKey LLAMA_PIEBALD_FLIP_HEAD = VariationKey.of("llama.piebald.flip.head");
+    public static final VariationKey LLAMA_PIEBALD_FLIP_BODY_LEG = VariationKey.of("llama.piebald.flip.bodyleg");
+    public static final VariationKey LLAMA_TUXEDO_FLIP_HEAD = VariationKey.of("llama.tuxedo.fliphead");
+    public static final VariationKey LLAMA_TUXEDO_FLIP_BODY = VariationKey.of("llama.tuxedo.flipbody");
+    public static final VariationKey LLAMA_TUXEDO_FLIP_LEGS = VariationKey.of("llama.tuxedo.fliplegs");
 
     //Sheep
     //uuid[2]

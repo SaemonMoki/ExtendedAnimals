@@ -58,6 +58,11 @@ public final class AddedTexture {
         return with(Effect.tint(TexturingType.APPLY_RGBA, rgba));
     }
 
+    public AddedTexture alpha(float alpha) {
+        int a = (int) (alpha * 255.0F);
+        return with(Effect.tint(TexturingType.APPLY_RGBA, a << 24 | 255 << 16 | 255 << 8 | 255));
+    }
+
     public AddedTexture hueShift(int ahsb) {
         return with(Effect.tint(TexturingType.APPLY_SHIFT, ahsb));
     }

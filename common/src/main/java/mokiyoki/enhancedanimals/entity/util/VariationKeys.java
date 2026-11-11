@@ -80,5 +80,14 @@ public final class VariationKeys {
     //Turtle
     //uuid[5]
     public static final VariationKey TURTLE_PIEBALD = VariationKey.legacy("turtle.piebald", 5);
+
+    //Axolotl
+    public static final VariationKey AXOLOTL_PIED_FLIP = VariationKey.of("axolotl.pied.flip");
+    public static final VariationKey AXOLOTL_BLAZE = VariationKey.of("axolotl.blaze");
+    public static final VariationKey AXOLOTL_BLAZE_FLIP = VariationKey.of("axolotl.blaze.flip");
+    public static final VariationKey[] AXOLOTL_BRINDLE = VariationKey.series("axolotl.brindle", 18);
+    public static final VariationKey AXOLOTL_PATTERNING = VariationKey.of("axolotl.patterning");
+    public static final VariationKey AXOLOTL_PATTERNING_FLIP = VariationKey.of("axolotl.patterning.flip");
+
 }
 

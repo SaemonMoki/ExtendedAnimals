@@ -439,5 +439,7 @@
   "eanimod.advancements.husbandry.dream_of_rainbow_sheep.title": "Dream of Rainbow Sheep",
   "eanimod.advancements.husbandry.dream_of_rainbow_sheep.description": "Dye a sheep of every colour",
   "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.title": "Tacked Up",
-  "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.description": "Put a Bridle and Saddle on a Genetic Animal and ride it"
+  "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.description": "Put a Bridle and Saddle on a Genetic Animal and ride it",
+  "eanimod.advancements.husbandry.loose_hay.title": "Loose Hay",
+  "eanimod.advancements.husbandry.loose_hay.description": "Cut open a hay bale with shears, an axe or a sword so animals can eat from it"
 }

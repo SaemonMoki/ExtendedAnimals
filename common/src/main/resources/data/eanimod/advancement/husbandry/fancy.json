@@ -1,4 +1,8 @@
 {
+  "_comment": "TODO: disabled for now. Implement with the minecraft:recipe_crafted trigger in later versions (dyeing equipment uses the armour dye crafting recipe, which no trigger can see on this version).",
+  "conditions": [
+    { "type": "forge:false" }
+  ],
   "parent": "eanimod:husbandry/root",
   "display": {
     "icon": {

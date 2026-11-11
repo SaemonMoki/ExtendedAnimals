@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
-import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
 import mokiyoki.enhancedanimals.blocks.EnhancedChickenEggBlock;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
@@ -11,7 +10,6 @@ import mokiyoki.enhancedanimals.blocks.PostBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -39,7 +37,6 @@ public class ModBlocks {
 
     public static final RegistryEntry<Block, Block> EGG_CARTON = BLOCKS_DEFERRED_REGISTRY.register("egg_carton", () -> new EggCartonBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).forceSolidOn().pushReaction(PushReaction.DESTROY).instrument(NoteBlockInstrument.GUITAR).ignitedByLava().strength(0.0F).sound(SoundType.WOOL).noOcclusion()));
     public static final RegistryEntry<Block, Block> TURTLE_EGG = BLOCKS_DEFERRED_REGISTRY.register("turtle_egg", () -> new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).forceSolidOn().pushReaction(PushReaction.DESTROY).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()));
-    public static final RegistryEntry<Block, Block> AXOLOTL_EGG = BLOCKS_DEFERRED_REGISTRY.register("axolotl_egg", () -> new EnhancedAxolotlEggBlock(BlockBehaviour.Properties.of().mapColor(MapColor.CLAY).forceSolidOn().pushReaction(PushReaction.DESTROY).strength(0.5F).sound(SoundType.SLIME_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryEntry<Block, Block> CHICKEN_NEST = BLOCKS_DEFERRED_REGISTRY.register("chicken_nest", () -> new EnhancedChickenEggBlock(BlockBehaviour.Properties.of().mapColor(MapColor.CLAY).forceSolidOn().pushReaction(PushReaction.DESTROY).strength(0.5F).sound(SoundType.BONE_BLOCK).randomTicks().noOcclusion().noCollission()));
     public static final RegistryEntry<Block, Block> UNBOUNDHAY_BLOCK = BLOCKS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new UnboundHayBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(0.5F).sound(SoundType.GRASS).noOcclusion().isSuffocating((a,b,c)->false)));
 

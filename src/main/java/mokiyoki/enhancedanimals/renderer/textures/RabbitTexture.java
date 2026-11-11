@@ -7,6 +7,35 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class RabbitTexture {
+
+    private static final int[] headCubes = new int[] {
+        0, 98, 23, 15, 15, 0,
+        1, 0, 16, 0, 20, 1, 2, 2, //eyes
+        1, 0, 24, 18, 24, 3, 6, 6, //head
+        0, 106, 10, 11, 13, 0,
+        0, 106, 12, 11, 11, 0,
+        0, 106, 0, 11, 9, 0,
+        0, 112, 39, 8, 7, 0,
+        0, 0, 8, 4, 4, 4, //muzzle
+        0, 0, 8, 1, 1, 1, //nose
+        1, 0, 0, 10, 0, 4, 7, 1, //ears
+        1, 0, 0, 10, 0, 4, 5, 1, //earsD
+
+    };
+
+    private static final int[] bodyCubes = new int[] {
+        0, 7, 8, 7, 7, 9, //body
+        0, 30, 0, 8, 8, 8, //butt
+        0, 20, 0, 3, 4, 2, //tail
+    };
+
+    private static final int[] legCubes = new int[] {
+        1, 16, 56, 26, 56, 3, 6, 2, //legF
+        1, 0, 37, 18, 37, 3, 6, 6, //legB
+        1, 0, 49, 18, 49, 3, 1, 5, //tibia
+        1, 0, 55, 8, 55, 3, 8, 1,
+    };
+
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
             "under_cream.png", "under_grey.png", "under_white.png"
     };
@@ -369,9 +398,9 @@ public class RabbitTexture {
         root.addTextureIf(top != 0, RABBIT_TEXTURES_TOP[top]);
 
         //TODO Add better Hotot Spotting if dutch and homozygous broken
-        root.addTextureIf(dutch != 0, RABBIT_TEXTURES_DUTCH[dutch]);
-        root.addTextureIf(broken != 0, RABBIT_TEXTURES_BROKEN[broken]);
-        root.addTextureIf(vienna != 0, RABBIT_TEXTURES_VIENNA[vienna]);
+        root.addTextureIf(dutch != 0, RABBIT_TEXTURES_DUTCH[dutch]).flipIf(rabbitTexture.randomChance(RABBIT_DUTCH_FLIP, 50), headCubes, bodyCubes, legCubes);
+        root.addTextureIf(broken != 0, RABBIT_TEXTURES_BROKEN[broken]).flipIf(rabbitTexture.randomChance(RABBIT_BROKEN_FLIP, 50), headCubes, bodyCubes, legCubes);
+        root.addTextureIf(vienna != 0, RABBIT_TEXTURES_VIENNA[vienna]).flipIf(rabbitTexture.randomChance(RABBIT_VIENNA_FLIP, 50), headCubes, bodyCubes, legCubes);
 
         int fur = furTexture(rabbitTexture);
         root.addTextureIf(fur != 0, RABBIT_TEXTURES_FUR[fur]);

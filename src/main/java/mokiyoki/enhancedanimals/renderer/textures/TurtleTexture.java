@@ -12,6 +12,16 @@ public class TurtleTexture {
 
     private static final int HALF_ALPHA = 128 << 24 | 255 << 16 | 255 << 8 | 255;
 
+    private static final int[] turtleCubes = new int[] {
+            1, 3, 3, 21, 3, 1, 1, 2,
+            0, 3, 0, 6, 5, 6,
+            0, 7, 37, 19, 20, 6,
+            0, 31, 1, 11, 18, 3,
+            0, 70, 33, 9, 18, 1,
+            1, 27, 30, 27, 30, 13, 1, 5,
+            1, 1, 12, 1, 23, 4, 1, 10
+    };
+
     public static void calculateTurtleTextures(EnhancedTurtle turtle, int[] gene) {
         buildTurtleTexture(TextureBuilder.of(turtle, gene));
     }
@@ -41,14 +51,14 @@ public class TurtleTexture {
                 } else if (turtleTexture.eitherAllelesHave(30, 3)) {
                     pattern = "flame";
                 }
-                patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png");
+                patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_PATTERN_FLIP, 50));
                 if (!turtleTexture.isHomoFor(32, 1)) {
                     if (turtleTexture.eitherAllelesHave(32, 2)) {
                         pattern = tortishell ? "tortishell_scale1" : "scale";
                     } else {
                         pattern = "clown";
                     }
-                    patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png");
+                    patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_CLOWN_FLIP, 50));
                 }
                 patternColourGroup = patternGroup.content();
             } else {
@@ -73,7 +83,7 @@ public class TurtleTexture {
 
             if (tortishell) {
                 Mask brindleGroup = patternColourGroup.addMaskGroup();
-                brindleGroup.maskTexture().addTexture("tortishell/tortishell.png");
+                brindleGroup.maskTexture().addTexture("tortishell/tortishell.png").flipIf(turtleTexture.randomChance(TURTLE_TORTI_FLIP, 50));
                 TextureGroup brindleColourGroup = brindleGroup.content();
 
                 if (pigmentHueMod-5 < 0) {
@@ -127,7 +137,7 @@ public class TurtleTexture {
         }
 
         Mask spots = root.addMaskGroup();
-        spots.maskTexture().addTexture("spots/piebald/" + piebald + ".png");
+        spots.maskTexture().addTexture("spots/piebald/" + piebald + ".png").flipIf(turtleTexture.randomChance(TURTLE_PIEBALD_FLIP, 50));
         spots.content().addTexture("spots/white1.png");
     }
 

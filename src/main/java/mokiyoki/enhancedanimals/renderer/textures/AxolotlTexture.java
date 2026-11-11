@@ -156,7 +156,7 @@ public class AxolotlTexture {
             createMelaninLayer(axolotlTexture, body, piedStrength, copper, pattern, melanoid);
         }
 
-        if (pied != 0 || !axolotlTexture.isHomoFor(18, 1) || axolotlTexture.eitherAllelesHave(42, 3)) {
+        if (pied != 0 || !axolotlTexture.eitherAllelesHave(18, 1) || axolotlTexture.eitherAllelesHave(42, 3)) {
             Mask spots = body.content().addMaskGroup();
 
             if (pied != 0) {

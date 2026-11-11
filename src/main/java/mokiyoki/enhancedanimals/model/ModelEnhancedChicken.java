@@ -294,7 +294,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                         .addBox(-2.0F, -2.5F, -3.0F, 4, 3, 4, new CubeDeformation(-0.5F)),
                 PartPose.ZERO
         );
-        base.addOrReplaceChild("head",
+        base.addOrReplaceChild("head", //naked featherless head
                 CubeListBuilder.create()
                         .texOffs(0, 5)
                         .addBox(-2.0F, -2.5F, -3.0F, 4, 3, 4, new CubeDeformation(-0.51F)),

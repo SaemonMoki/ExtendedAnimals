@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "#eanimod:eggs/pink",
+    "eanimod:egg_cherrydark",
+    "eanimod:egg_cherrydark_spatter",
+    "eanimod:egg_cherrydark_speckle",
+    "eanimod:egg_cherrydark_spot",
+    "eanimod:egg_garnet",
+    "eanimod:egg_garnet_spatter",
+    "eanimod:egg_garnet_speckle",
+    "eanimod:egg_garnet_spot",
+    "eanimod:egg_plum",
+    "eanimod:egg_plum_spatter",
+    "eanimod:egg_plum_speckle",
+    "eanimod:egg_plum_spot"
+  ]
+}

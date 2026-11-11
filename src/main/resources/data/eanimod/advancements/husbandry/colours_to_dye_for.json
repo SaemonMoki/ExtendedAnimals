@@ -1,0 +1,52 @@
+{
+  "parent": "eanimod:husbandry/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:red_dye"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.colours_to_dye_for.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.colours_to_dye_for.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dye_a_sheep": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": [
+              "minecraft:orange_dye",
+              "minecraft:magenta_dye",
+              "minecraft:light_blue_dye",
+              "minecraft:yellow_dye",
+              "minecraft:lime_dye",
+              "minecraft:pink_dye",
+              "minecraft:gray_dye",
+              "minecraft:light_gray_dye",
+              "minecraft:cyan_dye",
+              "minecraft:purple_dye",
+              "minecraft:blue_dye",
+              "minecraft:brown_dye",
+              "minecraft:green_dye",
+              "minecraft:red_dye",
+              "minecraft:black_dye"
+            ]
+        },
+        "entity": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dye_a_sheep"
+    ]
+  ]
+}

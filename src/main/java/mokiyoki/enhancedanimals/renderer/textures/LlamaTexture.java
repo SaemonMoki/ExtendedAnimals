@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.renderer.texture.Cutout;
 import mokiyoki.enhancedanimals.renderer.texture.Mask;
 import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
@@ -8,6 +9,31 @@ import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class LlamaTexture {
+    private static final int[] headCubes = new int[] {
+        1, 22, 3, 0, 3, 2, 2, 1, //ewes
+        0, 0, 0, 8, 6, 6, //head
+        0, 28, 0, 4, 4, 4, //nose
+        1, 54, 0, 44, 0, 3, 3, 2, //ear
+        1, 74, 0, 64, 0, 3, 1, 2, //earTop
+        0, 0, 12, 8, 12, 6, //neck
+    };
+
+    private static final int[] bodyCubes = new int[] {
+        0, 0, 39, 12, 10, 18, //body
+        0, 42, 39, 6, 6, 6, //tail
+    };
+
+    private static final int[] legCubes = new int[] {
+        1, 0, 68, 12, 68, 3, 7, 3, //fleg
+        1, 0, 74, 12, 74, 3, 5, 3, //bfleg
+        1, 0, 82, 12, 82, 3, 7, 3, //bleg
+        1, 0, 88, 12, 88, 3, 5, 3, //bbleg
+        1, 62, 70, 26, 70, 3, 3, 4, //toeOF
+        1, 80, 70, 44, 70, 3, 3, 4, //toeIF
+        1, 62, 84, 26, 84, 3, 3, 4, //toeOB
+        1, 80, 84, 44, 84, 3, 3, 3, //toeIB
+    };
+
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
     };
@@ -52,6 +78,7 @@ public class LlamaTexture {
         int pattern = 0;
         int roan = 0;
         int tux = 0;
+        int tuxLegs = 0;
         int piebald = 0;
         int domwhite = 0;
         int eyes = 0;
@@ -112,6 +139,7 @@ public class LlamaTexture {
         if (llamaTexture.eitherAllelesHave(12, 1)) {
             //tuxedo
             tux = 1 + llamaTexture.randomHex(LLAMA_TUXEDO);
+            tuxLegs = 1 + llamaTexture.randomHex(LLAMA_TUXEDO_LEGS);
         }
 
         if (domwhite > 0) {
@@ -127,9 +155,17 @@ public class LlamaTexture {
 
         Mask whiteSpots = root.addMaskGroup();
         whiteSpots.maskTexture().addTexture("domwhite_solid.png");
-        whiteSpots.content().addTexture(LLAMA_TEXTURES_ROAN[roan]);
-        whiteSpots.content().addTexture(LLAMA_TEXTURES_TUXEDO[tux]);
-        whiteSpots.content().addTexture(LLAMA_TEXTURES_PIEBALD[piebald]);
+        whiteSpots.content().addTexture(LLAMA_TEXTURES_ROAN[roan]).flipIf(llamaTexture.randomChance(LLAMA_ROAN_FLIP, 50), headCubes, bodyCubes, legCubes);
+
+        Cutout tuxedoHeadBodyCutoutGroup = root.addCutoutGroup();
+        tuxedoHeadBodyCutoutGroup.cutoutTexture().addTexture("legs.png");
+        tuxedoHeadBodyCutoutGroup.content().addTexture(LLAMA_TEXTURES_TUXEDO[tux]).flipIf(llamaTexture.randomChance(LLAMA_TUXEDO_FLIP_HEAD, 50), headCubes).flipIf(llamaTexture.randomChance(LLAMA_TUXEDO_FLIP_BODY, 50), bodyCubes);
+
+        Mask legsMaskGroup = root.addMaskGroup();
+        legsMaskGroup.maskTexture().addTexture("legs.png");
+        legsMaskGroup.content().addTexture(LLAMA_TEXTURES_TUXEDO[tuxLegs]).flipIf(llamaTexture.randomChance(LLAMA_TUXEDO_FLIP_LEGS, 50), legCubes);
+
+        whiteSpots.content().addTexture(LLAMA_TEXTURES_PIEBALD[piebald]).flipIf(llamaTexture.randomChance(LLAMA_PIEBALD_FLIP_HEAD, 50), headCubes).flipIf(llamaTexture.randomChance(LLAMA_PIEBALD_FLIP_BODY_LEG, 50), bodyCubes, legCubes);
         whiteSpots.content().addTexture(LLAMA_TEXTURES_DOMWHITE[domwhite]);
 
         //suri coat texture

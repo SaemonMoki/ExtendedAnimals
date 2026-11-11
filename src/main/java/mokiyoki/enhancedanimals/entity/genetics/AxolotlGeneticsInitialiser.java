@@ -202,6 +202,21 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[44] = 1;
         autosomalGenes[45] = 1;
 
+        /**
+         *      [46,47] - AgoutiLike - Solid < wildtype < diluted < lightDilute
+         */
+        autosomalGenes[46] = ThreadLocalRandom.current().nextInt(4)+1;
+        autosomalGenes[47] = ThreadLocalRandom.current().nextInt(4)+1;
+
+        /**
+         *      [48,49] - Speckle Modifier
+         *      [50,51] - Speckle Modifier
+         *      [52,53] - Speckle Modifier
+         */
+        for (int i = 48; i < 54; i++) {
+            autosomalGenes[i] = getChance() ? 2 : 1;
+        }
+
         return new Genes(autosomalGenes);
     }
 }

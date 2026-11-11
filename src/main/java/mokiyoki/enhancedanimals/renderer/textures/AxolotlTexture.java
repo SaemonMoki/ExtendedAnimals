@@ -1,38 +1,53 @@
 package mokiyoki.enhancedanimals.renderer.textures;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.renderer.texture.Cutout;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
 import mokiyoki.enhancedanimals.renderer.texture.Mask;
 import mokiyoki.enhancedanimals.renderer.texture.TextureBuilder;
-import mokiyoki.enhancedanimals.renderer.texture.TextureGroup;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class AxolotlTexture {
+
+    private static final int[] headCubes = new int[] {
+            0, 0, 0, 8, 6, 5,
+            0, 39, 0, 10, 5, 0,
+            1, 36, 0, 47, 0, 0, 8, 5
+    };
+    private static final int[] bodyCubes = new int[] {
+            0, 0, 12, 8, 6, 4,
+            0, 0, 22, 8, 8, 4,
+            1, 55, 2, 55, 9, 3, 5, 0,
+            1, 55, 16, 55, 23, 3, 5, 0,
+            1, 26, 9, 26, 36, 0, 9, 5
+    };
+    private static final int[] tailCubes = new int[] {
+            2, 26, -5, 26, 20, 0, 16, 5
+    };
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
             "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };
 
     private static final String[][] AXOLOTL_TEXTURES_GILLS = new String[][] {
-            {"gills_base.png", "gillslong_base.png", "gillsgreater_base.png"},
-            {"gills_base_white.png", "gillslong_base_white.png", "gillsgreater_base_white.png"},
-            {"gills_base_lightgrey.png", "gillslong_base_lightgrey.png", "gillsgreater_base_lightgrey.png"},
-            {"gills_base_grey.png", "gillslong_base_grey.png", "gillsgreater_base_grey.png"},
-            {"gills_base_black.png", "gillslong_base_black.png", "gillsgreater_base_black.png"},
-            {"gills_base_brown.png", "gillslong_base_brown.png", "gillsgreater_base_brown.png"},
-            {"gills_base_pink.png", "gillslong_base_pink.png", "gillsgreater_base_pink.png"},
-            {"gills_base_red.png", "gillslong_base_red.png", "gillsgreater_base_red.png"},
-            {"gills_base_orange.png", "gillslong_base_orange.png", "gillsgreater_base_orange.png"},
-            {"gills_base_yellow.png", "gillslong_base_yellow.png", "gillsgreater_base_yellow.png"},
-            {"gills_base_lime.png", "gillslong_base_lime.png", "gillsgreater_base_lime.png"},
-            {"gills_base_green.png", "gillslong_base_green.png", "gillsgreater_base_green.png"},
-            {"gills_base_cyan.png", "gillslong_base_cyan.png", "gillsgreater_base_cyan.png"},
-            {"gills_base_lightblue.png", "gillslong_base_lightblue.png", "gillsgreater_base_lightblue.png"},
-            {"gills_base_blue.png", "gillslong_base_blue.png", "gillsgreater_base_blue.png"},
-            {"gills_base_purple.png", "gillslong_base_purple.png", "gillsgreater_base_purple.png"},
-            {"gills_base_magenta.png", "gillslong_base_magenta.png", "gillsgreater_base_magenta.png"}
-    };
-
-    private static final String[] AXOLOTL_TEXTURES_XANTHIN = new String[] {
-            "", "low_xanthophores.png", "natural_xanthophores.png", "high_xanthophores.png"
+            {"gills/base/natural.png",      "gills/long/natural.png",   "gills/greater/natural.png"},
+            {"gills/base/white.png",        "gills/long/white.png",     "gills/greater/white.png"},
+            {"gills/base/lightgrey.png",    "gills/long/lightgrey.png", "gills/greater/lightgrey.png"},
+            {"gills/base/grey.png",         "gills/long/grey.png",      "gills/greater/grey.png"},
+            {"gills/base/black.png",        "gills/long/black.png",     "gills/greater/black.png"},
+            {"gills/base/brown.png",        "gills/long/brown.png",     "gills/greater/brown.png"},
+            {"gills/base/pink.png",         "gills/long/pink.png",      "gills/greater/pink.png"},
+            {"gills/base/red.png",          "gills/long/red.png",       "gills/greater/red.png"},
+            {"gills/base/orange.png",       "gills/long/orange.png",    "gills/greater/orange.png"},
+            {"gills/base/yellow.png",       "gills/long/yellow.png",    "gills/greater/yellow.png"},
+            {"gills/base/lime.png",         "gills/long/lime.png",      "gills/greater/lime.png"},
+            {"gills/base/green.png",        "gills/long/green.png",     "gills/greater/green.png"},
+            {"gills/base/cyan.png",         "gills/long/cyan.png",      "gills/greater/cyan.png"},
+            {"gills/base/lightblue.png",    "gills/long/lightblue.png", "gills/greater/lightblue.png"},
+            {"gills/base/blue.png",         "gills/long/blue.png",      "gills/greater/blue.png"},
+            {"gills/base/purple.png",       "gills/long/purple.png",    "gills/greater/purple.png"},
+            {"gills/base/magenta.png",      "gills/long/magenta.png",   "gills/greater/magenta.png"}
     };
 
     private static final String[][][] AXOLOTL_TEXTURES_MELANIN = new String[][][] {
@@ -107,34 +122,12 @@ public class AxolotlTexture {
     }
     };
 
-    private static final String[][][] AXOLOTL_TEXTURES_BERKSHIRE = new String[][][] {
-            {
-                    {"star.png", "snip.png"},
-                    {"blaze1.png"},
-                    {"blaze2.png"},
-                    {"blaze3.png"},
-                    {"blaze4.png"},
-                    {"blaze5.png"},
-                    {"blaze6.png"},
-                    {"blaze7.png"},
-                    {"blaze8.png"},
-                    {"baldface9.png"},
-            }, {
-                    {"berkshire0.png"},
-                    {"berkshire1.png"},
-                    {"berkshire2.png"},
-                    {"berkshire3.png"},
-                    {"berkshire4.png"},
-                    {"berkshire5.png"},
-                    {"berkshire6.png"},
-                    {"berkshire7.png"},
-                    {"berkshire8.png"},
-                    {"berkshire9.png"},
-            }
+    private static final String[] AXOLOTL_TEXTURES_BLAZE = new String[] {
+            "spot/blaze/0.png", "spot/blaze/1.png", "spot/blaze/2.png", "spot/blaze/3.png", "spot/blaze/4.png", "spot/blaze/5.png", "spot/blaze/6.png", "spot/blaze/7.png", "spot/blaze/8.png"
     };
 
     private static final String[] CHEEK_SPOTS = new String[] {
-            "cheeks.png", "cheeks_white.png", "cheeks_lightgrey.png", "cheeks_grey.png", "cheeks_black.png", "cheeks_brown.png", "cheeks_pink.png", "cheeks_red.png", "cheeks_orange.png", "cheeks_yellow.png", "cheeks_lime.png", "cheeks_green.png", "cheeks_cyan.png", "cheeks_lightblue.png", "cheeks_blue.png", "cheeks_purple.png", "cheeks_magenta.png",
+            "cheek_spots/natural.png", "cheek_spots/white.png", "cheek_spots/lightgrey.png", "cheek_spots/grey.png", "cheek_spots/black.png", "cheek_spots/brown.png", "cheek_spots/pink.png", "cheek_spots/red.png", "cheek_spots/orange.png", "cheek_spots/yellow.png", "cheek_spots/lime.png", "cheek_spots/green.png", "cheek_spots/cyan.png", "cheek_spots/lightblue.png", "cheek_spots/blue.png", "cheek_spots/purple.png", "cheek_spots/magenta.png"
     };
 
     public static void calculateAxolotlTextures(EnhancedAxolotl axolotl, int[] gene) {
@@ -162,8 +155,17 @@ public class AxolotlTexture {
         Mask body = rootTextureGroup.addMaskGroup();
         body.maskTexture().addTexture("alpha_mask.png");
         body.content().addTexture(AXOLOTL_TEXTURES_BASE[base]).dye();
-        if (axolotlTexture.eitherAllelesHave(0, 1)) body.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
-        if (pied != 0) body.content().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]);
+        if (axolotlTexture.eitherAllelesHave(0, 1)) {
+            Cutout brindle = body.content().addCutoutGroup();
+            if (!axolotlTexture.isHomoFor(42, 1)) addBrindle(axolotlTexture, piedStrength, brindle.cutoutTexture());
+            brindle.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
+        }
+        if (pied != 0) {
+            body.content().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]).flipIf(axolotlTexture.randomChance(AXOLOTL_PIED, 50), headCubes, bodyCubes, tailCubes);
+        }
+        if (!axolotlTexture.eitherAllelesHave(18, 1)) {
+            body.content().pickRandomTexture(AXOLOTL_TEXTURES_BLAZE, AXOLOTL_BLAZE[0]).flipIf(axolotlTexture.randomChance(AXOLOTL_BLAZE[1], 50), headCubes);
+        }
 
         if (axolotlTexture.eitherAllelesHave(44, 2)) rootTextureGroup.addAverageGroup(CHEEK_SPOTS[gillsColour], CHEEK_SPOTS[gillsColour2]);
 
@@ -172,5 +174,44 @@ public class AxolotlTexture {
         eyes.addTexture("eye_right.png").rightEyeColour();
 
         axolotlTexture.finishTexture();
+    }
+
+    private static void addBrindle(TextureBuilder axolotlTexture, int piedStrength, TextureGroup parts) {
+        int strength = piedStrength == 1 ? 2 : piedStrength == 3 ? 4 : piedStrength;
+        boolean flipSolidParts = axolotlTexture.randomChance(AXOLOTL_BRINDLE[0], 50);
+
+        // TODO axolotls need to maintain which side the dark/light part is on
+
+        if (axolotlTexture.randomChance(AXOLOTL_BRINDLE[1], 50)) {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 3, "head_left", headCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 6, "head_right", headCubes, first, flipSolidParts);
+        } else {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 6, "head_right", headCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 3, "head_left", headCubes, first, flipSolidParts);
+        }
+
+        if (axolotlTexture.randomChance(AXOLOTL_BRINDLE[2], 50)) {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 9, "body_left", bodyCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 12, "body_right", bodyCubes, first, flipSolidParts);
+        } else {
+            int first = addBrindlePart(axolotlTexture, parts, strength, 12, "body_right", bodyCubes, 0, flipSolidParts);
+            addBrindlePart(axolotlTexture, parts, strength, 9, "body_left", bodyCubes, first, flipSolidParts);
+        }
+
+        addBrindlePart(axolotlTexture, parts, strength, 15, "tail", tailCubes, 0, flipSolidParts);
+    }
+
+    private static int addBrindlePart(TextureBuilder axolotlTexture, TextureGroup parts, int strength, int key, String location, int[] cubes, int previous, boolean flipSolidParts) {
+        int texture = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key], 50) ? 0 : axolotlTexture.randomBoundedInt(AXOLOTL_BRINDLE[key + 1], 4) + 1;
+        boolean mirror = axolotlTexture.randomChance(AXOLOTL_BRINDLE[key + 2], 50);
+        if (texture != 0 && previous != 0 && (mirror ? texture + 1 : -(texture + 1)) == previous) {
+            mirror = !mirror;
+        }
+
+        Cutout part = parts.addCutoutGroup();
+        part.cutoutTexture().addTexture("brindle/" + strength + "/" + texture + ".png").flipIf(texture == 0 ? flipSolidParts : mirror, cubes);
+        part.content().addTexture("brindle/" + location + ".png");
+
+        return mirror ? -(texture + 1) : texture + 1;
     }
 }

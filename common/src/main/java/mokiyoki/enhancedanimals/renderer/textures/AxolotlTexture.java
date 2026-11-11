@@ -162,7 +162,7 @@ public class AxolotlTexture {
             if (pied != 0) {
                 spots.maskTexture().addTexture(AXOLOTL_TEXTURES_PIED[pied - 1][piedStrength][piedSplotchy]).flipIf(axolotlTexture.randomChance(AXOLOTL_PIED_FLIP, 50), headCubes, bodyCubes, tailCubes);
             }
-            if (!axolotlTexture.isHomoFor(18, 1)) {
+            if (!axolotlTexture.eitherAllelesHave(18, 1)) {
                 spots.maskTexture().pickRandomTexture(AXOLOTL_TEXTURES_BLAZE, AXOLOTL_BLAZE).flipIf(axolotlTexture.randomChance(AXOLOTL_BLAZE_FLIP, 50), headCubes);
             }
 

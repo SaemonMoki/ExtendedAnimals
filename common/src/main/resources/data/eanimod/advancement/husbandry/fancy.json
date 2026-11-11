@@ -1,13 +1,20 @@
 {
   "_comment": "TODO: disabled for now. Implement with the minecraft:recipe_crafted trigger in later versions (dyeing equipment uses the armour dye crafting recipe, which no trigger can see on this version).",
-  "conditions": [
-    { "type": "forge:false" }
+  "neoforge:conditions": [
+    { "type": "neoforge:false" }
+  ],
+  "fabric:load_conditions": [
+    { "condition": "fabric:not", "value": { "condition": "fabric:true" } }
   ],
   "parent": "eanimod:husbandry/root",
   "display": {
     "icon": {
-      "item": "eanimod:collar_basic_cloth_goldring",
-      "nbt": "{display:{color:2664379}}"
+      "id": "eanimod:collar_basic_cloth_goldring",
+      "components": {
+        "minecraft:dyed_color": {
+          "rgb": 2664379
+        }
+      }
     },
     "title": { "translate": "advancements.eanimod.dye_leather_armor.title" },
     "description": { "translate": "advancements.eanimod.dye_leather_armor.description" },

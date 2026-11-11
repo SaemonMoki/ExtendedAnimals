@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "eanimod:collar_basic_leather_diamondbell"
+      "id": "eanimod:collar_basic_leather_diamondbell"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.root.title"

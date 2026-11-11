@@ -3,6 +3,6 @@
   "values": [
     "#minecraft:axes",
     "#minecraft:swords",
-    "#forge:shears"
+    "#c:tools/shear"
   ]
 }

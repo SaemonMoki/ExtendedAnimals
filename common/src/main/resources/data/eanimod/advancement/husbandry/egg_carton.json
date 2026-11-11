@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "eanimod:eggs"
+            "items": "#eanimod:eggs"
           }
         ]
       }

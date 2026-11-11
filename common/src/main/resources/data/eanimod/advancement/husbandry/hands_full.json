@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/root",
   "display": {
     "icon": {
-      "item": "minecraft:lead"
+      "id": "minecraft:lead"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.hands_full.title"

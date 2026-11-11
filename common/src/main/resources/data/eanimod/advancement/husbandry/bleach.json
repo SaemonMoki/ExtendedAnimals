@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/colours_to_dye_for",
   "display": {
     "icon": {
-      "item": "minecraft:white_dye"
+      "id": "minecraft:white_dye"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.bleach.title"

@@ -14,12 +14,12 @@ public class ModTags {
         public static final TagKey<Block> AXOLOTL_NESTABLE_OVER = tag("axolotl_nestable_over");
         public static final TagKey<Block> AXOLOTL_NESTABLE_UNDER = tag("axolotl_nestable_under");
         public static final TagKey<Block> TURTLE_NESTABLE = tag("turtle_nestable");
-        public static final TagKey<Block> HAY_BLOCKS = forgeTag("hay");
+        public static final TagKey<Block> HAY_BLOCKS = commonTag("hay");
 
         private static TagKey<Block> tag(String name) {
             return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Reference.MODID, name));
         }
-        private static TagKey<Block> forgeTag(String name) {
+        private static TagKey<Block> commonTag(String name) {
             return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
@@ -32,9 +32,9 @@ public class ModTags {
         public static final TagKey<Item> MILK = tag("milks");
         public static final TagKey<Item> COOKED_CHICKEN = tag("cooked_chickens");
         public static final TagKey<Item> RAW_CHICKEN = tag("raw_chickens");
-        public static final TagKey<Item> FULLSIZE_COOKED_CHICKEN = forgeTag("cooked_chickens");
-        public static final TagKey<Item> FULLSIZE_RAW_CHICKEN = forgeTag("raw_chickens");
-        public static final TagKey<Item> SADDLES = forgeTag("saddles");
+        public static final TagKey<Item> FULLSIZE_COOKED_CHICKEN = commonTag("cooked_chickens");
+        public static final TagKey<Item> FULLSIZE_RAW_CHICKEN = commonTag("raw_chickens");
+        public static final TagKey<Item> SADDLES = commonTag("saddles");
         public static final TagKey<Item> BRIDLES = tag("bridles");
         public static final TagKey<Item> BELL_COLLARS = tag("bell_collars");
         public static final TagKey<Item> GENETIC_EGGS = tag("eggs");
@@ -56,29 +56,29 @@ public class ModTags {
         public static final TagKey<Item> PASTEL_EGGS = tag("eggs/pastel");
         public static final TagKey<Item> COLOURFUL_EGGS = tag("eggs/colourful");
         public static final TagKey<Item> DARKEST_EGGS = tag("eggs/darkest");
-        public static final TagKey<Item> AXES = ItemTags.create(new ResourceLocation("minecraft", "axes"));
-        public static final TagKey<Item> SWORDS = ItemTags.create(new ResourceLocation("minecraft", "swords"));
-        public static final TagKey<Item> EGGS = ItemTags.create(new ResourceLocation("minecraft", "eggs"));
+        public static final TagKey<Item> AXES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "axes"));
+        public static final TagKey<Item> SWORDS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "swords"));
+        public static final TagKey<Item> EGGS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "eggs"));
 
         private static TagKey<Item> tag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, name));
         }
-        private static TagKey<Item> forgeTag(String name) {
+        private static TagKey<Item> commonTag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 
     public static class EntityTypes {
         public static final TagKey<EntityType<?>> GENETIC_ANIMALS = tag("genetic_animals");
-        public static final TagKey<EntityType<?>> AXOLOTLS = forgeTag("axolotls");
-        public static final TagKey<EntityType<?>> CHICKENS = forgeTag("chickens");
-        public static final TagKey<EntityType<?>> COWS = forgeTag("cows");
-        public static final TagKey<EntityType<?>> LLAMAS = forgeTag("llamas");
-        public static final TagKey<EntityType<?>> MOOBLOOMS = forgeTag("mooblooms");
-        public static final TagKey<EntityType<?>> MOOSHROOMS = forgeTag("mooshrooms");
-        public static final TagKey<EntityType<?>> PIGS = forgeTag("pigs");
-        public static final TagKey<EntityType<?>> RABBITS = forgeTag("rabbits");
-        public static final TagKey<EntityType<?>> SHEEP = forgeTag("sheep");
+        public static final TagKey<EntityType<?>> AXOLOTLS = commonTag("axolotls");
+        public static final TagKey<EntityType<?>> CHICKENS = commonTag("chickens");
+        public static final TagKey<EntityType<?>> COWS = commonTag("cows");
+        public static final TagKey<EntityType<?>> LLAMAS = commonTag("llamas");
+        public static final TagKey<EntityType<?>> MOOBLOOMS = commonTag("mooblooms");
+        public static final TagKey<EntityType<?>> MOOSHROOMS = commonTag("mooshrooms");
+        public static final TagKey<EntityType<?>> PIGS = commonTag("pigs");
+        public static final TagKey<EntityType<?>> RABBITS = commonTag("rabbits");
+        public static final TagKey<EntityType<?>> SHEEP = commonTag("sheep");
         public static final TagKey<EntityType<?>> HUNTING_WOLVES = tag("hunting_wolves");
         public static final TagKey<EntityType<?>> WOLF_HUNTABLE = tag("wolf_hunt_targets");
         public static final TagKey<EntityType<?>> WOLF_HUNTABLE_IF_BABY = tag("wolf_baby_hunt_targets");
@@ -95,7 +95,7 @@ public class ModTags {
         private static TagKey<EntityType<?>> tag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, name));
         }
-        private static TagKey<EntityType<?>> forgeTag(String name) {
+        private static TagKey<EntityType<?>> commonTag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }

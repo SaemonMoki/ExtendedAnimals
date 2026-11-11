@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/inventoried",
   "display": {
     "icon": {
-      "item": "eanimod:saddle_basicpomel_leather"
+      "id": "eanimod:saddle_basicpomel_leather"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.title"
@@ -25,7 +25,7 @@
             "predicate": {
               "vehicle": {
                 "type": "eanimod:enhanced_cow",
-                "nbt": "{Bridle:{Count:1b},Saddle:{Count:1b}}"
+                "nbt": "{Bridle:{count:1},Saddle:{count:1}}"
               }
             },
             "entity": "this"
@@ -42,7 +42,7 @@
             "predicate": {
               "vehicle": {
                 "type": "eanimod:enhanced_llama",
-                "nbt": "{Bridle:{Count:1b},Saddle:{Count:1b}}"
+                "nbt": "{Bridle:{count:1},Saddle:{count:1}}"
               }
             },
             "entity": "this"
@@ -54,7 +54,7 @@
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
         "item": {
-          "tag": "forge:saddles"
+          "items": "#c:saddles"
         },
         "entity": {
           "type": "eanimod:enhanced_cow"
@@ -65,7 +65,7 @@
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
         "item": {
-          "tag": "forge:saddles"
+          "items": "#c:saddles"
         },
         "entity": {
           "type": "eanimod:enhanced_llama"
@@ -76,7 +76,7 @@
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
         "item": {
-          "tag": "eanimod:bridles"
+          "items": "#eanimod:bridles"
         },
         "entity": {
           "type": "eanimod:enhanced_cow"
@@ -87,7 +87,7 @@
       "trigger": "minecraft:player_interacted_with_entity",
       "conditions": {
         "item": {
-          "tag": "eanimod:bridles"
+          "items": "#eanimod:bridles"
         },
         "entity": {
           "type": "eanimod:enhanced_llama"

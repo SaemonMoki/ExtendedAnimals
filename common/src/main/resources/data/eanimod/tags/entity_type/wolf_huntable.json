@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#forge:rabbits",
-    "#forge:sheep"
+    "#c:rabbits",
+    "#c:sheep"
   ]
 }

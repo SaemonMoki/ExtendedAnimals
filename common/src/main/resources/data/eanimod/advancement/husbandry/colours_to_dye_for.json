@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/root",
   "display": {
     "icon": {
-      "item": "minecraft:red_dye"
+      "id": "minecraft:red_dye"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.colours_to_dye_for.title"

@@ -2,7 +2,7 @@
   "parent": "eanimod:husbandry/colours_to_dye_for",
   "display": {
     "icon": {
-      "item": "minecraft:water_bucket"
+      "id": "minecraft:water_bucket"
     },
     "title": {
       "translate": "eanimod.advancements.husbandry.bath_time.title"

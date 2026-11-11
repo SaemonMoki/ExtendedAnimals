@@ -57,10 +57,6 @@ public class AxolotlTexture {
     }
     };
 
-    private static final String[] AXOLOTL_TEXTURES_IRIDESCENCE = new String[] {
-            "", "low_iridophores.png", "natural_iridophores.png", "high_iridophores.png"
-    };
-
     private static final String[][][] AXOLOTL_TEXTURES_PIED = new String[][][] {
             {
                     //white belly
@@ -213,6 +209,13 @@ public class AxolotlTexture {
                 String textureB = getPatternShade(axolotlTexture, 47);
                 yellowPigment.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
             }
+
+            float speckleStrength = 1.0F;
+            for (int i = 48; i <= 53; i++) {
+                if (axolotlTexture.gene(i)!= 2) speckleStrength = axolotlTexture.gene(i)== 3 ? speckleStrength - 0.1F : speckleStrength * 0.8F;
+            }
+            yellowPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
+
             yellowPigment.content().addTexture("patterning/colour/natural_xanthic.png").dye();
         }
 
@@ -248,7 +251,28 @@ public class AxolotlTexture {
             String textureB = getPatternShade(axolotlTexture, 47);
             eumelaninPigment.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
         }
+        eumelaninPigment.maskTexture().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes);
         eumelaninPigment.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
+        createDarkSpeckles(axolotlTexture, copper, pattern, brindle);
+    }
+
+    private static void createDarkSpeckles(TextureBuilder axolotlTexture, int copper, int pattern, Cutout cutout) {
+        Mask speckles = cutout.content().addMaskGroup();
+        Mask speckleMask = speckles.maskTexture().addMaskGroup();
+        if (axolotlTexture.gene(46) == axolotlTexture.gene(47)) {
+            speckleMask.maskTexture().addTexture("patterning/base/"+getPatternShade(axolotlTexture, 46)+".png");
+        } else {
+            String textureA = getPatternShade(axolotlTexture, 46);
+            String textureB = getPatternShade(axolotlTexture, 47);
+            speckleMask.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
+        }
+        float speckleStrength = 1.0F;
+        for (int i = 50; i <= 53; i++) {
+            if (axolotlTexture.gene(i)!= 2) speckleStrength = axolotlTexture.gene(i)== 1 ? speckleStrength - 0.25F : speckleStrength * 0.5F;
+        }
+        speckleMask.content().addTexture("patterning/speckles/"+axolotlTexture.randomBoundedInt(AXOLOTL_PATTERNING, 4)+".png").flipIf(axolotlTexture.randomChance(AXOLOTL_PATTERNING_FLIP, 50), headCubes, bodyCubes, tailCubes).alpha(speckleStrength);
+
+        speckles.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][1]);
     }
 
     private static void addBrindle(TextureBuilder axolotlTexture, int piedStrength, TextureGroup parts, boolean complete) {

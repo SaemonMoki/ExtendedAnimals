@@ -193,8 +193,8 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         /**
          *      [42,43] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+white)
          */
-        autosomalGenes[42] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
-        autosomalGenes[43] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
+        autosomalGenes[42] = getChance() ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
+        autosomalGenes[43] = getChance() ? ThreadLocalRandom.current().nextInt(2)+1 : 1;
 
         /**
          *      [44,45] - CheekSpots - Wildtype > Cheekspots
@@ -203,18 +203,18 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[45] = 1;
 
         /**
-         *      [46,47] - AgoutiLike - Solid < wildtype < diluted < lightDilute
+         *      [46,47] - AgoutiLike - Solid < Wildtype < diluted < lightDilute
          */
         autosomalGenes[46] = getChance() ? ThreadLocalRandom.current().nextInt(4)+1 : 2;
         autosomalGenes[47] = getChance() ? ThreadLocalRandom.current().nextInt(4)+1 : 2;
 
         /**
          *      [48,49] - Speckle Modifier
-         *      [50,51] - Speckle Modifier
-         *      [52,53] - Speckle Modifier
+         *      [50,51] - Speckle Modifier Dark Speckles
+         *      [52,53] - Speckle Modifier Dark Speckles
          */
         for (int i = 48; i < 54; i++) {
-            autosomalGenes[i] = getChance() ? 2 : 1;
+            autosomalGenes[i] = /*getChance() ? */ThreadLocalRandom.current().nextInt(3)+1/* : 1*/;
         }
 
         return new Genes(autosomalGenes);

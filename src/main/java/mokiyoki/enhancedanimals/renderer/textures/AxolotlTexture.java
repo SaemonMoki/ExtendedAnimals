@@ -207,11 +207,11 @@ public class AxolotlTexture {
             yellowPigment.content().addTexture("patterning/colour/natural.png").dye();
         } else {
             if (axolotlTexture.gene(46) == axolotlTexture.gene(47)) {
-                yellowPigment.maskTexture().addTexture("patterning/"+getPatternShade(axolotlTexture, 46)+".png");
+                yellowPigment.maskTexture().addTexture("patterning/base/"+getPatternShade(axolotlTexture, 46)+".png");
             } else {
                 String textureA = getPatternShade(axolotlTexture, 46);
                 String textureB = getPatternShade(axolotlTexture, 47);
-                yellowPigment.maskTexture().addAverageGroup("patterning/"+textureA+".png", "patterning/"+textureB+".png");
+                yellowPigment.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
             }
             yellowPigment.content().addTexture("patterning/colour/natural_xanthic.png").dye();
         }
@@ -225,7 +225,7 @@ public class AxolotlTexture {
         return switch (axolotlTexture.gene(gene)) {
             case 2 -> "light_belly";
             case 3 -> "dilute";
-            case 4 -> "light_dilute";
+            case 4 -> "light_belly_dilute";
             default -> "solid";
         };
     }
@@ -242,11 +242,11 @@ public class AxolotlTexture {
     private static void createNaturalShading(TextureBuilder axolotlTexture, int copper, int pattern, int melanoid, Cutout brindle) {
         Mask eumelaninPigment = brindle.content().addMaskGroup();
         if (axolotlTexture.gene(46) == axolotlTexture.gene(47)) {
-            eumelaninPigment.maskTexture().addTexture("patterning/"+getPatternShade(axolotlTexture, 46)+".png");
+            eumelaninPigment.maskTexture().addTexture("patterning/base/"+getPatternShade(axolotlTexture, 46)+".png");
         } else {
             String textureA = getPatternShade(axolotlTexture, 46);
             String textureB = getPatternShade(axolotlTexture, 47);
-            eumelaninPigment.maskTexture().addAverageGroup("patterning/"+textureA+".png", "patterning/"+textureB+".png");
+            eumelaninPigment.maskTexture().addAverageGroup("patterning/base/"+textureA+".png", "patterning/base/"+textureB+".png");
         }
         eumelaninPigment.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
     }

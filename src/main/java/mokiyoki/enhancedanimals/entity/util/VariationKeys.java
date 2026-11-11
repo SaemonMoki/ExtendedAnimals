@@ -34,8 +34,8 @@ public final class VariationKeys {
     public static final VariationKey[] COW_MUSHROOMS = VariationKey.legacySeries("cow.mushroom", 16, 20);
     //brockling was random per texture build before this upgrade, so no legacy reads to keep
     public static final VariationKey COW_BROCKLING_COUNT = VariationKey.of("cow.brockling.count");
-    public static final VariationKey[] COW_BROCKLING_PATCHES = VariationKey.series("cow.brockling.patch", 4);
-    public static final VariationKey[] COW_BROCKLING_FLIPS = VariationKey.series("cow.brockling.flip", 4);
+    public static final VariationKey[] COW_BROCKLING_PATCHES = VariationKey.series("cow.brockling.patch", 5);
+    public static final VariationKey[] COW_BROCKLING_FLIPS = VariationKey.series("cow.brockling.flip", 5);
 
     public static final VariationKey BRINDLE_FLIP = VariationKey.of("cow.brindle.flip");
 

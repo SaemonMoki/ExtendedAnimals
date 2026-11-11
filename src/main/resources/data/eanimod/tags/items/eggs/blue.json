@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:egg_blue",
+    "eanimod:egg_bluegrey",
+    "eanimod:egg_celadon",
+    "eanimod:egg_celadon_spatter",
+    "eanimod:egg_celadon_speckle",
+    "eanimod:egg_celadon_spot",
+    "eanimod:egg_jade",
+    "eanimod:egg_jade_spatter",
+    "eanimod:egg_jade_speckle",
+    "eanimod:egg_jade_spot",
+    "eanimod:egg_mint",
+    "eanimod:egg_mint_spatter",
+    "eanimod:egg_mint_speckle",
+    "eanimod:egg_mint_spot",
+    "eanimod:egg_paleblue",
+    "eanimod:egg_powderblue"
+  ]
+}

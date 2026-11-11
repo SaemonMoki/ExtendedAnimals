@@ -19,12 +19,40 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_SPLASH;
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.*;
 
 public class ChickenTexture {
     // - Autosomal red/gold/silver needs to be redone from scratch
 
+    private static final int[] chickenHeadCubes = new int[] {
+            0, 12, 0, 4, 3, 4,
+            0, 0, 5, 4, 3, 4,
+            0, 0, 21, 1, 1, 2,
+            0, 0, 22, 1, 1, 2,
+            1, 24, 12, 0, 0, 1, 1, 1,
+            0, 10, 32, 2, 2, 2,
+            0, 0, 34, 4 , 2, 2,
+            1, 0, 30, 6, 28, 2, 2, 2,
+            1, 19, 8, 22, 8, 3, 2, 0,
+            0, 0, 38, 4, 4, 4,
+            0, 0, 15, 1, 5, 1,
+            0, 0, 19, 1, 1, 1,
+            0, 48, 13, 4, 6, 4
+    };
 
+    private static final int[] chickenBodyCubes = new int[] {
+            0, 40, 52, 5, 5, 7,
+            0, 12, 10, 6, 6, 8,
+            1, 30, 24, 16, 24, 1, 4, 6,
+            1, 38, 20, 50, 23, 3, 3, 4,
+            1, 40, 11, 32, 11, 2, 4, 2,
+            1, 38, 0, 28, 0, 5, 5, 0,
+            1, 4, 12, 6, 24, 5, 0, 6,
+            1, 28, 23, 24, 23, 0, 3, 4,
+            0, 28, 0, 5, 5, 5,
+            0, 46, 58, 1, 2, 1,
+            0, 48, 0, 2, 7, 6
+    };
 
     public static void calculateChickenTextures(EnhancedChicken chicken, Genes genetics) {
         int[] gene = genetics.getAutosomalGenes();
@@ -884,8 +912,10 @@ public class ChickenTexture {
 
             if (splash) {
                 Cutout spots = patternColour.addCutoutGroup();
+                int flipIndex = 0;
                 for (VariationKey splashKey : CHICKEN_SPLASH) {
-                    spots.cutoutTexture().addTexture("feather_colour/spots/splash" + chickenTexture.randomHex(splashKey) + ".png");
+                    spots.cutoutTexture().addTexture("feather_colour/spots/splash" + chickenTexture.randomHex(splashKey) + ".png").flipIf(chickenTexture.randomChance(CHICKEN_SPLASH_FLIP[flipIndex], 50), chickenHeadCubes, chickenBodyCubes);
+                    flipIndex++;
                 }
                 spots.content().addTexture("feather_colour/spots/splash_base.png");
             }
@@ -894,9 +924,14 @@ public class ChickenTexture {
                 TextureGroup spots = patternColour;
                 if (!chickenTexture.isHomoFor(38, 1)) {
                     Cutout paintSpots = patternColour.addCutoutGroup();
-                    for (int i=0; i<5;i++) {
-                        int spotVal = ThreadLocalRandom.current().nextInt(9);
-                        paintSpots.cutoutTexture().addTexture("feather_colour/spots/paint" + spotVal + ".png");
+                    int spotNumber = 1;
+                    for (int i = 200; i < 204; i++) {
+                        spotNumber += chickenTexture.gene(i);
+                    }
+
+                    for (int i=0; i<spotNumber;i++) {
+                        int spotVal = chickenTexture.randomBoundedInt(CHICKEN_PAINT[i], 29);
+                        paintSpots.cutoutTexture().addTexture("feather_colour/spots/paint/" + spotVal + ".png").flipIf(chickenTexture.randomChance(CHICKEN_PAINT_FLIP[i], 50), chickenHeadCubes, chickenBodyCubes);
                     }
                     spots = paintSpots.content();
                 }

@@ -19,16 +19,24 @@
     "cut_hay_bale": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "location": {
-          "block": {
-            "blocks": [
-              "eanimod:unboundhay_block"
-            ]
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "eanimod:unboundhay_block"
+                ]
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "tag": "eanimod:hay_cutting_tools"
+            }
           }
-        },
-        "item": {
-          "tag": "eanimod:hay_cutting_tools"
-        }
+        ]
       }
     }
   },

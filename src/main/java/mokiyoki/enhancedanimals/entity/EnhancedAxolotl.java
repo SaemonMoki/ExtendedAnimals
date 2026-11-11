@@ -7,10 +7,7 @@ import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
-import mokiyoki.enhancedanimals.init.ModSensorTypes;
+import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
@@ -73,8 +70,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -964,9 +959,9 @@ NBT read/write
                 return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
             } else {
                 if (worldIn.isWaterAt(pos)) {
-                    Block block = worldIn.getBlockState(pos).getBlock();
-                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) ||
-                            Blocks.SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock()) || Blocks.TALL_SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock());
+                    boolean isNestable = worldIn.getBlockState(pos).is(ModTags.Blocks.AXOLOTL_NESTABLE);
+                    boolean isNestableOver = worldIn.getBlockState(pos.below()).is(ModTags.Blocks.AXOLOTL_NESTABLE_OVER);
+                    return isNestable || isNestableOver;
                 }
             }
             return false;

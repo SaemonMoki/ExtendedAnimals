@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "eanimod:bridle_basic_leather",
+    "eanimod:bridle_basic_leather_gold",
+    "eanimod:bridle_basic_leather_diamond",
+    "eanimod:bridle_basic_cloth",
+    "eanimod:bridle_basic_cloth_gold",
+    "eanimod:bridle_basic_cloth_diamond"
+  ]
+}

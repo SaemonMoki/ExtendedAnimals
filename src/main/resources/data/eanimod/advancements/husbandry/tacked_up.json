@@ -1,0 +1,109 @@
+{
+  "parent": "eanimod:husbandry/inventoried",
+  "display": {
+    "icon": {
+      "item": "eanimod:saddle_basicpomel_leather"
+    },
+    "title": {
+      "translate": "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.title"
+    },
+    "description": {
+      "translate": "eanimod.advancements.husbandry.ride_a_fully_tacked_animal.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ride_a_fully_tacked_cow": {
+      "trigger": "minecraft:started_riding",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "vehicle": {
+                "type": "eanimod:enhanced_cow",
+                "nbt": "{Bridle:{Count:1b},Saddle:{Count:1b}}"
+              }
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "ride_a_fully_tacked_llama": {
+      "trigger": "minecraft:started_riding",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "vehicle": {
+                "type": "eanimod:enhanced_llama",
+                "nbt": "{Bridle:{Count:1b},Saddle:{Count:1b}}"
+              }
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "equip_cow_with_saddle": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "tag": "forge:saddles"
+        },
+        "entity": {
+          "type": "eanimod:enhanced_cow"
+        }
+      }
+    },
+    "equip_llama_with_saddle": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "tag": "forge:saddles"
+        },
+        "entity": {
+          "type": "eanimod:enhanced_llama"
+        }
+      }
+    },
+    "equip_cow_with_bridle": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "tag": "eanimod:bridles"
+        },
+        "entity": {
+          "type": "eanimod:enhanced_cow"
+        }
+      }
+    },
+    "equip_llama_with_bridle": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "tag": "eanimod:bridles"
+        },
+        "entity": {
+          "type": "eanimod:enhanced_llama"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ride_a_fully_tacked_cow","ride_a_fully_tacked_llama"
+    ],
+    [
+      "equip_cow_with_saddle","equip_llama_with_saddle"
+    ],
+    [
+      "equip_cow_with_bridle","equip_llama_with_bridle"
+    ]
+  ]
+}

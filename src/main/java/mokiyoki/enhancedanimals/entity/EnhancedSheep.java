@@ -898,7 +898,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
         this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
@@ -1156,7 +1155,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             } else if (item == Items.WATER_BUCKET && this.getFleeceDyeColour() != DyeColor.WHITE) {
                 this.setFleeceDyeColour(DyeColor.WHITE);
-                entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
+                if (!entityPlayer.getAbilities().instabuild) {
+                    entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
+                }
+                return InteractionResult.SUCCESS;
             } else if (item instanceof DyeItem) {
                 DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {
@@ -1164,6 +1166,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                     if (!entityPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
                     }
+                    return InteractionResult.SUCCESS;
                 }
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));

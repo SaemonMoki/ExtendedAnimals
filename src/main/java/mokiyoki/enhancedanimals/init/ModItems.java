@@ -419,8 +419,6 @@ public class ModItems {
     public static final RegistryObject<Item> DEBUG_GENE_BOOK = ITEMS_DEFERRED_REGISTRY.register("debug_gene_book", () -> new DebugGenesBook(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));
 //    public static final RegistryObject<Item> MIXABLE_MILK = ITEMS_DEFERRED_REGISTRY.register("rawchicken_darksmall", new MixableMilkBucket(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)));
 
-//    public static final RegistryObject<Item> ENHANCED_AXOLOTL_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_spawn_egg", new ForgeSpawnEggItem(ENHANCED_AXOLOTL, 0xFFFFDD,0x00DDCC, new Item.Properties()));
-
     /*
      * Blocks
      */
@@ -462,6 +460,8 @@ public class ModItems {
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_COW_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_cow_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_MOOSHROOM_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_mooshroom_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<ForgeSpawnEggItem> ENHANCED_PIG_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_pig_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+
+    public static final RegistryObject<Item> CARRIED_ANIMAL = ITEMS_DEFERRED_REGISTRY.register("carried_animal", () -> new CarriedAnimalItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus modEventBus) {
         ITEMS_DEFERRED_REGISTRY.register(modEventBus);

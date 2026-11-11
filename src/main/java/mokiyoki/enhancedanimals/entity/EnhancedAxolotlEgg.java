@@ -2,9 +2,15 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlEggBucket;
+import mokiyoki.enhancedanimals.model.modeldata.AxolotlEggModelData;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,10 +42,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh.HALF;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
+import static mokiyoki.enhancedanimals.renderer.textures.AxolotlEggTexture.calculateAxolotlEggTextures;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.TILT;
 
 public class EnhancedAxolotlEgg extends Entity {
@@ -47,11 +55,20 @@ public class EnhancedAxolotlEgg extends Entity {
     private static final EntityDataAccessor<String> SIRE = SynchedEntityData.<String>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DAM = SynchedEntityData.<String>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> HATCH_TIME = SynchedEntityData.<Integer>defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAxolotlEgg.class, EntityDataSerializers.BOOLEAN);
 
     private boolean hasParents = false;
     public int time;
     private boolean clockwise = this.random.nextBoolean();
-    private int animationTicks = this.level.isClientSide ? this.random.nextInt(500) : 0;
+
+    //Texture
+    protected TextureGrouping enhancedAnimalTextureGrouping;
+    protected final List<String> enhancedAnimalTextures = new ArrayList<>();
+    protected Boolean reload = true;
+    private String compiledTexture;
+    protected final List<String> texturesIndexes = new ArrayList<>();
+
+    private AxolotlEggModelData axolotlEggModelData;
 
     public EnhancedAxolotlEgg(EntityType<? extends EnhancedAxolotlEgg> entityType, Level level) {
         super(entityType, level);
@@ -101,7 +118,7 @@ public class EnhancedAxolotlEgg extends Entity {
         }
     }
 
-    private int getHatchTime() {
+    public int getHatchTime() {
         return this.entityData.get(HATCH_TIME);
     }
 
@@ -161,12 +178,20 @@ public class EnhancedAxolotlEgg extends Entity {
     public void tick() {
         super.tick();
 
-        //TODO put axolotlEggAttachableToo here
-        if (!onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level)) {
+        boolean settled = onEggAttachableBlock(this.isInWater(), this.blockPosition(), this.position(), this.level);
+        if (!settled) {
             fall();
         }
 
         pushEntities();
+
+        if (settled) {
+            Vec3 dm = this.getDeltaMovement();
+            if (dm.x != 0.0 || dm.z != 0.0) {
+                this.move(MoverType.SELF, new Vec3(dm.x, 0.0, dm.z));
+                this.setDeltaMovement(dm.multiply(0.1, 0.0, 0.1));
+            }
+        }
 
         if (this.getHatchTime() == 0) {
             if (!this.level.isClientSide) {
@@ -175,20 +200,15 @@ public class EnhancedAxolotlEgg extends Entity {
         } else if (this.getHatchTime() > 0){
             this.setHatchTime(this.getHatchTime() - 1);
         }
-
-        if (this.level.isClientSide && this.fallDistance == 0.0F && this.isInWater()) {
-            this.animationTicks++;
-        }
     }
 
     public static boolean isEggLayableBlock(Boolean inWater, BlockState blockState) {
-        return !blockState.getBlock().equals(Blocks.BIG_DRIPLEAF_STEM) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER);
+        return !(Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(blockState.getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE_UNDER)) && isEggAttachableBlock(inWater, blockState) && (!blockState.hasProperty(HALF) || blockState.getValue(HALF) == DoubleBlockHalf.UPPER); //TODO why is the big drip leaf like this
     }
 
     public static boolean isEggAttachableBlock(Boolean inWater, BlockState blockState) {
         if (inWater) {
-            Block block = blockState.getBlock();
-            return Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.BIG_DRIPLEAF_STEM.equals(block);
+            return Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(blockState.getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE);
         }
         return false;
     }
@@ -248,7 +268,7 @@ public class EnhancedAxolotlEgg extends Entity {
             }
 
             for(int l = 0; l < list.size(); ++l) {
-                Entity entity = list.get(l);
+                EnhancedAxolotlEgg entity = list.get(l);
                 entity.push(this);
             }
         }
@@ -269,8 +289,8 @@ public class EnhancedAxolotlEgg extends Entity {
         axolotl.setSireName(this.getSire());
         axolotl.setDamName(this.getDam());
         axolotl.initilizeAnimalSize();
-        axolotl.setAge(-axolotl.getAdultAge());
-        axolotl.setBirthTime(String.valueOf(level.getGameTime()));
+        axolotl.setAge(EnhancedAnimalAbstract.clampToInt(-axolotl.getAdultAge()));
+        axolotl.setBirthTime(level.getGameTime());
         axolotl.initilizeAnimalSize();
         axolotl.moveTo(this.xo,this.yo, this.zo, this.xRotO, this.yRotO);
         if (this.hasCustomName()) {
@@ -286,6 +306,7 @@ public class EnhancedAxolotlEgg extends Entity {
         this.getEntityData().define(SIRE, new String());
         this.getEntityData().define(DAM, new String());
         this.getEntityData().define(HATCH_TIME, -1);
+        this.getEntityData().define(RESET_TEXTURE, false);
     }
 
     @Override
@@ -311,12 +332,99 @@ public class EnhancedAxolotlEgg extends Entity {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getAddAnimationTick() {
-        return this.animationTicks;
+    public AxolotlEggModelData getModelData() {
+        return this.axolotlEggModelData;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setModelData(AxolotlEggModelData animalModelData) {
+        this.axolotlEggModelData = animalModelData;
     }
 
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public boolean getReloadTexture() {
+        return this.entityData.get(RESET_TEXTURE);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public TextureGrouping getTextureGrouping() {
+        TextureGrouping compiledGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        if (this.enhancedAnimalTextureGrouping != null) {
+            compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        }
+
+        return compiledGroup;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
+        this.setTexturePaths();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public String getTexture() {
+        if (this.enhancedAnimalTextureGrouping == null) {
+            this.setTexturePaths();
+        } else if (this.getReloadTexture() ^ this.reload) {
+            this.reload=!this.reload;
+            this.reloadTextures();
+        }
+
+        return getCompiledTextures("enhanced_axolotl_egg");
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected void setTexturePaths() {
+        if (this.getGenes() != null) {
+            String[] splitGenes = getGenes().split("\\+");
+            calculateAxolotlEggTextures(this, splitGenes[1].split(","));
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setTextureGrouping(TextureGrouping textureGrouping) {
+        this.enhancedAnimalTextureGrouping = textureGrouping;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected String getCompiledTextures(String eanimal) {
+        if (this.compiledTexture == null) {
+            this.compiledTexture = String.join("", texturesIndexes) + eanimal + "/";
+        }
+
+        return this.compiledTexture;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addTextureToAnimal(String texture, String i) {
+        this.enhancedAnimalTextures.add(texture);
+        this.texturesIndexes.add(i);
+        addDelimiter();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addTexturetoTextureGroup(TextureGrouping grouping, String texture, String i) {
+        grouping.addTextureLayers(new TextureLayer(texture));
+        this.enhancedAnimalTextures.add(texture);
+        this.texturesIndexes.add(i);
+        addDelimiter();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addDelimiter() {
+        this.texturesIndexes.add("-");
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addDelimiter(String d) {
+        this.texturesIndexes.add(d+"-");
     }
 }

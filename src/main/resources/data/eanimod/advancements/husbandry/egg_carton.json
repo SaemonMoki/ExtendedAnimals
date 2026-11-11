@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "eanimod:egg_carton"
+    ]
+  },
+  "criteria": {
+    "has_chicken_egg": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "eanimod:eggs"
+          }
+        ]
+      }
+    },
+    "has_turtle_egg": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "eanimod:turtle_egg"
+            ]
+          }
+        ]
+      }
+    },"has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "eanimod:egg_carton"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chicken_egg",
+      "has_turtle_egg",
+      "has_the_recipe"
+    ]
+  ]
+}

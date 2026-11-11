@@ -156,7 +156,6 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected void registerGoals() {
-        //Todo add the temperamants
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
@@ -164,7 +163,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     protected void customServerAiStep()
     {
-        //TODO move this up
+        // TODO move this up
         this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
         super.customServerAiStep();
     }
@@ -182,7 +181,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return horseFoodMap();
     }
 
-    protected int getAdultAge() { return 120000;}
+    protected long getAdultAge() { return 120000;}
 
     @Override
     protected int gestationConfig() {
@@ -397,7 +396,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.reload) {
             this.reload = false;
@@ -412,10 +411,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
-        this.setTexturePaths();
+        this.enhancedAnimalTextureGrouping = null;
+        this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
     }
 
     @OnlyIn(Dist.CLIENT)

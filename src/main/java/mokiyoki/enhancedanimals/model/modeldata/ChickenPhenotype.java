@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.model.modeldata;
 
+import mokiyoki.enhancedanimals.entity.util.Variation;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.EarType;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.NakedNeckType;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -8,6 +9,8 @@ import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Crested;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.FootFeathers;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Comb;
 import mokiyoki.enhancedanimals.model.modeldata.ChickenPhenotypeEnums.Beard;
+
+import static mokiyoki.enhancedanimals.entity.util.VariationKeys.CHICKEN_COMB_FLOP;
 
 public class ChickenPhenotype implements Phenotype {
     public final float combFlop;
@@ -45,7 +48,7 @@ public class ChickenPhenotype implements Phenotype {
     public final float neckPoof;
     public float meatiness;
 
-    public ChickenPhenotype(Genes genes, boolean isFemale) {
+    public ChickenPhenotype(Genes genes, boolean isFemale, Variation variation) {
         int[] gene = genes.getAutosomalGenes();
         this.isScaleless = gene[108] == 2 && gene[109] == 2;
         this.nakedNeckType = gene[52] == 1 || gene[53] == 1 ? (gene[52]==gene[53]?NakedNeckType.NAKED_NECK:NakedNeckType.BOWTIE_NECK):NakedNeckType.NONE;
@@ -77,22 +80,22 @@ public class ChickenPhenotype implements Phenotype {
             }
 
             //Foot Feather Type
-            if (!(gene[60] == 3 && gene[61] == 3)) {
+            if (gene[58] < 3 || gene[59] < 3) {
                 if (gene[60] == 1 || gene[61] == 1) {
                     if (gene[58] == 2 && gene[59] == 2) {
-                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
+                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS; // 4
                     } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                        this.footFeatherType = FootFeathers.TOEFEATHERS; // 3
                     } else if (gene[58] == 1 || gene[59] == 1) {
-                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS; // 2
                     }
                 } else {
                     if (gene[58] == 2 && gene[59] == 2) {
-                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                        this.footFeatherType = FootFeathers.TOEFEATHERS; // 3
                     } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
-                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS; // 2
                     } else if (gene[58] == 1 || gene[59] == 1) {
-                        this.footFeatherType = FootFeathers.LEGFEATHERS;
+                        this.footFeatherType = FootFeathers.LEGFEATHERS; // 1
                     }
                 }
             }
@@ -288,10 +291,10 @@ public class ChickenPhenotype implements Phenotype {
 
         this.tailPinch = getTailPinch(gene);
 
-        this.combFlop = getCombFloppiness(gene, isFemale);
+        this.combFlop = getCombFloppiness(gene, isFemale, variation);
     }
 
-    private float getCombFloppiness(int[] gene, boolean isFemale) {
+    private float getCombFloppiness(int[] gene, boolean isFemale, Variation variation) {
         float floppiness = 0.0F;
         if (gene[310] == 2 && gene[311]==2) {
             floppiness += 0.2F;
@@ -326,7 +329,9 @@ public class ChickenPhenotype implements Phenotype {
             if (floppiness < 0.0F) floppiness = 0.0F;
         }
 
-        //TODO give floppy direction a random side
+        if (variation.get(CHICKEN_COMB_FLOP, 2) == 0) {
+            floppiness = -floppiness;
+        }
 
         return floppiness;
     }

@@ -160,7 +160,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void registerGoals() {
-        //Todo add the temperamants
         int napmod = this.random.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -177,8 +176,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
         this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
-
-    //TODO put new sheep behaviour here
 
     @Override
     public boolean canHaveBlanket() {
@@ -216,16 +213,16 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeSheep.get().longValue();
         return this.adultAge;
     }
 
     //returns how grown the horns are
     public float hornGrowthAmount() {
-        int age = this.getEnhancedAnimalAge();
-        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        long age = this.getEnhancedAnimalAge();
+        long hornFullSizedAge = this.getFullSizeAge() * 2;
         return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
     }
 
@@ -299,7 +296,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             this.timeForGrowth++;
         }
 
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
 
         int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
@@ -748,11 +745,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         float size = this.getAnimalSize();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         int meatDrop = this.random.nextInt(4)+1;
         boolean woolDrop = false;
         boolean leatherDrop = false;
-        int meatChanceMod;
+        long meatChanceMod;
 
         if (this.currentCoatLength >= 5) {
             woolDrop = true;
@@ -818,7 +815,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         }
 
-        int adultAge = this.getAdultAge();
+        int adultAge = (int)this.getAdultAge();
         int tier = adultAge / 4;
         if (age < adultAge) {
             if (age >= tier * 3) {
@@ -901,7 +898,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void reloadTextures() {
         this.texturesIndexes.clear();
-        this.enhancedAnimalTextures.clear();
         this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
@@ -913,7 +909,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getGenes() != null) {
-            calculateSheepTexture(this, getGenes().getAutosomalGenes(), getVariation());
+            calculateSheepTexture(this, getGenes().getAutosomalGenes());
         }
     }
 
@@ -1159,7 +1155,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             } else if (item == Items.WATER_BUCKET && this.getFleeceDyeColour() != DyeColor.WHITE) {
                 this.setFleeceDyeColour(DyeColor.WHITE);
-                entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
+                if (!entityPlayer.getAbilities().instabuild) {
+                    entityPlayer.setItemInHand(hand, new ItemStack(Items.BUCKET));
+                }
+                return InteractionResult.SUCCESS;
             } else if (item instanceof DyeItem) {
                 DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {
@@ -1167,6 +1166,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                     if (!entityPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
                     }
+                    return InteractionResult.SUCCESS;
                 }
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));
@@ -1255,7 +1255,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        int age = this.getEnhancedAnimalAge();
+        long age = this.getEnhancedAnimalAge();
         this.currentCoatLength = (int)(this.maxCoatLength*(age >= this.getAdultAge() ? 1 : ((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }

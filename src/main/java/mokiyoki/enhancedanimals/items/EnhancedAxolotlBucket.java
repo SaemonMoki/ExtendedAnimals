@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.items;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -150,8 +151,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return stack.getOrCreateTagElement("MateGenetics").getBoolean("MateIsFemale");
     }
 
-    public static void setBirthTime(ItemStack stack, String birthTime) {
-        stack.getOrCreateTagElement("display").putString("BirthTime", birthTime);
+    public static void setBirthTime(ItemStack stack, long birthTime) {
+        stack.getOrCreateTagElement("display").putLong("BirthTime", birthTime);
     }
 
     public static void setImage(ItemStack stack, int[] imageArray) {
@@ -167,11 +168,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
 
     public static int[] getGlowingImage(ItemStack stack) {
         if (stack.getOrCreateTagElement("display").contains("gfp")) {
-            int[] image = getImage(stack);
             CompoundTag tag = stack.getOrCreateTagElement("display").getCompound("gfp");
+            int[] image = getImage(stack);
             boolean body = tag.getBoolean("body");
             boolean eyes = body || tag.getBoolean("eyes");
             boolean gills = body || tag.getBoolean("gills");
+            if (!eyes && !gills) return new int[0];
             boolean hasEquipment = body && stack.getOrCreateTagElement("display").contains("collar");
 
             List<Integer> glowImage = new ArrayList();
@@ -215,7 +217,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             for (int i = 0, l=imageArray.length; i < l; i++) imageArray[i] = glowImage.get(i);
             return imageArray;
         }
-            return new int[3];
+            return new int[0];
     }
 
     private static int[] getBlankImage() {
@@ -252,6 +254,14 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         StringBuilder texture = new StringBuilder();
         int[] invImage = getImage(stack);
         for (int i : invImage) {
+            texture.append(i).append("-");
+        }
+        return texture.toString();
+    }
+
+    public static String getGlowingTexture(int[] glowImage) {
+        StringBuilder texture = new StringBuilder("g");
+        for (int i : glowImage) {
             texture.append(i).append("-");
         }
         return texture.toString();
@@ -299,7 +309,12 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         if (stack.hasCustomHoverName()) {
             axolotl.setCustomName(stack.getHoverName());
         }
-        axolotl.setBirthTime(data.getString("BirthTime"));
+        //buckets filled before birth times became longs hold a string
+        if (data.contains("BirthTime", 4)) {
+            axolotl.setBirthTime(data.getLong("BirthTime"));
+        } else {
+            axolotl.setBirthTime(EnhancedAnimalAbstract.parseBirthTime(data.getString("BirthTime")));
+        }
         axolotl.initilizeAnimalSize();
         axolotl.loadFromBucketTag(stack.getOrCreateTag());
         axolotl.moveTo((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);

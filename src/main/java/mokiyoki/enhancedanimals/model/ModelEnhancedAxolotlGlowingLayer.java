@@ -51,7 +51,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
             return ERROR_TEXTURE_LOCATION;
         }
 
-        s = "g" + s + colourRGB.getRGBStrings();
+        s = "g" + getGlowingPartsKey(genes) + "-" + s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
@@ -77,10 +77,27 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
         return resourcelocation;
     }
 
+    private static boolean glowingBody(Genes genes) {
+        return genes.has(10, 3) && !genes.has(10, 2);
+    }
+
+    private static boolean glowingEyes(Genes genes) {
+        return genes.has(20, 6);
+    }
+
+    private static boolean glowingGills(Genes genes) {
+        return genes.has(38, 3) && !genes.has(38, 2);
+    }
+
+    private static String getGlowingPartsKey(Genes genes) {
+        if (glowingBody(genes)) return "b";
+        return (glowingEyes(genes) ? "e" : "") + (glowingGills(genes) ? "g" : "");
+    }
+
     private static boolean[][] getGlowingParts(Genes genes) {
         boolean[][] cutout = new boolean[64][64];
 
-        if (genes.has(10, 3) && !genes.has(10, 2)) {
+        if (glowingBody(genes)) {
             int[] bodyList = new int[]{
                     0, 25, 0, 33,
                     26, 30, 0, 49,
@@ -95,13 +112,13 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
                 }
             }
         } else {
-            if (genes.has(20, 6)) {
+            if (glowingEyes(genes)) {
                 cutout[12][2] = true;
                 cutout[15][5] = true;
                 cutout[5][2] = true;
                 cutout[2][5] = true;
             }
-            if (genes.has(38, 3) && !genes.has(38, 2)) {
+            if (glowingGills(genes)) {
                 int[] gillsList = new int[]{39,48,0,4,36,40,5,12,47,51,5,13};
                 for (int i = 0, l = gillsList.length; i < l; i+=4) {
                     for (int x = gillsList[i], w = gillsList[i+1]; x <= w; x++) {

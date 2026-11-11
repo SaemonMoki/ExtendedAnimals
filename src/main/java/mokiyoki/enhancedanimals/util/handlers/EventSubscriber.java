@@ -14,14 +14,21 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.capability.carry.CarryCapabilityProvider;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
+import mokiyoki.enhancedanimals.network.CarrySyncPacket;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.tileentity.ChickenNestTileEntity;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.monster.Drowned;
@@ -30,13 +37,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HayBlock;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -62,13 +62,10 @@ import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -89,6 +86,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -164,60 +162,65 @@ public class EventSubscriber {
             }
         }
 
-        if (entity instanceof Villager) {
-            Set<String> tags = entity.getTags();
-            if (!tags.contains("eanimodTradeless")) {
-                if (!entity.getTags().contains("eanimodTrader")) {
-                    entity.addTag("eanimodTrader");
+        if (entity instanceof Mob mob) {
+            if (entity instanceof Villager) {
+                Set<String> tags = entity.getTags();
+                if (!tags.contains("eanimodTradeless")) {
+                    if (!entity.getTags().contains("eanimodTrader")) {
+                        entity.addTag("eanimodTrader");
+                    }
                 }
-            }
-        } else if (entity instanceof Wolf) {
-            final Predicate<LivingEntity> TARGETS = (targetEntity) -> {
-                return targetEntity instanceof EnhancedSheep || targetEntity instanceof EnhancedRabbit || ((targetEntity instanceof EnhancedPig || targetEntity instanceof EnhancedCow) && targetEntity.isBaby()) ;
-            };
-            ((Wolf) entity).targetSelector.addGoal(3, new AvoidEntityGoal<>((Wolf) entity, EnhancedLlama.class, 24.0F, 1.5D, 1.5D));
-            ((Wolf) entity).targetSelector.addGoal(5, new NonTameRandomTargetGoal<>((Wolf) entity, Animal.class, false, TARGETS));
-            ((Wolf) entity).targetSelector.addGoal(6, new NonTameRandomTargetGoal<>((Wolf) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Fox) {
-            int priority = ((Fox) entity).getFoxType() == Fox.Type.RED ? 4 : 6;
-            ((Fox) entity).targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, Animal.class, 10, false, false, (targetEntity) -> {
-                return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
-            }));
-            ((Fox) entity).targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Cat) {
-            ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
-            ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, Animal.class, false, (targetEntity) -> {
-                return targetEntity.isBaby() && (targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit);
-            }));
-        } else if (entity instanceof Ocelot) {
-            ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-            ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedChicken.class, false));
-        } else if (entity instanceof Zombie) {
-            if (!(entity instanceof ZombifiedPiglin)) {
-                ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-                if (entity instanceof Drowned) {
-                    ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), EnhancedAxolotl.class, true, false));
+            } else if (entity.getType().is(ModTags.EntityTypes.HUNTING_WOLVES)) {
+                final Predicate<LivingEntity> TARGETS = (targetEntity) -> {
+                    return targetEntity.getType().is(ModTags.EntityTypes.WOLF_HUNTABLE) || (targetEntity.getType().is(ModTags.EntityTypes.WOLF_HUNTABLE_IF_BABY) && targetEntity.isBaby());
+                };
+                mob.targetSelector.addGoal(3, new AvoidEntityGoal<>((Wolf) entity, EnhancedLlama.class, 24.0F, 1.5D, 1.5D));
+                mob.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>((Wolf) entity, Animal.class, false, TARGETS));
+                mob.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>((Wolf) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity.getType().is(ModTags.EntityTypes.HUNTING_FOXES)) {
+                int priority = 5;
+                if (entity instanceof Fox) {
+                    priority = ((Fox) entity).getFoxType() == Fox.Type.RED ? 4 : 6;
                 }
-            }
-            ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
-        } else if (entity instanceof AbstractSkeleton) {
-            ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
-        } else if (entity instanceof Guardian) {
-            ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
-                return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr((Guardian) entity) > 9.0D;
-            }));
-        } else if (entity instanceof EnhancedAnimalAbstract) {
-            if (((EnhancedAnimalAbstract) entity).isLeashed()) {
-                Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
-                if (leashHolder instanceof WanderingTrader) {
-                    ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay()-1);
+                mob.targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, Animal.class, 10, false, false, (targetEntity) -> {
+                    return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
+                }));
+                mob.targetSelector.addGoal(priority, new NearestAttackableTargetGoal<>((Fox) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity instanceof Cat) {
+                ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, EnhancedTurtle.class, false, EnhancedTurtle.TARGET_DRY_BABY));
+                ((Cat) entity).targetSelector.addGoal(1, new NonTameRandomTargetGoal<>((Cat) entity, Animal.class, false, (targetEntity) -> {
+                    return targetEntity.isBaby() && (targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit);
+                }));
+            } else if (entity instanceof Ocelot) {
+                ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                ((Ocelot) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Ocelot) entity, EnhancedChicken.class, false));
+            } else if (entity instanceof Zombie) {
+                if (!(entity instanceof ZombifiedPiglin)) {
+                    ((Zombie) entity).targetSelector.addGoal(5, new NearestAttackableTargetGoal<>((Zombie) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+                    if (entity instanceof Drowned) {
+                        ((Drowned) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(((Drowned) entity), EnhancedAxolotl.class, true, false));
+                    }
                 }
-            }
-            if (entity instanceof EnhancedChicken) {
-                if (((EnhancedChicken) entity).isChickenJockey()) {
-                    ((EnhancedChicken) entity).scheduleDespawn(4000);
+                ((Zombie) entity).targetSelector.addGoal(4, new BreakCustomBlockGoal(ModBlocks.TURTLE_EGG.get(), (Zombie) entity, SoundEvents.ZOMBIE_DESTROY_EGG, SoundSource.HOSTILE, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 1.0D, 3));
+            } else if (entity instanceof AbstractSkeleton) {
+                ((AbstractSkeleton) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((AbstractSkeleton) entity, EnhancedTurtle.class, 10, true, false, EnhancedTurtle.TARGET_DRY_BABY));
+            } else if (entity instanceof Guardian) {
+                ((Guardian) entity).targetSelector.addGoal(1, new NearestAttackableTargetGoal<>((Guardian) entity, LivingEntity.class, 10, true, false, (targetEntity) -> {
+                    return (targetEntity instanceof EnhancedAxolotl) && targetEntity.distanceToSqr(entity) > 9.0D;
+                }));
+            } else if (entity instanceof EnhancedAnimalAbstract) {
+                if (((EnhancedAnimalAbstract) entity).isLeashed()) {
+                    Entity leashHolder = ((EnhancedAnimalAbstract) entity).getLeashHolder();
+                    if (leashHolder instanceof WanderingTrader) {
+                        ((EnhancedAnimalAbstract) entity).scheduleDespawn(((WanderingTrader) leashHolder).getDespawnDelay() - 1);
+                    }
                 }
-                ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
+                if (entity instanceof EnhancedChicken) {
+                    if (((EnhancedChicken) entity).isChickenJockey()) {
+                        ((EnhancedChicken) entity).scheduleDespawn(4000);
+                    }
+                    ((EnhancedChicken) entity).scheduleLookForNest(ThreadLocalRandom.current().nextInt(600));
+                }
             }
         }
     }
@@ -693,6 +696,64 @@ public class EventSubscriber {
                 EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getId(), invSlot, inventoryItemStack);
                 EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) trackingPlayer), equipmentPacket);
             }
+        } else if (targetEntity instanceof Player carryingPlayer) {
+            ServerPlayer trackingPlayer = (ServerPlayer) event.getPlayer();
+            //always send the true current state, even empty otherwise a newly-tracking client can be left with
+            //a stale "carrying" render from a previous tracking session if the item was dropped while untracked
+            carryingPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> trackingPlayer), new CarrySyncPacket(carryingPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.handleCarryToggle(serverPlayer, -1);
+        }
+    }
+
+    //the logout-time sync above can fail to reach a disconnecting client this self-corrects on (re)join
+    //regardless of how the previous session ended, since the server's own capability state is always correct
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(cap ->
+                    EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CarrySyncPacket(serverPlayer.getId(), cap.getCarried())));
+        }
+    }
+
+    //LOWEST so any mods cancelling this shit means the animal won't be in a weird state
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntityLiving() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.dropCarriedOnDeath(serverPlayer);
+        }
+    }
+
+    //leaving the End replaces the player object, so carry the animal over to the new one.
+    //Again, why do I have safeguard against this crap Mojang? Why is just the End different in how dimensions are handled!
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
+        original.reviveCaps();
+        original.getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(oldCap ->
+                event.getPlayer().getCapability(CarryCapabilityProvider.CARRY_CAP).ifPresent(newCap ->
+                        newCap.setCarried(oldCap.getCarried())));
+        original.invalidateCaps();
+    }
+
+    //the client clears its carry state on every level switch, these fire after the respawn packet so the resync lands after the clear
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            EAPacketHandler.syncCarryToSelf(serverPlayer);
         }
     }
 
@@ -755,7 +816,8 @@ public class EventSubscriber {
 
                         Collections.shuffle(animals);
 
-                        int selection = animals.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(animals.size());
+                        int listSize = animals.size();
+                        int selection = listSize == 1 ? 0 : ThreadLocalRandom.current().nextInt(listSize);
 
                         if (animals.get(selection) == ENHANCED_TURTLE.get()) {
                             ItemStack stack = new ItemStack(ModItems.TURTLE_EGG_ITEM.get(), 1);
@@ -763,13 +825,8 @@ public class EventSubscriber {
                         } else if (animals.get(selection) == ENHANCED_AXOLOTL.get()) {
                             ItemStack stack = new ItemStack(Items.AXOLOTL_BUCKET, 1);
                             CompoundTag tag = stack.getOrCreateTag();
-                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(1200) == 0 ? 4 : ThreadLocalRandom.current().nextInt(4));
+                            tag.putInt("Variant", ThreadLocalRandom.current().nextInt(5));
                             //TODO make some sort of nicer wandering trader axolotl bucket. The other animals should probably also get some sort of item with which they can be traded for.
-//                        CompoundTag entityTags = new CompoundTag();
-//                        ListTag listtag = new ListTag();
-//                        listtag.add(StringTag.valueOf("WanderingTrader"));
-//                        entityTags.put("Tags", listtag);
-//                        tag.put("EntityTags",entityTags);
                             ((WanderingTrader) entity).getOffers().add(new MerchantOffer(new ItemStack(Items.EMERALD, 16), stack, ThreadLocalRandom.current().nextBoolean() ? 1 : 2, 1, 0.0F));
                         } else {
                             for (int i = 1; i <= 2; i++) {
@@ -814,11 +871,15 @@ public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockInteractEvent(PlayerInteractEvent.RightClickBlock event) {
-        Item item = event.getItemStack().getItem();
+        ItemStack itemStack = event.getItemStack();
+        Item item = itemStack.getItem();
         Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
-        if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
+        if (block.defaultBlockState().is(ModTags.Blocks.HAY_BLOCKS) && (itemStack.is(ModTags.Items.HAY_CUTTING_TOOLS))) {
             Direction.Axis axis = event.getWorld().getBlockState(event.getPos()).getValue(BlockStateProperties.AXIS);
             event.getWorld().setBlock(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.AXIS, axis), 11);
+            if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), itemStack);
+            }
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
             event.getWorld().setBlock(event.getPos(), Blocks.FARMLAND.defaultBlockState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {
@@ -836,7 +897,7 @@ public class EventSubscriber {
             if (event.getEntity() instanceof EnhancedAnimalAbstract) {
                 Entity damageSource = event.getSource().getDirectEntity();
                 if (damageSource instanceof Player) {
-                    if (!(((Player) damageSource).getMainHandItem().getItem() instanceof AxeItem)) {
+                    if (!(((Player) damageSource).getMainHandItem().is(ModTags.Items.BUTCHER_TOOLS))) {
                         event.setCanceled(true);
                     }
                 } else {

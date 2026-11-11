@@ -7,10 +7,7 @@ import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.config.GeneticAnimalsConfig;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.init.FoodSerialiser;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
-import mokiyoki.enhancedanimals.init.ModSensorTypes;
+import mokiyoki.enhancedanimals.init.*;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.modeldata.AnimalModelData;
 import mokiyoki.enhancedanimals.model.modeldata.AxolotlModelData;
@@ -19,6 +16,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -72,8 +70,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -223,9 +219,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected int getAdultAge() {
+    protected long getAdultAge() {
         if (this.adultAge != null) return this.adultAge;
-        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get();
+        this.adultAge = GeneticAnimalsConfig.COMMON.adultAgeAxolotl.get().longValue();
         return this.adultAge;
     }
 
@@ -444,58 +440,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @OnlyIn(Dist.CLIENT)
-    private float[] calculateEyeColor(int[] gene, int eyeType) {
-        //NormalEyes
-        float[] eyeHSB = {0.75F, 0.5F, 0.25F};
-
-        switch (eyeType) {
-            case 2 -> {
-                //DarkEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[2] *= 0.5F;
-            }
-            case 3 -> {
-                //PigmentedEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-            }
-            case 4 -> {
-                //LightEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[2] = 1.0F;
-            }
-            case 5 -> {
-                //PastelEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-                eyeHSB[1] *= 0.5F;
-                eyeHSB[2] = 1.0F;
-            }
-            case 6 -> {
-                //GlowEyes
-                eyeHSB = Colouration.mixAxolotlHue((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
-            }
-            default -> {
-                //NormalEyes
-                if (gene[0] == 2 && gene[1] == 2) {
-                    //Albino
-                    if (gene[2] == 2 && gene[3] == 2) {
-                        //Axanthic Albino
-                        eyeHSB[0] = 0.95F;
-                        eyeHSB[2] = 0.8F;
-                    } else {
-                        eyeHSB[0] = 0.09F;
-                        eyeHSB[1] = 0.75F;
-                        eyeHSB[2] = 0.8F;
-                    }
-                }
-            }
-
-
-        }
-        return eyeHSB;
-    }
-
-
-    @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
         Genes genes = getGenes();
@@ -507,11 +451,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                     float[] axolotlHSB = Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255);
                     this.colouration.setDyeColour(Colouration.HSBtoARGB(axolotlHSB[0], axolotlHSB[1], axolotlHSB[2]));
                 }
-
-                int eyeColor = Colouration.getAxolotlEyes(calculateEyeColor(gene, gene[20]), calculateEyeColor(gene, gene[21]));
-
-                this.colouration.setLeftEyeColour(eyeColor);
-                this.colouration.setRightEyeColour(eyeColor);
             }
         }
 
@@ -969,9 +908,9 @@ NBT read/write
                 return EnhancedAxolotlEgg.isEggLayableBlock(worldIn.isWaterAt(pos.below()), worldIn.getBlockState(pos.below()));
             } else {
                 if (worldIn.isWaterAt(pos)) {
-                    Block block = worldIn.getBlockState(pos).getBlock();
-                    return Blocks.BIG_DRIPLEAF_STEM.equals(block) || Blocks.BIG_DRIPLEAF.equals(block) || Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block) ||
-                            Blocks.SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock()) || Blocks.TALL_SEAGRASS.equals(worldIn.getBlockState(pos.below()).getBlock());
+                    boolean isNestable = Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(worldIn.getBlockState(pos).getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE);
+                    boolean isNestableOver = Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(worldIn.getBlockState(pos.below()).getBlock()).get()).is(ModTags.Blocks.AXOLOTL_NESTABLE_OVER);
+                    return isNestable || isNestableOver;
                 }
             }
             return false;

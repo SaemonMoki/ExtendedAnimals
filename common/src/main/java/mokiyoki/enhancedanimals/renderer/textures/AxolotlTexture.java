@@ -233,14 +233,22 @@ public class AxolotlTexture {
     private static void createMelaninLayer(TextureBuilder axolotlTexture, Mask body, int piedStrength, int copper, int pattern, int melanoid) {
         Cutout brindle = body.content().addCutoutGroup();
         if (!axolotlTexture.isHomoFor(42, 1)) addBrindle(axolotlTexture, piedStrength, brindle.cutoutTexture(), true);
-        createNaturalShading(copper, pattern, melanoid, brindle);
+        createNaturalShading(axolotlTexture, copper, pattern, melanoid, brindle);
         int eyeColour = calculateEyeColour(axolotlTexture, 3);
         brindle.content().addTexture("eye_left.png").rgb(eyeColour);
         brindle.content().addTexture("eye_right.png").rgb(eyeColour);
     }
 
-    private static void createNaturalShading(int copper, int pattern, int melanoid, Cutout brindle) {
-        brindle.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
+    private static void createNaturalShading(TextureBuilder axolotlTexture, int copper, int pattern, int melanoid, Cutout brindle) {
+        Mask eumelaninPigment = brindle.content().addMaskGroup();
+        if (axolotlTexture.gene(46) == axolotlTexture.gene(47)) {
+            eumelaninPigment.maskTexture().addTexture("patterning/"+getPatternShade(axolotlTexture, 46)+".png");
+        } else {
+            String textureA = getPatternShade(axolotlTexture, 46);
+            String textureB = getPatternShade(axolotlTexture, 47);
+            eumelaninPigment.maskTexture().addAverageGroup("patterning/"+textureA+".png", "patterning/"+textureB+".png");
+        }
+        eumelaninPigment.content().addTexture(AXOLOTL_TEXTURES_MELANIN[copper][pattern][melanoid]);
     }
 
     private static void addBrindle(TextureBuilder axolotlTexture, int piedStrength, TextureGroup parts, boolean complete) {

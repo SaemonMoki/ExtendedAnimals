@@ -42,8 +42,10 @@ public final class VariationKeys {
     //Pig
     //uuid[1]
     public static final VariationKey PIG_TAIL_CURL = VariationKey.legacy("pig.tail_curl", 1);
+    public static final VariationKey PIG_FUR_FLIP = VariationKey.of("pig.fur_flip");
     //uuid[2]
-    public static final VariationKey PIG_WHITE_FACE = VariationKey.legacy("pig.white_face", 2);
+    public static final VariationKey PIG_WHITE_SPOT = VariationKey.legacy("pig.white_spot", 2);
+    public static final VariationKey PIG_WHITE_SPOT_FLIP = VariationKey.of("pig.white_spot_flip");
     //uuid[3]
     public static final VariationKey PIG_PATTERN = VariationKey.legacy("pig.pattern", 3);
     //uuid[4]

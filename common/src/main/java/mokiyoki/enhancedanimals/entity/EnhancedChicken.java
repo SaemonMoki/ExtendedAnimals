@@ -1202,6 +1202,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
+        if (this.hasAlreadySpawned()) {
+            return livingdata;
+        }
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
         if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0 && this.getOrSetIsFemale() && !this.isBaby()) {
             this.setFertile();

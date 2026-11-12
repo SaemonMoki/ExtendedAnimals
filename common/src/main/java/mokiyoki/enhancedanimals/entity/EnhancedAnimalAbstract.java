@@ -1731,6 +1731,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.scheduledToRun.put(RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.funcName, RESIZE_AND_REFRESH_TEXTURE_SCHEDULE.function.apply(50));
         }
 
+        if (SHARED_GENES.equals(key) && this.level().isClientSide) {
+            this.genesSplitForClient = null;
+            if (this.enhancedAnimalTextureGrouping != null) {
+                this.reloadTextures();
+            }
+        }
+
         super.onSyncedDataUpdated(key);
     }
 
@@ -1989,7 +1996,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.random.nextInt(clampToInt(Math.max(ageUpTo, 1L)));
     }
 
+    protected boolean hasAlreadySpawned() {
+        boolean inWorld = this.tickCount > 0 || this.level().getEntity(this.getId()) == this;
+        boolean hasGenes = this.genetics.getNumberOfAutosomalGenes() > 0 && this.genetics.getAutosomalGene(0) != 0;
+        return inWorld && hasGenes;
+    }
+
     protected SpawnGroupData commonInitialSpawnSetup(LevelAccessor inWorld, @Nullable SpawnGroupData livingdata, long childAge, int ageMinimum, int ageMaximum, MobSpawnType spawnReason) {
+        if (this.hasAlreadySpawned()) {
+            return livingdata;
+        }
+
         Genes spawnGenes;
 
         if (spawnReason.equals(MobSpawnType.STRUCTURE)) {

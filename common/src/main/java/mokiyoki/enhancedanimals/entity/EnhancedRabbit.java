@@ -909,6 +909,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements GeneticShe
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
+        if (this.hasAlreadySpawned()) {
+            return livingdata;
+        }
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 80000, spawnReason);
 
         setInitialCoat();

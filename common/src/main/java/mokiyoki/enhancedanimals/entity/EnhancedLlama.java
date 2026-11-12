@@ -722,6 +722,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata) {
+        if (this.hasAlreadySpawned()) {
+            return livingdata;
+        }
         livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000, spawnReason);
 
         setStrengthAndInventory();

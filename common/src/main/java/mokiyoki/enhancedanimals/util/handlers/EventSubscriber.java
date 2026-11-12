@@ -245,7 +245,7 @@ public class EventSubscriber {
 
     public boolean onEntityTickPre(Entity entity) {
         boolean cancelled = false;
-        if (entity instanceof Villager && entity.getTags().contains("eanimodTrader")) {
+        if (entity instanceof Villager && !entity.level().isClientSide() && entity.getTags().contains("eanimodTrader")) {
             VillagerProfession profession = ((Villager)entity).getVillagerData().getProfession();
             Set<String> tags = entity.getTags();
             if (profession != null) {
@@ -296,7 +296,7 @@ public class EventSubscriber {
                     }
                 }
             }
-        } else if (entity instanceof WanderingTrader) {
+        } else if (entity instanceof WanderingTrader && !entity.level().isClientSide() && GeneticAnimalsConfig.COMMON.wanderingTraderTrades.get()) {
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");
                 int i = 1;

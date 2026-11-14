@@ -185,6 +185,7 @@ public class EnhancedAnimalPhotoScreen extends Screen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(poseStack);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         renderCameraMode(poseStack, mouseX, mouseY, partialTick);
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.renderInfoToolTip(poseStack, mouseX, mouseY);

@@ -161,7 +161,8 @@ public class EnhancedChickenEggBlock extends NestBlock implements EntityBlock {
                         level.levelEvent(2001, pos, Block.getId(state));
                         EnhancedChicken chicken = ENHANCED_CHICKEN.get().create(level);
                         chicken.setGenes(egg.getGenes());
-                        chicken.setSharedGenes(egg.getGenes());
+                        chicken.fixHatchedGenes();
+                        chicken.setSharedGenes(chicken.getGenes());
                         chicken.setSireName(egg.getSire());
                         chicken.setDamName(egg.getDam());
                         chicken.setGrowingAge();

@@ -305,7 +305,8 @@ public class CowTexture {
 
         //Legacy Genes
         if (legacyBelt) {
-            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, COW_BELT) + ".png");
+            //Legacy uses uuid(3) for belt AND blaze
+            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, COW_BLAZE) + ".png");
         } else if (legacyBlaze) {
             beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png");
         }

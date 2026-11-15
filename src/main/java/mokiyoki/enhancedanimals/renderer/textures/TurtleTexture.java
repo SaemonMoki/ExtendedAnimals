@@ -51,14 +51,14 @@ public class TurtleTexture {
                 } else if (turtleTexture.eitherAllelesHave(30, 3)) {
                     pattern = "flame";
                 }
-                patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_PATTERN_FLIP, 50));
+                patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_PATTERN_FLIP, 50), turtleCubes);
                 if (!turtleTexture.isHomoFor(32, 1)) {
                     if (turtleTexture.eitherAllelesHave(32, 2)) {
                         pattern = tortishell ? "tortishell_scale1" : "scale";
                     } else {
                         pattern = "clown";
                     }
-                    patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_CLOWN_FLIP, 50));
+                    patternGroup.cutoutTexture().addTexture("pattern/" + pattern + ".png").flipIf(turtleTexture.randomChance(TURTLE_CLOWN_FLIP, 50), turtleCubes);
                 }
                 patternColourGroup = patternGroup.content();
             } else {
@@ -83,7 +83,7 @@ public class TurtleTexture {
 
             if (tortishell) {
                 Mask brindleGroup = patternColourGroup.addMaskGroup();
-                brindleGroup.maskTexture().addTexture("tortishell/tortishell.png").flipIf(turtleTexture.randomChance(TURTLE_TORTI_FLIP, 50));
+                brindleGroup.maskTexture().addTexture("tortishell/tortishell.png").flipIf(turtleTexture.randomChance(TURTLE_TORTI_FLIP, 50),  turtleCubes);
                 TextureGroup brindleColourGroup = brindleGroup.content();
 
                 if (pigmentHueMod-5 < 0) {
@@ -121,23 +121,10 @@ public class TurtleTexture {
     }
 
     private static void piebald(TextureBuilder turtleTexture, TextureGroup root) {
-        int piebald = 1 + turtleTexture.randomHex(TURTLE_PIEBALD);
-
-        if (turtleTexture.variation().isLegacy()) {
-            if (turtleTexture.isHomoFor(8, 2)) {
-                piebald = 0;
-            } else {
-                if ((piebald - 1) % 4 == 0) piebald = (int) (piebald * 1.25F);
-                piebald = (piebald - 1) % 4;
-            }
-        } else if (turtleTexture.isHomoFor(8, 2)) {
-            piebald = 1;
-        } else {
-            piebald = piebald%11;
-        }
+        int piebald = turtleTexture.isHomoFor(8, 2) ? 1 : (1 + turtleTexture.randomHex(TURTLE_PIEBALD)) % 12;
 
         Mask spots = root.addMaskGroup();
-        spots.maskTexture().addTexture("spots/piebald/" + piebald + ".png").flipIf(turtleTexture.randomChance(TURTLE_PIEBALD_FLIP, 50));
+        spots.maskTexture().addTexture("spots/piebald/" + piebald + ".png").flipIf(turtleTexture.randomChance(TURTLE_PIEBALD_FLIP, 50), turtleCubes);
         spots.content().addTexture("spots/white1.png");
     }
 

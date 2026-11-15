@@ -380,6 +380,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
+    public void fixHatchedGenes() {
+        geneFixer();
+    }
+
     /*
     On Load / Unload
     */

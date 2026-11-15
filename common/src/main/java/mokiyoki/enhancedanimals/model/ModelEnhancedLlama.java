@@ -270,7 +270,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                 PartPose.ZERO
         );
         bLegFrontLeft.addOrReplaceChild("legBFL", CubeListBuilder.create()
-                        .texOffs(0, 74)
+                        .texOffs(0, 88)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
@@ -296,12 +296,12 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         );
 
         bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
-                        .texOffs(12, 68)
+                        .texOffs(12, 88)
                         .addBox(0.0F, 0.0F, -3.0F, 3, 6, 3, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legBFR", CubeListBuilder.create()
-                        .texOffs(12, 74)
+                        .texOffs(12, 88)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
@@ -327,63 +327,63 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         );
 
         bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
-                        .texOffs(0, 82)
+                        .texOffs(0, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 6, 3, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBBL", CubeListBuilder.create()
-                        .texOffs(0, 88)
+                        .texOffs(0, 96)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBL1", CubeListBuilder.create()
-                        .texOffs(0, 82)
+                        .texOffs(0, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBL2", CubeListBuilder.create()
-                        .texOffs(0, 82)
+                        .texOffs(0, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.0F)),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBL3", CubeListBuilder.create()
-                        .texOffs(0, 82)
+                        .texOffs(0, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.5F)),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBL4", CubeListBuilder.create()
-                        .texOffs(0, 82)
+                        .texOffs(0, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(2.0F)),
                 PartPose.ZERO
         );
 
         bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
-                        .texOffs(12, 82)
+                        .texOffs(12, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 6, 3, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBBR", CubeListBuilder.create()
-                        .texOffs(12, 88)
+                        .texOffs(12, 96)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR1", CubeListBuilder.create()
-                        .texOffs(12, 82)
+                        .texOffs(12, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR2", CubeListBuilder.create()
-                        .texOffs(12, 82)
+                        .texOffs(12, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.0F)),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR3", CubeListBuilder.create()
-                        .texOffs(12, 82)
+                        .texOffs(12, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.5F)),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR4", CubeListBuilder.create()
-                        .texOffs(12, 82)
+                        .texOffs(12, 78)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(2.0F)),
                 PartPose.ZERO
         );

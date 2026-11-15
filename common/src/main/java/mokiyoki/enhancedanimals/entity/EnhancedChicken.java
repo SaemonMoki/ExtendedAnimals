@@ -110,6 +110,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.timeUntilNextEgg = eggLayingTime();
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.createNewHungerLimit();
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
     protected void customServerAiStep() {
         this.getBrain().tick((ServerLevel)this.level(), this);

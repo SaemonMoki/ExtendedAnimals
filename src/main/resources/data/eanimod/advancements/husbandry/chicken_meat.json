@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "eanimod:raw_chicken_meat_small",
+      "eanimod:raw_chicken_meat_small_double",
+      "eanimod:raw_chicken_meat_small_triple",
+      "eanimod:raw_chicken_meat_medium",
+      "eanimod:raw_chicken_meat_medium_double",
+      "eanimod:raw_chicken_meat_medium_triple",
+      "eanimod:raw_chicken_meat_medium_mixed",
+      "eanimod:raw_chicken_meat_darktovanilla"
+    ]
+  },
+  "criteria": {
+    "has_chicken_meat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "eanimod:raw_chickens"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chicken_meat"
+    ]
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "eanimod:raw_rabbit_meat",
+      "eanimod:raw_rabbit_meat_inefficient"
+    ]
+  },
+  "criteria": {
+    "has_rabbit_meat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "eanimod:raw_rabbits"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_rabbit_meat"
+    ]
+  ]
+}

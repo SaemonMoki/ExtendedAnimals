@@ -25,9 +25,9 @@ public class LlamaTexture {
 
     private static final int[] legCubes = new int[] {
         1, 0, 68, 12, 68, 3, 7, 3, //fleg
-        1, 0, 74, 12, 74, 3, 5, 3, //bfleg
-        1, 0, 82, 12, 82, 3, 7, 3, //bleg
-        1, 0, 88, 12, 88, 3, 5, 3, //bbleg
+        1, 0, 88, 12, 88, 3, 5, 3, //bfleg
+        1, 0, 78, 12, 78, 3, 7, 3, //bleg
+        1, 0, 96, 12, 96, 3, 5, 3, //bbleg
         1, 62, 70, 26, 70, 3, 3, 4, //toeOF
         1, 80, 70, 44, 70, 3, 3, 4, //toeIF
         1, 62, 84, 26, 84, 3, 3, 4, //toeOB

@@ -296,7 +296,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         );
 
         bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
-                        .texOffs(12, 88)
+                        .texOffs(12, 68)
                         .addBox(0.0F, 0.0F, -3.0F, 3, 6, 3, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );

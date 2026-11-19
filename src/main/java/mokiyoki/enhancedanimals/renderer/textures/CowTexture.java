@@ -242,11 +242,14 @@ public class CowTexture {
             roanSpots = addWhiteMask(cowTexture, body, false);
         }
 
+        boolean legacy = cowTexture.variation().isLegacy();
+
         //roan
         if (cowTexture.isHomoFor(8, 2)) {
             roanSpots.addTexture("spots/roan/solid.png");
         } else if (cowTexture.eitherAllelesHave(8, 2)) {
-            roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN);
+            if (legacy) roanSpots.addTexture("spots/roan/0.png");
+            else roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN);
         }
 
         //speckled
@@ -254,11 +257,15 @@ public class CowTexture {
             //pointed white
             roanSpots.addTexture("spots/speckled/homozygous/0.png");
         } else if (cowTexture.eitherAllelesHave(14, 1)) {
-            roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4);
+            if (legacy) roanSpots.addTexture("spots/speckled/heterozygous/0.png");
+            else roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4);
         }
 
         //colour sided
-        if (cowTexture.eitherAllelesHave(20, 1)) faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4);
+        if (cowTexture.eitherAllelesHave(20, 1)) {
+            if (legacy) faceSpots.addTexture("spots/coloursided/0.png");
+            else faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4);
+        }
 
         if (cowTexture.eitherAllelesHave(16, 1)) {
             if (cowTexture.eitherAllelesHave(16, 2)) {
@@ -305,6 +312,7 @@ public class CowTexture {
 
         //Legacy Genes
         if (legacyBelt) {
+            //Legacy uses uuid(3) for belt AND blaze
             beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, COW_BLAZE) + ".png");
         } else if (legacyBlaze) {
             beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png");

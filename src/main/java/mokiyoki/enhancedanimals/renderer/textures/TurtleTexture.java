@@ -111,20 +111,7 @@ public class TurtleTexture {
     }
 
     private static void piebald(TextureBuilder turtleTexture, TextureGroup root) {
-        int piebald = 1 + turtleTexture.randomHex(TURTLE_PIEBALD);
-
-        if (turtleTexture.variation().isLegacy()) {
-            if (turtleTexture.isHomoFor(8, 2)) {
-                piebald = 0;
-            } else {
-                if ((piebald - 1) % 4 == 0) piebald = (int) (piebald * 1.25F);
-                piebald = (piebald - 1) % 4;
-            }
-        } else if (turtleTexture.isHomoFor(8, 2)) {
-            piebald = 1;
-        } else {
-            piebald = piebald%11;
-        }
+        int piebald = turtleTexture.isHomoFor(8, 2) ? 1 : (1 + turtleTexture.randomHex(TURTLE_PIEBALD)) % 12;
 
         Mask spots = root.addMaskGroup();
         spots.maskTexture().addTexture("spots/piebald/" + piebald + ".png");

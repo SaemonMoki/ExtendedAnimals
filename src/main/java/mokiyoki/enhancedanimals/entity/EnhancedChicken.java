@@ -109,6 +109,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.timeUntilNextEgg = eggLayingTime();
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         this.createNewHungerLimit();
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
     protected void customServerAiStep() {
         this.getBrain().tick((ServerLevel)this.level(), this);
@@ -378,6 +379,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (this.genetics.getNumberOfSexlinkedGenes() < CHICKEN_SEXLINKED_GENES_LENGTH) {
             this.genetics.setSexlinkedGenes(Arrays.copyOf(this.genetics.getSexlinkedGenes(), CHICKEN_SEXLINKED_GENES_LENGTH));
         }
+    }
+
+    public void fixHatchedGenes() {
+        geneFixer();
     }
 
     /*

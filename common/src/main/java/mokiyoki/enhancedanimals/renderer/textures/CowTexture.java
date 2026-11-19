@@ -163,7 +163,7 @@ public class CowTexture {
 
         body.addMergeGroup("solid.png", COW_TEXTURES_UDDER[skin]);
         body.addTexture(COW_TEXTURES_RED[red]).tintRed();
-        body.addTexture(COW_TEXTURES_BLACK[black]).shadeMelanin().flipIf(black == 6 && cowTexture.randomChance(BRINDLE_FLIP, 50));
+        body.addTexture(COW_TEXTURES_BLACK[black]).shadeMelanin().flipIf(black == 6 && spotFlip(cowTexture, BRINDLE_FLIP));
 
         TextureGroup counterShading = body.addMergeGroup();
         counterShading.addTexture(COW_TEXTURES_MEALY[mealy]);
@@ -223,32 +223,39 @@ public class CowTexture {
             roanSpots = addWhiteMaskwithBrocklHandling(cowTexture, body, false);
         }
 
+        boolean legacy = cowTexture.variation().isLegacy();
+
         //roan
         if (cowTexture.isHomoFor(8, 2)) {
             roanSpots.addTexture("spots/roan/solid.png");
         } else if (cowTexture.eitherAllelesHave(8, 2)) {
-            roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN).flipIf(cowTexture.randomChance(COW_ROAN_FLIP, 50), headCubes, bodyCubes, legCubes);
+            AddedTexture roan = legacy ? roanSpots.addTexture("spots/roan/0.png") : roanSpots.addRandomHexTexture("spots/roan/%s.png", COW_ROAN);
+            roan.flipIf(spotFlip(cowTexture, COW_ROAN_FLIP), headCubes, bodyCubes, legCubes);
         }
 
         //speckled
         if (cowTexture.isHomoFor(14, 1)) {
             //pointed white
-            roanSpots.addTexture("spots/speckled/homozygous/0.png").flipIf(cowTexture.randomChance(COW_SPECKLED_FLIP, 50), headCubes, bodyCubes, legCubes);
+            roanSpots.addTexture("spots/speckled/homozygous/0.png").flipIf(spotFlip(cowTexture, COW_SPECKLED_FLIP), headCubes, bodyCubes, legCubes);
         } else if (cowTexture.eitherAllelesHave(14, 1)) {
-            roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4).flipIf(cowTexture.randomChance(COW_SPECKLED_FLIP, 50), headCubes, bodyCubes, legCubes);
+            AddedTexture speckled = legacy ? roanSpots.addTexture("spots/speckled/heterozygous/0.png") : roanSpots.pickRandomTexture("spots/speckled/heterozygous/%d.png", COW_SPECKLED, 4);
+            speckled.flipIf(spotFlip(cowTexture, COW_SPECKLED_FLIP), headCubes, bodyCubes, legCubes);
         }
 
         //colour sided
-        if (cowTexture.eitherAllelesHave(20, 1)) faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4).flipIf(cowTexture.randomChance(COW_COLOURSIDED_FLIP, 50), headCubes, bodyCubes, legCubes);
+        if (cowTexture.eitherAllelesHave(20, 1)) {
+            AddedTexture coloursided = legacy ? faceSpots.addTexture("spots/coloursided/0.png") : faceSpots.pickRandomTexture("spots/coloursided/%d.png", COW_COLOURSIDED, 4);
+            coloursided.flipIf(spotFlip(cowTexture, COW_COLOURSIDED_FLIP), headCubes, bodyCubes, legCubes);
+        }
 
         if (cowTexture.eitherAllelesHave(16, 1)) {
             if (cowTexture.eitherAllelesHave(16, 2)) {
                 //white face with border spots(Pinzgauer)
-                faceSpots.addTexture("spots/hereford_coloursided/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
+                faceSpots.addTexture("spots/hereford_coloursided/0.png").flipIf(spotFlip(cowTexture, COW_PIEBALD_BODY), headCubes, bodyCubes, legCubes);
             } else if (cowTexture.isHomoFor(16, 1)) {
-                faceSpots.addTexture("spots/hereford/homozygous/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
+                faceSpots.addTexture("spots/hereford/homozygous/0.png").flipIf(spotFlip(cowTexture, COW_PIEBALD_BODY), headCubes, bodyCubes, legCubes);
             } else {
-                faceSpots.addTexture("spots/hereford/heterozygous/0.png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
+                faceSpots.addTexture("spots/hereford/heterozygous/0.png").flipIf(spotFlip(cowTexture, COW_PIEBALD_BODY), headCubes, bodyCubes, legCubes);
             }
         } else if (cowTexture.eitherAllelesHave(16, 2)) {
             //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
@@ -260,12 +267,12 @@ public class CowTexture {
                     pingauzer = 0;
                 }
             }
-            faceSpots.addTexture("spots/pingauzer/" + pingauzer + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY, 50), headCubes, bodyCubes, legCubes);
+            faceSpots.addTexture("spots/pingauzer/" + pingauzer + ".png").flipIf(spotFlip(cowTexture, COW_PIEBALD_BODY), headCubes, bodyCubes, legCubes);
         } else if (cowTexture.isHomoFor(16, 4)) {
             //piebald
-            faceSpots.addTexture("spots/piebald/body/" + spotHex(cowTexture, COW_PIEBALD_BODY) + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_BODY_FLIP, 50), headCubes, bodyCubes, legCubes);
+            faceSpots.addTexture("spots/piebald/body/" + spotHex(cowTexture, COW_PIEBALD_BODY) + ".png").flipIf(spotFlip(cowTexture, COW_PIEBALD_BODY_FLIP), headCubes, bodyCubes, legCubes);
             if (cowTexture.sexVariation() != cowTexture.randomHex(COW_PIEBALD_BODY)) {
-                faceSpots.addTexture("spots/piebald/head/" + spotHex(cowTexture, COW_PIEBALD_HEAD) + ".png").flipIf(cowTexture.randomChance(COW_PIEBALD_HEAD_FLIP, 50), headCubes);
+                faceSpots.addTexture("spots/piebald/head/" + spotHex(cowTexture, COW_PIEBALD_HEAD) + ".png").flipIf(spotFlip(cowTexture, COW_PIEBALD_HEAD_FLIP), headCubes);
             }
         }
 
@@ -273,23 +280,28 @@ public class CowTexture {
         boolean legacyBlaze = !legacyBelt && cowTexture.eitherAllelesHave(18, 2);
 
         if (!legacyBelt && cowTexture.eitherAllelesHave(250, 2)) {
-            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, cowTexture.variation().isLegacy() ? COW_BLAZE : COW_BELT) + ".png").flipIf(cowTexture.randomChance(COW_BELT_FLIP, 50), headCubes, bodyCubes, legCubes);
+            beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, cowTexture.variation().isLegacy() ? COW_BLAZE : COW_BELT) + ".png").flipIf(spotFlip(cowTexture, COW_BELT_FLIP), headCubes, bodyCubes, legCubes);
         }
 
         if (!legacyBlaze) {
             if (cowTexture.isHomoFor(252, 2)) {
-                beltSpots.addTexture("spots/doubleblaze/" + doubleBlaze(cowTexture) + ".png").flipIf(cowTexture.randomChance(COW_BLAZE_FLIP, 50), headCubes);
+                beltSpots.addTexture("spots/doubleblaze/" + doubleBlaze(cowTexture) + ".png").flipIf(spotFlip(cowTexture, COW_BLAZE_FLIP), headCubes);
             } else if (cowTexture.eitherAllelesHave(252, 2)) {
-                beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png").flipIf(cowTexture.randomChance(COW_BLAZE_FLIP, 50), headCubes);
+                beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png").flipIf(spotFlip(cowTexture, COW_BLAZE_FLIP), headCubes);
             }
         }
 
         //Legacy Genes
         if (legacyBelt) {
+            //Legacy uses uuid(3) for belt AND blaze
             beltSpots.addTexture("spots/belt/" + spotHex(cowTexture, COW_BLAZE) + ".png");
         } else if (legacyBlaze) {
             beltSpots.addTexture("spots/blaze/" + singleBlaze(cowTexture) + ".png");
         }
+    }
+
+    private static boolean spotFlip(TextureBuilder cowTexture, VariationKey key) {
+        return !cowTexture.variation().isLegacy() && cowTexture.randomChance(key, 50);
     }
 
     private static char spotHex(TextureBuilder cowTexture, VariationKey key) {

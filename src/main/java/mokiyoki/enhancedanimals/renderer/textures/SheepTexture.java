@@ -303,7 +303,7 @@ public class SheepTexture {
         }
         hairGroup.addTexture(SHEEP_TEXTURES_GREY[grey]);
 
-        root.addMergeGroup(SHEEP_TEXTURES_FUR[fur], SHEEP_TEXTURES_SKIN[skin], "hooves_black.png", "eyes_black.png", "chests.png");
+        root.addMergeGroup(SHEEP_TEXTURES_FUR[fur], SHEEP_TEXTURES_SKIN[skin], "hooves_black.png", "eyes_black.png");
 
         sheepTexture.finishTexture();
     }

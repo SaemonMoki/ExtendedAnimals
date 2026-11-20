@@ -28,6 +28,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,20 +40,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     private static final EntityDataAccessor<Boolean> HAS_BLANKET = SynchedEntityData.defineId(EnhancedAnimalChestedAbstract.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_BRIDLE = SynchedEntityData.defineId(EnhancedAnimalChestedAbstract.class, EntityDataSerializers.BOOLEAN);
 
-    private static final String CHEST_TEXTURE = "chest.png";
+    private static final String CHEST_TEXTURE = "equipment/chest.png";
 
-    private static final String BRIDLE_TEXTURE = "d_bridle.png";
+    private static final String BRIDLE_TEXTURE = "equipment/d_bridle.png";
 
-    private static final String BRIDLE_LEATHER_TEXTURE = "bridle_leather.png";
+    private static final String BRIDLE_LEATHER_TEXTURE = "equipment/bridle_leather.png";
 
     private static final String[] BRIDLE_HARDWEAR_TEXTURE = new String[] {
-            "bridle_iron.png", "bridle_gold.png", "bridle_diamond.png"
+            "equipment/bridle_iron.png", "equipment/bridle_gold.png", "equipment/bridle_diamond.png"
     };
 
     private static final String HARNESS_TEXTURE = "harness.png";
 
     private static final String[] HARNESS_HARDWEAR_TEXTURE = new String[] {
-            "harness_iron.png", "harness_gold.png", "harness_diamond.png"
+            "equipment/harness_iron.png", "equipment/harness_gold.png", "equipment/harness_diamond.png"
     };
 
     protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn,int SgenesSize, int AgenesSize, boolean bottleFeedable) {
@@ -86,14 +87,28 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return false;
     }
 
-//    public void setChested(boolean chested) {
-//        this.dataManager.set(HAS_CHEST,chested);
-//        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-//            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
-//        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-//            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
-//        }
-//    }
+    public void setChest(boolean chested) {
+        this.entityData.set(HAS_CHEST, chested);
+        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
+        List<String> newChestTexture = getChestTexture();
+
+        if(chested) {
+//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
+            this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
+//            }
+            TextureGrouping chestGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newChestTexture.size(); ++i) {
+                chestGroup.addTextureLayers(new TextureLayer(newChestTexture.get(i)));
+            }
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.CHEST, chestGroup);
+        } else {
+            if(previousChestTexture != null){
+                this.equipmentTextures.remove(Equipment.CHEST);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.CHEST);
+            }
+        }
+        this.compiledEquipmentTexture = null; //reset compiled string
+    }
 
     @Override
     public boolean canHaveBlanket() {
@@ -124,22 +139,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
                 this.enhancedAnimalEquipmentGrouping.remove(Equipment.BLANKET);
-            }
-        }
-        this.compiledEquipmentTexture = null; //reset compiled string
-    }
-
-    public void setChest(boolean chested) {
-        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
-        List<String> newChestTexture = getChestTexture();
-
-        if(chested) {
-//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
-                this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
-//            }
-        } else {
-            if(previousChestTexture != null){
-                this.equipmentTextures.remove(Equipment.CHEST);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string
@@ -229,7 +228,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             this.initInventory();
         }
         ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
-        traderBlanket.getOrCreateTagElement("tradersblanket");
+        traderBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
         this.animalInventory.setItem(4, traderBlanket);
     }
 
@@ -239,7 +238,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             ItemStack otherCarpet = this.getEnhancedInventory().getItem(4);
             ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1).setHoverName(blanketItemStack.getHoverName());
             if (blanketItemStack.getTagElement("tradersblanket") != null) {
-                equipedBlanket.getOrCreateTagElement("tradersblanket");
+                equipedBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
             }
             this.animalInventory.setItem(4, equipedBlanket);
             this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
@@ -317,6 +316,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     protected void updateInventorySlots() {
+        this.setChest(this.animalInventory.getItem(0).is(Items.CHEST));
         this.setBridle(this.animalInventory.getItem(3).getItem() instanceof CustomizableBridle);
         this.setBlanket(!this.animalInventory.getItem(4).isEmpty() && !(this.animalInventory.getItem(4).getItem() instanceof CustomizableCollar));
         super.updateInventorySlots();
@@ -349,7 +349,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 } else if (blanketItem == Items.DIRT) {
                     blanketPath += "dried_mud";
                 } else {
-                    blanketPath = blanketItem.toString();
+                    blanketPath += blanketItem.toString();
                     if (blanketSlot.getTagElement("eanimod_equipment") != null) {
                         if (blanketSlot.getTagElement("eanimod_equipment").contains("blanket")) {
                             blanketPath += "/" + blanketSlot.getTagElement("eanimod_equipment").getString("blanket");
@@ -460,6 +460,5 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
         return chestTexture;
     }
-
 
 }

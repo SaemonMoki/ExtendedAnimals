@@ -120,15 +120,15 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected static final String CACHE_DELIMITER = "-";
 
-    private static final String COLLAR = "d_collar.png";
-    private static final String COLLAR_TEXTURE = "collar_leather.png";
+    private static final String COLLAR = "equipment/d_collar.png";
+    private static final String COLLAR_TEXTURE = "equipment/collar_leather.png";
     private static final String[] COLLAR_HARDWARE = new String[] {
-            "collar_ringiron.png", "collar_ringgold.png", "collar_ringdiamond.png",
-            "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
+            "equipment/collar_ringiron.png", "equipment/collar_ringgold.png", "equipment/collar_ringdiamond.png",
+            "equipment/collar_belliron.png", "equipment/collar_bellgold.png", "equipment/collar_belldiamond.png"
     };
 
     private static final String[] ENVIROMENTAL_EFFECT_TEXTURES = new String[] {
-            "mud.png", "dirt.png", "snow.png", "moss.png"
+            "equipment/blanket/mud.png", "equipment/blanket/dirt.png", "equipment/blanket/snow.png", "equipment/blanket/moss.png"
     };
 
     private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE.get(), ModItems.HALF_MILK_BOTTLE.get());

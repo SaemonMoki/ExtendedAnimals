@@ -614,6 +614,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theBody.addChild(this.saddleWestern);
         this.theBody.addChild(this.saddleEnglish);
         this.theBody.addChild(this.saddleVanilla);
+        this.theBody.addChild(this.chests);
 
         this.saddleWestern.addChild(this.saddleHorn);
         this.saddleWestern.addChild(this.saddleSideLeft);
@@ -1152,6 +1153,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
+        animalModelData.chests = enhancedAnimal.hasChest();
     }
 
     @Override

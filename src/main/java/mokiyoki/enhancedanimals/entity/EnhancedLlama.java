@@ -584,9 +584,15 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
         this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
         ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
-        traderBlanket.getOrCreateTagElement("tradersblanket");
+        traderBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
         this.animalInventory.setItem(4, traderBlanket);
         this.setStrengthAndInventory();
+    }
+
+    public void makeJollyLlama() {
+        ItemStack jollyBlanket = new ItemStack(Items.GREEN_CARPET).setHoverName(new TextComponent("Jolly Blanket"));
+        jollyBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "jolly");
+        this.animalInventory.setItem(4, jollyBlanket);
     }
 
     private void tryDespawn() {
@@ -710,6 +716,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
             long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
+        }
+
+        if (compound.contains("Jolly")) {
+            makeJollyLlama();
         }
     }
 

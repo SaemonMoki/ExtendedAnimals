@@ -2,11 +2,13 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +28,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +40,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     private static final EntityDataAccessor<Boolean> HAS_BLANKET = SynchedEntityData.defineId(EnhancedAnimalChestedAbstract.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_BRIDLE = SynchedEntityData.defineId(EnhancedAnimalChestedAbstract.class, EntityDataSerializers.BOOLEAN);
 
-    private static final String CHEST_TEXTURE = "chest.png";
+    private static final String CHEST_TEXTURE = "equipment/chest.png";
 
-    private static final String[] BLANKET_TEXTURE = new String[] {
-            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png", "moss.png", "snow.png", "mud.png", "dirt.png"
-    };
+    private static final String BRIDLE_TEXTURE = "equipment/d_bridle.png";
 
-    private static final String BRIDLE_TEXTURE = "d_bridle.png";
-
-    private static final String BRIDLE_LEATHER_TEXTURE = "bridle_leather.png";
+    private static final String BRIDLE_LEATHER_TEXTURE = "equipment/bridle_leather.png";
 
     private static final String[] BRIDLE_HARDWEAR_TEXTURE = new String[] {
-            "bridle_iron.png", "bridle_gold.png", "bridle_diamond.png"
+            "equipment/bridle_iron.png", "equipment/bridle_gold.png", "equipment/bridle_diamond.png"
     };
 
     private static final String HARNESS_TEXTURE = "harness.png";
 
     private static final String[] HARNESS_HARDWEAR_TEXTURE = new String[] {
-            "harness_iron.png", "harness_gold.png", "harness_diamond.png"
+            "equipment/harness_iron.png", "equipment/harness_gold.png", "equipment/harness_diamond.png"
     };
 
     protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn,int SgenesSize, int AgenesSize, boolean bottleFeedable) {
@@ -88,14 +87,28 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return false;
     }
 
-//    public void setChested(boolean chested) {
-//        this.dataManager.set(HAS_CHEST,chested);
-//        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-//            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
-//        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-//            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
-//        }
-//    }
+    public void setChest(boolean chested) {
+        this.entityData.set(HAS_CHEST, chested);
+        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
+        List<String> newChestTexture = getChestTexture();
+
+        if(chested) {
+//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
+            this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
+//            }
+            TextureGrouping chestGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newChestTexture.size(); ++i) {
+                chestGroup.addTextureLayers(new TextureLayer(newChestTexture.get(i)));
+            }
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.CHEST, chestGroup);
+        } else {
+            if(previousChestTexture != null){
+                this.equipmentTextures.remove(Equipment.CHEST);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.CHEST);
+            }
+        }
+        this.compiledEquipmentTexture = null; //reset compiled string
+    }
 
     @Override
     public boolean canHaveBlanket() {
@@ -126,22 +139,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
                 this.enhancedAnimalEquipmentGrouping.remove(Equipment.BLANKET);
-            }
-        }
-        this.compiledEquipmentTexture = null; //reset compiled string
-    }
-
-    public void setChest(boolean chested) {
-        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
-        List<String> newChestTexture = getChestTexture();
-
-        if(chested) {
-//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
-                this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
-//            }
-        } else {
-            if(previousChestTexture != null){
-                this.equipmentTextures.remove(Equipment.CHEST);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string
@@ -231,7 +228,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             this.initInventory();
         }
         ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
-        traderBlanket.getOrCreateTagElement("tradersblanket");
+        traderBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
         this.animalInventory.setItem(4, traderBlanket);
     }
 
@@ -241,7 +238,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             ItemStack otherCarpet = this.getEnhancedInventory().getItem(4);
             ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1).setHoverName(blanketItemStack.getHoverName());
             if (blanketItemStack.getTagElement("tradersblanket") != null) {
-                equipedBlanket.getOrCreateTagElement("tradersblanket");
+                equipedBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
             }
             this.animalInventory.setItem(4, equipedBlanket);
             this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
@@ -319,6 +316,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     protected void updateInventorySlots() {
+        this.setChest(this.animalInventory.getItem(0).is(Items.CHEST));
         this.setBridle(this.animalInventory.getItem(3).getItem() instanceof CustomizableBridle);
         this.setBlanket(!this.animalInventory.getItem(4).isEmpty() && !(this.animalInventory.getItem(4).getItem() instanceof CustomizableCollar));
         super.updateInventorySlots();
@@ -343,55 +341,23 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         if (this.getEnhancedInventory() != null) {
             ItemStack blanketSlot = this.animalInventory.getItem(4);
             if (blanketSlot != ItemStack.EMPTY) {
-                Item blanket = blanketSlot.getItem();
-                if (blanket == Items.BLACK_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[1]);
-                } else if (blanket == Items.BLUE_CARPET) {
-                    if (blanketSlot.hasCustomHoverName()) {
-                        if (blanketSlot.getTagElement("tradersblanket") != null) {
-                            blanketTextures.add(BLANKET_TEXTURE[0]);
-                            return blanketTextures;
+                String blanketPath = "equipment/blanket/";
+                Item blanketItem = blanketSlot.getItem();
+
+                if (blanketItem == Items.CLAY) {
+                    blanketPath += "muddy";
+                } else if (blanketItem == Items.DIRT) {
+                    blanketPath += "dried_mud";
+                } else {
+                    blanketPath += blanketItem.toString();
+                    if (blanketSlot.getTagElement("eanimod_equipment") != null) {
+                        if (blanketSlot.getTagElement("eanimod_equipment").contains("blanket")) {
+                            blanketPath += "/" + blanketSlot.getTagElement("eanimod_equipment").getString("blanket");
                         }
                     }
-                        blanketTextures.add(BLANKET_TEXTURE[2]);
-                } else if (blanket == Items.BROWN_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[3]);
-                } else if (blanket == Items.CYAN_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[4]);
-                } else if (blanket == Items.GRAY_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[5]);
-                } else if (blanket == Items.GREEN_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[6]);
-                } else if (blanket == Items.LIGHT_BLUE_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[7]);
-                } else if (blanket == Items.LIGHT_GRAY_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[8]);
-                } else if (blanket == Items.LIME_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[9]);
-                } else if (blanket == Items.MAGENTA_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[10]);
-                } else if (blanket == Items.ORANGE_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[11]);
-                } else if (blanket == Items.PINK_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[12]);
-                } else if (blanket == Items.PURPLE_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[13]);
-                } else if (blanket == Items.RED_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[14]);
-                } else if (blanket == Items.WHITE_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[15]);
-                } else if (blanket == Items.YELLOW_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[16]);
-                } else if (blanket == Items.MOSS_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[17]);
-                } else if (blanket == Items.SNOW) {
-                    blanketTextures.add(BLANKET_TEXTURE[18]);
-                } else if (blanket == Items.CLAY) {
-                    blanketTextures.add(BLANKET_TEXTURE[19]);
-                } else if (blanket == Items.DIRT) {
-                    blanketTextures.add(BLANKET_TEXTURE[20]);
                 }
 
+                blanketTextures.add(blanketPath + ".png");
             }
         }
         return blanketTextures;
@@ -438,61 +404,10 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     protected boolean isCarpet(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item == Items.BLACK_CARPET) {
+        if (itemStack.is(ModTags.Items.BLANKETS)) {
             return true;
         }
-        if (item == Items.BLUE_CARPET) {
-            return true;
-        }
-        if (item == Items.BROWN_CARPET) {
-            return true;
-        }
-        if (item == Items.CYAN_CARPET) {
-            return true;
-        }
-        if (item == Items.GRAY_CARPET) {
-            return true;
-        }
-        if (item == Items.GREEN_CARPET) {
-            return true;
-        }
-        if (item == Items.LIGHT_BLUE_CARPET) {
-            return true;
-        }
-        if (item == Items.LIGHT_GRAY_CARPET) {
-            return true;
-        }
-        if (item == Items.LIME_CARPET) {
-            return true;
-        }
-        if (item == Items.MAGENTA_CARPET) {
-            return true;
-        }
-        if (item == Items.ORANGE_CARPET) {
-            return true;
-        }
-        if (item == Items.PINK_CARPET) {
-            return true;
-        }
-        if (item == Items.PURPLE_CARPET) {
-            return true;
-        }
-        if (item == Items.RED_CARPET) {
-            return true;
-        }
-        if (item == Items.WHITE_CARPET) {
-            return true;
-        }
-        if (item == Items.YELLOW_CARPET) {
-            return true;
-        }
-        if (item == Items.MOSS_CARPET) {
-            return true;
-        }
-        if (item == Items.SNOW) {
-            return true;
-        }
-        if (item == Items.CLAY) {
+        if (item == Items.CLAY) { //TODO remove these testers clay/dirt
             return true;
         }
         if (item == Items.DIRT) {
@@ -545,6 +460,5 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
         return chestTexture;
     }
-
 
 }

@@ -67,17 +67,17 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private static final EntityDataAccessor<Integer> BOOST_TIME = SynchedEntityData.defineId(EnhancedAnimalRideableAbstract.class, EntityDataSerializers.INT);
 
     private static final String[] TEXTURES_SADDLE = new String[] {
-            "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
+            "equipment/d_saddle_vanilla.png", "equipment/d_saddle_western.png", "equipment/d_saddle_english.png"
     };
 
     private static final String[] TEXTURES_SADDLE_LEATHER = new String[] {
-            "saddle_vanilla_leather.png", "saddle_western_leather.png", "saddle_english_leather.png",
-            "saddle_vanilla_clothseat.png", "saddle_western_clothseat.png", "saddle_english_clothseat.png"
+            "equipment/saddle_vanilla_leather.png", "equipment/saddle_western_leather.png", "equipment/saddle_english_leather.png",
+            "equipment/saddle_vanilla_clothseat.png", "equipment/saddle_western_clothseat.png", "equipment/saddle_english_clothseat.png"
     };
 
     private static final String[] TEXTURES_SADDLE_HARDWARE = new String[] {
-            "stirrups_iron.png", "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png",
-            "stirrups_western_iron.png","stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_western_wood.png"
+            "equipment/stirrups_iron.png", "equipment/stirrups_gold.png", "equipment/stirrups_diamond.png", "equipment/stirrups_wood.png",
+            "equipment/stirrups_western_iron.png","equipment/stirrups_western_gold.png", "equipment/stirrups_western_diamond.png", "equipment/stirrups_western_wood.png"
     };
 
     protected boolean isAnimalJumping;

@@ -127,6 +127,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
     };
 
+    private static final String[] ENVIROMENTAL_EFFECT_TEXTURES = new String[] {
+            "mud.png", "dirt.png", "snow.png", "moss.png"
+    };
+
     private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE.get(), ModItems.HALF_MILK_BOTTLE.get());
 
     // Genetic Info
@@ -707,6 +711,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected boolean getBells() {
         return this.bells;
     }
+
+
     /*
     General Info
     */

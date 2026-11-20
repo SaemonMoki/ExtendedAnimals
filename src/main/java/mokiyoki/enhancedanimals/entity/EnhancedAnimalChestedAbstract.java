@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTags;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
@@ -40,7 +41,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     private static final String CHEST_TEXTURE = "chest.png";
 
     private static final String[] BLANKET_TEXTURE = new String[] {
-            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png", "moss.png", "snow.png", "mud.png", "dirt.png"
+            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png", "blanket_jolly.png"
     };
 
     private static final String BRIDLE_TEXTURE = "d_bridle.png";
@@ -361,6 +362,12 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 } else if (blanket == Items.GRAY_CARPET) {
                     blanketTextures.add(BLANKET_TEXTURE[5]);
                 } else if (blanket == Items.GREEN_CARPET) {
+                    if (blanketSlot.hasCustomHoverName()) {
+                        if (blanketSlot.getTagElement("jollyblanket") != null) {
+                            blanketTextures.add(BLANKET_TEXTURE[17]);
+                            return blanketTextures;
+                        }
+                    }
                     blanketTextures.add(BLANKET_TEXTURE[6]);
                 } else if (blanket == Items.LIGHT_BLUE_CARPET) {
                     blanketTextures.add(BLANKET_TEXTURE[7]);
@@ -383,13 +390,13 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 } else if (blanket == Items.YELLOW_CARPET) {
                     blanketTextures.add(BLANKET_TEXTURE[16]);
                 } else if (blanket == Items.MOSS_CARPET) {
-                    blanketTextures.add(BLANKET_TEXTURE[17]);
-                } else if (blanket == Items.SNOW) {
                     blanketTextures.add(BLANKET_TEXTURE[18]);
-                } else if (blanket == Items.CLAY) {
+                } else if (blanket == Items.SNOW) {
                     blanketTextures.add(BLANKET_TEXTURE[19]);
-                } else if (blanket == Items.DIRT) {
+                } else if (blanket == Items.CLAY) {
                     blanketTextures.add(BLANKET_TEXTURE[20]);
+                } else if (blanket == Items.DIRT) {
+                    blanketTextures.add(BLANKET_TEXTURE[21]);
                 }
 
             }
@@ -438,61 +445,10 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     protected boolean isCarpet(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item == Items.BLACK_CARPET) {
+        if (itemStack.is(ModTags.Items.BLANKETS)) {
             return true;
         }
-        if (item == Items.BLUE_CARPET) {
-            return true;
-        }
-        if (item == Items.BROWN_CARPET) {
-            return true;
-        }
-        if (item == Items.CYAN_CARPET) {
-            return true;
-        }
-        if (item == Items.GRAY_CARPET) {
-            return true;
-        }
-        if (item == Items.GREEN_CARPET) {
-            return true;
-        }
-        if (item == Items.LIGHT_BLUE_CARPET) {
-            return true;
-        }
-        if (item == Items.LIGHT_GRAY_CARPET) {
-            return true;
-        }
-        if (item == Items.LIME_CARPET) {
-            return true;
-        }
-        if (item == Items.MAGENTA_CARPET) {
-            return true;
-        }
-        if (item == Items.ORANGE_CARPET) {
-            return true;
-        }
-        if (item == Items.PINK_CARPET) {
-            return true;
-        }
-        if (item == Items.PURPLE_CARPET) {
-            return true;
-        }
-        if (item == Items.RED_CARPET) {
-            return true;
-        }
-        if (item == Items.WHITE_CARPET) {
-            return true;
-        }
-        if (item == Items.YELLOW_CARPET) {
-            return true;
-        }
-        if (item == Items.MOSS_CARPET) {
-            return true;
-        }
-        if (item == Items.SNOW) {
-            return true;
-        }
-        if (item == Items.CLAY) {
+        if (item == Items.CLAY) { // TODO remove these testers clay/dirt
             return true;
         }
         if (item == Items.DIRT) {

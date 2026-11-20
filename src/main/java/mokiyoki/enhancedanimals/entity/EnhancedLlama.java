@@ -589,6 +589,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         this.setStrengthAndInventory();
     }
 
+    public void makeJollyLlama() {
+        ItemStack jollyBlanket = new ItemStack(Items.GREEN_CARPET).setHoverName(new TextComponent("Jolly Blanket"));
+        jollyBlanket.getOrCreateTagElement("jollyblanket");
+        this.animalInventory.setItem(4, jollyBlanket);
+    }
+
     private void tryDespawn() {
         if (this.canDespawn()) {
             this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTrader)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
@@ -710,6 +716,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
             long age = this.getEnhancedAnimalAge(); //overloaded version of getAge
             this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
+        }
+
+        if (compound.contains("Jolly")) {
+            makeJollyLlama();
         }
     }
 

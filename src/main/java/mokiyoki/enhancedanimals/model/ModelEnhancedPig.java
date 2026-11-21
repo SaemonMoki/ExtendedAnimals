@@ -344,10 +344,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
          */
         base.addOrReplaceChild("chests", CubeListBuilder.create()
                         .texOffs(80, 14)
-                        .addBox(-8.0F, 0.0F, 0.0F, 8, 8, 3)
+                        .addBox(0.0F, 0.0F, -7.0F, 8, 8, 3)
                         .texOffs(80, 25)
-                        .addBox(8.0F, 0.0F, 0.0F, 8, 8, 3),
-                PartPose.offsetAndRotation(0.0F, 8.0F, 3.0F, 0.0F, Mth.HALF_PI, 0.0F)
+                        .addBox(0.0F, 0.0F, 4.0F, 8, 8, 3),
+                PartPose.offsetAndRotation(0.0F, 6.0F, 8.0F,  -Mth.HALF_PI,0.0F, Mth.HALF_PI)
         );
         base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F));
         base.addOrReplaceChild("saddleW", CubeListBuilder.create()
@@ -357,7 +357,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                         .addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4)
                         .texOffs(230, 15)
                         .addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2),
-                PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, 0.0F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("saddleE", CubeListBuilder.create()
                         .texOffs(211, 1)

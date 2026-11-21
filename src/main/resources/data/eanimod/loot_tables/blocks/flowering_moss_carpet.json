@@ -1,0 +1,74 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:moss_carpet",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Flowering Moss"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                "Azalea Moss Flowers"
+              ],
+              "replace": false
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{eanimod_equipment:{blanket:\"azalea_flowers\"}}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:moss_carpet",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Flowering Moss"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                "Pink Moss Flowers"
+              ],
+              "replace": false
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{eanimod_equipment:{blanket:\"pink_flowers\"}}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:moss_carpet",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Flowering Moss"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                "White Moss Flowers"
+              ],
+              "replace": false
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{eanimod_equipment:{blanket:\"white_flowers\"}}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

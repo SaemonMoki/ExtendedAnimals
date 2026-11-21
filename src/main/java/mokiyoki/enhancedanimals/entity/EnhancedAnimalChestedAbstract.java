@@ -8,7 +8,8 @@ import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,11 +28,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.ChestBlock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstract {
 
@@ -122,7 +120,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public void setBlanket(boolean blanketed) {
         this.entityData.set(HAS_BLANKET, blanketed);
         List<String> previousBlanketTextures = equipmentTextures.get(Equipment.BLANKET);
-        List<String> newBlanketTextures = getBlanket();
+        List<String> newBlanketTextures = getBlanketTextures();
 
         if(blanketed) {
 //            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
@@ -240,6 +238,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             if (blanketItemStack.getTagElement("tradersblanket") != null) {
                 equipedBlanket.getOrCreateTagElement("eanimod_equipment").putString("blanket", "trader");
             }
+            // TODO we need a better way to not end up deleting itemstack data when equipped
             this.animalInventory.setItem(4, equipedBlanket);
             this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
             blanketItemStack.shrink(1);
@@ -335,7 +334,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         this.setBridle(compound.getBoolean("Bridled"));
     }
 
-    private List<String> getBlanket() {
+    private List<String> getBlanketTextures() {
         List<String> blanketTextures = new ArrayList<>();
 
         if (this.getEnhancedInventory() != null) {
@@ -352,7 +351,10 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     blanketPath += blanketItem.toString();
                     if (blanketSlot.getTagElement("eanimod_equipment") != null) {
                         if (blanketSlot.getTagElement("eanimod_equipment").contains("blanket")) {
-                            blanketPath += "/" + blanketSlot.getTagElement("eanimod_equipment").getString("blanket");
+                            String subPath = blanketPath + "/" + blanketSlot.getTagElement("eanimod_equipment").getString("blanket");
+                            if (hasTexture(subPath)) {
+                                blanketPath = subPath;
+                            }
                         }
                     }
                 }
@@ -377,7 +379,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 return Items.LIGHT_GRAY_WOOL;
             case GRAY:
                 return Items.GRAY_CARPET;
-
             case BLUE:
                 return Items.BLUE_CARPET;
             case CYAN:
@@ -461,4 +462,24 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return chestTexture;
     }
 
+    private boolean hasTexture(String path) {
+        String animal;
+        if (this instanceof EnhancedLlama) {
+            animal = "llama";
+        } else if (this instanceof EnhancedPig) {
+            animal = "pig";
+        } else if (this instanceof EnhancedCow) {
+            animal = "cow";
+        } else if (this instanceof EnhancedHorse) {
+            animal = "horse";
+        } else if (this instanceof EnhancedSheep) {
+            animal = "sheep";
+        } else {
+            animal = this.getSpecies();
+            animal = animal.substring(animal.lastIndexOf(".")+1);
+            animal = animal.substring(animal.lastIndexOf("_")+1);
+        }
+
+        return Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation("eanimod:textures/entity/" + animal + "/" + path + ".png"));
+    }
 }
